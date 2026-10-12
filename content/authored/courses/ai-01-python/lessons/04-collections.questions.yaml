@@ -1,0 +1,64 @@
+- id: py.collections.slice
+  type: short
+  skill: recall
+  topics: [py.collections]
+  prompt: "Given `words = ['ni', 'hao', 'ma', 'ne']`, what is `words[1:3]`? Write it as a Python list."
+  accepted: ["['hao', 'ma']", '["hao", "ma"]', "[hao, ma]"]
+  match: { mode: text, typoTolerance: none }
+  explanation: "A slice includes the start index and stops before the end index: elements 1 and 2."
+
+- id: py.collections.choose-type
+  type: choice
+  skill: recognize
+  topics: [py.collections]
+  prompt: You need to check thousands of times whether a word has already been reviewed today. Which collection fits best?
+  options:
+    - { id: a, text: "list", explanation: "Membership tests scan every element: slow for repeated checks." }
+    - { id: b, text: "set", explanation: "Hash-based membership tests are fast whatever the size." }
+    - { id: c, text: "tuple", explanation: "Also a linear scan, and immutable so you cannot add to it." }
+  correct: [b]
+
+- id: py.collections.hashable
+  type: short
+  skill: recall
+  topics: [py.collections]
+  prompt: "Can a list be used as a dictionary key? Answer yes or no."
+  accepted: ["no"]
+  match: { mode: text, typoTolerance: none }
+  explanation: "No: dict keys must be hashable, and lists are mutable and therefore unhashable. Use a tuple instead."
+
+- id: py.collections.word-frequency
+  type: code
+  skill: apply
+  topics: [py.collections]
+  language: python
+  prompt: >-
+    Write `top_words(text, k)` returning the `k` most frequent words in `text` (split on whitespace, lower-cased) as a
+    list of `(word, count)` tuples, most frequent first, ties broken alphabetically.
+  starterCode: |
+    def top_words(text, k):
+        counts = {}
+        ...
+  tests:
+    - { kind: assert, name: "counts and orders", code: "assert top_words('a b a c b a', 2) == [('a', 3), ('b', 2)], top_words('a b a c b a', 2)" }
+    - { kind: assert, name: "case-insensitive", code: "assert top_words('Cat cat DOG', 1) == [('cat', 2)]" }
+    - { kind: assert, name: "ties alphabetical", code: "assert top_words('y x', 2) == [('x', 1), ('y', 1)]" }
+    - { kind: assert, name: "k larger than vocabulary", code: "assert top_words('a', 5) == [('a', 1)]" }
+  hints: ["`counts[w] = counts.get(w, 0) + 1`", "Sort the items by `(-count, word)`."]
+  solution: |
+    def top_words(text, k):
+        counts = {}
+        for word in text.lower().split():
+            counts[word] = counts.get(word, 0) + 1
+        return sorted(counts.items(), key=lambda item: (-item[1], item[0]))[:k]
+
+- id: py.collections.explain-copy
+  type: long
+  skill: explain
+  topics: [py.collections]
+  prompt: "Why does `b.append(3)` change `a` after `b = a`, and how would you avoid it?"
+  minWords: 20
+  rubric:
+    - { id: same, label: "b and a refer to the same list object", keywords: [["same list", "same object", "both refer", "alias", "reference"]] }
+    - { id: copy, label: "Use a copy (a.copy(), list(a), a[:] or copy.deepcopy)", keywords: [["copy", "a[:]", "list(a)", "deepcopy"]] }
+  modelAnswer: "`b = a` makes `b` a second name for the same list, so mutating it through `b` is visible through `a`. Make a copy instead: `b = a.copy()` (or `copy.deepcopy(a)` for nested data)."

@@ -1,0 +1,74 @@
+- id: sql.joins.keep-unmatched
+  type: choice
+  skill: recognize
+  topics: [sql.joins]
+  prompt: You want every learner listed, including learners who have no sessions yet. Which FROM clause does that?
+  options:
+    - { id: a, text: "`FROM learners l JOIN sessions s ON s.learner_id = l.id`" }
+    - { id: b, text: "`FROM learners l LEFT JOIN sessions s ON s.learner_id = l.id`", explanation: "A LEFT JOIN keeps every row of the left table, here learners." }
+    - { id: c, text: "`FROM sessions s LEFT JOIN learners l ON l.id = s.learner_id`", explanation: "This keeps every session, not every learner." }
+    - { id: d, text: "`FROM learners l, sessions s`", explanation: "Without a condition this pairs every learner with every session." }
+  correct: [b]
+  explanation: An inner join drops learners without sessions; a LEFT JOIN from `learners` keeps them, with NULL in the session columns.
+
+- id: sql.joins.cartesian
+  type: short
+  skill: recall
+  topics: [sql.joins]
+  prompt: You join a 5-row table to a 10-row table and forget the `ON` condition. How many rows come back?
+  accepted: ["50"]
+  match: { mode: number }
+  explanation: Without a condition every row is paired with every row (a cartesian product), so 5 × 10 = 50.
+
+- id: sql.joins.session-names
+  type: sql
+  skill: apply
+  topics: [sql.joins]
+  prompt: For every session, return the learner's `name` and the course `title`, in session id order.
+  schemaFile: studylog.sql
+  solution: SELECT l.name, c.title FROM sessions s JOIN learners l ON l.id = s.learner_id JOIN courses c ON c.id = s.course_id ORDER BY s.id;
+  orderMatters: true
+  starterCode: |
+    SELECT l.name, c.title
+    FROM sessions s
+    -- JOIN learners ...
+    -- JOIN courses ...
+    ORDER BY s.id;
+  hints: ["Join `learners` on `l.id = s.learner_id`.", "Then join `courses` on `c.id = s.course_id`."]
+
+- id: sql.joins.no-sessions
+  type: sql
+  skill: apply
+  topics: [sql.joins]
+  prompt: List the names of learners who have not recorded any session.
+  schemaFile: studylog.sql
+  solution: SELECT l.name FROM learners l LEFT JOIN sessions s ON s.learner_id = l.id WHERE s.id IS NULL;
+  hints: ["Start from `learners` and LEFT JOIN `sessions`.", "Learners without a session have NULL in every session column."]
+
+- id: sql.joins.courses-of-learner
+  type: sql
+  skill: apply
+  topics: [sql.joins]
+  prompt: Return the titles of the courses Aiko has studied, each title once, in alphabetical order.
+  schemaFile: studylog.sql
+  solution: SELECT DISTINCT c.title FROM sessions s JOIN learners l ON l.id = s.learner_id JOIN courses c ON c.id = s.course_id WHERE l.name = 'Aiko' ORDER BY c.title;
+  orderMatters: true
+  hints: ["You need all three tables.", "`DISTINCT` removes the repeated titles."]
+
+- id: sql.joins.inner-vs-left
+  type: long
+  skill: explain
+  topics: [sql.joins]
+  prompt: Explain the difference between an INNER JOIN and a LEFT JOIN, and how a WHERE condition on the right-hand table can undo a LEFT JOIN.
+  minWords: 40
+  rubric:
+    - { id: inner, label: An inner join keeps only rows that have a match in both tables, keywords: [[inner], [match, matching, both]] }
+    - { id: left, label: A left join keeps every row of the left table, keywords: [[left], [every, all, keeps]] }
+    - { id: nulls, label: Unmatched rows get NULL in the right table's columns, keywords: [["null"]] }
+    - { id: where, label: A WHERE condition on the right table removes those NULL rows again, keywords: [[where], [removes, drops, filters, excludes, discards]] }
+  modelAnswer: >-
+    An INNER JOIN returns only the pairs of rows that satisfy the join condition, so rows without a match in the
+    other table disappear. A LEFT JOIN returns every row of the left table; when there is no match, the columns of
+    the right table are NULL. A WHERE condition on a right-table column, such as `WHERE s.minutes > 30`, is false
+    or unknown for those NULLs, so it removes the unmatched rows and the result is the same as an inner join. Put
+    the condition in the ON clause to keep the unmatched rows.

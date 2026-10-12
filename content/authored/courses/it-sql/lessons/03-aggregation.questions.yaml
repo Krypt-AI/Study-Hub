@@ -1,0 +1,69 @@
+- id: sql.aggregate.having
+  type: choice
+  skill: recognize
+  topics: [sql.aggregate]
+  prompt: Which clause keeps only the groups whose `SUM(minutes)` is above 60?
+  options:
+    - { id: a, text: "`WHERE SUM(minutes) > 60`", explanation: "WHERE runs before grouping, when no SUM exists yet." }
+    - { id: b, text: "`HAVING SUM(minutes) > 60`" }
+    - { id: c, text: "`ORDER BY SUM(minutes) > 60`", explanation: "ORDER BY only sorts; it never removes rows." }
+    - { id: d, text: "`GROUP BY SUM(minutes) > 60`", explanation: "This would group by the true/false result instead." }
+  correct: [b]
+  explanation: HAVING filters groups after aggregation; WHERE filters individual rows before it.
+
+- id: sql.aggregate.count-column
+  type: short
+  skill: recall
+  topics: [sql.aggregate]
+  prompt: >-
+    The `learners` table has five rows, and one learner's `country` is NULL. What does
+    `SELECT COUNT(country) FROM learners;` return?
+  accepted: ["4"]
+  match: { mode: number }
+  explanation: "`COUNT(column)` skips NULLs, so it counts 4 rows. `COUNT(*)` would return 5."
+
+- id: sql.aggregate.minutes-per-learner
+  type: sql
+  skill: apply
+  topics: [sql.aggregate, sql.joins]
+  prompt: For each learner who has sessions, return `name` and their total study time as `total_minutes`, most minutes first.
+  schemaFile: studylog.sql
+  solution: SELECT l.name, SUM(s.minutes) AS total_minutes FROM sessions s JOIN learners l ON l.id = s.learner_id GROUP BY l.id, l.name ORDER BY total_minutes DESC;
+  orderMatters: true
+  hints: ["Join `sessions` to `learners`.", "`GROUP BY l.id, l.name`, then `SUM(s.minutes)`."]
+
+- id: sql.aggregate.busy-courses
+  type: sql
+  skill: apply
+  topics: [sql.aggregate, sql.joins]
+  prompt: Return the `title` and total study time (`total_minutes`) of every course studied for more than 90 minutes in total.
+  schemaFile: studylog.sql
+  solution: SELECT c.title, SUM(s.minutes) AS total_minutes FROM sessions s JOIN courses c ON c.id = s.course_id GROUP BY c.id, c.title HAVING SUM(s.minutes) > 90;
+  hints: ["Group the sessions by course.", "The condition is on a total, so it belongs in HAVING."]
+
+- id: sql.aggregate.accuracy-per-learner
+  type: sql
+  skill: apply
+  topics: [sql.aggregate, sql.joins]
+  prompt: >-
+    For each learner with sessions, return `name` and their overall accuracy as `accuracy`: total correct divided by
+    total answered, rounded to 2 decimal places. Sort by name.
+  schemaFile: studylog.sql
+  solution: SELECT l.name, ROUND(SUM(s.correct) * 1.0 / SUM(s.answered), 2) AS accuracy FROM sessions s JOIN learners l ON l.id = s.learner_id GROUP BY l.id, l.name ORDER BY l.name;
+  orderMatters: true
+  hints: ["Divide the sums, not the per-session ratios.", "Multiply by 1.0 before dividing, then `ROUND(..., 2)`."]
+
+- id: sql.aggregate.where-vs-having
+  type: long
+  skill: explain
+  topics: [sql.aggregate]
+  prompt: Explain why `WHERE SUM(minutes) > 60` is an error while `HAVING SUM(minutes) > 60` works.
+  minWords: 30
+  rubric:
+    - { id: where-rows, label: WHERE filters individual rows before grouping, keywords: [[where], [rows, row, before]] }
+    - { id: having-groups, label: HAVING filters groups after aggregation, keywords: [[having], [groups, group, after]] }
+    - { id: aggregate-timing, label: The aggregate only exists once rows are grouped, keywords: [[sum, aggregate, total], [grouped, grouping, group, after]] }
+  modelAnswer: >-
+    A query is evaluated in stages: FROM and joins, then WHERE on each individual row, then GROUP BY, then the
+    aggregates per group, then HAVING. When WHERE runs, rows have not been grouped yet, so there is no SUM to
+    compare. HAVING runs after the groups and their aggregates exist, so it can filter on `SUM(minutes)`.

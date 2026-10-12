@@ -1,0 +1,435 @@
+{
+  "entries": [
+    {
+      "source": "hsk1-teacher",
+      "lesson": 3,
+      "section": "reading",
+      "from": 13,
+      "to": 17,
+      "answers": [
+        "✗",
+        "✗",
+        "✓",
+        "✓",
+        "✗"
+      ],
+      "note": "OCR missed a ✓/✗ mark; read from the answer key page."
+    },
+    {
+      "source": "hsk1-teacher",
+      "lesson": 5,
+      "section": "listening",
+      "from": 1,
+      "to": 4,
+      "answers": [
+        "✗",
+        "✓",
+        "✓",
+        "✗"
+      ],
+      "note": "OCR missed a ✓/✗ mark; read from the answer key page."
+    },
+    {
+      "source": "hsk1-teacher",
+      "lesson": 5,
+      "section": "reading",
+      "from": 13,
+      "to": 17,
+      "answers": [
+        "✗",
+        "✓",
+        "✗",
+        "✓",
+        "✗"
+      ],
+      "note": "OCR missed a ✓/✗ mark; read from the answer key page."
+    },
+    {
+      "source": "hsk1-teacher",
+      "lesson": 6,
+      "section": "listening",
+      "from": 1,
+      "to": 4,
+      "answers": [
+        "✗",
+        "✗",
+        "✓",
+        "✗"
+      ],
+      "note": "OCR missed a ✓/✗ mark; read from the answer key page."
+    },
+    {
+      "source": "hsk1-teacher",
+      "lesson": 6,
+      "section": "reading",
+      "from": 13,
+      "to": 17,
+      "answers": [
+        "✓",
+        "✗",
+        "✗",
+        "✓",
+        "✓"
+      ],
+      "note": "OCR missed a ✓/✗ mark; read from the answer key page."
+    },
+    {
+      "source": "hsk1-teacher",
+      "lesson": 7,
+      "section": "reading",
+      "from": 13,
+      "to": 17,
+      "answers": [
+        "✓",
+        "✗",
+        "✓",
+        "✗",
+        "✗"
+      ],
+      "note": "OCR missed a ✓/✗ mark; read from the answer key page."
+    },
+    {
+      "source": "hsk1-teacher",
+      "lesson": 7,
+      "section": "reading",
+      "from": 27,
+      "to": 30,
+      "answers": [
+        "G",
+        "H",
+        "I",
+        "F"
+      ],
+      "note": "The key prints \"I, I\" for question 29 (a misprint); 29 is I and 30 is F."
+    },
+    {
+      "source": "hsk1-teacher",
+      "lesson": 8,
+      "section": "reading",
+      "from": 13,
+      "to": 17,
+      "answers": [
+        "✗",
+        "✓",
+        "✗",
+        "✓",
+        "✗"
+      ],
+      "note": "OCR missed a ✓/✗ mark; read from the answer key page."
+    },
+    {
+      "source": "hsk1-teacher",
+      "lesson": 8,
+      "section": "reading",
+      "from": 27,
+      "to": 30,
+      "answers": [
+        "F",
+        "G",
+        "G",
+        "F/G"
+      ],
+      "note": "The key accepts F or G for question 30."
+    },
+    {
+      "source": "hsk1-teacher",
+      "lesson": 9,
+      "section": "reading",
+      "from": 13,
+      "to": 17,
+      "answers": [
+        "✗",
+        "✗",
+        "✓",
+        "✓",
+        "✗"
+      ],
+      "note": "OCR missed a ✓/✗ mark; read from the answer key page."
+    },
+    {
+      "source": "hsk1-teacher",
+      "lesson": 13,
+      "section": "listening",
+      "from": 1,
+      "to": 5,
+      "answers": [
+        "✓",
+        "✗",
+        "✗",
+        "✓",
+        "✗"
+      ],
+      "note": "OCR missed a ✓/✗ mark; read from the answer key page."
+    },
+    {
+      "source": "hsk1-teacher",
+      "lesson": 15,
+      "section": "listening",
+      "from": 1,
+      "to": 5,
+      "answers": [
+        "✓",
+        "✗",
+        "✓",
+        "✗",
+        "✗"
+      ],
+      "note": "OCR missed a ✓/✗ mark; read from the answer key page."
+    },
+    {
+      "source": "hsk1-teacher",
+      "lesson": 0,
+      "section": "reading",
+      "from": 21,
+      "to": 25,
+      "answers": [
+        "✗",
+        "✗",
+        "✓",
+        "✗",
+        "✓"
+      ],
+      "note": "OCR missed a ✓/✗ mark; read from the answer key page."
+    },
+    {
+      "source": "hsk2-teacher",
+      "lesson": 1,
+      "section": "reading",
+      "from": 26,
+      "to": 30,
+      "answers": [
+        "✗",
+        "✓",
+        "✗",
+        "✓",
+        "✗"
+      ],
+      "note": "OCR missed a ✓/✗ mark; read from the answer key page."
+    },
+    {
+      "source": "hsk2-teacher",
+      "lesson": 3,
+      "section": "reading",
+      "from": 26,
+      "to": 30,
+      "answers": [
+        "✓",
+        "✓",
+        "✗",
+        "✓",
+        "✗"
+      ],
+      "note": "OCR missed a ✓/✗ mark; read from the answer key page."
+    },
+    {
+      "source": "hsk2-teacher",
+      "lesson": 5,
+      "section": "reading",
+      "from": 26,
+      "to": 30,
+      "answers": [
+        "✗",
+        "✓",
+        "✓",
+        "✓",
+        "✗"
+      ],
+      "note": "OCR missed a ✓/✗ mark; read from the answer key page."
+    },
+    {
+      "source": "hsk2-teacher",
+      "lesson": 14,
+      "section": "reading",
+      "from": 26,
+      "to": 30,
+      "answers": [
+        "✗",
+        "✗",
+        "✗",
+        "✗",
+        "✓"
+      ],
+      "note": "OCR missed a ✓/✗ mark; read from the answer key page."
+    },
+    {
+      "source": "hsk2-teacher",
+      "lesson": 0,
+      "section": "listening",
+      "from": 6,
+      "to": 10,
+      "answers": [
+        "✓",
+        "✗",
+        "✓",
+        "✓",
+        "✗"
+      ],
+      "note": "OCR missed a ✓/✗ mark; read from the answer key page."
+    },
+    {
+      "source": "hsk3-teacher",
+      "lesson": 1,
+      "section": "listening",
+      "from": 6,
+      "to": 10,
+      "answers": [
+        "✓",
+        "✗",
+        "✗",
+        "✓",
+        "✗"
+      ],
+      "note": "OCR missed the last ✓/✗ mark; read from the answer key page."
+    },
+    {
+      "source": "hsk3-teacher",
+      "lesson": 2,
+      "section": "listening",
+      "from": 6,
+      "to": 10,
+      "answers": [
+        "✓",
+        "✗",
+        "✗",
+        "✓",
+        "✗"
+      ],
+      "note": "OCR missed the last ✓/✗ mark; read from the answer key page."
+    },
+    {
+      "source": "hsk3-teacher",
+      "lesson": 9,
+      "section": "listening",
+      "from": 6,
+      "to": 10,
+      "answers": [
+        "✗",
+        "✓",
+        "✗",
+        "✗",
+        "✓"
+      ],
+      "note": "OCR missed the last ✓/✗ mark; read from the answer key page."
+    },
+    {
+      "source": "hsk3-teacher",
+      "lesson": 11,
+      "section": "listening",
+      "from": 6,
+      "to": 10,
+      "answers": [
+        "✓",
+        "✓",
+        "✗",
+        "✓",
+        "✗"
+      ],
+      "note": "OCR missed the last ✓/✗ mark; read from the answer key page."
+    },
+    {
+      "source": "hsk3-teacher",
+      "lesson": 13,
+      "section": "listening",
+      "from": 6,
+      "to": 10,
+      "answers": [
+        "✗",
+        "✗",
+        "✓",
+        "✗",
+        "✗"
+      ],
+      "note": "OCR missed the last ✓/✗ mark; read from the answer key page."
+    },
+    {
+      "source": "hsk3-teacher",
+      "lesson": 14,
+      "section": "listening",
+      "from": 6,
+      "to": 10,
+      "answers": [
+        "✗",
+        "✗",
+        "✓",
+        "✓",
+        "✗"
+      ],
+      "note": "OCR missed the last ✓/✗ mark; read from the answer key page."
+    },
+    {
+      "source": "hsk3-teacher",
+      "lesson": 15,
+      "section": "listening",
+      "from": 6,
+      "to": 10,
+      "answers": [
+        "✗",
+        "✗",
+        "✓",
+        "✓",
+        "✗"
+      ],
+      "note": "OCR missed the last ✓/✗ mark; read from the answer key page."
+    },
+    {
+      "source": "hsk3-teacher",
+      "lesson": 16,
+      "section": "listening",
+      "from": 6,
+      "to": 10,
+      "answers": [
+        "✓",
+        "✗",
+        "✗",
+        "✓",
+        "✗"
+      ],
+      "note": "OCR missed the last ✓/✗ mark; read from the answer key page."
+    },
+    {
+      "source": "hsk3-teacher",
+      "lesson": 17,
+      "section": "listening",
+      "from": 6,
+      "to": 10,
+      "answers": [
+        "✓",
+        "✗",
+        "✓",
+        "✗",
+        "✗"
+      ],
+      "note": "OCR missed the last ✓/✗ mark; read from the answer key page."
+    },
+    {
+      "source": "hsk3-teacher",
+      "lesson": 20,
+      "section": "listening",
+      "from": 6,
+      "to": 10,
+      "answers": [
+        "✓",
+        "✗",
+        "✗",
+        "✓",
+        "✗"
+      ],
+      "note": "OCR missed the last ✓/✗ mark; read from the answer key page."
+    },
+    {
+      "source": "hsk3-teacher",
+      "lesson": 0,
+      "section": "listening",
+      "from": 11,
+      "to": 15,
+      "answers": [
+        "✗",
+        "✓",
+        "✗",
+        "✗",
+        "✓"
+      ],
+      "note": "OCR missed the last ✓/✗ mark; read from the answer key page."
+    }
+  ]
+}

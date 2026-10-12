@@ -1,0 +1,911 @@
+# Certification catalogue. Every fact below was checked against the provider's official page on
+# the verifiedOn date; anything an official page did not state is listed under `unverified`.
+# Prices and formats change: re-verify before booking an exam.
+
+# ---------------------------------------------------------------------------
+# AI / ML engineering
+# ---------------------------------------------------------------------------
+
+- id: aws-ai-practitioner
+  name: AWS Certified AI Practitioner
+  code: AIF-C01
+  provider: Amazon Web Services
+  url: https://aws.amazon.com/certification/certified-ai-practitioner/
+  category: ai-ml
+  credentialType: professional-certification
+  level: foundational
+  status: active
+  statusNote: The Italian and German versions are retired after October 15, 2026; other languages continue.
+  summary: Foundational AI, ML and generative AI concepts and the AWS services that deliver them.
+  objectives:
+    - AI and ML fundamentals
+    - Generative AI and foundation models
+    - Applications of foundation models
+    - Responsible AI, security and governance
+  prerequisites: None. Newcomers to IT are advised to take AWS Cloud Practitioner or Technical Essentials first.
+  exam:
+    questions: 65
+    durationMinutes: 90
+    format: Multiple choice and multiple response
+    delivery: Pearson VUE test centre or online proctored
+    validity: 3 years
+  cost: { amount: 100, currency: USD }
+  studyHours: { min: 20, max: 40, estimate: true }
+  resources:
+    - { title: AWS Skill Builder exam prep plan, url: "https://skillbuilder.aws/", free: true, official: true }
+    - { title: Exam guide (AIF-C01), url: "https://docs.aws.amazon.com/aws-certification/latest/ai-practitioner-01/ai-practitioner-01.html", free: true, official: true }
+  relatedCourses: [ai-08-transformers, ai-09-llm-apis, ai-13-responsible-ai]
+  verifiedOn: "2026-10-11"
+  verificationSources: ["https://aws.amazon.com/certification/certified-ai-practitioner/"]
+  unverified: [Passing score and domain weights are in the exam guide, not on the certification page.]
+
+- id: aws-ml-engineer-associate
+  name: AWS Certified Machine Learning Engineer – Associate
+  code: MLA-C02 (beta) / MLA-C01
+  provider: Amazon Web Services
+  url: https://aws.amazon.com/certification/certified-machine-learning-engineer-associate/
+  category: ai-ml
+  credentialType: professional-certification
+  level: associate
+  status: beta
+  statusNote: >-
+    MLA-C02 beta registration opened September 1, 2026 (English only); MLA-C01 in English ended September 28, 2026.
+    MLA-C02 general availability is scheduled for January 14, 2027. It adds generative AI, Amazon Bedrock, RAG and agentic AI.
+  summary: Build, deploy and operate ML and generative AI workloads on AWS (SageMaker, Bedrock).
+  objectives:
+    - Data preparation for ML
+    - Model development and evaluation
+    - Deployment and orchestration of ML workflows
+    - Monitoring, maintenance and security of ML solutions
+    - Generative AI, RAG and agentic workflows (new in MLA-C02)
+  prerequisites: Recommended at least 1 year using Amazon SageMaker and other AWS ML services.
+  exam:
+    questions: 65 (MLA-C01)
+    durationMinutes: 130
+    format: Multiple choice and multiple response (MLA-C01 figures)
+    delivery: Pearson VUE test centre or online proctored
+    validity: 3 years
+  cost: { amount: 150, currency: USD, note: MLA-C01 price; check the MLA-C02 beta price when registering. }
+  studyHours: { min: 60, max: 120, estimate: true }
+  resources:
+    - { title: MLA-C02 update announcement, url: "https://aws.amazon.com/blogs/training-and-certification/updates-to-aws-certified-machine-learning-engineer-associate-mla-c02/", free: true, official: true }
+    - { title: AWS Skill Builder exam prep plan, url: "https://skillbuilder.aws/", free: true, official: true }
+  relatedCourses: [ai-05-machine-learning, ai-06-evaluation, ai-12-mlops, ai-10-rag]
+  verifiedOn: "2026-10-11"
+  verificationSources:
+    - "https://aws.amazon.com/certification/certified-machine-learning-engineer-associate/"
+    - "https://aws.amazon.com/blogs/training-and-certification/updates-to-aws-certified-machine-learning-engineer-associate-mla-c02/"
+  unverified: [MLA-C02 question count, duration and beta price were not on the pages checked.]
+
+- id: aws-genai-developer-professional
+  name: AWS Certified Generative AI Developer – Professional
+  provider: Amazon Web Services
+  url: https://aws.amazon.com/certification/certified-generative-ai-developer-professional/
+  category: ai-ml
+  credentialType: professional-certification
+  level: professional
+  status: active
+  summary: Design and ship production generative AI applications on AWS.
+  objectives:
+    - Foundation model integration and data management
+    - Implementing generative AI applications and agents
+    - Security, governance and responsible AI
+    - Operational efficiency, evaluation and monitoring
+  prerequisites: Recommended 2+ years building production applications on AWS or open source, and 1 year implementing generative AI solutions.
+  exam:
+    questions: 75
+    durationMinutes: 180
+    format: Multiple choice and multiple response
+    delivery: Pearson VUE test centre or online proctored
+  cost: { amount: 300, currency: USD }
+  studyHours: { min: 80, max: 150, estimate: true }
+  resources:
+    - { title: AWS Skill Builder exam prep plan, url: "https://skillbuilder.aws/", free: true, official: true }
+  relatedCourses: [ai-09-llm-apis, ai-10-rag, ai-11-agents, ai-13-responsible-ai]
+  verifiedOn: "2026-10-11"
+  verificationSources: ["https://aws.amazon.com/certification/certified-generative-ai-developer-professional/"]
+  unverified: [Exam code, passing score, validity and domain weights were not on the certification page.]
+
+- id: aws-ml-specialty
+  name: AWS Certified Machine Learning – Specialty
+  code: MLS-C01
+  provider: Amazon Web Services
+  url: https://aws.amazon.com/certification/certified-machine-learning-specialty/
+  category: ai-ml
+  credentialType: professional-certification
+  level: specialty
+  status: retired
+  statusNote: The last day to take this exam was March 31, 2026. AWS points to the Machine Learning Engineer – Associate instead.
+  summary: Retired specialty exam on building and operating ML solutions on AWS.
+  cost: { amount: 300, currency: USD, note: Price while the exam was offered. }
+  relatedCourses: []
+  verifiedOn: "2026-10-11"
+  verificationSources: ["https://aws.amazon.com/certification/certified-machine-learning-specialty/"]
+
+- id: google-ml-engineer
+  name: Google Cloud Professional Machine Learning Engineer
+  provider: Google Cloud
+  url: https://cloud.google.com/learn/certification/machine-learning-engineer
+  category: ai-ml
+  credentialType: professional-certification
+  level: professional
+  status: active
+  statusNote: Updated for the move from Vertex AI to Gemini Enterprise Agent Platform and the current data and analytics stack.
+  summary: Design, build, productionise and monitor ML and generative AI solutions on Google Cloud.
+  objectives:
+    - Architect low-code AI solutions
+    - Collaborate within and across teams to manage data and models
+    - Scale prototypes into ML models
+    - Serve and scale models
+    - Automate and orchestrate ML pipelines
+    - Monitor AI solutions
+  prerequisites: None. Recommended 3+ years of industry experience including 1+ year designing and managing Google Cloud solutions.
+  exam:
+    questions: 50-60
+    durationMinutes: 120
+    format: Multiple choice and multiple select
+    delivery: Online proctored or test centre
+  cost: { amount: 200, currency: USD, note: Plus tax where applicable. }
+  studyHours: { min: 80, max: 160, estimate: true }
+  resources:
+    - { title: Machine Learning Engineer learning path, url: "https://www.cloudskillsboost.google/paths/17", free: false, official: true }
+    - { title: Exam guide (PDF), url: "https://services.google.com/fh/files/misc/professional_machine_learning_engineer_exam_guide_english_new.pdf", free: true, official: true }
+  relatedCourses: [ai-05-machine-learning, ai-06-evaluation, ai-07-deep-learning, ai-12-mlops]
+  verifiedOn: "2026-10-11"
+  verificationSources: ["https://cloud.google.com/learn/certification/machine-learning-engineer"]
+  unverified: [Validity period (the page refers to the renewal FAQ).]
+
+- id: google-genai-leader
+  name: Google Cloud Generative AI Leader
+  provider: Google Cloud
+  url: https://cloud.google.com/learn/certification/generative-ai-leader
+  category: ai-ml
+  credentialType: professional-certification
+  level: foundational
+  status: active
+  summary: Non-technical certification on generative AI concepts, Google Cloud's gen AI offerings and adoption strategy.
+  objectives:
+    - Fundamentals of gen AI
+    - Google Cloud's gen AI offerings
+    - Techniques to improve gen AI model output
+    - Business strategies for a successful gen AI solution
+  prerequisites: None; open to any role, with or without hands-on experience.
+  exam:
+    questions: 50-60
+    durationMinutes: 90
+    format: Multiple choice
+    delivery: Online proctored or test centre
+    validity: 3 years
+  cost: { amount: 99, currency: USD, note: Plus tax where applicable. }
+  studyHours: { min: 10, max: 25, estimate: true }
+  resources:
+    - { title: Generative AI Leader learning path, url: "https://www.cloudskillsboost.google/paths/1951", free: true, official: true }
+    - { title: Exam guide (PDF), url: "https://services.google.com/fh/files/misc/generative_ai_leader_exam_guide_english.pdf", free: true, official: true }
+  relatedCourses: [ai-08-transformers, ai-09-llm-apis, ai-13-responsible-ai]
+  verifiedOn: "2026-10-11"
+  verificationSources: ["https://cloud.google.com/learn/certification/generative-ai-leader"]
+
+- id: ms-azure-ai-fundamentals
+  name: "Microsoft Certified: Azure AI Fundamentals"
+  code: AI-901
+  provider: Microsoft
+  url: https://learn.microsoft.com/en-us/credentials/certifications/azure-ai-fundamentals/
+  category: ai-ml
+  credentialType: professional-certification
+  level: foundational
+  status: active
+  statusNote: Now earned with exam AI-901 (English version updated April 15, 2026); the older AI-900 exam is retired.
+  summary: AI concepts and capabilities, and building AI solutions with Microsoft Foundry.
+  objectives:
+    - Identify AI concepts and capabilities (40–45%)
+    - Implement AI solutions by using Microsoft Foundry (55–60%)
+  prerequisites: Conceptual AI knowledge, basic Python syntax and familiarity with Azure resources.
+  exam:
+    passingScore: 700
+    delivery: Proctored (Pearson VUE)
+  cost: { currency: USD, note: Price depends on the country where the exam is taken. }
+  studyHours: { min: 15, max: 30, estimate: true }
+  resources:
+    - { title: AI-901 study guide, url: "https://aka.ms/AI901-StudyGuide", free: true, official: true }
+    - { title: "Course AI-901T00: Introduction to AI in Azure", url: "https://learn.microsoft.com/en-us/training/courses/ai-901t00", free: false, official: true }
+  relatedCourses: [ai-05-machine-learning, ai-09-llm-apis]
+  verifiedOn: "2026-10-11"
+  verificationSources:
+    - "https://learn.microsoft.com/en-us/credentials/certifications/azure-ai-fundamentals/"
+    - "https://learn.microsoft.com/en-us/credentials/certifications/exams/ai-901/"
+  unverified: [Exam duration and question count.]
+
+- id: ms-ai-apps-agents-developer
+  name: "Microsoft Certified: Azure AI Apps and Agents Developer Associate"
+  code: AI-103
+  provider: Microsoft
+  url: https://learn.microsoft.com/en-us/credentials/certifications/azure-ai-apps-and-agents-developer-associate/
+  category: ai-ml
+  credentialType: professional-certification
+  level: associate
+  status: active
+  statusNote: Replaces the retired Azure AI Engineer Associate (AI-102).
+  summary: Build and deploy generative AI apps and agents with Python and Microsoft Foundry.
+  objectives:
+    - Plan and manage an Azure AI solution
+    - Implement generative AI and agentic solutions
+    - Implement computer vision solutions
+    - Implement text analysis solutions
+    - Implement information extraction solutions
+  prerequisites: Experience developing apps in Python; familiarity with generative AI and Azure services.
+  exam:
+    durationMinutes: 120
+    delivery: Proctored (Pearson VUE)
+  cost: { currency: USD, note: Price depends on the country where the exam is taken. }
+  studyHours: { min: 60, max: 120, estimate: true }
+  resources:
+    - { title: AI-103 study guide, url: "https://aka.ms/AI103-StudyGuide", free: true, official: true }
+  relatedCourses: [ai-09-llm-apis, ai-10-rag, ai-11-agents]
+  verifiedOn: "2026-10-11"
+  verificationSources: ["https://learn.microsoft.com/en-us/credentials/certifications/exams/ai-103/"]
+  unverified: [Passing score and skill weights (in the study guide).]
+
+- id: ms-mlops-engineer
+  name: "Microsoft Certified: Machine Learning Operations Engineer Associate"
+  code: AI-300
+  provider: Microsoft
+  url: https://learn.microsoft.com/en-us/credentials/certifications/operationalizing-machine-learning-and-generative-ai-solutions/
+  category: ai-ml
+  credentialType: professional-certification
+  level: associate
+  status: active
+  statusNote: Replaces the retired Azure Data Scientist Associate (DP-100). Offered in English only.
+  summary: MLOps and GenAIOps on Azure Machine Learning and Microsoft Foundry.
+  objectives:
+    - Design and implement an MLOps infrastructure
+    - Implement machine learning model lifecycle and operations
+    - Design and implement a GenAIOps infrastructure
+    - Implement generative AI quality assurance and observability
+    - Optimize generative AI systems and model performance
+  prerequisites: Data science background, Python, and entry-level DevOps (GitHub Actions, CLIs, Bicep).
+  exam:
+    durationMinutes: 120
+    delivery: Proctored (Pearson VUE)
+  cost: { currency: USD, note: Price depends on the country where the exam is taken. }
+  studyHours: { min: 60, max: 120, estimate: true }
+  resources:
+    - { title: AI-300 study guide, url: "https://aka.ms/AI300-StudyGuide", free: true, official: true }
+  relatedCourses: [ai-12-mlops, ai-13-responsible-ai]
+  verifiedOn: "2026-10-11"
+  verificationSources: ["https://learn.microsoft.com/en-us/credentials/certifications/exams/ai-300/"]
+  unverified: [Passing score and skill weights.]
+
+- id: ms-azure-ai-engineer
+  name: "Microsoft Certified: Azure AI Engineer Associate"
+  code: AI-102
+  provider: Microsoft
+  url: https://learn.microsoft.com/en-us/credentials/certifications/azure-ai-engineer/
+  category: ai-ml
+  credentialType: professional-certification
+  level: associate
+  status: retired
+  statusNote: The certification and its renewal assessment are retired; see AI-103.
+  summary: Retired associate certification for Azure AI services.
+  cost: { currency: USD, note: No longer offered. }
+  relatedCourses: []
+  verifiedOn: "2026-10-11"
+  verificationSources: ["https://learn.microsoft.com/en-us/credentials/certifications/azure-ai-engineer/"]
+
+- id: ms-azure-data-scientist
+  name: "Microsoft Certified: Azure Data Scientist Associate"
+  code: DP-100
+  provider: Microsoft
+  url: https://learn.microsoft.com/en-us/credentials/certifications/azure-data-scientist/
+  category: ai-ml
+  credentialType: professional-certification
+  level: associate
+  status: retired
+  statusNote: The certification and its renewal assessment are retired; see AI-300.
+  summary: Retired data science certification for Azure Machine Learning.
+  cost: { currency: USD, note: No longer offered. }
+  relatedCourses: []
+  verifiedOn: "2026-10-11"
+  verificationSources: ["https://learn.microsoft.com/en-us/credentials/certifications/azure-data-scientist/"]
+
+- id: nvidia-genai-llm-associate
+  name: "NVIDIA-Certified Associate: Generative AI LLMs"
+  code: NCA-GENL
+  provider: NVIDIA
+  url: https://www.nvidia.com/en-us/learn/certification/generative-ai-llm-associate/
+  category: ai-ml
+  credentialType: professional-certification
+  level: associate
+  status: active
+  summary: Foundational skills for developing, integrating and maintaining LLM-based applications.
+  objectives:
+    - Core machine learning and AI knowledge (30%)
+    - Software development (24%)
+    - Experimentation (22%)
+    - Data analysis (14%)
+    - Trustworthy AI (10%)
+  prerequisites: A basic understanding of generative AI and large language models.
+  exam:
+    questions: 50-60
+    durationMinutes: 60
+    format: Multiple choice
+    delivery: Online (remotely proctored)
+    validity: 2 years
+  cost: { amount: 125, currency: USD }
+  studyHours: { min: 25, max: 50, estimate: true }
+  resources:
+    - { title: "Fundamentals of Deep Learning (DLI)", url: "https://www.nvidia.com/en-us/training/", free: false, official: true }
+    - { title: "Rapid Application Development With LLMs (DLI)", url: "https://www.nvidia.com/en-us/training/", free: false, official: true }
+  relatedCourses: [ai-07-deep-learning, ai-08-transformers, ai-09-llm-apis]
+  verifiedOn: "2026-10-11"
+  verificationSources: ["https://www.nvidia.com/en-us/learn/certification/generative-ai-llm-associate/"]
+
+- id: databricks-genai-engineer-associate
+  name: Databricks Certified Generative AI Engineer Associate
+  provider: Databricks
+  url: https://www.databricks.com/learn/certification/genai-engineer-associate
+  category: ai-ml
+  credentialType: professional-certification
+  level: associate
+  status: active
+  summary: Design and build LLM applications such as RAG on the Databricks platform.
+  objectives:
+    - Design applications (14%)
+    - Data preparation (14%)
+    - Application development (30%)
+    - Assembling and deploying apps (22%)
+    - Governance (8%)
+    - Evaluation and monitoring (12%)
+  prerequisites: None. Recommended 6+ months of hands-on generative AI work.
+  exam:
+    questions: 45 scored
+    durationMinutes: 90
+    format: Multiple choice; code in Python (SQL for non-ML tasks)
+    delivery: Online or test centre
+    validity: 2 years
+  cost: { amount: 200, currency: USD }
+  studyHours: { min: 30, max: 60, estimate: true }
+  resources:
+    - { title: Databricks Academy, url: "https://www.databricks.com/learn/training/home", free: false, official: true }
+  relatedCourses: [ai-10-rag, ai-09-llm-apis, ai-13-responsible-ai]
+  verifiedOn: "2026-10-11"
+  verificationSources: ["https://www.databricks.com/learn/certification/genai-engineer-associate"]
+
+- id: databricks-ml-associate
+  name: Databricks Certified Machine Learning Associate
+  provider: Databricks
+  url: https://www.databricks.com/learn/certification/machine-learning-associate
+  category: ai-ml
+  credentialType: professional-certification
+  level: associate
+  status: active
+  summary: Core ML tasks on Databricks, from workflows to deployment.
+  objectives:
+    - Databricks Machine Learning (38%)
+    - ML workflows (19%)
+    - Model development (31%)
+    - Model deployment (12%)
+  prerequisites: None. Recommended 6+ months of hands-on ML work.
+  exam:
+    questions: 48 scored
+    durationMinutes: 90
+    format: Multiple choice; code in Python
+    delivery: Online or test centre
+    validity: 2 years
+  cost: { amount: 200, currency: USD }
+  studyHours: { min: 30, max: 60, estimate: true }
+  resources:
+    - { title: Databricks Academy, url: "https://www.databricks.com/learn/training/home", free: false, official: true }
+  relatedCourses: [ai-05-machine-learning, ai-06-evaluation]
+  verifiedOn: "2026-10-11"
+  verificationSources: ["https://www.databricks.com/learn/certification/machine-learning-associate"]
+
+- id: pytorch-certified-associate
+  name: PyTorch Certified Associate
+  code: PTCA
+  provider: Linux Foundation & PyTorch Foundation
+  url: https://training.linuxfoundation.org/certification/pytorch-certified-associate-ptca/
+  category: ai-ml
+  credentialType: professional-certification
+  level: associate
+  status: active
+  summary: Entry-level PyTorch skills for building, training and optimising models.
+  objectives:
+    - PyTorch fundamentals (38%)
+    - Performance and optimisation (26%)
+    - Model development (20%)
+    - Data handling (16%)
+  prerequisites: None.
+  exam:
+    durationMinutes: 120
+    format: Multiple choice
+    delivery: Online proctored; one free retake; 12-month eligibility
+    validity: 2 years
+  cost: { amount: 250, currency: USD, note: "Exam only; $299 with the certification pathway course." }
+  studyHours: { min: 40, max: 80, estimate: true }
+  resources:
+    - { title: PyTorch tutorials, url: "https://docs.pytorch.org/tutorials/", free: true, official: true }
+  relatedCourses: [ai-07-deep-learning]
+  verifiedOn: "2026-10-11"
+  verificationSources: ["https://training.linuxfoundation.org/certification/pytorch-certified-associate-ptca/"]
+  unverified: [Number of questions.]
+
+- id: tensorflow-developer-certificate
+  name: TensorFlow Developer Certificate
+  provider: Google (TensorFlow)
+  url: https://www.tensorflow.org/certificate
+  category: ai-ml
+  credentialType: professional-certification
+  level: associate
+  status: retired
+  statusNote: The exam is closed while Google evaluates the program; existing credentials stay valid for 3 years from passing.
+  summary: Closed TensorFlow developer exam.
+  cost: { currency: USD, note: Not currently offered. }
+  relatedCourses: []
+  verifiedOn: "2026-10-11"
+  verificationSources: ["https://www.tensorflow.org/certificate"]
+
+- id: claude-certified-developer
+  name: "Claude Certified Developer: Foundations"
+  provider: Anthropic
+  url: https://claude.com/blog/four-role-based-claude-certifications
+  category: ai-ml
+  credentialType: professional-certification
+  level: foundational
+  status: active
+  statusNote: Proctored exams (Pearson, Credly badges) are only open to Claude Partner Network members.
+  summary: Building applications with the Claude API, tool use and agent development.
+  objectives:
+    - Claude API
+    - Tool use
+    - Agent development
+  prerequisites: Membership of the Claude Partner Network (exam eligibility).
+  exam:
+    delivery: Proctored by Pearson with identity verification
+  cost: { currency: USD, note: Paid exam; price not published on the official pages checked. }
+  resources:
+    - { title: Claude Academy (free courses with completion badges), url: "https://academy.claude.com/", free: true, official: true }
+  relatedCourses: [ai-09-llm-apis, ai-11-agents]
+  verifiedOn: "2026-10-11"
+  verificationSources:
+    - "https://claude.com/blog/four-role-based-claude-certifications"
+    - "https://academy.claude.com/help/faq"
+  unverified: [Price, number of questions, duration and passing score are not on the official pages.]
+
+- id: claude-academy-badges
+  name: Claude Academy completion badges
+  provider: Anthropic
+  url: https://academy.claude.com/
+  category: ai-ml
+  credentialType: badge
+  level: foundational
+  status: active
+  summary: Free self-paced Claude courses; passing a course's quizzes earns a downloadable completion badge.
+  cost: { amount: 0, currency: USD, free: true }
+  resources:
+    - { title: Claude Academy, url: "https://academy.claude.com/", free: true, official: true }
+  relatedCourses: [ai-09-llm-apis, ai-11-agents]
+  verifiedOn: "2026-10-11"
+  verificationSources: ["https://academy.claude.com/help/faq"]
+
+- id: openai-certifications
+  name: OpenAI Certifications (AI Foundations)
+  provider: OpenAI
+  url: https://openai.com/index/openai-certificate-courses/
+  category: ai-ml
+  credentialType: professional-certification
+  level: foundational
+  status: beta
+  statusNote: >-
+    AI Foundations is launching inside ChatGPT through pilot programs with employers and public-service partners.
+    OpenAI Academy badges and certificates of completion are not certifications.
+  summary: Practical AI skills taught and assessed inside ChatGPT, building toward a full OpenAI Certification with a hands-on project.
+  cost: { currency: USD, note: Not published for the pilot. }
+  resources:
+    - { title: OpenAI Academy, url: "https://academy.openai.com/", free: true, official: true }
+  relatedCourses: [ai-09-llm-apis]
+  verifiedOn: "2026-10-11"
+  verificationSources: ["https://openai.com/index/openai-certificate-courses/", "https://help.openai.com/en/articles/20001270-openai-academy-courses"]
+  unverified: [The official pages refused automated access (HTTP 403); details come from their indexed text. Exam format, price and public availability are unconfirmed.]
+
+- id: hf-agents-course
+  name: Hugging Face Agents Course certificates
+  provider: Hugging Face
+  url: https://huggingface.co/learn/agents-course/unit0/introduction
+  category: ai-ml
+  credentialType: completion-certificate
+  level: foundational
+  status: active
+  summary: Free course on AI agents with two free certificates and no deadline.
+  objectives:
+    - "Fundamentals certificate: complete Unit 1"
+    - "Certificate of completion: Unit 1, one use-case assignment and the final challenge"
+  cost: { amount: 0, currency: USD, free: true }
+  resources:
+    - { title: Hugging Face Learn, url: "https://huggingface.co/learn", free: true, official: true }
+  relatedCourses: [ai-11-agents, ai-08-transformers]
+  verifiedOn: "2026-10-11"
+  verificationSources: ["https://huggingface.co/learn/agents-course/unit0/introduction"]
+
+- id: ibm-ai-engineering
+  name: IBM AI Engineering Professional Certificate
+  provider: IBM (Coursera)
+  url: https://www.coursera.org/professional-certificates/ai-engineer
+  category: ai-ml
+  credentialType: completion-certificate
+  level: associate
+  status: active
+  summary: Thirteen-course programme from ML with Python to deep learning, transformers, fine-tuning and RAG with LangChain.
+  objectives:
+    - Machine learning with Python
+    - Deep learning with Keras, TensorFlow and PyTorch
+    - Generative AI, transformers and fine-tuning
+    - RAG and agents with LangChain
+  prerequisites: Intermediate level.
+  exam:
+    format: Course quizzes and projects (no proctored exam)
+  cost: { currency: USD, note: Free to enrol for auditing; certificate through a Coursera subscription. }
+  studyHours: { min: 160, max: 180, estimate: true }
+  resources:
+    - { title: Programme page, url: "https://www.coursera.org/professional-certificates/ai-engineer", free: false, official: true }
+  relatedCourses: [ai-05-machine-learning, ai-07-deep-learning, ai-08-transformers, ai-10-rag]
+  verifiedOn: "2026-10-11"
+  verificationSources: ["https://www.coursera.org/professional-certificates/ai-engineer"]
+
+# ---------------------------------------------------------------------------
+# IT, cloud, networking, security, Linux
+# ---------------------------------------------------------------------------
+
+- id: comptia-a-plus
+  name: CompTIA A+
+  code: 220-1201 and 220-1202 (V15)
+  provider: CompTIA
+  url: https://www.comptia.org/en-us/certifications/a/core-1-and-2-v15/
+  category: it-fundamentals
+  credentialType: professional-certification
+  level: foundational
+  status: active
+  statusNote: V15 launched March 25, 2025. Core 1 and Core 2 must be from the same version.
+  summary: Entry-level IT support across hardware, networking, operating systems and security (two exams).
+  objectives:
+    - "Core 1: mobile devices, networking, hardware, virtualisation and cloud, troubleshooting"
+    - "Core 2: operating systems, security, software troubleshooting, operational procedures"
+  prerequisites: Recommended 12 months of hands-on IT support experience.
+  exam:
+    questions: Up to 90 per exam
+    durationMinutes: 90
+    passingScore: 675 (Core 1) and 700 (Core 2), scale 100–900
+    format: Multiple choice, drag and drop, performance-based
+  cost: { currency: USD, note: Two exam vouchers needed; see the CompTIA store for the current price. }
+  studyHours: { min: 80, max: 150, estimate: true }
+  resources:
+    - { title: Exam objectives and practice questions, url: "https://www.comptia.org/en-us/certifications/a/core-1-v15/practice-questions/", free: true, official: true }
+  relatedCourses: [it-operating-systems, it-networking]
+  verifiedOn: "2026-10-11"
+  verificationSources: ["https://www.comptia.org/en-us/certifications/a/core-1-and-2-v15/"]
+  unverified: [Current voucher price.]
+
+- id: comptia-network-plus
+  name: CompTIA Network+
+  code: N10-009
+  provider: CompTIA
+  url: https://www.comptia.org/en-us/certifications/network/
+  category: networking
+  credentialType: professional-certification
+  level: associate
+  status: active
+  statusNote: V9 launched June 20, 2024; CompTIA estimates retirement around 2027.
+  summary: Networking concepts, implementation, operations, security and troubleshooting.
+  objectives:
+    - Networking concepts (23%)
+    - Network implementation (20%)
+    - Network operations (19%)
+    - Network security (14%)
+    - Network troubleshooting (24%)
+  prerequisites: Recommended A+ and 9–12 months as a junior network administrator or support technician.
+  exam:
+    questions: Up to 90
+    durationMinutes: 90
+    passingScore: 720 (scale 100–900)
+    format: Multiple choice and performance-based
+  cost: { currency: USD, note: See the CompTIA store for the current price. }
+  studyHours: { min: 60, max: 120, estimate: true }
+  resources:
+    - { title: CompTIA Network+ page, url: "https://www.comptia.org/en-us/certifications/network/", free: true, official: true }
+  relatedCourses: [it-networking]
+  verifiedOn: "2026-10-11"
+  verificationSources: ["https://www.comptia.org/en-us/certifications/network/"]
+  unverified: [Current voucher price.]
+
+- id: comptia-security-plus
+  name: CompTIA Security+
+  code: SY0-701 (V7)
+  provider: CompTIA
+  url: https://www.comptia.org/en-us/certifications/security/
+  category: security
+  credentialType: professional-certification
+  level: associate
+  status: active
+  statusNote: Security+ V8 is expected on or around November 17, 2026, adding AI-related risks, security operations and modern environments.
+  summary: "Core security skills: threats, architecture, operations, and governance."
+  objectives:
+    - General security concepts
+    - Threats, vulnerabilities and mitigations
+    - Security architecture
+    - Security operations
+    - Security programme management and oversight
+  prerequisites: Recommended Network+ and some security experience.
+  exam:
+    questions: Up to 90
+    durationMinutes: 90
+    passingScore: 750 (scale 100–900)
+    format: Multiple choice and performance-based
+    validity: 3 years
+  cost: { amount: 404, currency: USD, note: Retail price CompTIA published in January 2025; confirm in the store. }
+  studyHours: { min: 30, max: 40, estimate: true }
+  resources:
+    - { title: Security+ V7 practice questions, url: "https://www.comptia.org/en-us/certifications/security/v7/practice-questions/", free: true, official: true }
+  relatedCourses: [it-security, it-networking]
+  verifiedOn: "2026-10-11"
+  verificationSources: ["https://www.comptia.org/en-us/certifications/security/", "https://www.comptia.org/en-us/certifications/security/v7/"]
+  unverified: [The current price may differ from the January 2025 figure.]
+
+- id: comptia-linux-plus
+  name: CompTIA Linux+
+  code: XK0-006 (V8)
+  provider: CompTIA
+  url: https://www.comptia.org/en-us/certifications/linux/
+  category: linux
+  credentialType: professional-certification
+  level: associate
+  status: active
+  statusNote: V8 launched July 15, 2025.
+  summary: Managing, securing, automating and troubleshooting Linux systems.
+  prerequisites: Recommended experience as a Linux administrator or with Linux systems.
+  exam:
+    questions: Up to 90
+    durationMinutes: 90
+    passingScore: 720 (scale 100–900)
+    format: Multiple choice and performance-based
+  cost: { currency: USD, note: See the CompTIA store for the current price. }
+  studyHours: { min: 60, max: 120, estimate: true }
+  resources:
+    - { title: CompTIA Linux+ page, url: "https://www.comptia.org/en-us/certifications/linux/", free: true, official: true }
+  relatedCourses: [it-operating-systems]
+  verifiedOn: "2026-10-11"
+  verificationSources: ["https://www.comptia.org/en-us/certifications/linux/"]
+  unverified: [Current voucher price; domain weights.]
+
+- id: cisco-ccna
+  name: Cisco CCNA
+  code: 200-301 v1.1
+  provider: Cisco
+  url: https://www.cisco.com/site/us/en/learn/training-certifications/certifications/enterprise/ccna/index.html
+  category: networking
+  credentialType: professional-certification
+  level: associate
+  status: active
+  summary: Network fundamentals, access, IP connectivity and services, security and automation.
+  objectives:
+    - Network fundamentals
+    - Network access
+    - IP connectivity
+    - IP services
+    - Security fundamentals
+    - Automation and programmability
+  prerequisites: None.
+  exam:
+    durationMinutes: 120
+    validity: 3 years (recertify by exam or 30 continuing-education credits)
+    delivery: Pearson VUE
+  cost: { amount: 300, currency: USD }
+  studyHours: { min: 120, max: 200, estimate: true }
+  resources:
+    - { title: Cisco Networking Academy, url: "https://www.netacad.com/", free: true, official: true }
+    - { title: Cisco U., url: "https://u.cisco.com/", free: false, official: true }
+  relatedCourses: [it-networking]
+  verifiedOn: "2026-10-11"
+  verificationSources: ["https://www.cisco.com/site/us/en/learn/training-certifications/certifications/enterprise/ccna/index.html"]
+  unverified: [Topic weights are on the separate exam-topics page.]
+
+- id: isc2-certified-in-cybersecurity
+  name: ISC2 Certified in Cybersecurity (CC)
+  provider: ISC2
+  url: https://www.isc2.org/certifications/cc
+  category: security
+  credentialType: professional-certification
+  level: foundational
+  status: active
+  statusNote: >-
+    New exam outline effective September 1, 2026. The free "One Million Certified in Cybersecurity" programme has closed
+    to new enrolments; already-issued codes can be used until December 31, 2026.
+  summary: Entry-level security principles, governance, IAM, network and cloud security, and operations.
+  objectives:
+    - Security principles (24%)
+    - Security governance (17.3%)
+    - Identity and access management concepts (20%)
+    - Networking and cloud security concepts (21.3%)
+    - Security operations and incident response (17.3%)
+  prerequisites: No work experience required.
+  exam:
+    questions: 100-125 (computerised adaptive testing)
+    durationMinutes: 120
+    passingScore: 700 out of 1000
+    format: Multiple choice and advanced item types
+  cost: { currency: USD, note: See ISC2 for the current exam price and annual maintenance fee. }
+  studyHours: { min: 20, max: 40, estimate: true }
+  resources:
+    - { title: CC self-study resources, url: "https://www.isc2.org/certifications/cc/cc-self-study-resources", free: false, official: true }
+  relatedCourses: [it-security]
+  verifiedOn: "2026-10-11"
+  verificationSources:
+    - "https://www.isc2.org/certifications/cc/cc-certification-exam-outline"
+    - "https://www.isc2.org/Insights/2026/04/one-million-certified-cyber-conclusion"
+  unverified: [Exam price and annual maintenance fee.]
+
+- id: aws-cloud-practitioner
+  name: AWS Certified Cloud Practitioner
+  code: CLF-C02
+  provider: Amazon Web Services
+  url: https://aws.amazon.com/certification/certified-cloud-practitioner/
+  category: cloud
+  credentialType: professional-certification
+  level: foundational
+  status: active
+  statusNote: The Italian and German versions are retired after December 31, 2026.
+  summary: Cloud concepts, core AWS services, security, pricing and support.
+  prerequisites: None; up to 6 months of AWS exposure is helpful but not required.
+  exam:
+    questions: 65
+    durationMinutes: 90
+    format: Multiple choice and multiple response
+    delivery: Pearson VUE test centre or online proctored
+    validity: 3 years
+  cost: { amount: 100, currency: USD }
+  studyHours: { min: 15, max: 30, estimate: true }
+  resources:
+    - { title: AWS Skill Builder, url: "https://skillbuilder.aws/", free: true, official: true }
+  relatedCourses: [it-cloud]
+  verifiedOn: "2026-10-11"
+  verificationSources: ["https://aws.amazon.com/certification/certified-cloud-practitioner/"]
+
+- id: ms-azure-fundamentals
+  name: "Microsoft Certified: Azure Fundamentals"
+  code: AZ-900
+  provider: Microsoft
+  url: https://learn.microsoft.com/en-us/credentials/certifications/azure-fundamentals/
+  category: cloud
+  credentialType: professional-certification
+  level: foundational
+  status: active
+  summary: Cloud concepts, Azure architecture and services, management and governance.
+  objectives:
+    - Describe cloud concepts
+    - Describe Azure architecture and services
+    - Describe Azure management and governance
+  prerequisites: None.
+  exam:
+    durationMinutes: 45
+    delivery: Pearson VUE (students can use Certiport)
+  cost: { currency: USD, note: Price depends on the country where the exam is taken. }
+  studyHours: { min: 10, max: 20, estimate: true }
+  resources:
+    - { title: AZ-900 study guide, url: "https://aka.ms/AZ900-StudyGuide", free: true, official: true }
+  relatedCourses: [it-cloud]
+  verifiedOn: "2026-10-11"
+  verificationSources: ["https://learn.microsoft.com/en-us/credentials/certifications/azure-fundamentals/"]
+
+- id: google-associate-cloud-engineer
+  name: Google Cloud Associate Cloud Engineer
+  provider: Google Cloud
+  url: https://cloud.google.com/learn/certification/cloud-engineer
+  category: cloud
+  credentialType: professional-certification
+  level: associate
+  status: active
+  summary: Deploy, operate and secure solutions on Google Cloud.
+  objectives:
+    - Set up a cloud solution environment
+    - Plan and implement a cloud solution
+    - Ensure the successful operation of a cloud solution
+    - Configure access and security
+  prerequisites: None; 6+ months of hands-on Google Cloud recommended.
+  exam:
+    questions: 50-60
+    durationMinutes: 120
+    format: Multiple choice and multiple select
+    delivery: Online proctored or test centre
+    validity: 3 years (1-hour renewal exam, $75)
+  cost: { amount: 125, currency: USD, note: Plus tax where applicable. }
+  studyHours: { min: 40, max: 80, estimate: true }
+  resources:
+    - { title: Cloud Engineer learning path, url: "https://www.cloudskillsboost.google/", free: false, official: true }
+  relatedCourses: [it-cloud]
+  verifiedOn: "2026-10-11"
+  verificationSources: ["https://cloud.google.com/learn/certification/cloud-engineer"]
+
+- id: lf-cka
+  name: Certified Kubernetes Administrator (CKA)
+  provider: Linux Foundation / CNCF
+  url: https://training.linuxfoundation.org/certification/certified-kubernetes-administrator-cka/
+  category: cloud
+  credentialType: professional-certification
+  level: professional
+  status: active
+  statusNote: Based on Kubernetes v1.35; the environment follows new minor versions within about 4–8 weeks.
+  summary: Hands-on Kubernetes administration, solved live on the command line.
+  objectives:
+    - Troubleshooting (30%)
+    - Cluster architecture, installation and configuration (25%)
+    - Services and networking (20%)
+    - Workloads and scheduling (15%)
+    - Storage (10%)
+  prerequisites: None.
+  exam:
+    durationMinutes: 120
+    format: Performance-based tasks on a live cluster
+    delivery: Online proctored; two attempts and two simulator sessions included
+    validity: 2 years
+  cost: { amount: 445, currency: USD, note: Exam only. }
+  studyHours: { min: 60, max: 120, estimate: true }
+  resources:
+    - { title: Kubernetes documentation, url: "https://kubernetes.io/docs/", free: true, official: true }
+  relatedCourses: [ai-12-mlops, it-cloud]
+  verifiedOn: "2026-10-11"
+  verificationSources: ["https://training.linuxfoundation.org/certification/certified-kubernetes-administrator-cka/"]
+
+- id: lf-kcna
+  name: Kubernetes and Cloud Native Associate (KCNA)
+  provider: Linux Foundation / CNCF
+  url: https://training.linuxfoundation.org/certification/kubernetes-cloud-native-associate/
+  category: cloud
+  credentialType: professional-certification
+  level: foundational
+  status: active
+  summary: Kubernetes and cloud-native fundamentals.
+  objectives:
+    - Kubernetes fundamentals (44%)
+    - Container orchestration (28%)
+    - Cloud native application delivery (16%)
+    - Cloud native architecture (12%)
+  prerequisites: None.
+  exam:
+    durationMinutes: 90
+    format: Multiple choice
+    delivery: Online proctored; two attempts
+    validity: 2 years
+  cost: { amount: 250, currency: USD, note: Exam only. }
+  studyHours: { min: 20, max: 40, estimate: true }
+  resources:
+    - { title: Kubernetes documentation, url: "https://kubernetes.io/docs/", free: true, official: true }
+  relatedCourses: [it-cloud, ai-12-mlops]
+  verifiedOn: "2026-10-11"
+  verificationSources: ["https://training.linuxfoundation.org/certification/kubernetes-cloud-native-associate/"]
+
+- id: lf-lfcs
+  name: Linux Foundation Certified System Administrator (LFCS)
+  provider: Linux Foundation
+  url: https://training.linuxfoundation.org/certification/linux-foundation-certified-sysadmin-lfcs/
+  category: linux
+  credentialType: professional-certification
+  level: associate
+  status: active
+  summary: Hands-on Linux administration solved live on the command line, independent of distribution.
+  objectives:
+    - Operations deployment (25%)
+    - Networking (25%)
+    - Storage (20%)
+    - Essential commands (20%)
+    - Users and groups (10%)
+  prerequisites: None.
+  exam:
+    durationMinutes: 120
+    format: Performance-based tasks on a live system
+    delivery: Online proctored; two attempts and two simulator sessions included
+    validity: 2 years
+  cost: { amount: 445, currency: USD, note: Exam only. }
+  studyHours: { min: 60, max: 120, estimate: true }
+  resources:
+    - { title: Linux Foundation training, url: "https://training.linuxfoundation.org/", free: false, official: true }
+  relatedCourses: [it-operating-systems]
+  verifiedOn: "2026-10-11"
+  verificationSources: ["https://training.linuxfoundation.org/certification/linux-foundation-certified-sysadmin-lfcs/"]

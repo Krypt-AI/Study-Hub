@@ -1,0 +1,33 @@
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/
+*.log
+*.tsbuildinfo
+
+# Local environment (Supabase keys etc.)
+.env
+.env.local
+.env.*.local
+
+# Content extracted from your own study materials (copyrighted books):
+# personal use only, never commit or publish.
+content/generated/
+public/materials/
+
+# Build output of `npm run content:build`
+public/content/
+
+# Content pipeline
+tools/content-pipeline/.venv/
+tools/content-pipeline/cache/
+__pycache__/
+.pytest_cache/
+
+# Local design-review screenshots
+.impeccable/review/
+
+# Courses written from your own course materials (lecture slides etc.):
+# personal use only, never commit or publish.
+content/private/

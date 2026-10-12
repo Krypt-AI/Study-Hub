@@ -1,0 +1,83 @@
+# Content pipeline
+
+Two kinds of content feed the app:
+
+- **Authored** content in `content/authored/` (written for Study Hub, safe to commit).
+- **Generated** courses in `content/generated/`, built from your own HSK and JLPT PDFs. These are copyrighted books for personal study: the folder, the page images and the audio clips are git-ignored and must not be published.
+
+`npm run content:build` combines both, validates everything and writes `public/content/`.
+
+## From your books to courses
+
+### 1. OCR and assets (Python)
+
+```bash
+cd tools/content-pipeline
+python -m venv .venv
+.venv\Scripts\activate            # macOS/Linux: source .venv/bin/activate
+pip install -r requirements.txt
+set STUDY_MATERIALS_DIR=C:\path\to\your\materials   # where the PDFs are (see pipeline/sources.py)
+python -X utf8 -m pipeline phase 1
+```
+
+`phase N` runs every stage for the sources of import phase N (1: HSK 1–2 and JLPT N5–N4; 2: HSK 3–6, 新にほんご500問 N3–N1 and JLPT N3–N1; 3: workbooks and teacher's books). Individual stages:
+
+| Command | Output |
+|---|---|
+| `sources` | list registered PDFs and cache status |
+| `ocr [--phase N] [--source ID] [--threads N]` | `cache/ocr/<source>/pNNNN.json`: lines, boxes (relative) and confidence. Resumable. Pages with a usable text layer skip OCR. |
+| `manifest` | `cache/sources.json` for the importers |
+| `pages` | `public/materials/pages/<source>/pNNNN.webp` for "view the original page" |
+| `audio [--level N5]` | `public/materials/audio/<level>/NN.mp3` plus a manifest mapping clips to questions (N2 and N1 come as one recording per 問題 section: these are mapped to the section, and their pauses are measured so the importer can find each question in them) |
+
+OCR uses RapidOCR (PP-OCRv6) on OpenVINO, on the CPU. Use `-X utf8` on Windows.
+
+### 2. Import (TypeScript)
+
+```bash
+npm run content:import
+```
+
+Reads the OCR cache and writes `content/generated/courses/*.json` and `content/generated/import-report.md`. The report lists, per book, how many items were imported, left out (unreadable) or flagged for review, with the source id and page of each so it can be checked and corrected.
+
+- **HSK**: lessons are found in the textbook; vocabulary comes from the index. Levels 4–6 come in two volumes: volume B continues A's lesson numbers. Paired constructions printed on two lines (不但……而且……) become one entry, and words printed with two readings (zhǔyi / zhúyi) accept either. Every reading is cross-checked against CC-CEDICT (a check only, never a replacement). Each word yields four questions: recognise the meaning, recall the meaning, type the pinyin, type the characters.
+- **HSK workbooks**: the exercises are in the workbook, their answer key and listening scripts in the teacher's book (练习册听力文本及参考答案). Each lesson's listening and reading exercises become a *Workbook exercises* lesson that shows the workbook page and grades against the key; the model test at the back of the workbook becomes its own lesson. There are no HSK recordings in the materials, so listening exercises show their script. Pronunciation and character writing are left out. A key range is used only when it has exactly one answer per question; the others are listed in the report and read from the page into `content/corrections/hsk-workbook.json` (`answers` per question, `"F/G"` when the key accepts either).
+- **JLPT sample tests**: answer keys and listening scripts are parsed. N5–N3 have three timed parts (vocabulary, grammar & reading, listening); N2 and N1 have two (language knowledge & reading, listening), and a listening item with two sub-questions (質問1, 質問2) is marked as two answers. Single questions keep a crop of the booklet page; reading and passage-cloze (文章) questions show their whole pages. Blank pattern pages are left out. The mock exam shows the booklet and an answer sheet, with the audio per question. For whole-section recordings (N2, N1) each question plays only its span: its end is the fixed-length answer pause that follows every question, and the cut is used only if the segment lengths also agree with the script lengths (correlation ≥ 0.5); otherwise the question plays the whole section and says so.
+- **新にほんご500問** (N4–N5, N3, N2, N1): questions, options and answers are read from the page layout. Question numbers follow the book's fixed structure and are re-anchored on the printed numbers, so a missed day tab cannot shift them. Where the answer was confirmed on the answer page and the options are clean, a typed variant is added. Flagged items are shown with their page image only, and unreadable answers are left out.
+
+### 3. Corrections
+
+OCR errors found by checking the page images go into `content/corrections/*.json` (`set` replaces a field, `verified` marks an item as checked). Corrections are applied on every import, so they survive re-running OCR. Every corrected or verified item is labelled in the app.
+
+## University subjects
+
+The catalog's **University** area lists your subjects one semester at a time. Semesters are defined in `content/authored/university.yaml`:
+
+```yaml
+institution: Universiti Tenaga Nasional (UNITEN)
+terms: [Sem 1 2026]        # newest first
+currentTerm: Sem 1 2026    # the semester the catalog opens on
+```
+
+Each subject is a course with `category: university`, its course `code` and the `term` it belongs to (the build fails if the term is not listed). For a new semester, add it to the top of `terms` and update `currentTerm`.
+
+Notes written from your own course materials (lecture slides, lab sheets) go in **`content/private/courses/<id>/`**. They use the same format as authored courses (below), are git-ignored, and must not be published. A course-level `source` (e.g. `{ origin: user-material, title: CMPD2123 lecture slides }`) is inherited by its lessons, and a lesson-level `source` by that lesson's questions, so every item shows where it came from.
+
+**Past papers** go in `content/private/courses/<id>/documents/*.pdf`. `python -m pipeline course-pages` renders them to `public/materials/pages/<id>-<file name>/` (e.g. `cmpd363-midterm-sem1-2526`). A course uses them in two ways:
+
+- as a mock exam under `assessments:` in `course.yaml`, with the assessment's `source` naming the paper; its questions inherit that source. Figures are cropped in with `media: [{ kind: page-image, sourceId, page, crop }]`. When two papers repeat the same questions, anchor each once (`- &a01`) and reuse it with a new id (`- { <<: *a01, id: ... }`); YAML merge keys are enabled.
+- as original pages after a lesson's text, with `sourcePages` in the lesson frontmatter (one `{ sourceId, pages, caption }` or a list of them).
+
+## Authoring a course
+
+```
+content/authored/courses/<course-id>/
+  course.yaml                 title, category (chinese, japanese, ai-engineering, it, university), code and term (university), topics, units (lists of lesson file names)
+  lessons/01-name.md          frontmatter (id, title, objectives, topics, resources) + Markdown body
+  lessons/01-name.questions.yaml
+  fixtures/*.sql              optional shared SQL databases (`schemaFile: name.sql` in a question)
+```
+
+Question types: `choice`, `short`, `cloze`, `long` (rubric), `translation`, `code` (tests: `assert` or `stdout`), `sql` (reference query). The schema is `src/domain/content/schema.ts`; the build reports any field that does not match it. After writing exercises, run `npm run content:verify` to prove every reference solution passes.
+
+Certifications are in `content/authored/certifications.yaml`: every entry records `verifiedOn`, its official `verificationSources` and the facts that could not be verified. Re-check them before relying on prices or exam formats.

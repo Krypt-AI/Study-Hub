@@ -1,0 +1,53 @@
+- id: sql.select.null-compare
+  type: short
+  skill: recall
+  topics: [sql.select]
+  prompt: Which operator must you use to find rows where `country` has no value?
+  accepted: [IS NULL, is null]
+  match: { mode: text, typoTolerance: none }
+  explanation: "`WHERE country IS NULL`. A comparison like `country = NULL` is never true because NULL means unknown."
+
+- id: sql.select.integer-division
+  type: short
+  skill: recall
+  topics: [sql.select]
+  prompt: "In SQLite, what does `SELECT 7 / 2;` return?"
+  accepted: ["3"]
+  match: { mode: number }
+  explanation: "Both operands are integers, so SQLite performs integer division: 3. Use `7 * 1.0 / 2` for 3.5."
+
+- id: sql.select.long-sessions
+  type: sql
+  skill: apply
+  topics: [sql.select]
+  prompt: Return the `day` and `minutes` of every session that lasted at least 45 minutes, longest first (ties by earlier day first).
+  schemaFile: studylog.sql
+  solution: SELECT day, minutes FROM sessions WHERE minutes >= 45 ORDER BY minutes DESC, day ASC;
+  orderMatters: true
+  starterCode: |
+    SELECT day, minutes
+    FROM sessions
+    -- WHERE ...
+    -- ORDER BY ...
+  hints: ["`WHERE minutes >= 45`", "`ORDER BY minutes DESC, day ASC`"]
+
+- id: sql.select.unknown-country
+  type: sql
+  skill: apply
+  topics: [sql.select]
+  prompt: List the names of learners whose country is not recorded.
+  schemaFile: studylog.sql
+  solution: SELECT name FROM learners WHERE country IS NULL;
+  hints: ["NULL needs `IS NULL`, not `= NULL`."]
+
+- id: sql.select.accuracy
+  type: sql
+  skill: apply
+  topics: [sql.select]
+  prompt: >-
+    For every session, return `id` and its accuracy as `accuracy` (correct divided by answered, as a decimal such as
+    0.9). Sort by id.
+  schemaFile: studylog.sql
+  solution: SELECT id, correct * 1.0 / answered AS accuracy FROM sessions ORDER BY id;
+  orderMatters: true
+  hints: ["Integer division truncates: multiply by 1.0 first."]

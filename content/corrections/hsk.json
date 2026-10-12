@@ -1,0 +1,1204 @@
+{
+  "description": "Human-reviewed fixes for OCR errors in the HSK Standard Course vocabulary indexes. Every entry was checked against the page image of the book. 'set' replaces OCR output with what is printed; 'verified' confirms the OCR output matches the page (clears review flags).",
+  "reviewedOn": "2026-10-11",
+  "lessonTitles": [
+    {
+      "source": "hsk1-textbook",
+      "lesson": 9,
+      "set": {
+        "titlePinyin": "Nǐ érzi zài nǎr gōngzuò"
+      },
+      "note": "OCR read nǎr as nǎrg; checked against the lesson's opening page."
+    },
+    {
+      "source": "hsk2-textbook",
+      "lesson": 9,
+      "set": {
+        "titlePinyin": "Tí tài duō, wǒ méi zuòwán"
+      },
+      "note": "OCR ran the syllables together; checked against the lesson's opening page."
+    },
+    {
+      "source": "hsk3-textbook",
+      "lesson": 10,
+      "set": {
+        "titlePinyin": "Shùxué bǐ lìshǐ nánduō le"
+      },
+      "note": "OCR read a stray 'I' and dropped the tone of lìshǐ; checked against the lesson's opening page."
+    },
+    {
+      "source": "hsk3-textbook",
+      "lesson": 12,
+      "set": {
+        "titlePinyin": "Bǎ zhòngyào de dōngxi fàng zài wǒ zhèr ba"
+      },
+      "note": "OCR doubled the f of fàng; checked against the lesson's opening page."
+    },
+    {
+      "source": "hsk3-textbook",
+      "lesson": 15,
+      "set": {
+        "titleEn": "The rest of them are all OK"
+      },
+      "note": "OCR ran 'rest of' together; checked against the lesson's opening page."
+    },
+    {
+      "source": "hsk3-textbook",
+      "lesson": 17,
+      "set": {
+        "titleZh": "谁都有办法看好你的“病”"
+      },
+      "note": "OCR dropped the closing quotation mark; checked against the lesson's opening page."
+    },
+    {
+      "source": "hsk5a-textbook",
+      "lesson": 3,
+      "set": {
+        "titleZh": "人生有选择，一切可改变"
+      },
+      "note": "OCR kept only the first half of the title. Checked against the lesson's opening page."
+    },
+    {
+      "source": "hsk5a-textbook",
+      "lesson": 4,
+      "set": {
+        "titleEn": "Zilu Carrying Rice"
+      },
+      "note": "OCR missed the English title. Checked against the lesson's opening page."
+    },
+    {
+      "source": "hsk5a-textbook",
+      "lesson": 7,
+      "set": {},
+      "note": "OCR misread the large lesson number 7 as 1; the title is correct. Checked against the lesson's opening page."
+    },
+    {
+      "source": "hsk5a-textbook",
+      "lesson": 9,
+      "set": {},
+      "note": "OCR misread the large lesson number 9 as 6; the title is correct. Checked against the lesson's opening page."
+    },
+    {
+      "source": "hsk5a-textbook",
+      "lesson": 13,
+      "set": {
+        "titleZh": "锯掉生活的“筐底”",
+        "titleEn": "Cutting Off the “Bottom of the Basket” in Life"
+      },
+      "note": "OCR misread 锯掉生活的 and the quotation marks. Checked against the lesson's opening page."
+    },
+    {
+      "source": "hsk5b-textbook",
+      "lesson": 21,
+      "set": {
+        "titleZh": "汉字叔叔：一个美国人的汉字情缘",
+        "titleEn": "Uncle Hanzi: The predstined love of an American for Chinese characters"
+      },
+      "note": "OCR dropped the first part of the title and the last line of the English (\"predstined\" is the book's own spelling). Checked against the lesson's opening page."
+    },
+    {
+      "source": "hsk5b-textbook",
+      "lesson": 33,
+      "set": {
+        "titleEn": "Treating congestion with congestion: A smart way to relieve traffic burden"
+      },
+      "note": "OCR kept only the first line of the English title. Checked against the lesson's opening page."
+    },
+    {
+      "source": "hsk6a-textbook",
+      "lesson": 3,
+      "set": {
+        "titleZh": "一盒月饼"
+      },
+      "note": "OCR dropped 一 (it merges with the title rule). Checked against the lesson's opening page."
+    }
+  ],
+  "entries": [
+    {
+      "source": "hsk1-textbook",
+      "page": 140,
+      "word": "几",
+      "set": {
+        "pinyin": "jǐ"
+      },
+      "note": "OCR dropped the tone mark; page shows jǐ."
+    },
+    {
+      "source": "hsk1-textbook",
+      "page": 141,
+      "word": "猫",
+      "set": {
+        "pinyin": "māo",
+        "meaning": "cat"
+      },
+      "note": "OCR read the macron as a tilde (mão) and merged it into the meaning."
+    },
+    {
+      "source": "hsk1-textbook",
+      "page": 143,
+      "word": "椅子",
+      "set": {
+        "partOfSpeech": "n.",
+        "meaning": "chair"
+      },
+      "note": "OCR read the part of speech n. as '1.'."
+    },
+    {
+      "source": "hsk1-textbook",
+      "page": 145,
+      "word": "后",
+      "set": {
+        "pinyin": "hòu"
+      },
+      "note": "OCR dropped the tone mark; page shows hòu."
+    },
+    {
+      "source": "hsk2-textbook",
+      "page": 142,
+      "word": "弟弟",
+      "set": {
+        "pinyin": "dìdi"
+      },
+      "note": "OCR dropped the tone mark; page shows dìdi."
+    },
+    {
+      "source": "hsk2-textbook",
+      "page": 143,
+      "word": "进",
+      "set": {
+        "pinyin": "jìn"
+      },
+      "note": "OCR read the 4th tone as 1st tone; page shows jìn."
+    },
+    {
+      "source": "hsk2-textbook",
+      "page": 147,
+      "word": "路口",
+      "set": {
+        "pinyin": "lùkǒu"
+      },
+      "note": "OCR read lù as lü; page shows lùkǒu."
+    },
+    {
+      "source": "hsk1-textbook",
+      "page": 141,
+      "word": "里",
+      "verified": true,
+      "note": "Printed without a tone mark (li)."
+    },
+    {
+      "source": "hsk1-textbook",
+      "page": 142,
+      "word": "上",
+      "verified": true,
+      "note": "Printed without a tone mark (shang)."
+    },
+    {
+      "source": "hsk1-textbook",
+      "page": 139,
+      "word": "爱",
+      "verified": true,
+      "note": "Low OCR confidence; matches page."
+    },
+    {
+      "source": "hsk1-textbook",
+      "page": 139,
+      "word": "八",
+      "verified": true,
+      "note": "Low OCR confidence; matches page (num., lesson 5 notes)."
+    },
+    {
+      "source": "hsk1-textbook",
+      "page": 140,
+      "word": "点",
+      "verified": true,
+      "note": "Low OCR confidence; matches page."
+    },
+    {
+      "source": "hsk1-textbook",
+      "page": 140,
+      "word": "个",
+      "verified": true,
+      "note": "Low OCR confidence; matches page."
+    },
+    {
+      "source": "hsk1-textbook",
+      "page": 140,
+      "word": "家",
+      "verified": true,
+      "note": "Low OCR confidence; matches page."
+    },
+    {
+      "source": "hsk1-textbook",
+      "page": 141,
+      "word": "看见",
+      "verified": true,
+      "note": "Low OCR confidence; matches page."
+    },
+    {
+      "source": "hsk1-textbook",
+      "page": 141,
+      "word": "妈妈",
+      "verified": true,
+      "note": "Low OCR confidence; matches page."
+    },
+    {
+      "source": "hsk1-textbook",
+      "page": 141,
+      "word": "米饭",
+      "verified": true,
+      "note": "Low OCR confidence; matches page (n.)."
+    },
+    {
+      "source": "hsk1-textbook",
+      "page": 141,
+      "word": "女儿",
+      "verified": true,
+      "note": "Low OCR confidence; matches page."
+    },
+    {
+      "source": "hsk1-textbook",
+      "page": 142,
+      "word": "钱",
+      "verified": true,
+      "note": "Low OCR confidence; matches page."
+    },
+    {
+      "source": "hsk1-textbook",
+      "page": 143,
+      "word": "现在",
+      "verified": true,
+      "note": "Low OCR confidence; matches page."
+    },
+    {
+      "source": "hsk1-textbook",
+      "page": 143,
+      "word": "月",
+      "verified": true,
+      "note": "Low OCR confidence; matches page (n.)."
+    },
+    {
+      "source": "hsk1-textbook",
+      "page": 144,
+      "word": "桌子",
+      "verified": true,
+      "note": "Low OCR confidence; matches page (n.)."
+    },
+    {
+      "source": "hsk1-textbook",
+      "page": 144,
+      "word": "北京",
+      "verified": true,
+      "note": "Low OCR confidence; matches page."
+    },
+    {
+      "source": "hsk1-textbook",
+      "page": 145,
+      "word": "一起",
+      "verified": true,
+      "note": "Low OCR confidence; matches page."
+    },
+    {
+      "source": "hsk1-textbook",
+      "page": 145,
+      "word": "汉字",
+      "verified": true,
+      "note": "Low OCR confidence; matches page (n.)."
+    },
+    {
+      "source": "hsk1-textbook",
+      "page": 146,
+      "word": "太……了",
+      "verified": true,
+      "note": "Low OCR confidence; matches page (no part of speech printed)."
+    },
+    {
+      "source": "hsk2-textbook",
+      "page": 142,
+      "word": "高",
+      "verified": true,
+      "note": "Low OCR confidence; matches page."
+    },
+    {
+      "source": "hsk2-textbook",
+      "page": 143,
+      "word": "两",
+      "verified": true,
+      "note": "Low OCR confidence; matches page (printed with a breve)."
+    },
+    {
+      "source": "hsk2-textbook",
+      "page": 143,
+      "word": "女",
+      "verified": true,
+      "note": "Low OCR confidence; matches page."
+    },
+    {
+      "source": "hsk2-textbook",
+      "page": 144,
+      "word": "妻子",
+      "verified": true,
+      "note": "Low OCR confidence; matches page."
+    },
+    {
+      "source": "hsk2-textbook",
+      "page": 145,
+      "word": "羊肉",
+      "verified": true,
+      "note": "Low OCR confidence; matches page (n.)."
+    },
+    {
+      "source": "hsk2-textbook",
+      "page": 146,
+      "word": "找",
+      "verified": true,
+      "note": "Two stacked rows (找, 着) merged by OCR and split by the parser; matches page."
+    },
+    {
+      "source": "hsk2-textbook",
+      "page": 146,
+      "word": "着",
+      "verified": true,
+      "note": "Two stacked rows (找, 着) merged by OCR and split by the parser; matches page."
+    },
+    {
+      "source": "hsk2-textbook",
+      "page": 146,
+      "word": "走",
+      "verified": true,
+      "note": "Two stacked rows (走, 最) merged by OCR and split by the parser; matches page."
+    },
+    {
+      "source": "hsk2-textbook",
+      "page": 146,
+      "word": "最",
+      "verified": true,
+      "note": "Two stacked rows (走, 最) merged by OCR and split by the parser; matches page."
+    },
+    {
+      "source": "hsk3-textbook",
+      "page": 195,
+      "word": "不但……而且……",
+      "set": {
+        "pinyin": "búdàn……érqiě……"
+      },
+      "verified": true,
+      "note": "Two-line entry; OCR read érqiě as ěrqiě. Page shows búdàn…… érqiě……, conj., not only…but also…, lesson 18."
+    },
+    {
+      "source": "hsk3-textbook",
+      "page": 203,
+      "word": "只有……才……",
+      "set": {
+        "pinyin": "zhǐyǒu……cái……"
+      },
+      "verified": true,
+      "note": "Two-line entry; OCR lost the ellipses. Page shows zhǐyǒu…… cái……, conj., only…(that/can…), lesson 20."
+    },
+    {
+      "source": "hsk3-textbook",
+      "page": 195,
+      "word": "超市",
+      "set": {
+        "pinyin": "chāoshì",
+        "partOfSpeech": "n.",
+        "meaning": "supermarket",
+        "lesson": 4
+      },
+      "verified": true,
+      "note": "OCR missed the light-blue pinyin; every field checked against the index page at 400 dpi."
+    },
+    {
+      "source": "hsk3-textbook",
+      "page": 195,
+      "word": "蛋糕",
+      "set": {
+        "pinyin": "dàngāo",
+        "partOfSpeech": "n.",
+        "meaning": "cake",
+        "lesson": 4
+      },
+      "verified": true,
+      "note": "OCR missed the light-blue pinyin; every field checked against the index page at 400 dpi."
+    },
+    {
+      "source": "hsk3-textbook",
+      "page": 196,
+      "word": "发烧",
+      "set": {
+        "pinyin": "fā shāo",
+        "partOfSpeech": "v.",
+        "meaning": "to have a fever",
+        "lesson": 5
+      },
+      "verified": true,
+      "note": "OCR missed the light-blue pinyin; every field checked against the index page at 400 dpi."
+    },
+    {
+      "source": "hsk3-textbook",
+      "page": 196,
+      "word": "附近",
+      "set": {
+        "pinyin": "fùjìn",
+        "partOfSpeech": "n.",
+        "meaning": "nearby, vicinity",
+        "lesson": 10
+      },
+      "verified": true,
+      "note": "OCR missed the light-blue pinyin; every field checked against the index page at 400 dpi."
+    },
+    {
+      "source": "hsk3-textbook",
+      "page": 197,
+      "word": "花",
+      "set": {
+        "pinyin": "huā",
+        "partOfSpeech": "n.",
+        "meaning": "flower",
+        "lesson": 3
+      },
+      "verified": true,
+      "note": "OCR missed the light-blue pinyin; every field checked against the index page at 400 dpi."
+    },
+    {
+      "source": "hsk3-textbook",
+      "page": 198,
+      "word": "季节",
+      "set": {
+        "pinyin": "jìjié",
+        "partOfSpeech": "n.",
+        "meaning": "season",
+        "lesson": 5
+      },
+      "verified": true,
+      "note": "OCR missed the light-blue pinyin; every field checked against the index page at 400 dpi."
+    },
+    {
+      "source": "hsk3-textbook",
+      "page": 198,
+      "word": "教",
+      "set": {
+        "pinyin": "jiāo",
+        "partOfSpeech": "v.",
+        "meaning": "to teach",
+        "lesson": 12
+      },
+      "verified": true,
+      "note": "OCR missed the light-blue pinyin; every field checked against the index page at 400 dpi."
+    },
+    {
+      "source": "hsk3-textbook",
+      "page": 202,
+      "word": "熊猫",
+      "set": {
+        "pinyin": "xióngmāo",
+        "partOfSpeech": "n.",
+        "meaning": "panda",
+        "lesson": 8
+      },
+      "verified": true,
+      "note": "OCR missed the light-blue pinyin; every field checked against the index page at 400 dpi."
+    },
+    {
+      "source": "hsk4a-textbook",
+      "page": 142,
+      "word": "积极",
+      "set": {
+        "pinyin": "jījí",
+        "partOfSpeech": "adj.",
+        "meaning": "positive",
+        "lesson": 8
+      },
+      "verified": true,
+      "note": "OCR missed or misread the pinyin; every field checked against the index page at 220 dpi."
+    },
+    {
+      "source": "hsk4a-textbook",
+      "page": 144,
+      "word": "律师",
+      "set": {
+        "pinyin": "lǜshī",
+        "partOfSpeech": "n.",
+        "meaning": "lawyer",
+        "lesson": 3
+      },
+      "verified": true,
+      "note": "OCR missed or misread the pinyin; every field checked against the index page at 220 dpi."
+    },
+    {
+      "source": "hsk4a-textbook",
+      "page": 147,
+      "word": "幽默",
+      "set": {
+        "pinyin": "yōumò",
+        "partOfSpeech": "adj.",
+        "meaning": "humourous",
+        "lesson": 1
+      },
+      "verified": true,
+      "note": "OCR missed or misread the pinyin; every field checked against the index page at 220 dpi."
+    },
+    {
+      "source": "hsk4a-textbook",
+      "page": 148,
+      "word": "主意",
+      "set": {
+        "pinyin": "zhǔyi / zhúyi",
+        "partOfSpeech": "n.",
+        "meaning": "idea, plan",
+        "lesson": 9
+      },
+      "verified": true,
+      "note": "OCR missed or misread the pinyin; every field checked against the index page at 220 dpi."
+    },
+    {
+      "source": "hsk4a-textbook",
+      "page": 149,
+      "word": "高",
+      "set": {
+        "pinyin": "Gāo",
+        "meaning": "Gao, a Chinese family name",
+        "lesson": 1
+      },
+      "verified": true,
+      "note": "OCR missed or misread the pinyin; every field checked against the index page at 220 dpi."
+    },
+    {
+      "source": "hsk4a-textbook",
+      "page": 150,
+      "word": "既",
+      "set": {
+        "pinyin": "jì",
+        "partOfSpeech": "adv.",
+        "meaning": "(used together with “又”) both…and…",
+        "lesson": 7
+      },
+      "verified": true,
+      "note": "OCR missed or misread the pinyin; every field checked against the index page at 220 dpi."
+    },
+    {
+      "source": "hsk4a-textbook",
+      "page": 151,
+      "word": "变",
+      "set": {
+        "pinyin": "biàn",
+        "partOfSpeech": "v.",
+        "meaning": "to change into, to become",
+        "lesson": 1
+      },
+      "verified": true,
+      "note": "OCR missed or misread the pinyin; every field checked against the index page at 220 dpi."
+    },
+    {
+      "source": "hsk4b-textbook",
+      "page": 155,
+      "word": "流利",
+      "set": {
+        "pinyin": "liúlì",
+        "partOfSpeech": "adj.",
+        "meaning": "fluent",
+        "lesson": 11
+      },
+      "verified": true,
+      "note": "OCR missed or misread the pinyin; every field checked against the index page at 220 dpi."
+    },
+    {
+      "source": "hsk4b-textbook",
+      "page": 156,
+      "word": "普遍",
+      "set": {
+        "pinyin": "pǔbiàn",
+        "partOfSpeech": "adj.",
+        "meaning": "universal, common",
+        "lesson": 13
+      },
+      "verified": true,
+      "note": "OCR missed or misread the pinyin; every field checked against the index page at 220 dpi."
+    },
+    {
+      "source": "hsk4b-textbook",
+      "page": 157,
+      "word": "日记",
+      "set": {
+        "pinyin": "rìjì",
+        "partOfSpeech": "n.",
+        "meaning": "diary, journal",
+        "lesson": 18
+      },
+      "verified": true,
+      "note": "OCR missed or misread the pinyin; every field checked against the index page at 220 dpi."
+    },
+    {
+      "source": "hsk3-textbook",
+      "page": 206,
+      "word": "音乐会",
+      "set": {
+        "pinyin": "yīnyuèhuì"
+      },
+      "verified": true,
+      "note": "OCR dropped the è of yuè; page shows yīnyuèhuì."
+    },
+    {
+      "source": "hsk4a-textbook",
+      "page": 141,
+      "word": "法律",
+      "set": {
+        "pinyin": "fǎlǜ"
+      },
+      "verified": true,
+      "note": "OCR read ǜ as ù; page shows fǎlǜ."
+    },
+    {
+      "source": "hsk4a-textbook",
+      "page": 143,
+      "word": "考虑",
+      "set": {
+        "pinyin": "kǎolǜ"
+      },
+      "verified": true,
+      "note": "OCR read ǜ as ù; page shows kǎolǜ."
+    },
+    {
+      "source": "hsk4a-textbook",
+      "page": 150,
+      "word": "流血",
+      "verified": true,
+      "note": "Page prints the colloquial reading liú xiě (CC-CEDICT lists liú xuè); kept as printed."
+    },
+    {
+      "source": "hsk4b-textbook",
+      "page": 155,
+      "word": "厉害",
+      "set": {
+        "pinyin": "lìhai"
+      },
+      "verified": true,
+      "note": "OCR dropped the tone mark; page shows lìhai."
+    },
+    {
+      "source": "hsk4b-textbook",
+      "page": 163,
+      "word": "例子",
+      "set": {
+        "pinyin": "lìzi"
+      },
+      "verified": true,
+      "note": "OCR dropped the tone mark; page shows lìzi."
+    },
+    {
+      "source": "hsk5a-textbook",
+      "page": 177,
+      "word": "改进",
+      "set": {
+        "pinyin": "gǎijìn",
+        "partOfSpeech": "v.",
+        "meaning": "to improve, to ameliorate",
+        "lesson": 10
+      },
+      "verified": true,
+      "note": "OCR missed or misread the pinyin; every field checked against the index page at 220 dpi."
+    },
+    {
+      "source": "hsk5a-textbook",
+      "page": 179,
+      "word": "击",
+      "set": {
+        "pinyin": "jī",
+        "partOfSpeech": "v.",
+        "meaning": "to hit, to strike",
+        "lesson": 3
+      },
+      "verified": true,
+      "note": "OCR missed or misread the pinyin; every field checked against the index page at 220 dpi."
+    },
+    {
+      "source": "hsk5a-textbook",
+      "page": 179,
+      "word": "即",
+      "set": {
+        "pinyin": "jí",
+        "partOfSpeech": "v./adv.",
+        "meaning": "to be; namely",
+        "lesson": 16
+      },
+      "verified": true,
+      "note": "OCR missed or misread the pinyin; every field checked against the index page at 220 dpi."
+    },
+    {
+      "source": "hsk5a-textbook",
+      "page": 179,
+      "word": "系",
+      "set": {
+        "pinyin": "jì",
+        "partOfSpeech": "v.",
+        "meaning": "to tie, to fasten",
+        "lesson": 10
+      },
+      "verified": true,
+      "note": "OCR missed or misread the pinyin; every field checked against the index page at 220 dpi."
+    },
+    {
+      "source": "hsk5a-textbook",
+      "page": 180,
+      "word": "理论",
+      "set": {
+        "pinyin": "lǐlùn",
+        "partOfSpeech": "n.",
+        "meaning": "theory",
+        "lesson": 15
+      },
+      "verified": true,
+      "note": "OCR missed or misread the pinyin; every field checked against the index page at 220 dpi."
+    },
+    {
+      "source": "hsk5a-textbook",
+      "page": 182,
+      "word": "悄悄",
+      "set": {
+        "pinyin": "qiāoqiāo",
+        "partOfSpeech": "adv.",
+        "meaning": "quietly, secretly",
+        "lesson": 2
+      },
+      "verified": true,
+      "note": "OCR missed or misread the pinyin; every field checked against the index page at 220 dpi."
+    },
+    {
+      "source": "hsk5a-textbook",
+      "page": 192,
+      "word": "子路",
+      "set": {
+        "pinyin": "Zǐlù",
+        "meaning": "Zilu, a disciple of Confucius",
+        "lesson": 4
+      },
+      "verified": true,
+      "note": "OCR missed or misread the pinyin; every field checked against the index page at 220 dpi."
+    },
+    {
+      "source": "hsk5a-textbook",
+      "page": 194,
+      "word": "海里",
+      "set": {
+        "pinyin": "hǎilǐ",
+        "partOfSpeech": "m.",
+        "meaning": "sea mile",
+        "lesson": 3
+      },
+      "verified": true,
+      "note": "OCR missed or misread the pinyin; every field checked against the index page at 220 dpi."
+    },
+    {
+      "source": "hsk5b-textbook",
+      "page": 167,
+      "word": "冰激凌",
+      "set": {
+        "pinyin": "bīngjīlíng",
+        "partOfSpeech": "n.",
+        "meaning": "ice cream",
+        "lesson": 35
+      },
+      "verified": true,
+      "note": "OCR missed or misread the pinyin; every field checked against the index page at 220 dpi."
+    },
+    {
+      "source": "hsk5b-textbook",
+      "page": 168,
+      "word": "中（学）",
+      "set": {
+        "word": "初（级）中（学）",
+        "pinyin": "chū (jí) zhōng (xué)",
+        "partOfSpeech": "n.",
+        "meaning": "junior high school",
+        "lesson": 28
+      },
+      "verified": true,
+      "note": "Headword printed on two lines (初（级）/中（学）); OCR kept only the second line and part of the pinyin. Checked against the index page."
+    },
+    {
+      "source": "hsk5b-textbook",
+      "page": 168,
+      "word": "粗糙",
+      "set": {
+        "pinyin": "cūcāo",
+        "partOfSpeech": "adj.",
+        "meaning": "rough, crude",
+        "lesson": 20
+      },
+      "verified": true,
+      "note": "OCR missed or misread the pinyin; every field checked against the index page at 220 dpi."
+    },
+    {
+      "source": "hsk5b-textbook",
+      "page": 171,
+      "word": "记录",
+      "set": {
+        "pinyin": "jìlù",
+        "partOfSpeech": "n./v.",
+        "meaning": "record, note; to record",
+        "lesson": 20
+      },
+      "verified": true,
+      "note": "OCR missed or misread the pinyin; every field checked against the index page at 220 dpi."
+    },
+    {
+      "source": "hsk5b-textbook",
+      "page": 173,
+      "word": "梨",
+      "set": {
+        "pinyin": "lí",
+        "partOfSpeech": "n.",
+        "meaning": "pear",
+        "lesson": 19
+      },
+      "verified": true,
+      "note": "OCR missed or misread the pinyin; every field checked against the index page at 220 dpi."
+    },
+    {
+      "source": "hsk5b-textbook",
+      "page": 174,
+      "word": "嗯",
+      "set": {
+        "pinyin": "ǹg",
+        "partOfSpeech": "int.",
+        "meaning": "used to indicate positive response",
+        "lesson": 31
+      },
+      "verified": true,
+      "note": "OCR missed or misread the pinyin; every field checked against the index page at 220 dpi."
+    },
+    {
+      "source": "hsk5b-textbook",
+      "page": 182,
+      "word": "比尔·盖茨",
+      "set": {
+        "pinyin": "Bǐ’ěr Gàicí",
+        "meaning": "Bill Gates",
+        "lesson": 26
+      },
+      "verified": true,
+      "note": "OCR missed or misread the pinyin; every field checked against the index page at 220 dpi."
+    },
+    {
+      "source": "hsk5b-textbook",
+      "page": 182,
+      "word": "欧洲环境保护署",
+      "set": {
+        "pinyin": "Ōuzhōu Huánjìng Bǎohù Shǔ",
+        "meaning": "European Environment Agency",
+        "lesson": 33
+      },
+      "verified": true,
+      "note": "Pinyin printed on two lines; OCR kept only the first. Checked against the index page."
+    },
+    {
+      "source": "hsk5a-textbook",
+      "page": 173,
+      "word": "毕竟",
+      "set": {
+        "pinyin": "bìjìng"
+      },
+      "verified": true,
+      "note": "OCR dropped the tone marks; page shows bìjìng."
+    },
+    {
+      "source": "hsk5a-textbook",
+      "page": 175,
+      "word": "地道",
+      "set": {
+        "pinyin": "dìdao"
+      },
+      "verified": true,
+      "note": "OCR dropped the tone mark; page shows dìdao."
+    },
+    {
+      "source": "hsk5a-textbook",
+      "page": 177,
+      "word": "规律",
+      "set": {
+        "pinyin": "guīlǜ"
+      },
+      "verified": true,
+      "note": "OCR read ǜ as ù; page shows guīlǜ."
+    },
+    {
+      "source": "hsk5a-textbook",
+      "page": 181,
+      "word": "历",
+      "set": {
+        "word": "令",
+        "pinyin": "lìng"
+      },
+      "verified": true,
+      "note": "OCR misread the headword 令 as 历; page shows 令 lìng, v., to make, to cause."
+    },
+    {
+      "source": "hsk5a-textbook",
+      "page": 183,
+      "word": "酒",
+      "set": {
+        "word": "洒"
+      },
+      "verified": true,
+      "note": "OCR misread the headword 洒 as 酒; page shows 洒 sǎ, v., to sprinkle, to spray."
+    },
+    {
+      "source": "hsk5a-textbook",
+      "page": 188,
+      "word": "赞美",
+      "set": {
+        "pinyin": "zànměi"
+      },
+      "verified": true,
+      "note": "The book misprints the reading as zànmǎi; corrected to the standard zànměi (CC-CEDICT zan4 mei3)."
+    },
+    {
+      "source": "hsk5b-textbook",
+      "page": 166,
+      "word": "爱心",
+      "set": {
+        "pinyin": "àixīn"
+      },
+      "verified": true,
+      "note": "The book misprints the reading as āixīn; corrected to the standard àixīn (CC-CEDICT ai4 xin1)."
+    },
+    {
+      "source": "hsk5b-textbook",
+      "page": 169,
+      "word": "妇女",
+      "set": {
+        "pinyin": "fùnǚ"
+      },
+      "verified": true,
+      "note": "OCR read ǚ as ǔ; page shows fùnǚ."
+    },
+    {
+      "source": "hsk5b-textbook",
+      "page": 171,
+      "word": "纪律",
+      "set": {
+        "pinyin": "jìlǜ"
+      },
+      "verified": true,
+      "note": "OCR dropped the tone of jì and read ǜ as ù; page shows jìlǜ."
+    },
+    {
+      "source": "hsk5b-textbook",
+      "page": 178,
+      "word": "下载",
+      "verified": true,
+      "note": "Page prints xiàzài (CC-CEDICT lists xiàzǎi); kept as printed, both readings are in use."
+    },
+    {
+      "source": "hsk5b-textbook",
+      "page": 178,
+      "word": "效率",
+      "set": {
+        "pinyin": "xiàolǜ"
+      },
+      "verified": true,
+      "note": "OCR read ǜ as ù; page shows xiàolǜ."
+    },
+    {
+      "source": "hsk5b-textbook",
+      "page": 179,
+      "word": "一律",
+      "set": {
+        "pinyin": "yílǜ"
+      },
+      "verified": true,
+      "note": "OCR read ǜ as ù; page shows yílǜ."
+    },
+    {
+      "source": "hsk6a-textbook",
+      "page": 227,
+      "word": "计较",
+      "set": {
+        "pinyin": "jìjiào",
+        "partOfSpeech": "v.",
+        "meaning": "to keep account of",
+        "lesson": 6
+      },
+      "verified": true,
+      "note": "OCR missed or misread the pinyin; every field checked against the index page at 220 dpi."
+    },
+    {
+      "source": "hsk6a-textbook",
+      "page": 227,
+      "word": "寂静",
+      "set": {
+        "pinyin": "jìjìng",
+        "partOfSpeech": "adj.",
+        "meaning": "quiet, silent",
+        "lesson": 2
+      },
+      "verified": true,
+      "note": "OCR missed or misread the pinyin; every field checked against the index page at 220 dpi."
+    },
+    {
+      "source": "hsk6a-textbook",
+      "page": 230,
+      "word": "粒",
+      "set": {
+        "pinyin": "lì",
+        "partOfSpeech": "m.",
+        "meaning": "used for granular objects",
+        "lesson": 18
+      },
+      "verified": true,
+      "note": "OCR missed or misread the pinyin; every field checked against the index page at 220 dpi."
+    },
+    {
+      "source": "hsk6a-textbook",
+      "page": 232,
+      "word": "如譬如",
+      "set": {
+        "word": "譬如",
+        "pinyin": "pìrú",
+        "partOfSpeech": "v.",
+        "meaning": "for example, such as",
+        "lesson": 8
+      },
+      "verified": true,
+      "note": "OCR merged the tail of the row above into the headword; page shows 譬如 pìrú, v., for example, such as, lesson 8."
+    },
+    {
+      "source": "hsk6a-textbook",
+      "page": 239,
+      "word": "兴高采烈",
+      "set": {
+        "pinyin": "xìnggāo-cǎiliè",
+        "meaning": "in high spirits, cheerful",
+        "lesson": 9
+      },
+      "verified": true,
+      "note": "OCR misread the pinyin; page shows xìnggāo-cǎiliè (no part of speech printed), in high spirits, cheerful, lesson 9."
+    },
+    {
+      "source": "hsk6b-textbook",
+      "page": 232,
+      "word": "急剧",
+      "set": {
+        "pinyin": "jíjù",
+        "partOfSpeech": "adj.",
+        "meaning": "rapid, sharp, sudden",
+        "lesson": 21
+      },
+      "verified": true,
+      "note": "OCR missed or misread the pinyin; every field checked against the index page at 220 dpi."
+    },
+    {
+      "source": "hsk6b-textbook",
+      "page": 232,
+      "word": "季军",
+      "set": {
+        "pinyin": "jìjūn",
+        "partOfSpeech": "n.",
+        "meaning": "third place winner, second runner-up",
+        "lesson": 40
+      },
+      "verified": true,
+      "note": "OCR missed or misread the pinyin; every field checked against the index page at 220 dpi."
+    },
+    {
+      "source": "hsk6b-textbook",
+      "page": 238,
+      "word": "哦",
+      "set": {
+        "pinyin": "ò",
+        "partOfSpeech": "int.",
+        "meaning": "oh, ah",
+        "lesson": 31
+      },
+      "verified": true,
+      "note": "OCR missed or misread the pinyin; every field checked against the index page at 220 dpi."
+    },
+    {
+      "source": "hsk6b-textbook",
+      "page": 247,
+      "word": "凶恶",
+      "set": {
+        "pinyin": "xiōng’è",
+        "partOfSpeech": "adj.",
+        "meaning": "fierce, vicious",
+        "lesson": 35
+      },
+      "verified": true,
+      "note": "OCR missed or misread the pinyin; every field checked against the index page at 220 dpi."
+    },
+    {
+      "source": "hsk6a-textbook",
+      "page": 225,
+      "word": "顾虑",
+      "set": {
+        "pinyin": "gùlǜ"
+      },
+      "verified": true,
+      "note": "OCR read ǜ as ù; page shows gùlǜ."
+    },
+    {
+      "source": "hsk6a-textbook",
+      "page": 225,
+      "word": "过滤",
+      "set": {
+        "pinyin": "guòlǜ"
+      },
+      "verified": true,
+      "note": "OCR read ǜ as ù; page shows guòlǜ."
+    },
+    {
+      "source": "hsk6a-textbook",
+      "page": 225,
+      "word": "嗨",
+      "verified": true,
+      "note": "Page prints hēi (CC-CEDICT lists hāi); kept as printed."
+    },
+    {
+      "source": "hsk6a-textbook",
+      "page": 226,
+      "word": "哼",
+      "verified": true,
+      "note": "Page prints hng, the toneless interjection; kept as printed."
+    },
+    {
+      "source": "hsk6a-textbook",
+      "page": 232,
+      "word": "频率",
+      "set": {
+        "pinyin": "pínlǜ"
+      },
+      "verified": true,
+      "note": "OCR read ǜ as ù; page shows pínlǜ."
+    },
+    {
+      "source": "hsk6a-textbook",
+      "page": 237,
+      "word": "无忧无虑",
+      "set": {
+        "pinyin": "wú yōu wú lǜ"
+      },
+      "verified": true,
+      "note": "OCR read ǜ as ù; page shows wú yōu wú lǜ."
+    },
+    {
+      "source": "hsk6b-textbook",
+      "page": 232,
+      "word": "记性",
+      "set": {
+        "pinyin": "jìxing"
+      },
+      "verified": true,
+      "note": "OCR dropped the tone mark; page shows jìxing."
+    },
+    {
+      "source": "hsk6b-textbook",
+      "page": 247,
+      "word": "旋律",
+      "set": {
+        "pinyin": "xuánlǜ"
+      },
+      "verified": true,
+      "note": "OCR read ǜ as ù; page shows xuánlǜ."
+    }
+  ]
+}

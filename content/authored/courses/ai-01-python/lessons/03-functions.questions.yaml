@@ -1,0 +1,54 @@
+- id: py.functions.default-return
+  type: short
+  skill: recall
+  topics: [py.functions]
+  prompt: What does a Python function return if it has no `return` statement?
+  accepted: [None]
+  match: { mode: exact }
+  explanation: "It returns `None`."
+
+- id: py.functions.mutable-default
+  type: choice
+  skill: recognize
+  topics: [py.functions]
+  prompt: "Calling `add_tag('a')` then `add_tag('b')` with `def add_tag(tag, tags=[])` returns what on the second call?"
+  options:
+    - { id: a, text: "`['b']`", explanation: "That would require a fresh list on every call." }
+    - { id: b, text: "`['a', 'b']`", explanation: "The default list is created once and shared between calls." }
+    - { id: c, text: "A TypeError", explanation: "The code is valid; it just shares state unexpectedly." }
+  correct: [b]
+
+- id: py.functions.explain-mutable-default
+  type: long
+  skill: explain
+  topics: [py.functions]
+  prompt: Explain why `def f(x, items=[])` is a bug waiting to happen and how to fix it.
+  minWords: 25
+  rubric:
+    - { id: once, label: "Default values are evaluated once, when the function is defined", keywords: [["once", "definition time", "defined", "def time"]] }
+    - { id: shared, label: "The same list is shared and mutated across calls", keywords: [["shared", "same list", "persists", "accumulates", "keeps"]] }
+    - { id: fix, label: "Fix with None as the default and create the list inside", keywords: [["None"], ["inside", "new list", "if items is None", "create"]] }
+  modelAnswer: >-
+    The default `[]` is evaluated once, when `def` runs, so every call that omits `items` receives the same list
+    object. Mutating it (for example with `append`) changes the default for all later calls. Use `items=None` and
+    inside the function write `if items is None: items = []` so each call gets a new list.
+
+- id: py.functions.sort-key
+  type: code
+  skill: apply
+  topics: [py.functions]
+  language: python
+  prompt: >-
+    Write `rank_by_mastery(scores)` that takes a dict mapping topic to a score (0-1) and returns the topic names sorted
+    from weakest to strongest; ties are broken alphabetically.
+  starterCode: |
+    def rank_by_mastery(scores):
+        ...
+  tests:
+    - { kind: assert, name: "weakest first", code: "assert rank_by_mastery({'grammar': 0.8, 'kanji': 0.4, 'vocab': 0.6}) == ['kanji', 'vocab', 'grammar']" }
+    - { kind: assert, name: "ties are alphabetical", code: "assert rank_by_mastery({'b': 0.5, 'a': 0.5, 'c': 0.1}) == ['c', 'a', 'b']" }
+    - { kind: assert, name: "empty dict", code: "assert rank_by_mastery({}) == []" }
+  hints: ["`sorted(d, key=...)` iterates over the keys.", "A key function can return a tuple: `(score, name)`."]
+  solution: |
+    def rank_by_mastery(scores):
+        return sorted(scores, key=lambda topic: (scores[topic], topic))

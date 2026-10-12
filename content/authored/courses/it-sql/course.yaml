@@ -1,0 +1,25 @@
+id: it-sql
+title: Databases and SQL
+subtitle: IT · Databases
+description: >-
+  Relational databases and SQL, practised on a real SQLite database in your browser: querying, filtering,
+  joining, aggregating and designing tables. Every exercise runs your query and compares its result with the
+  reference query's result.
+category: it
+subject: databases
+level: Fundamentals
+difficulty: beginner
+tags: [sql, sqlite, databases]
+estimatedHours: 8
+topics:
+  - { id: sql.select, title: Selecting and filtering }
+  - { id: sql.joins, title: Joins }
+  - { id: sql.aggregate, title: Grouping and aggregation }
+  - { id: sql.design, title: Keys, constraints and normalisation }
+units:
+  - id: it-sql.u1
+    title: Querying
+    lessons: [01-select, 02-joins, 03-aggregation]
+  - id: it-sql.u2
+    title: Design
+    lessons: [04-design]

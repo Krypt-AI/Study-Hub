@@ -1,0 +1,85 @@
+- id: py.control.range-values
+  type: short
+  skill: recall
+  topics: [py.control]
+  prompt: How many numbers does `range(2, 11, 2)` produce?
+  accepted: ["5"]
+  match: { mode: number }
+  hints: ["List them: start at 2, step by 2, stop before 11."]
+  explanation: "`range(2, 11, 2)` yields 2, 4, 6, 8, 10: five numbers. The stop value 11 is excluded."
+
+- id: py.control.order-of-branches
+  type: choice
+  skill: recognize
+  topics: [py.control]
+  prompt: "In `grade`, what happens if the `score >= 65` test is written before `score >= 80`?"
+  options:
+    - { id: a, text: "Nothing changes; Python evaluates all branches.", explanation: "Python runs only the first branch whose condition is true." }
+    - { id: b, text: "Scores of 80 and above get \"B\" instead of \"A\".", explanation: "A score of 90 also satisfies `score >= 65`, which is now checked first." }
+    - { id: c, text: "It raises a SyntaxError.", explanation: "Any order of conditions is valid syntax." }
+  correct: [b]
+
+- id: py.control.comprehension-cloze
+  type: cloze
+  skill: recall
+  topics: [py.control]
+  prompt: Complete the comprehension so it keeps only the words longer than 3 characters, upper-cased.
+  text: "`[w.upper() [[1]] w in words [[2]] len(w) > 3]`"
+  blanks:
+    - { id: "1", accepted: [for], match: { mode: exact } }
+    - { id: "2", accepted: [if], match: { mode: exact } }
+  explanation: "The shape is `[expression for item in iterable if condition]`."
+
+- id: py.control.fizzbuzz
+  type: code
+  skill: apply
+  topics: [py.control]
+  language: python
+  prompt: >-
+    Write `fizzbuzz(n)` that returns a list of strings for the numbers 1 to n: `"Fizz"` for multiples of 3,
+    `"Buzz"` for multiples of 5, `"FizzBuzz"` for multiples of both, otherwise the number as a string.
+  starterCode: |
+    def fizzbuzz(n):
+        result = []
+        # your loop here
+        return result
+  tests:
+    - { kind: assert, name: "first five", code: "assert fizzbuzz(5) == ['1', '2', 'Fizz', '4', 'Buzz'], fizzbuzz(5)" }
+    - { kind: assert, name: "15 is FizzBuzz", code: "assert fizzbuzz(15)[-1] == 'FizzBuzz', fizzbuzz(15)[-1]" }
+    - { kind: assert, name: "length matches n", code: "assert len(fizzbuzz(30)) == 30" }
+    - { kind: assert, name: "zero gives an empty list", code: "assert fizzbuzz(0) == []" }
+  hints: ["Check the 'both' case first, or build the string from two separate checks.", "`n % 3 == 0` tests divisibility."]
+  solution: |
+    def fizzbuzz(n):
+        result = []
+        for i in range(1, n + 1):
+            word = ("Fizz" if i % 3 == 0 else "") + ("Buzz" if i % 5 == 0 else "")
+            result.append(word or str(i))
+        return result
+
+- id: py.control.while-sum
+  type: code
+  skill: apply
+  topics: [py.control]
+  language: python
+  prompt: >-
+    Write `digits_sum(n)` that returns the sum of the decimal digits of a non-negative integer using a `while` loop
+    (no string conversion). For example `digits_sum(1234) == 10`.
+  starterCode: |
+    def digits_sum(n):
+        total = 0
+        # while ...:
+        return total
+  tests:
+    - { kind: assert, name: "1234 -> 10", code: "assert digits_sum(1234) == 10, digits_sum(1234)" }
+    - { kind: assert, name: "zero", code: "assert digits_sum(0) == 0" }
+    - { kind: assert, name: "single digit", code: "assert digits_sum(7) == 7" }
+    - { kind: assert, name: "large number", code: "assert digits_sum(99999) == 45" }
+  hints: ["`n % 10` is the last digit; `n // 10` drops it."]
+  solution: |
+    def digits_sum(n):
+        total = 0
+        while n > 0:
+            total += n % 10
+            n //= 10
+        return total

@@ -1,0 +1,288 @@
+/**
+ * Records persisted per learner. Both storage backends (IndexedDB and Supabase) store
+ * exactly these shapes; content is referenced by its stable content ids.
+ */
+import type { CodeLanguage, CodeTest, QuestionType, Skill } from '@/domain/content/types';
+import type { Response, Verdict } from '@/domain/evaluation/types';
+
+/** ISO-8601 timestamp, e.g. "2026-10-11T09:30:00.000Z". */
+export type Timestamp = string;
+/** Local calendar day, "YYYY-MM-DD". */
+export type DayKey = string;
+
+export type PracticeMode = 'lesson' | 'review' | 'weakness' | 'quiz' | 'mock-exam' | 'exercise';
+
+export interface AttemptRecord {
+  id: string;
+  questionId: string;
+  courseId?: string;
+  lessonId?: string;
+  assessmentId?: string;
+  questionType: QuestionType;
+  skill: Skill;
+  topics: string[];
+  mode: PracticeMode;
+  response: Response;
+  verdict: Verdict;
+  score: number;
+  hintsUsed: number;
+  /** The answer was revealed before a correct attempt. */
+  revealed: boolean;
+  /** The learner confirmed the result of a rubric/self-review question. */
+  selfAssessed: boolean;
+  /** Only the first attempt in a session moves the review schedule; retries are free practice. */
+  countsForScheduling: boolean;
+  durationMs?: number;
+  createdAt: Timestamp;
+}
+
+export type LessonStatus = 'in-progress' | 'completed';
+
+export interface LessonProgressRecord {
+  lessonId: string;
+  courseId: string;
+  status: LessonStatus;
+  /** Questions answered at least once / answered correctly at least once. */
+  answeredQuestionIds: string[];
+  correctQuestionIds: string[];
+  /** Index of the last block the learner reached, used to resume. */
+  lastBlockIndex: number;
+  startedAt: Timestamp;
+  updatedAt: Timestamp;
+  completedAt?: Timestamp;
+}
+
+/** FSRS card with dates serialised as ISO strings. */
+export interface SchedulerCard {
+  due: Timestamp;
+  stability: number;
+  difficulty: number;
+  elapsed_days: number;
+  scheduled_days: number;
+  learning_steps: number;
+  reps: number;
+  lapses: number;
+  state: number;
+  last_review?: Timestamp;
+}
+
+export interface ReviewStateRecord {
+  /** The question id being scheduled. */
+  itemId: string;
+  courseId?: string;
+  lessonId?: string;
+  topics: string[];
+  card: SchedulerCard;
+  /** Copy of card.due for indexing. */
+  due: Timestamp;
+  lastRating?: 1 | 2 | 3 | 4;
+  updatedAt: Timestamp;
+}
+
+export interface TopicMasteryRecord {
+  /** `${topicId}|${skill}` */
+  key: string;
+  topicId: string;
+  skill: Skill;
+  courseId?: string;
+  /** Exponential moving average of scores (0..1). */
+  ema: number;
+  attempts: number;
+  correct: number;
+  lastAttemptAt: Timestamp;
+}
+
+export type LinkType = 'course' | 'lesson' | 'question' | 'certification' | 'project' | 'exercise';
+
+export interface ContentLink {
+  type: LinkType;
+  id: string;
+  label?: string;
+  /** For lessons and questions, the course needed to build a URL. */
+  courseId?: string;
+  lessonId?: string;
+}
+
+export const linkKey = (link: Pick<ContentLink, 'type' | 'id'>) => `${link.type}:${link.id}`;
+
+/** A note from the notebook that was removed: kept read-only so it can still be downloaded. */
+export interface LegacyNote {
+  id: string;
+  title: string;
+  /** Markdown. */
+  body: string;
+  updatedAt: Timestamp;
+}
+
+export interface CodeProjectRecord {
+  id: string;
+  title: string;
+  language: CodeLanguage;
+  code: string;
+  stdin: string;
+  description: string;
+  tags: string[];
+  links: ContentLink[];
+  linkKeys: string[];
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+export interface CodeVersionRecord {
+  id: string;
+  projectId: string;
+  code: string;
+  label?: string;
+  createdAt: Timestamp;
+}
+
+/** An exercise the learner wrote for themselves in the playground. */
+export interface CustomExerciseRecord {
+  id: string;
+  title: string;
+  language: CodeLanguage;
+  /** Markdown problem statement. */
+  prompt: string;
+  starterCode: string;
+  solution: string;
+  tests: CodeTest[];
+  hints: string[];
+  tags: string[];
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+export interface SubmissionRecord {
+  id: string;
+  /** A built-in code question id or a custom exercise id. */
+  exerciseId: string;
+  code: string;
+  passed: boolean;
+  testsPassed: number;
+  testsTotal: number;
+  createdAt: Timestamp;
+}
+
+export type BookmarkType = 'course' | 'lesson' | 'question' | 'certification';
+
+export interface BookmarkRecord {
+  /** linkKey() of the target. */
+  key: string;
+  type: BookmarkType;
+  id: string;
+  label: string;
+  courseId?: string;
+  lessonId?: string;
+  createdAt: Timestamp;
+}
+
+export type CertificationStatus = 'interested' | 'planning' | 'studying' | 'booked' | 'passed';
+
+export interface CertificationProgressRecord {
+  certId: string;
+  status: CertificationStatus;
+  targetDate?: DayKey;
+  examDate?: DayKey;
+  notes: string;
+  updatedAt: Timestamp;
+}
+
+export interface ActivityDayRecord {
+  day: DayKey;
+  minutes: number;
+  attempts: number;
+  correct: number;
+  lessonsCompleted: number;
+  codeRuns: number;
+  updatedAt: Timestamp;
+}
+
+export type ActivityDelta = Partial<Omit<ActivityDayRecord, 'day' | 'updatedAt'>>;
+
+export interface Settings {
+  dailyGoalMinutes: number;
+  dailyGoalQuestions: number;
+  /** Maximum number of due reviews offered per session. */
+  reviewSessionSize: number;
+  /** Target probability of recalling an item when it comes due (FSRS). */
+  desiredRetention: number;
+}
+
+export const DEFAULT_SETTINGS: Settings = {
+  dailyGoalMinutes: 30,
+  dailyGoalQuestions: 20,
+  reviewSessionSize: 30,
+  desiredRetention: 0.9,
+};
+
+// Calendar ------------------------------------------------------------------------------
+
+/** Clock time in 24-hour form, "HH:MM". */
+export type ClockTime = string;
+
+/** First and last day of a semester (a term from the University catalog, e.g. "Sem 1 2026"). */
+export interface SemesterRecord {
+  term: string;
+  startsOn: DayKey;
+  endsOn: DayKey;
+  updatedAt: Timestamp;
+}
+
+export type ClassKind = 'lecture' | 'lab' | 'tutorial' | 'other';
+
+/** A class that repeats every week of a semester. */
+export interface TimetableClassRecord {
+  id: string;
+  term: string;
+  /** The University subject, when the class belongs to one. */
+  courseId?: string;
+  title: string;
+  kind: ClassKind;
+  /** ISO weekday: 1 = Monday … 7 = Sunday. */
+  weekday: number;
+  start: ClockTime;
+  end: ClockTime;
+  location?: string;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+export type ImportantDateKind = 'quiz' | 'test' | 'midterm' | 'final' | 'assignment' | 'other';
+
+/** A one-off date worth preparing for: a quiz, test, exam or deadline. */
+export interface ImportantDateRecord {
+  id: string;
+  term?: string;
+  courseId?: string;
+  title: string;
+  kind: ImportantDateKind;
+  date: DayKey;
+  start?: ClockTime;
+  end?: ClockTime;
+  location?: string;
+  details?: string;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+/** Everything a learner owns, used for export/import and moving between backends. */
+export interface BackupFile {
+  format: 'study-hub-backup';
+  version: 2;
+  exportedAt: Timestamp;
+  attempts: AttemptRecord[];
+  lessonProgress: LessonProgressRecord[];
+  reviewStates: ReviewStateRecord[];
+  topicMastery: TopicMasteryRecord[];
+  codeProjects: CodeProjectRecord[];
+  codeVersions: CodeVersionRecord[];
+  customExercises: CustomExerciseRecord[];
+  submissions: SubmissionRecord[];
+  bookmarks: BookmarkRecord[];
+  certificationProgress: CertificationProgressRecord[];
+  activityDays: ActivityDayRecord[];
+  semesters: SemesterRecord[];
+  timetableClasses: TimetableClassRecord[];
+  importantDates: ImportantDateRecord[];
+  settings: Settings;
+}

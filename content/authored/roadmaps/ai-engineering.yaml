@@ -1,0 +1,73 @@
+id: ai-engineering
+title: AI Engineering Roadmap
+description: >-
+  A progressive path from programming fundamentals to production AI systems. Each stage is a course with
+  typed questions and runnable exercises; stages build on each other, and the certification links show which
+  exams a stage prepares you for. Cloud services, GPUs and paid APIs are optional throughout: every exercise
+  runs in the browser sandbox or on a free local setup.
+stages:
+  - id: stage-01
+    title: Python and programming fundamentals
+    summary: Values, control flow, functions, data structures, errors and testing in Python.
+    courseIds: [ai-01-python]
+  - id: stage-02
+    title: Git, Linux and the command line
+    summary: Version control, the shell, files and processes, and a reproducible development setup.
+    courseIds: [ai-02-dev-tools]
+    certificationIds: [lf-lfcs, comptia-linux-plus]
+  - id: stage-03
+    title: Mathematics, statistics and probability
+    summary: Vectors and matrices, derivatives and gradients, probability, distributions and statistical inference.
+    courseIds: [ai-03-math]
+  - id: stage-04
+    title: NumPy, pandas and data preparation
+    summary: Array computing, tabular data, cleaning, joins, aggregation and visual exploration.
+    courseIds: [ai-04-data]
+  - id: stage-05
+    title: Machine learning with scikit-learn
+    summary: Supervised and unsupervised learning, pipelines and the fit/predict workflow.
+    courseIds: [ai-05-machine-learning]
+    certificationIds: [databricks-ml-associate, ms-azure-ai-fundamentals]
+  - id: stage-06
+    title: Evaluation, feature engineering and experimentation
+    summary: Metrics, validation strategies, leakage, feature work and tracking experiments.
+    courseIds: [ai-06-evaluation]
+  - id: stage-07
+    title: Deep learning with PyTorch
+    summary: Tensors, autograd, training loops, and the building blocks of neural networks.
+    courseIds: [ai-07-deep-learning]
+    certificationIds: [pytorch-certified-associate]
+  - id: stage-08
+    title: Transformers, tokenization, embeddings and LLM fundamentals
+    summary: How text becomes tokens and vectors, attention, and what LLMs can and cannot do.
+    courseIds: [ai-08-transformers]
+    certificationIds: [nvidia-genai-llm-associate, google-genai-leader, aws-ai-practitioner]
+  - id: stage-09
+    title: Prompt engineering and LLM APIs
+    summary: Message formats, prompting techniques, structured output, streaming and cost control.
+    courseIds: [ai-09-llm-apis]
+    certificationIds: [claude-certified-developer, openai-certifications]
+  - id: stage-10
+    title: Retrieval-augmented generation and semantic search
+    summary: Chunking, embeddings, vector indexes, retrieval quality and grounded answers.
+    courseIds: [ai-10-rag]
+    certificationIds: [databricks-genai-engineer-associate]
+  - id: stage-11
+    title: Tool calling and AI agents
+    summary: Function calling, the agent loop, planning, memory and safe tool design.
+    courseIds: [ai-11-agents]
+    certificationIds: [ms-ai-apps-agents-developer, hf-agents-course]
+  - id: stage-12
+    title: Model serving, Docker, cloud deployment and MLOps
+    summary: APIs for models, containers, CI/CD, model registries and monitoring in production.
+    courseIds: [ai-12-mlops]
+    certificationIds: [aws-ml-engineer-associate, ms-mlops-engineer, google-ml-engineer, lf-kcna]
+  - id: stage-13
+    title: Evaluation, monitoring, security, privacy and responsible AI
+    summary: Evaluating LLM systems, prompt injection and data risks, privacy and fairness.
+    courseIds: [ai-13-responsible-ai]
+    certificationIds: [aws-genai-developer-professional]
+  - id: stage-14
+    title: Portfolio projects and certification preparation
+    summary: Capstone projects that combine the stages, and a plan for your target certification.
+    courseIds: [ai-14-capstone]

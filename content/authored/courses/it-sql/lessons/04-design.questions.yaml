@@ -1,0 +1,95 @@
+- id: sql.design.foreign-keys
+  type: choice
+  skill: recognize
+  topics: [sql.design]
+  prompt: When does SQLite enforce a `REFERENCES` (foreign key) constraint?
+  options:
+    - { id: a, text: "Always, as soon as the table is created" }
+    - { id: b, text: "Only on connections that have run `PRAGMA foreign_keys = ON`" }
+    - { id: c, text: Never; SQLite only stores the declaration }
+    - { id: d, text: Only for INTEGER columns }
+  correct: [b]
+  explanation: Foreign key enforcement is off by default for backwards compatibility and must be switched on per connection.
+
+- id: sql.design.non-negative
+  type: choice
+  skill: recognize
+  topics: [sql.design]
+  prompt: Which constraint stops a negative number from ever being stored in `minutes`?
+  options:
+    - { id: a, text: "`NOT NULL`", explanation: "NOT NULL only requires a value; -5 is a value." }
+    - { id: b, text: "`UNIQUE`", explanation: "UNIQUE forbids duplicates, not negatives." }
+    - { id: c, text: "`CHECK (minutes >= 0)`" }
+    - { id: d, text: "`DEFAULT 0`", explanation: "A default is used only when no value is given." }
+  correct: [c]
+
+- id: sql.design.junction-table
+  type: short
+  skill: recall
+  topics: [sql.design]
+  prompt: What do you call the table that links learners and courses in a many-to-many relationship?
+  accepted: [junction table, join table, link table, linking table, associative table, bridge table]
+  match: { mode: text, typoTolerance: low }
+  explanation: A junction (or join, link, associative) table holds one row per learner-course pair, usually with a composite primary key.
+
+- id: sql.design.enrolments
+  type: sql
+  skill: apply
+  topics: [sql.design]
+  prompt: >-
+    Create a junction table `enrolments` (`learner_id`, `course_id`, a composite primary key on both). Fill it with
+    every learner-course pair that appears in `sessions`, then select all enrolments ordered by `learner_id`, then
+    `course_id`.
+  schemaFile: studylog.sql
+  solution: |
+    CREATE TABLE enrolments (
+      learner_id INTEGER NOT NULL REFERENCES learners(id),
+      course_id INTEGER NOT NULL REFERENCES courses(id),
+      PRIMARY KEY (learner_id, course_id)
+    );
+    INSERT INTO enrolments (learner_id, course_id) SELECT DISTINCT learner_id, course_id FROM sessions;
+    SELECT learner_id, course_id FROM enrolments ORDER BY learner_id, course_id;
+  orderMatters: true
+  starterCode: |
+    CREATE TABLE enrolments (
+      -- columns and the composite primary key
+    );
+    -- INSERT INTO enrolments ... SELECT ...
+    SELECT learner_id, course_id FROM enrolments ORDER BY learner_id, course_id;
+  hints: ["`PRIMARY KEY (learner_id, course_id)` goes after the columns.", "`INSERT INTO ... SELECT DISTINCT learner_id, course_id FROM sessions` fills it."]
+
+- id: sql.design.unique-tags
+  type: sql
+  skill: apply
+  topics: [sql.design]
+  prompt: >-
+    Create a table `tags` whose `name` must be unique. Insert the names 'grammar', 'vocabulary' and 'grammar' with
+    `INSERT OR IGNORE`, then select all names in alphabetical order.
+  schemaFile: studylog.sql
+  solution: |
+    CREATE TABLE tags (id INTEGER PRIMARY KEY, name TEXT NOT NULL UNIQUE);
+    INSERT OR IGNORE INTO tags (name) VALUES ('grammar'), ('vocabulary'), ('grammar');
+    SELECT name FROM tags ORDER BY name;
+  orderMatters: true
+  hints: ["`name TEXT NOT NULL UNIQUE`", "The duplicate 'grammar' is skipped, not an error."]
+
+- id: sql.design.normalise
+  type: long
+  skill: explain
+  topics: [sql.design]
+  prompt: >-
+    A table `study(learner_name, learner_country, course_title, day, minutes)` stores one row per study session.
+    Explain what goes wrong with this design and how you would restructure it.
+  minWords: 40
+  rubric:
+    - { id: repetition, label: Learner and course details are repeated on every row, keywords: [[repeat, repeated, repeats, duplicate, duplicated, redundant, redundancy]] }
+    - { id: anomaly, label: Changing a repeated fact means updating many rows or the data becomes inconsistent, keywords: [[update, change, changes, edit], [every, all, many, inconsistent, contradict, anomaly]] }
+    - { id: split, label: "Split into learners, courses and sessions tables", keywords: [[learners, learner table], [courses, course table], [sessions, session table]] }
+    - { id: keys, label: Link the tables with primary and foreign keys, keywords: [[key, keys, id, ids, foreign]] }
+  modelAnswer: >-
+    Every session row repeats the learner's name and country and the course title. If a learner's country changes,
+    every one of their rows must be updated; missing one leaves the data contradicting itself (an update anomaly),
+    and a learner cannot be stored before their first session. Normalise it into three tables: `learners` (id,
+    name, country), `courses` (id, title) and `sessions` (id, learner_id, course_id, day, minutes), where
+    `learner_id` and `course_id` are foreign keys to the primary keys of the other tables. Each fact is then stored
+    once.

@@ -1,0 +1,93 @@
+- id: py.errors.read-traceback
+  type: short
+  skill: recall
+  topics: [py.errors]
+  prompt: "Which line of a Python traceback tells you the exception type and message: the first or the last?"
+  accepted: [last, "the last", "last line"]
+  match: { mode: text }
+  explanation: "The last line: e.g. `ZeroDivisionError: division by zero`. The frames above it show how the program got there."
+
+- id: py.errors.exception-name
+  type: short
+  skill: recall
+  topics: [py.errors]
+  prompt: "What exception does `int('abc')` raise?"
+  accepted: [ValueError]
+  match: { mode: text, typoTolerance: none }
+  explanation: "`int()` raises `ValueError` when the string is not a valid integer literal."
+
+- id: py.errors.bare-except
+  type: choice
+  skill: recognize
+  topics: [py.errors]
+  prompt: Why is `except:` without an exception type usually a bad idea?
+  multiple: true
+  options:
+    - { id: a, text: "It hides unrelated bugs such as NameError from typos.", explanation: "Every exception is swallowed, including programming mistakes." }
+    - { id: b, text: "It also catches KeyboardInterrupt and SystemExit.", explanation: "A bare except catches BaseException subclasses too." }
+    - { id: c, text: "It is a syntax error in Python 3.", explanation: "It is valid syntax, just risky." }
+  correct: [a, b]
+
+- id: py.errors.safe-average
+  type: code
+  skill: apply
+  topics: [py.errors]
+  language: python
+  prompt: >-
+    Write `safe_average(texts)` that converts each string in `texts` to a float, skips the ones that are not
+    numbers, and returns the average of the rest. If nothing is valid, raise `ValueError`.
+  starterCode: |
+    def safe_average(texts):
+        ...
+  tests:
+    - { kind: assert, name: "skips invalid entries", code: "assert safe_average(['1', 'x', '3']) == 2.0" }
+    - { kind: assert, name: "handles decimals", code: "assert abs(safe_average(['0.5', '1.5']) - 1.0) < 1e-9" }
+    - kind: assert
+      name: "raises ValueError when nothing is valid"
+      code: |
+        try:
+            safe_average(['a', ''])
+        except ValueError:
+            pass
+        else:
+            raise AssertionError('expected ValueError')
+  hints: ["Wrap `float(text)` in try/except ValueError.", "Collect the valid numbers in a list first."]
+  solution: |
+    def safe_average(texts):
+        numbers = []
+        for text in texts:
+            try:
+                numbers.append(float(text))
+            except ValueError:
+                continue
+        if not numbers:
+            raise ValueError("no valid numbers")
+        return sum(numbers) / len(numbers)
+
+- id: py.errors.stdout-exercise
+  type: code
+  skill: apply
+  topics: [py.errors, py.control]
+  language: python
+  prompt: >-
+    Read lines from standard input until an empty line. Print `ok N` for each line that is an integer N, and
+    `skip` for each line that is not.
+  starterCode: |
+    while True:
+        line = input()
+        if line == "":
+            break
+        # your code here
+  tests:
+    - { kind: stdout, name: "mixed input", stdin: "4\nabc\n-2\n\n", expected: "ok 4\nskip\nok -2" }
+    - { kind: stdout, name: "no lines", stdin: "\n", expected: "" }
+  hints: ["Use try/except ValueError around int(line)."]
+  solution: |
+    while True:
+        line = input()
+        if line == "":
+            break
+        try:
+            print(f"ok {int(line)}")
+        except ValueError:
+            print("skip")

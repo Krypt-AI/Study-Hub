@@ -1,0 +1,78 @@
+- id: py.values.division
+  type: short
+  skill: recall
+  topics: [py.values]
+  prompt: What does `7 // 2` evaluate to in Python?
+  accepted: ["3"]
+  match: { mode: number }
+  hints: ["`//` is floor division: it rounds the result down to a whole number."]
+  explanation: "`//` divides and rounds down, so `7 // 2` is `3`. True division `7 / 2` gives `3.5`."
+
+- id: py.values.type-of-true-division
+  type: short
+  skill: recall
+  topics: [py.values]
+  prompt: What is the type of the result of `6 / 3`? Give the type name.
+  accepted: [float]
+  match: { mode: text, typoTolerance: none }
+  hints: ["Does `/` care whether the numbers divide evenly?"]
+  explanation: "`/` always returns a `float`, even when the division is exact: `6 / 3 == 2.0`."
+
+- id: py.values.cloze-falsy
+  type: cloze
+  skill: recall
+  topics: [py.values]
+  prompt: Fill in the gaps.
+  text: "An empty list is [[1]] in a condition, and the value returned by a function without a `return` statement is [[2]]."
+  blanks:
+    - { id: "1", accepted: [falsy, "false", "False"] }
+    - { id: "2", accepted: [None], match: { mode: exact, caseSensitive: true } }
+  explanation: "Empty containers are falsy, so `if items:` skips an empty list. A function that never returns explicitly returns `None`."
+
+- id: py.values.float-compare
+  type: choice
+  skill: recognize
+  topics: [py.values]
+  prompt: Which is the reliable way to check that `0.1 + 0.2` equals `0.3`?
+  options:
+    - { id: a, text: "`0.1 + 0.2 == 0.3`", explanation: "This is `False`: `0.1 + 0.2` is `0.30000000000000004` in binary floating point." }
+    - { id: b, text: "`math.isclose(0.1 + 0.2, 0.3)`", explanation: "Compares within a relative tolerance, which is what floating point needs." }
+    - { id: c, text: "`str(0.1 + 0.2) == '0.3'`", explanation: "The string is `'0.30000000000000004'`." }
+  correct: [b]
+
+- id: py.values.explain-names
+  type: long
+  skill: explain
+  topics: [py.values]
+  prompt: >-
+    After `a = 10`, `b = a`, `a = a + 1`, what are `a` and `b`, and why? Explain using the idea that variables are names bound to values.
+  minWords: 25
+  rubric:
+    - { id: values, label: "States a is 11 and b is 10", keywords: [["11"], ["10"]] }
+    - { id: binding, label: "Explains that assignment binds a name to a value (not a copy into a box)", keywords: [["bind", "bound", "refer", "point", "name"]] }
+    - { id: rebind, label: "Explains that a = a + 1 creates a new value and rebinds only a", keywords: [["new", "rebind", "rebound", "rebinds", "only a", "does not change b", "doesn't change b", "b still"]] }
+  modelAnswer: >-
+    `a` is 11 and `b` is 10. `b = a` binds the name `b` to the same int object `a` refers to. `a + 1` creates a new
+    int (11) and `a = ...` rebinds only the name `a` to it; `b` still refers to 10. Ints are immutable, so nothing
+    "inside" the old value changed.
+
+- id: py.values.fstring-code
+  type: code
+  skill: apply
+  topics: [py.values]
+  language: python
+  prompt: >-
+    Write a function `describe(name, minutes)` that returns a string like `"Aiko: 1.5 h"`: the name, a colon, and the
+    minutes converted to hours with exactly one decimal place.
+  starterCode: |
+    def describe(name, minutes):
+        # Return e.g. "Aiko: 1.5 h" for describe("Aiko", 90)
+        ...
+  tests:
+    - { kind: assert, name: "90 minutes is 1.5 h", code: "assert describe('Aiko', 90) == 'Aiko: 1.5 h', describe('Aiko', 90)" }
+    - { kind: assert, name: "rounds to one decimal", code: "assert describe('Ben', 100) == 'Ben: 1.7 h', describe('Ben', 100)" }
+    - { kind: assert, name: "whole hours keep .0", code: "assert describe('Chen', 120) == 'Chen: 2.0 h', describe('Chen', 120)" }
+  hints: ["Divide by 60 to get hours.", "Use an f-string with the format spec `.1f`."]
+  solution: |
+    def describe(name, minutes):
+        return f"{name}: {minutes / 60:.1f} h"

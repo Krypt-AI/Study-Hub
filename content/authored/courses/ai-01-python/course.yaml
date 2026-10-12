@@ -1,0 +1,26 @@
+id: ai-01-python
+title: Python and Programming Fundamentals
+subtitle: AI Engineering · Stage 1
+description: >-
+  The Python you need before data science and AI work: values and types, control flow, functions, the core
+  data structures, exceptions and tests. Every lesson ends with typed questions and Python exercises that run
+  in the browser sandbox and are checked by real tests.
+category: ai-engineering
+subject: programming
+level: Stage 1
+difficulty: beginner
+tags: [python, programming, fundamentals]
+estimatedHours: 12
+topics:
+  - { id: py.values, title: Values, types and variables }
+  - { id: py.control, title: Control flow }
+  - { id: py.functions, title: Functions }
+  - { id: py.collections, title: Lists, tuples, dicts and sets }
+  - { id: py.errors, title: Exceptions and testing }
+units:
+  - id: ai-01-python.u1
+    title: The core language
+    lessons: [01-values, 02-control-flow, 03-functions]
+  - id: ai-01-python.u2
+    title: Data and reliability
+    lessons: [04-collections, 05-errors-and-tests]

@@ -1,0 +1,968 @@
+{
+  "entries": [
+    {
+      "source": "shin500-n1",
+      "number": 4,
+      "verified": true,
+      "note": "Answer 1 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n1",
+      "number": 37,
+      "set": {
+        "answer": 4
+      },
+      "note": "OCR could not read the answer; the answer box on the answer page shows 4."
+    },
+    {
+      "source": "shin500-n1",
+      "number": 61,
+      "verified": true,
+      "note": "Answer 2 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n1",
+      "number": 64,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer box on the answer page shows 1."
+    },
+    {
+      "source": "shin500-n1",
+      "number": 65,
+      "verified": true,
+      "note": "Answer 1 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n1",
+      "number": 93,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n1",
+      "number": 97,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n1",
+      "number": 106,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n1",
+      "number": 122,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n1",
+      "number": 125,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n1",
+      "number": 128,
+      "verified": true,
+      "note": "Answer 1 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n1",
+      "number": 137,
+      "verified": true,
+      "note": "Answer 3 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n1",
+      "number": 159,
+      "verified": true,
+      "note": "Answer 3 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n1",
+      "number": 168,
+      "verified": true,
+      "note": "Answer 4 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n1",
+      "number": 177,
+      "verified": true,
+      "note": "Answer 3 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n1",
+      "number": 210,
+      "verified": true,
+      "note": "Answer 1 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n1",
+      "number": 250,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n1",
+      "number": 274,
+      "verified": true,
+      "note": "Answer 1 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n1",
+      "number": 278,
+      "verified": true,
+      "note": "Answer 1 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n1",
+      "number": 286,
+      "verified": true,
+      "note": "Answer 3 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n1",
+      "number": 302,
+      "verified": true,
+      "note": "Answer 1 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n1",
+      "number": 337,
+      "verified": true,
+      "note": "Answer 1 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n1",
+      "number": 350,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n1",
+      "number": 375,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n1",
+      "number": 384,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer box on the answer page shows 1."
+    },
+    {
+      "source": "shin500-n1",
+      "number": 411,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer box on the answer page shows 1."
+    },
+    {
+      "source": "shin500-n1",
+      "number": 414,
+      "verified": true,
+      "note": "Answer 1 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n1",
+      "number": 420,
+      "verified": true,
+      "note": "Answer 4 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n1",
+      "number": 436,
+      "verified": true,
+      "note": "Answer 3 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n1",
+      "number": 443,
+      "verified": true,
+      "note": "Answer 2 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n1",
+      "number": 462,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer box on the answer page shows 1."
+    },
+    {
+      "source": "shin500-n1",
+      "number": 496,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n1",
+      "number": 498,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n1",
+      "number": 500,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 2,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer box on the answer page shows 1."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 17,
+      "verified": true,
+      "note": "Answer 1 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 23,
+      "verified": true,
+      "note": "Answer 4 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 49,
+      "verified": true,
+      "note": "Answer 2 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 60,
+      "verified": true,
+      "note": "Answer 1 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 71,
+      "verified": true,
+      "note": "Answer 4 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 72,
+      "set": {
+        "answer": 2
+      },
+      "note": "OCR could not read the answer; the answer box on the answer page shows 2."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 77,
+      "verified": true,
+      "note": "Answer 2 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 84,
+      "verified": true,
+      "note": "Answer 2 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 125,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 128,
+      "verified": true,
+      "note": "Answer 1 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 131,
+      "verified": true,
+      "note": "Answer 3 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 142,
+      "verified": true,
+      "note": "Answer 4 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 148,
+      "verified": true,
+      "note": "Answer 1 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 151,
+      "verified": true,
+      "note": "Answer 2 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 152,
+      "verified": true,
+      "note": "Answer 1 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 156,
+      "verified": true,
+      "note": "Answer 3 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 171,
+      "verified": true,
+      "note": "Answer 3 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 178,
+      "verified": true,
+      "note": "Answer 4 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 201,
+      "verified": true,
+      "note": "Answer 1 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 208,
+      "verified": true,
+      "note": "Answer 2 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 247,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 263,
+      "verified": true,
+      "note": "Answer 2 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 272,
+      "verified": true,
+      "note": "Answer 2 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 295,
+      "verified": true,
+      "note": "Answer 2 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 315,
+      "verified": true,
+      "note": "Answer 3 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 326,
+      "verified": true,
+      "note": "Answer 3 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 372,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 375,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 381,
+      "set": {
+        "answer": 4
+      },
+      "note": "OCR could not read the answer; the answer box on the answer page shows 4."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 391,
+      "verified": true,
+      "note": "Answer 3 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 396,
+      "verified": true,
+      "note": "Answer 2 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 401,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer box on the answer page shows 1."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 405,
+      "verified": true,
+      "note": "Answer 1 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 421,
+      "verified": true,
+      "note": "Answer 3 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 432,
+      "verified": true,
+      "note": "Answer 1 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 441,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer box on the answer page shows 1."
+    },
+    {
+      "source": "shin500-n2",
+      "number": 498,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n3",
+      "number": 14,
+      "verified": true,
+      "note": "Answer 2 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n3",
+      "number": 22,
+      "verified": true,
+      "note": "Answer 4 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n3",
+      "number": 26,
+      "verified": true,
+      "note": "Answer 1 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n3",
+      "number": 38,
+      "verified": true,
+      "note": "Answer 3 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n3",
+      "number": 67,
+      "verified": true,
+      "note": "Answer 2 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n3",
+      "number": 69,
+      "verified": true,
+      "note": "Answer 2 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n3",
+      "number": 71,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer box on the answer page shows 1."
+    },
+    {
+      "source": "shin500-n3",
+      "number": 85,
+      "verified": true,
+      "note": "Answer 2 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n3",
+      "number": 91,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n3",
+      "number": 111,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n3",
+      "number": 117,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n3",
+      "number": 122,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n3",
+      "number": 124,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n3",
+      "number": 125,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n3",
+      "number": 126,
+      "verified": true,
+      "note": "Answer 4 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n3",
+      "number": 169,
+      "verified": true,
+      "note": "Answer 2 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n3",
+      "number": 197,
+      "verified": true,
+      "note": "Answer 1 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n3",
+      "number": 223,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n3",
+      "number": 303,
+      "verified": true,
+      "note": "Answer 3 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n3",
+      "number": 338,
+      "verified": true,
+      "note": "Answer 1 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n3",
+      "number": 350,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n3",
+      "number": 355,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n3",
+      "number": 356,
+      "set": {
+        "answer": 2
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 2."
+    },
+    {
+      "source": "shin500-n3",
+      "number": 372,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n3",
+      "number": 375,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n3",
+      "number": 391,
+      "verified": true,
+      "note": "Answer 2 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n3",
+      "number": 446,
+      "verified": true,
+      "note": "Answer 2 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n3",
+      "number": 447,
+      "verified": true,
+      "note": "Answer 2 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n3",
+      "number": 448,
+      "verified": true,
+      "note": "Answer 3 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n3",
+      "number": 452,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR misread the answer as 4; the answer page shows 1."
+    },
+    {
+      "source": "shin500-n3",
+      "number": 454,
+      "verified": true,
+      "note": "Answer 2 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n3",
+      "number": 496,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n3",
+      "number": 497,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n3",
+      "number": 499,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n4n5",
+      "number": 7,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer box on the answer page shows 1."
+    },
+    {
+      "source": "shin500-n4n5",
+      "number": 20,
+      "verified": true,
+      "note": "Answer 1 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n4n5",
+      "number": 36,
+      "verified": true,
+      "note": "Answer 4 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n4n5",
+      "number": 39,
+      "verified": true,
+      "note": "Answer 3 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n4n5",
+      "number": 44,
+      "verified": true,
+      "note": "Answer 2 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n4n5",
+      "number": 51,
+      "verified": true,
+      "note": "Answer 1 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n4n5",
+      "number": 66,
+      "verified": true,
+      "note": "Answer 1 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n4n5",
+      "number": 72,
+      "verified": true,
+      "note": "Answer 1 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n4n5",
+      "number": 82,
+      "verified": true,
+      "note": "Answer 3 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n4n5",
+      "number": 111,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n4n5",
+      "number": 122,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n4n5",
+      "number": 124,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n4n5",
+      "number": 125,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n4n5",
+      "number": 134,
+      "verified": true,
+      "note": "Answer 2 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n4n5",
+      "number": 139,
+      "verified": true,
+      "note": "Answer 4 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n4n5",
+      "number": 193,
+      "verified": true,
+      "note": "Answer 1 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n4n5",
+      "number": 218,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n4n5",
+      "number": 247,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n4n5",
+      "number": 253,
+      "verified": true,
+      "note": "Answer 4 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n4n5",
+      "number": 268,
+      "verified": true,
+      "note": "Answer 3 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n4n5",
+      "number": 274,
+      "verified": true,
+      "note": "Answer 1 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n4n5",
+      "number": 283,
+      "verified": true,
+      "note": "Answer 2 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n4n5",
+      "number": 296,
+      "verified": true,
+      "note": "Answer 2 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n4n5",
+      "number": 339,
+      "verified": true,
+      "note": "Answer 4 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n4n5",
+      "number": 375,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n4n5",
+      "number": 386,
+      "verified": true,
+      "note": "Answer 4 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n4n5",
+      "number": 388,
+      "verified": true,
+      "note": "Answer 3 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n4n5",
+      "number": 391,
+      "verified": true,
+      "note": "Answer 2 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n4n5",
+      "number": 418,
+      "verified": true,
+      "note": "Answer 2 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n4n5",
+      "number": 419,
+      "verified": true,
+      "note": "Answer 2 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n4n5",
+      "number": 456,
+      "verified": true,
+      "note": "Answer 2 checked against the answer page (written there in other script, so it could not be confirmed automatically)."
+    },
+    {
+      "source": "shin500-n4n5",
+      "number": 478,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n4n5",
+      "number": 490,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n4n5",
+      "number": 496,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n4n5",
+      "number": 497,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    },
+    {
+      "source": "shin500-n4n5",
+      "number": 499,
+      "set": {
+        "answer": 1
+      },
+      "note": "OCR could not read the answer; the answer footer of the following page shows 1."
+    }
+  ]
+}

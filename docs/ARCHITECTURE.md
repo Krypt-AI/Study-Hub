@@ -1,0 +1,51 @@
+# Architecture
+
+Study Hub is a static single-page app (React 19, TypeScript, Vite, Tailwind 4). There is no application server: content is prebuilt JSON, learner data lives in IndexedDB or in Supabase behind row level security, and code runs in Web Workers in the browser.
+
+## Layers
+
+```
+features/  (pages and their components)
+   │  React Query hooks (data/queries.ts)
+   ▼
+data/  StudyRepository ── LocalRepository (IndexedDB, Dexie)
+   │                   └─ SupabaseRepository (Postgres + RLS)
+domain/  pure logic: content schema, evaluation, SRS, mastery, selection
+workers/ sandboxed runtimes, spoken to through features/playground/execution/codeRunner.ts
+```
+
+- **Content** (`domain/content`) is defined once with zod (`schema.ts`). `scripts/build-content.ts` validates every authored and generated file, fills defaults, checks cross-references and writes `public/content/{catalog.json, courses/*.json, search-index.json}`. The app loads these without re-validating, checking only the format version.
+- **Learner data** (`data/records.ts`) has one shape for both backends. Everything goes through the `StudyRepository` interface; pages never touch storage directly. Backups export and import the same records as one JSON file.
+- **One write path for answers**: `domain/learning/recordAnswer.ts` stores the attempt, updates the review schedule, topic mastery, daily activity and lesson progress. Lessons, reviews, quizzes and mock exams all use it, and writes are serialised so concurrent answers cannot lose updates.
+
+## Evaluation (`domain/evaluation`)
+
+Each question type has a rule-based judge that returns a verdict (`correct`, `almost`, `partial`, `incorrect`, `self-review`), a score, specific feedback points, the expected answers and, for approximate judgements, how it judged.
+
+- **Text**: case, punctuation and small typos (Damerau–Levenshtein) are tolerated per question.
+- **Pinyin**: answers are parsed into syllables (412-syllable inventory, checked against CC-CEDICT). Tone marks and tone numbers are interchangeable; a single wrong tone in a multi-syllable word is "almost", and the feedback names the syllable.
+- **Kana**: hiragana, katakana and romaji are compared on a canonical form; long vowels, small っ/ゃゅょ and dakuten slips are named.
+- **Open answers and free translations** are self-review: keyword groups from a rubric are detected and pre-ticked, and the learner confirms the mark. No AI grading is used.
+- **Code** is judged by its tests in the sandbox; **SQL** by comparing the result set with the reference query's on a fresh copy of the database. Editor-only languages (C, Bash) are never reported as run.
+
+## Learning model (`domain/learning`)
+
+- **Spaced repetition**: FSRS (ts-fsrs) with configurable target recall. Only the first attempt at a question in a session moves its schedule; retries are free practice. Hints and revealed answers lower the rating.
+- **Mastery**: an exponential moving average per topic and skill (recognise, recall, explain, apply), with levels new, learning, weak and mastered. "Practise my weaknesses" picks the weakest topic-skill pairs and orders their questions: weak skill first, then recently failed, unanswered, and longest since answered.
+- **Activity**: active minutes (visible tab, recent interaction), answers and completions per day; streaks and a daily goal (minutes or questions, whichever is met first).
+
+## Code execution (`workers/`)
+
+Each runtime is a dedicated module Web Worker: Pyodide (Python), a hardened `AsyncFunction` with sucrase type-stripping (JavaScript/TypeScript), and sql.js (SQLite). Before any learner code runs, the worker removes XHR, WebSocket, IndexedDB, caches, nested workers and similar globals, and replaces `fetch` with a guard that only reaches the Pyodide CDN. Python's `js` module is limited to computation helpers. Output is capped, and the time limit is enforced by terminating the worker, which also stops infinite loops.
+
+## Security and privacy
+
+- Personal data never leaves the browser in local mode. In Supabase mode, every table has row level security that limits rows to their owner; the anon role has no privileges; the browser only ever holds the public anon key. The policies are tested against a real Postgres (PGlite) in `supabase/tests/rls.test.ts`.
+- Content from your books is generated locally, git-ignored and not published.
+- Markdown is rendered without raw HTML; external links open with `noopener`.
+
+## Testing
+
+- Vitest: evaluation (pinyin, kana, matching, rubric), SRS and mastery, practice selection, exam marking, the calendar (weeks, semesters, clashes, upcoming dates), backups, worker runtime helpers, and RLS policies.
+- `npm run content:verify`: every exercise's reference solution passes its own tests.
+- Playwright (`e2e/`): every page renders without console errors; the lesson → answer → feedback → saved-progress loop survives a reload; a timetable class and an exam date are saved and the exam shows on Today; a full mock exam; JavaScript, SQL and Python actually run; network access from learner code is blocked; C is labelled editor-only.
