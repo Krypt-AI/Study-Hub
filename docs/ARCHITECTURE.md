@@ -41,6 +41,7 @@ Each runtime is a dedicated module Web Worker: Pyodide (Python), a hardened `Asy
 ## Security and privacy
 
 - Personal data never leaves the browser in local mode. In Supabase mode, every table has row level security that limits rows to their owner; the anon role has no privileges; the browser only ever holds the public anon key. The policies are tested against a real Postgres (PGlite) in `supabase/tests/rls.test.ts`.
+- Accounts and access (hosted mode, [DEPLOY.md](DEPLOY.md)): `features/auth` tracks the Supabase session (Google, Discord, GitHub, optionally email) and mirrors the access token into a cookie. Guests get a scratch IndexedDB emptied on each load. The build writes `content/access.json` (open courses and material sources, from `domain/content/accessManifest.ts`), and the Netlify edge function `netlify/edge-functions/content-gate` applies `domain/content/accessRules.ts` to every request: members-only files need a token signed by the project with the `study_hub_member` claim, which a database hook sets from a private members list.
 - Content from your books is generated locally, git-ignored and not published.
 - Markdown is rendered without raw HTML; external links open with `noopener`.
 

@@ -11,6 +11,7 @@ let client: SupabaseClient | undefined;
 export function supabaseClient(): SupabaseClient {
   const config = supabaseConfig();
   if (!config) throw new Error('Supabase is not configured: set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY (see .env.example).');
-  client ??= createClient(config.url, config.anonKey, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
+  // PKCE: a provider returns a one-time code to /sign-in, which the client exchanges for a session.
+  client ??= createClient(config.url, config.anonKey, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, flowType: 'pkce' } });
   return client;
 }

@@ -4,7 +4,9 @@
  *
  *   public/content/catalog.json         course summaries, certifications, roadmaps, semesters
  *   public/content/courses/<id>.json    one file per course (parsed, defaults filled)
- *   public/content/search-index.json    documents for the global search
+ *   public/content/search-index.json    documents for the global search: open content
+ *   public/content/search-index-members.json   … and members-only content
+ *   public/content/access.json          which courses and material sources are open
  *
  *   npm run content:build
  */
@@ -20,6 +22,7 @@ import {
   roadmapSchema,
   universitySchema,
 } from '../src/domain/content/schema.ts';
+import { buildAccessManifest, splitSearchDocuments } from '../src/domain/content/accessManifest.ts';
 import type { Course, SearchDocument, University } from '../src/domain/content/types.ts';
 import { lessonUrl, courseUrl, certificationUrl } from '../src/domain/content/urls.ts';
 
@@ -358,7 +361,12 @@ function main(): void {
   mkdirSync(join(OUTPUT_DIR, 'courses'), { recursive: true });
   for (const course of courses) writeFileSync(join(OUTPUT_DIR, 'courses', `${course.id}.json`), JSON.stringify(course));
   writeFileSync(join(OUTPUT_DIR, 'catalog.json'), JSON.stringify(catalog));
-  writeFileSync(join(OUTPUT_DIR, 'search-index.json'), JSON.stringify(searchDocuments(courses, certifications)));
+  // Open and members-only content are written apart so the host can lock the members' part (src/domain/content/accessRules.ts).
+  const access = buildAccessManifest(courses);
+  const search = splitSearchDocuments(searchDocuments(courses, certifications), access);
+  writeFileSync(join(OUTPUT_DIR, 'access.json'), JSON.stringify(access));
+  writeFileSync(join(OUTPUT_DIR, 'search-index.json'), JSON.stringify(search.open));
+  writeFileSync(join(OUTPUT_DIR, 'search-index-members.json'), JSON.stringify(search.members));
 
   const questionTotal = catalog.courses.reduce((sum, course) => sum + course.questionCount, 0);
   console.log(`Built ${courses.length} course(s), ${questionTotal} lesson question(s), ${certifications.length} certification(s), ${roadmaps.length} roadmap(s).`);

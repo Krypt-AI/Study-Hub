@@ -9,7 +9,7 @@ import { Markdown } from '@/components/Markdown';
 import { SourceBadge } from '@/components/SourceBadge';
 import { Bubble, type BubbleState } from '@/components/ui/Bubble';
 import { ButtonLink, IconButton } from '@/components/ui/Button';
-import { ErrorState, LoadingState, Tag } from '@/components/ui/Feedback';
+import { LoadingState, Tag } from '@/components/ui/Feedback';
 import { PageHeader, Sheet } from '@/components/ui/Sheet';
 import { useLessonProgress, useTopicMastery } from '@/data/queries';
 import type { TopicMasteryRecord } from '@/data/records';
@@ -20,6 +20,7 @@ import type { Course } from '@/domain/content/types';
 import { assessmentUrl, certificationUrl, courseUrl, lessonUrl } from '@/domain/content/urls';
 import { masteryKey, masteryLevel, SKILL_LABELS, SKILLS } from '@/domain/learning/mastery';
 import { useBookmark } from '@/features/practice/useBookmark';
+import { CourseLoadError } from '@/features/auth/LockedContent';
 
 export default function CoursePage() {
   const { courseId = '' } = useParams();
@@ -29,7 +30,7 @@ export default function CoursePage() {
   const mastery = useTopicMastery();
   const bookmark = useBookmark(course.data ? { type: 'course', id: course.data.id, label: course.data.title } : undefined);
 
-  if (course.error) return <ErrorState title="This course could not be loaded" error={course.error} onRetry={() => void course.refetch()} />;
+  if (course.error) return <CourseLoadError title="This course could not be loaded" error={course.error} onRetry={() => void course.refetch()} />;
   if (!course.data || !progress.data) return <LoadingState />;
   const data = course.data;
   const records = new Map(progress.data.map((record) => [record.lessonId, record]));

@@ -1,0 +1,60 @@
+# Netlify hosting (docs/DEPLOY.md). Deploy from this computer with `npm run deploy`: the imported
+# and University courses are git-ignored, so a build from the git repository would not have them.
+# The edge function in netlify/edge-functions/content-gate serves members-only content to members.
+
+[build]
+  command = "npm run check:deploy && npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "24"
+
+# Course files, page images and audio are real files: a missing one is a 404, never the app page.
+[[redirects]]
+  from = "/content/*"
+  to = "/404.html"
+  status = 404
+
+[[redirects]]
+  from = "/materials/*"
+  to = "/404.html"
+  status = 404
+
+# Single-page app: every other path that is not a file loads the app.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Strict-Transport-Security = "max-age=31536000"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+# Built JavaScript and CSS have content hashes in their names.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Content changes with each deploy. The edge function makes members' files private.
+[[headers]]
+  for = "/content/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/materials/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+# `npm run dev:netlify`: the app with the edge function, as on Netlify.
+[dev]
+  framework = "#custom"
+  command = "vite --port 5180 --strictPort"
+  targetPort = 5180
+  port = 8888

@@ -1,4 +1,6 @@
+import { Suspense } from 'react';
 import { createBrowserRouter, Navigate } from 'react-router';
+import { LoadingState } from '@/components/ui/Feedback';
 import { AppShell } from './AppShell';
 import {
   AssessmentPage,
@@ -14,11 +16,22 @@ import {
   ReviewSessionPage,
   RoadmapPage,
   SettingsPage,
+  SignInPage,
   TodayPage,
 } from './pages';
 import { NotFoundPage, RouteErrorPage } from './RouteErrorPage';
 
 export const router = createBrowserRouter([
+  // Full-screen, outside the app frame; only shown when Supabase is configured.
+  {
+    path: 'sign-in',
+    element: (
+      <Suspense fallback={<LoadingState className="min-h-dvh justify-center" />}>
+        <SignInPage />
+      </Suspense>
+    ),
+    errorElement: <RouteErrorPage />,
+  },
   {
     element: <AppShell />,
     errorElement: <RouteErrorPage />,

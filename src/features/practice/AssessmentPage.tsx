@@ -22,12 +22,13 @@ import { clearExamDraft, type ExamDraft, loadExamDraft, saveExamDraft } from './
 import { ExamResults } from './exam/ExamResults';
 import { ExamSection, type FinishReason } from './exam/ExamSection';
 import { answerContexts, type GradedSection, gradeSection } from './exam/gradeExam';
+import { CourseLoadError } from '@/features/auth/LockedContent';
 
 export default function AssessmentPage() {
   const { courseId = '', assessmentId = '' } = useParams();
   const course = useCourse(courseId);
 
-  if (course.error) return <ErrorState title="This course could not be loaded" error={course.error} onRetry={() => void course.refetch()} />;
+  if (course.error) return <CourseLoadError title="This course could not be loaded" error={course.error} onRetry={() => void course.refetch()} />;
   if (!course.data) return <LoadingState />;
   const assessment = findAssessment(course.data, assessmentId);
   if (!assessment) return <ErrorState title="Exam not found" error={`No exam "${assessmentId}" in ${course.data.title}.`} />;

@@ -15,3 +15,4 @@ export const CertificationsPage = lazy(() => import('@/features/certifications/C
 export const CertificationDetailPage = lazy(() => import('@/features/certifications/CertificationDetailPage'));
 export const RoadmapPage = lazy(() => import('@/features/certifications/RoadmapPage'));
 export const SettingsPage = lazy(() => import('@/features/settings/SettingsPage'));
+export const SignInPage = lazy(() => import('@/features/auth/SignInPage'));

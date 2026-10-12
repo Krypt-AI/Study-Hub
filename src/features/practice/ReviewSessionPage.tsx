@@ -21,6 +21,7 @@ import { isPracticeModeId, PRACTICE_MODES, type PracticeModeId, practiceUrl, REC
 import { QuestionCard } from './QuestionCard';
 import { buildItems, courseIdsOf, type LearnerRecords, planSession, type SessionPlan } from './session/practicePlan';
 import { type PracticeSession, type SessionItem, usePracticeSession } from './session/usePracticeSession';
+import { CourseLoadError } from '@/features/auth/LockedContent';
 
 export default function ReviewSessionPage() {
   const { mode } = useParams();
@@ -68,7 +69,7 @@ function PlannedSession({ initialPlan, catalog, ...props }: SessionProps & { ini
   const courseIds = useMemo(() => courseIdsOf(plan), [plan]);
   const { courses, pending, error } = useCourses(courseIds);
 
-  if (error) return <ErrorState title="Course content could not be loaded" error={error} />;
+  if (error) return <CourseLoadError title="Course content could not be loaded" error={error} />;
   if (pending) return <LoadingState label="Preparing your questions…" />;
   if (plan.kind === 'choose-course') return <QuizCoursePicker catalog={catalog} />;
   return <SessionRun {...props} plan={plan} courses={courses} />;

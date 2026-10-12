@@ -3,6 +3,7 @@
  * app only checks the schema version and caches files with React Query.
  */
 import { type UseQueryResult, useQueries, useQuery } from '@tanstack/react-query';
+import { MEMBERS_SEARCH_INDEX_PATH, OPEN_SEARCH_INDEX_PATH } from './accessRules';
 import type { Catalog, Course, SearchDocument } from './types';
 import { CONTENT_SCHEMA_VERSION } from './version';
 
@@ -13,8 +14,20 @@ export class ContentMissingError extends Error {
   }
 }
 
+/** The host refused a members-only file: the visitor is signed out (401) or not a member (403). */
+export class ContentLockedError extends Error {
+  constructor(
+    path: string,
+    readonly reason: 'signed-out' | 'not-member',
+  ) {
+    super(`${path} is for members.`);
+    this.name = 'ContentLockedError';
+  }
+}
+
 async function fetchJson<T>(path: string): Promise<T> {
   const response = await fetch(path);
+  if (response.status === 401 || response.status === 403) throw new ContentLockedError(path, response.status === 401 ? 'signed-out' : 'not-member');
   if (!response.ok) throw new ContentMissingError(path);
   return (await response.json()) as T;
 }
@@ -29,14 +42,26 @@ export async function fetchCatalog(): Promise<Catalog> {
 
 export const fetchCourse = (courseId: string) => fetchJson<Course>(`/content/courses/${encodeURIComponent(courseId)}.json`);
 
-export const fetchSearchDocuments = () => fetchJson<SearchDocument[]>('/content/search-index.json');
+/** Open documents, plus the members' ones when the visitor may read them. */
+export async function fetchSearchDocuments(includeMembers: boolean): Promise<SearchDocument[]> {
+  const [open, members] = await Promise.all([
+    fetchJson<SearchDocument[]>(OPEN_SEARCH_INDEX_PATH),
+    includeMembers ? fetchJson<SearchDocument[]>(MEMBERS_SEARCH_INDEX_PATH).catch(() => []) : [],
+  ]);
+  return [...open, ...members];
+}
 
-const STATIC = { staleTime: Infinity, gcTime: 30 * 60 * 1000 } as const;
+const STATIC = {
+  staleTime: Infinity,
+  gcTime: 30 * 60 * 1000,
+  // A locked file stays locked until the visitor signs in, which refetches everything.
+  retry: (failures: number, error: Error) => !(error instanceof ContentLockedError) && failures < 1,
+} as const;
 
 export const contentKeys = {
   catalog: ['content', 'catalog'] as const,
   course: (courseId: string) => ['content', 'course', courseId] as const,
-  search: ['content', 'search'] as const,
+  search: (includeMembers: boolean) => ['content', 'search', includeMembers] as const,
 };
 
 export function useCatalog() {
@@ -72,6 +97,6 @@ export function useCourses(courseIds: readonly string[]): LoadedCourses {
   });
 }
 
-export function useSearchDocuments(enabled: boolean) {
-  return useQuery({ queryKey: contentKeys.search, queryFn: fetchSearchDocuments, enabled, ...STATIC });
+export function useSearchDocuments(enabled: boolean, includeMembers: boolean) {
+  return useQuery({ queryKey: contentKeys.search(includeMembers), queryFn: () => fetchSearchDocuments(includeMembers), enabled, ...STATIC });
 }

@@ -31,3 +31,6 @@ __pycache__/
 # Courses written from your own course materials (lecture slides etc.):
 # personal use only, never commit or publish.
 content/private/
+
+# Local Netlify folder
+.netlify

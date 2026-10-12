@@ -2,8 +2,8 @@
  * Settings: theme, study goals and review pacing, where data lives, backups, how code runs,
  * and where the course content comes from.
  */
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Download, LogOut, Trash2, Upload } from 'lucide-react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Download, Trash2, Upload } from 'lucide-react';
 import { type ChangeEvent, useEffect, useRef, useState } from 'react';
 import { type ThemePreference, useTheme } from '@/app/useTheme';
 import { Button } from '@/components/ui/Button';
@@ -14,13 +14,13 @@ import { Segmented } from '@/components/ui/Segmented';
 import { PageHeader, Sheet } from '@/components/ui/Sheet';
 import { useToast } from '@/components/ui/useToast';
 import { backupFileName, parseBackup } from '@/data/backup';
-import { backendKind } from '@/data/backend';
 import { learnerKeys, useLegacyNotes, useSaveSettings, useSettings } from '@/data/queries';
 import type { BackupFile, LegacyNote, Settings } from '@/data/records';
 import type { ImportMode } from '@/data/repository';
 import { useRepository } from '@/data/useRepository';
-import { supabaseClient } from '@/data/supabase/client';
 import { useCatalog } from '@/domain/content/load';
+import { AccountSheet } from '@/features/auth/AccountSheet';
+import { useAuth } from '@/features/auth/useAuth';
 import { dayKey, formatDate } from '@/lib/dates';
 import { downloadText } from '@/lib/download';
 
@@ -151,7 +151,7 @@ function ShortcutsSheet() {
 }
 
 function StorageSheet() {
-  return backendKind() === 'supabase' ? <SupabaseStorage /> : <LocalStorage />;
+  return useAuth().status === 'local' ? <LocalStorage /> : <AccountSheet />;
 }
 
 function LocalStorage() {
@@ -183,27 +183,6 @@ function LocalStorage() {
           </Button>
         )}
         <p className="text-xs text-ink-faint">To sync between devices, connect Supabase: see docs/SUPABASE.md.</p>
-      </div>
-    </Sheet>
-  );
-}
-
-function SupabaseStorage() {
-  const user = useQuery({ queryKey: ['auth', 'user'], queryFn: async () => (await supabaseClient().auth.getUser()).data.user });
-  const signOut = async () => {
-    await supabaseClient().auth.signOut();
-    window.location.assign('/');
-  };
-  return (
-    <Sheet title="Where your data lives">
-      <div className="flex flex-col gap-3 text-sm">
-        <p>
-          Your progress, calendar and code are stored in your Supabase project{user.data?.email ? <> as <strong>{user.data.email}</strong></> : null}. Row level security lets only your
-          account read or change them.
-        </p>
-        <Button size="sm" icon={<LogOut className="size-4" />} onClick={() => void signOut()} className="self-start">
-          Sign out
-        </Button>
       </div>
     </Sheet>
   );

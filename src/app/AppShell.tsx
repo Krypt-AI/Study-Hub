@@ -24,6 +24,7 @@ import { IconButton } from '@/components/ui/Button';
 import { Kbd, LoadingState } from '@/components/ui/Feedback';
 import { useReviewStates } from '@/data/queries';
 import { isDue } from '@/domain/learning/due';
+import { AccountRailItem } from '@/features/auth/AccountRailItem';
 import { cn } from '@/lib/cn';
 import { useStudyTimer } from '@/features/today/useStudyTimer';
 import { useTheme } from './useTheme';
@@ -105,6 +106,7 @@ function Rail({ onNavigate, onSearch }: { onNavigate?: () => void; onSearch: () 
         <RailLink key={item.to} item={item} onNavigate={onNavigate} />
       ))}
       <div className="mt-auto flex flex-col gap-1 border-t border-rule pt-3">
+        <AccountRailItem onNavigate={onNavigate} />
         <RailLink item={{ to: '/settings', label: 'Settings', icon: <Settings className="size-4" /> }} onNavigate={onNavigate} />
         <button
           type="button"

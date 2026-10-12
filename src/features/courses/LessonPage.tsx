@@ -23,13 +23,14 @@ import { completeLesson, reopenLesson } from '@/domain/learning/lessonProgress';
 import { QuestionCard } from '@/features/practice/QuestionCard';
 import { type SessionItem, usePracticeSession } from '@/features/practice/session/usePracticeSession';
 import { LessonBlock } from './blocks/LessonBlocks';
+import { CourseLoadError } from '@/features/auth/LockedContent';
 
 export default function LessonPage() {
   const { courseId = '', lessonId = '' } = useParams();
   const course = useCourse(courseId);
   const progress = useLessonProgress(courseId);
 
-  if (course.error) return <ErrorState title="This course could not be loaded" error={course.error} onRetry={() => void course.refetch()} />;
+  if (course.error) return <CourseLoadError title="This course could not be loaded" error={course.error} onRetry={() => void course.refetch()} />;
   if (!course.data || !progress.data) return <LoadingState />;
   const location = findLesson(course.data, lessonId);
   if (!location) return <ErrorState title="Lesson not found" error={`No lesson "${lessonId}" in ${course.data.title}.`} />;

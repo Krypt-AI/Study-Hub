@@ -25,6 +25,7 @@ Last updated 2026-10-12.
 - **Calendar** (optional; replaced the notebook): weekly timetable per semester with teaching-week numbers and clash warnings, and important dates (quiz, test, midterm, final, assignment) in week, month and list views; the next 21 days show on Today. Notes from the old notebook stay in the browser until downloaded or deleted in Settings.
 - **Playground, certifications, settings, backups** (backup format version 2 adds the calendar; version 1 files still import), light and dark themes, keyboard use, mobile layout.
 - **Storage**: local (IndexedDB) by default; Supabase schema, row level security, repository and sign-in ready (see [SUPABASE.md](SUPABASE.md)).
+- **Hosting** (see [DEPLOY.md](DEPLOY.md)): Netlify config and a deploy from this computer (`npm run deploy`, guarded by `npm run check:deploy`). Sign-in with Google, Discord and GitHub (email optional) on a `/sign-in` page; guests can open the University courses, with progress kept only for the visit; signed-in users' progress is saved; a members list in the database (an access-token hook adds `study_hub_member`) unlocks the other courses, and a Netlify edge function refuses their course files, page images, audio and search index to anyone else. Profiles keep each user's name, picture, email and providers.
 
 ## Not done yet
 
@@ -38,7 +39,7 @@ Last updated 2026-10-12.
 - **IT courses** referenced by certifications (networking, security, operating systems, cloud) are planned, not written.
 - **Code**: C, Java and Bash are editor-only (Java answers in CMPD363 are compared with a model answer, not compiled). Running them safely would need a WebAssembly toolchain or a remote sandbox.
 - **AI feedback**: open answers use rubric self-review only, as decided. An LLM grader would need a server-side function holding the API key.
-- **Supabase**: implemented and policy-tested locally, but not yet run against a live Supabase project. There is no offline sync between local and cloud data: moving data uses backups.
+- **Supabase and Netlify**: implemented and tested locally (row level security and the members hook on PGlite; token checks and the gate in unit tests; the edge function under `netlify dev`), but not yet run against a live Supabase project or Netlify site, and the OAuth sign-in round trip has not been tried with real providers. There is no offline sync between local and cloud data: moving data uses backups.
 - **Mock exams**: an unfinished sitting is kept only in the browser it was started in (not synced). Scores are raw; the JLPT reports scaled scores.
 
 ## External services
@@ -47,6 +48,7 @@ Last updated 2026-10-12.
 |---|---|---|---|
 | cdn.jsdelivr.net | Pyodide (Python runtime, about 10 MB) and its packages | first Python run in a browser | free |
 | Supabase | sign-in and cloud storage | only if configured | the Free plan is enough for one learner (check current limits at supabase.com/pricing); paid plans are optional |
-| Static hosting (any) | serving the built app | only if you deploy it | free tiers exist; estimate, depends on provider |
+| Netlify | serving the app and checking members-only files (edge function) | only if you deploy it | a free plan exists; check current limits at netlify.com/pricing (the site is about 420 MB, and every request passes the edge function) |
+| Google, Discord, GitHub | sign-in (OAuth apps you create) | only if enabled | free |
 
-There are no API keys in the app and no paid AI services. Do not deploy the HSK/JLPT content publicly: it comes from copyrighted books.
+The only key in the app is Supabase's publishable key, which is meant to be public; there are no paid AI services. The HSK/JLPT content comes from copyrighted books: on the hosted site it is served only to members, so keep the members list to the people you study with.
