@@ -1,5 +1,5 @@
 /**
- * /sign-in: continue with Google, Discord or GitHub (and email, if enabled). Providers return
+ * /sign-in: continue with the configured providers (Google by default; see signInOptions.ts). Providers return
  * here with `?next=` naming the page to go back to; a provider's refusal comes back as
  * `error_description`. Signing in is optional: guests can open the University courses.
  */

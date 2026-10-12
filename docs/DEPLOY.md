@@ -5,7 +5,7 @@ The hosted site works like this:
 | Who | Can open | Progress |
 |---|---|---|
 | Anyone (guest) | University courses | kept only until the page is closed |
-| Signed in (Google, Discord or GitHub) | every course: each person picks what to study | saved to their account |
+| Signed in with Google | every course: each person picks what to study | saved to their account |
 
 Anyone who signs in gets full access: there is no list of approved accounts to keep. Share the link only with the people you study with.
 
@@ -22,23 +22,22 @@ You need about an hour for the first setup. Do the steps in order.
 3. Note two values from **Project Settings → API Keys / Data API**: the project URL `https://<ref>.supabase.co` and the **publishable** key (`sb_publishable_…`, or the legacy `anon` key). Never use the secret / `service_role` key in the app.
 4. Check **Project Settings → JWT Keys**. If the current signing key is the **legacy JWT secret**, also copy that secret for step 3.4. If the project uses the newer signing keys, you need nothing else.
 
-## 2. Sign-in providers
+## 2. Google sign-in
 
-Every provider redirects back to Supabase at:
+Google redirects back to Supabase at:
 
 ```
 https://<ref>.supabase.co/auth/v1/callback
 ```
 
-Create an OAuth app with each provider, then paste its client ID and secret into **Supabase → Authentication → Sign In / Providers → <provider>** and enable it.
+1. In the [Google Cloud Console](https://console.cloud.google.com/apis/credentials), create a project (or pick one).
+2. **OAuth consent screen**: user type **External**, fill in the app name and your email. While the app is in *Testing*, only the test users you list can sign in; choose **Publish app** to let any Google account in (basic sign-in needs no Google review).
+3. **Credentials → Create credentials → OAuth client ID → Web application**:
+   - Authorized JavaScript origins: `https://<your-site-name>.netlify.app`
+   - Authorized redirect URIs: the callback above
+4. Copy the **Client ID** and **Client secret** into **Supabase → Authentication → Sign In / Providers → Google**, and enable it.
 
-| Provider | Where to create the app | What to enter |
-|---|---|---|
-| Google | [Google Cloud Console](https://console.cloud.google.com/apis/credentials): set up the OAuth consent screen, then **Create credentials → OAuth client ID → Web application** | Authorized redirect URI: the callback above |
-| Discord | [Discord Developer Portal](https://discord.com/developers/applications) → **New Application → OAuth2** | Redirects: the callback above |
-| GitHub | GitHub → **Settings → Developer settings → OAuth Apps → New OAuth App** | Homepage URL: your site; Authorization callback URL: the callback above |
-
-To show fewer buttons, set `VITE_AUTH_PROVIDERS` (for example `google,github`). Add `email` to it to also offer email and password, and keep the **Email** provider enabled in Supabase for that.
+Only Google is shown by default. To add Discord, GitHub or email later, enable the provider in Supabase and list it in `VITE_AUTH_PROVIDERS` (for example `google,github`).
 
 ## 3. Netlify site
 
@@ -54,7 +53,7 @@ The University and imported courses are not in git (they are your materials), so
    ```
    netlify env:set VITE_SUPABASE_URL https://<ref>.supabase.co
    netlify env:set VITE_SUPABASE_ANON_KEY <publishable key>
-   netlify env:set VITE_AUTH_PROVIDERS google,discord,github
+   netlify env:set VITE_AUTH_PROVIDERS google
    # only for a project still on the legacy JWT secret (step 1.4):
    netlify env:set SUPABASE_JWT_SECRET <legacy secret> --secret
    ```
@@ -80,7 +79,7 @@ Redeploy whenever content changes (new lessons, a new semester, imported books).
 
 1. In a private window: the catalog shows **Sign in** tags on the non-University courses, a University course opens, and an HSK course says *Sign in to open this course*.
 2. Opening a locked file directly, such as `https://<site>/content/courses/hsk-1.json`, answers **401**.
-3. Sign in with each provider: every course opens, search finds HSK and JLPT words, and **Settings → Your account** shows your name, picture and provider.
+3. Sign in with Google: every course opens, search finds HSK and JLPT words, and **Settings → Your account** shows your name, picture and provider.
 
 ## Running the hosted setup locally
 
@@ -91,4 +90,4 @@ Redeploy whenever content changes (new lessons, a new semester, imported books).
 - The locked courses' files, their page images and audio, and their search index are refused without a valid sign-in. The token is signed by Supabase and checked with your project's signing keys, so it cannot be forged; Supabase's anonymous sign-ins (off by default) do not count.
 - The catalog (course titles, lesson titles and counts), the University courses and their pages are public.
 - Each user's progress is private to them: row level security in the database (see [SUPABASE.md](SUPABASE.md)).
-- Anyone who has the link can sign in with a Google, Discord or GitHub account and open every course. The HSK and JLPT material comes from copyrighted books, so share the link only with the people you study with, and keep it out of public posts.
+- Anyone who has the link can sign in with a Google account and open every course. The HSK and JLPT material comes from copyrighted books, so share the link only with the people you study with, and keep it out of public posts.

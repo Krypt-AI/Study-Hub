@@ -1,13 +1,22 @@
 import { describe, expect, it } from 'vitest';
-import { safeNext, signInMethods } from './signInOptions';
+import { providerNames, safeNext, signInMethods } from './signInOptions';
 
 describe('signInMethods', () => {
-  it('defaults to Google, Discord and GitHub', () => {
-    expect(signInMethods('')).toEqual(['google', 'discord', 'github']);
+  it('defaults to Google only', () => {
+    expect(signInMethods('')).toEqual(['google']);
+    expect(signInMethods(undefined)).toEqual(['google']);
   });
 
   it('keeps the listed order and drops unknown or repeated entries', () => {
     expect(signInMethods(' GitHub, email,twitter,github ')).toEqual(['github', 'email']);
+  });
+});
+
+describe('providerNames', () => {
+  it('names the configured providers for a sentence', () => {
+    expect(providerNames(['google'])).toBe('Google');
+    expect(providerNames(['google', 'github'])).toBe('Google or GitHub');
+    expect(providerNames(['google', 'discord', 'github', 'email'])).toBe('Google, Discord, GitHub or email');
   });
 });
 

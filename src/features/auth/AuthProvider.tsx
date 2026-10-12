@@ -1,6 +1,6 @@
 /**
  * Tracks the Supabase session (when Supabase is configured) and keeps the access cookie in step
- * with it, so the host can serve the locked courses' files. Sign-in with Google, Discord or GitHub goes
+ * with it, so the host can serve the locked courses' files. Sign-in with Google (or another configured provider) goes
  * through Supabase and returns to /sign-in, which then continues to the page the user came from.
  */
 import type { Session } from '@supabase/supabase-js';

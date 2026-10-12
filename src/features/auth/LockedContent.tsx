@@ -9,6 +9,7 @@ import { useLocation } from 'react-router';
 import { Button, ButtonLink } from '@/components/ui/Button';
 import { ErrorState } from '@/components/ui/Feedback';
 import { ContentLockedError } from '@/domain/content/load';
+import { providerNames } from './signInOptions';
 import { useAuth } from './useAuth';
 
 /** The error state for a page whose course could not be loaded, locked or otherwise. */
@@ -48,7 +49,7 @@ export function LockedContent() {
         </>
       ) : (
         <>
-          <p className="text-sm text-ink-muted">Sign in with Google, Discord or GitHub to open every course. The University courses are open to everyone.</p>
+          <p className="text-sm text-ink-muted">Sign in with {providerNames()} to open every course. The University courses are open to everyone.</p>
           <ButtonLink to={`/sign-in?next=${encodeURIComponent(next)}`} variant="primary" icon={<LogIn className="size-4" />}>
             Sign in
           </ButtonLink>

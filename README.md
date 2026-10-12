@@ -18,7 +18,7 @@ npm run content:build   # validates course content and writes public/content
 npm run dev             # http://localhost:5173
 ```
 
-Without Supabase settings, everything is stored in this browser (IndexedDB). To sync across devices, see [docs/SUPABASE.md](docs/SUPABASE.md); to host it for friends on Netlify with Google, Discord and GitHub sign-in, see [docs/DEPLOY.md](docs/DEPLOY.md).
+Without Supabase settings, everything is stored in this browser (IndexedDB). To sync across devices, see [docs/SUPABASE.md](docs/SUPABASE.md); to host it for friends on Netlify with Google sign-in, see [docs/DEPLOY.md](docs/DEPLOY.md).
 
 The HSK and JLPT courses come from your own PDFs and are **not** in the repository (they are personal-use only). To build them, follow [docs/CONTENT_PIPELINE.md](docs/CONTENT_PIPELINE.md); the other courses work without them.
 
@@ -62,6 +62,6 @@ e2e/             Playwright tests
 - [Architecture](docs/ARCHITECTURE.md): how the pieces fit, data model, evaluation, security
 - [Content pipeline](docs/CONTENT_PIPELINE.md): turning your books into courses, and authoring content
 - [Supabase](docs/SUPABASE.md): optional cloud storage and sign-in
-- [Deploy](docs/DEPLOY.md): hosting on Netlify with Google, Discord and GitHub sign-in
+- [Deploy](docs/DEPLOY.md): hosting on Netlify with Google sign-in
 - [Status](docs/STATUS.md): what is done, what is not, external services and costs
 - [Design system](DESIGN.md): the "answer sheet" visual language

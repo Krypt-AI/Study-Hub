@@ -5,7 +5,7 @@ import { Button, ButtonLink } from '@/components/ui/Button';
 import { Tag } from '@/components/ui/Feedback';
 import { Sheet } from '@/components/ui/Sheet';
 import { Avatar } from './AccountRailItem';
-import { PROVIDER_LABELS } from './signInOptions';
+import { PROVIDER_LABELS, providerNames } from './signInOptions';
 import { type OAuthProviderId, useAuth } from './useAuth';
 
 const providerLabel = (provider: string) => PROVIDER_LABELS[provider as OAuthProviderId] ?? (provider === 'email' ? 'Email' : provider);
@@ -19,7 +19,7 @@ export function AccountSheet() {
       <Sheet title="Your account">
         <div className="flex flex-col gap-3 text-sm">
           <p>You are browsing as a guest. Progress made now is kept only until you close or reload the page.</p>
-          <p className="text-ink-muted">Sign in with Google, Discord or GitHub to open every course and save your progress, reviews and code to your account.</p>
+          <p className="text-ink-muted">Sign in with {providerNames()} to open every course and save your progress, reviews and code to your account.</p>
           <ButtonLink to="/sign-in?next=%2Fsettings" variant="primary" icon={<LogIn className="size-4" />} className="self-start">
             Sign in
           </ButtonLink>

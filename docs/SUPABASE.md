@@ -1,6 +1,6 @@
 # Supabase (optional)
 
-By default Study Hub keeps your data in the browser. Connect Supabase to sign in (Google, Discord, GitHub, optionally email) and use the same data on several devices. To host it for friends on Netlify, follow [DEPLOY.md](DEPLOY.md), which covers these steps too.
+By default Study Hub keeps your data in the browser. Connect Supabase to sign in with Google (Discord, GitHub or email can be added) and use the same data on several devices. To host it for friends on Netlify, follow [DEPLOY.md](DEPLOY.md), which covers these steps too.
 
 ## Set up
 

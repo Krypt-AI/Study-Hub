@@ -1,4 +1,4 @@
--- Accounts: a profile for every user, filled from their Google, Discord or GitHub sign-in.
+-- Accounts: a profile for every user, filled from their Google (or other provider) sign-in.
 --
 -- Anyone signed in can save progress and open every course; who may sign in at all is up to
 -- whom you share the site with. The Netlify edge function only checks that a request carries a

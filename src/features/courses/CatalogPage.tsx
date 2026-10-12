@@ -13,6 +13,7 @@ import { isOpenCategory } from '@/domain/content/accessManifest';
 import { useCatalog } from '@/domain/content/load';
 import type { CourseCategory, CourseSummary, University } from '@/domain/content/types';
 import { courseUrl } from '@/domain/content/urls';
+import { providerNames } from '@/features/auth/signInOptions';
 import { canOpenLockedContent, useAuth } from '@/features/auth/useAuth';
 
 const CATEGORY_LABELS: Record<CourseCategory, string> = {
@@ -191,7 +192,7 @@ function CourseRow({ course, number, lessons }: { course: CourseSummary; number:
         {course.subtitle && <p className="truncate text-sm text-ink-muted">{course.subtitle}</p>}
         <div className="mt-1 flex flex-wrap gap-1.5">
           {locked && (
-            <Tag tone="print" title="Sign in with Google, Discord or GitHub to open it">
+            <Tag tone="print" title={`Sign in with ${providerNames()} to open it`}>
               <Lock className="mr-1 inline size-3" aria-hidden />
               Sign in
             </Tag>

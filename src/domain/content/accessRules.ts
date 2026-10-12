@@ -3,7 +3,7 @@
  *
  * University courses, and the page images they show, are open to everyone. Every other course,
  * its pages and audio, and the search index over them need an account: anyone signed in with
- * Google, Discord or GitHub (or email, if enabled) can open them.
+ * Google (or another enabled provider) can open them.
  *
  * The build writes an `AccessManifest`, the app reads it to show locks, and the Netlify edge
  * function enforces it. This file has no imports so the edge function can use it as is.
