@@ -91,10 +91,10 @@ function vocabularyQuestions(entry: WordEntry, lessonTopic: string, meaningPool:
       skill: 'recall',
       difficulty: 2,
       prompt: `Type the English meaning of **${row.word}**.`,
-      answerHint: 'Any one of the meanings listed in the book is accepted.',
+      answerHint: 'Any meaning listed in the book, or how you would say it in conversation ("I\'m sorry" for "to be sorry").',
       hints: [`Pinyin: ${row.pinyin}`, ...(row.partOfSpeech ? [`Part of speech: ${row.partOfSpeech}`] : [])],
       accepted: [row.meaning],
-      match: { mode: 'text' },
+      match: { mode: 'meaning' },
       language: 'en',
     },
     {

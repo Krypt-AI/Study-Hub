@@ -1,10 +1,11 @@
 /**
  * Compares one typed answer with the accepted answers, using the comparison rules of
- * the question's match mode (text, pinyin, kana, hanzi, number, exact).
+ * the question's match mode (text, meaning, pinyin, kana, hanzi, number, exact).
  */
 import type { MatchOptions } from '@/domain/content/types';
 import { allowedTypos, editDistance } from './distance';
 import { compareKana } from './kana';
+import { glossOf, sameMeaning } from './meaning';
 import { compactCjk, expandAlternatives, fold, normalizeText, stripLeadingFiller } from './normalize';
 import { comparePinyin, parsePinyin } from './pinyin';
 
@@ -57,6 +58,8 @@ function matchOne(response: string, answer: string, options: MatchOptions): Scor
     }
     case 'text':
       return matchText(response, answer, options);
+    case 'meaning':
+      return matchMeaning(response, answer, options);
   }
 }
 
@@ -135,6 +138,31 @@ function matchText(response: string, answer: string, options: MatchOptions): Sco
     const distance = editDistance(given, expected);
     if (!best || distance < best.distance) {
       const isTypo = distance <= allowedTypos(expected, options.typoTolerance);
+      best = {
+        verdict: isTypo ? 'almost' : 'incorrect',
+        closest: variant,
+        messages: isTypo ? [`Accepted with a spelling slip: "${variant}".`] : [],
+        distance,
+      };
+    }
+  }
+  return best ?? { verdict: 'incorrect', closest: answer, messages: [], distance: Infinity };
+}
+
+/** Like text mode, but a conversational form of the meaning counts too ("I'm sorry" for "to be sorry"). */
+function matchMeaning(response: string, answer: string, options: MatchOptions): ScoredMatch {
+  const given = glossOf(response);
+  let best: ScoredMatch | undefined;
+  for (const variant of expandAlternatives(answer)) {
+    const expected = glossOf(variant);
+    if (!expected.core) continue;
+    if (sameMeaning(given, expected)) {
+      const messages = given.core === expected.core ? [] : [`The book gives this as "${answer}".`];
+      return { verdict: 'correct', closest: variant, messages, distance: 0 };
+    }
+    const distance = editDistance(given.core, expected.core);
+    if (!best || distance < best.distance) {
+      const isTypo = distance <= allowedTypos(expected.core, options.typoTolerance);
       best = {
         verdict: isTypo ? 'almost' : 'incorrect',
         closest: variant,

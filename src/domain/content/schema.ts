@@ -70,13 +70,15 @@ export const answerLanguageSchema = z.enum(['en', 'zh', 'ja']);
 /**
  * How a typed answer is compared with the accepted answers.
  *  - text:   case/punctuation-insensitive, tolerant of small typos (English answers)
+ *  - meaning: like text, for the English meaning of a Chinese/Japanese word; also accepts
+ *            the conversational form ("I'm sorry" for "to be sorry", "thanks" for "to thank")
  *  - pinyin: syllable-aware; tone marks and tone numbers are interchangeable
  *  - kana:   hiragana, katakana and (optionally) romaji are interchangeable
  *  - hanzi:  characters must match exactly (kanji/hanzi production)
  *  - number: numeric comparison with optional tolerance
  *  - exact:  verbatim after trimming
  */
-export const matchModeSchema = z.enum(['text', 'pinyin', 'kana', 'hanzi', 'number', 'exact']);
+export const matchModeSchema = z.enum(['text', 'meaning', 'pinyin', 'kana', 'hanzi', 'number', 'exact']);
 
 export const matchOptionsSchema = z.object({
   mode: matchModeSchema.default('text'),

@@ -37,6 +37,43 @@ describe('matchAnswer: text mode', () => {
   });
 });
 
+describe('matchAnswer: meaning mode', () => {
+  const meaning = options({ mode: 'meaning' });
+  const verdict = (response: string, answer: string) => matchAnswer(response, [answer], meaning).verdict;
+
+  it('accepts the conversational form of a dictionary gloss', () => {
+    expect(verdict("I'm sorry", 'to be sorry')).toBe('correct');
+    expect(verdict('I’m sorry', 'to be sorry')).toBe('correct');
+    expect(verdict('sorry', 'to be sorry')).toBe('correct');
+    expect(verdict('I apologize', 'to be sorry')).toBe('correct');
+    expect(verdict('thank you', 'to thank')).toBe('correct');
+    expect(verdict('thanks', 'to thank')).toBe('correct');
+    expect(verdict('bye', 'to see you around')).toBe('correct');
+    expect(verdict('goodbye', 'to see you around')).toBe('correct');
+    expect(verdict('no problem', "you're welcome, don't mention it")).toBe('correct');
+    expect(verdict("it's ok", "that's OK, it doesn't matter")).toBe('correct');
+    expect(verdict('never mind', "that's OK, it doesn't matter")).toBe('correct');
+  });
+
+  it('names the book form when the answer was accepted as an equivalent', () => {
+    expect(matchAnswer('thanks', ['to thank'], meaning).messages[0]).toContain('to thank');
+    expect(matchAnswer('drink', ['to drink'], meaning).messages).toEqual([]);
+  });
+
+  it('matches equivalents on the whole phrase only', () => {
+    expect(verdict('see you', 'to look at, to see')).toBe('incorrect');
+    expect(verdict("you're welcome", 'to welcome')).toBe('incorrect');
+    expect(verdict('never mind', 'good, fine')).toBe('incorrect');
+  });
+
+  it('keeps the text-mode rules: alternatives, typos and short pronoun answers', () => {
+    expect(verdict('movie', 'film, movie')).toBe('correct');
+    expect(verdict('televsion', 'television')).toBe('almost');
+    expect(verdict('I', 'I, me')).toBe('correct');
+    expect(verdict('you', '(singular) you')).toBe('correct');
+  });
+});
+
 describe('matchAnswer: language modes', () => {
   it('pinyin: tone numbers equal tone marks; one wrong tone in a word is a slip', () => {
     expect(matchAnswer('dian4nao3', ['diànnǎo'], options({ mode: 'pinyin' })).verdict).toBe('correct');
