@@ -2,6 +2,8 @@
 import { expect, test } from './fixtures';
 
 test('a typed answer is marked, explained and remembered', async ({ page }) => {
+  // Visits five pages, each compiled on first request by a fresh dev server.
+  test.slow();
   await page.goto('/courses/ai-01-python/lessons/ai-01-python.l01');
   await expect(page.getByRole('heading', { level: 1, name: 'Values, types and variables' })).toBeVisible();
 
