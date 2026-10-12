@@ -43,19 +43,19 @@ Only Google is shown by default. To add Discord, GitHub or email later, enable t
 
 The University and imported courses are not in git (they are your materials), so the site is built and uploaded **from this computer** with the Netlify CLI rather than from the repository.
 
-1. `npm install -g netlify-cli`, then `netlify login`.
-2. In this folder: `netlify sites:create --name <your-site-name>` (it links the folder to the new site; if it does not, run `netlify link`). The site URL is `https://<your-site-name>.netlify.app`.
+1. `npx netlify login` (the Netlify CLI is installed with the project; no global install needed).
+2. In this folder: `npx netlify sites:create --name <your-site-name>`, or for a site that already exists, `npx netlify link --name <your-site-name>`. The site URL is `https://<your-site-name>.netlify.app`.
 3. Back in **Supabase → Authentication → URL Configuration**:
    - Site URL: `https://<your-site-name>.netlify.app`
    - Redirect URLs: `https://<your-site-name>.netlify.app/**`, and for local testing `http://localhost:5173/**` and `http://localhost:8888/**`
 4. Set the site's environment variables. They are needed both while building (the app) and at run time (the edge function):
 
    ```
-   netlify env:set VITE_SUPABASE_URL https://<ref>.supabase.co
-   netlify env:set VITE_SUPABASE_ANON_KEY <publishable key>
-   netlify env:set VITE_AUTH_PROVIDERS google
+   npx netlify env:set VITE_SUPABASE_URL https://<ref>.supabase.co
+   npx netlify env:set VITE_SUPABASE_ANON_KEY <publishable key>
+   npx netlify env:set VITE_AUTH_PROVIDERS google
    # only for a project still on the legacy JWT secret (step 1.4):
-   netlify env:set SUPABASE_JWT_SECRET <legacy secret> --secret
+   npx netlify env:set SUPABASE_JWT_SECRET <legacy secret> --secret
    ```
 
 5. Put the same `VITE_` values in `.env.local` (copy `.env.example`), because the build runs on this computer.
