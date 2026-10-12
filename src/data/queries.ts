@@ -3,7 +3,7 @@
  * mutation invalidates exactly the caches its write can affect.
  */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { type AnswerContext, recordAnswer } from '@/domain/learning/recordAnswer';
+import { type AnswerContext, correctLatestAnswer, recordAnswer, type RecordedAnswer } from '@/domain/learning/recordAnswer';
 import type { ActivityDelta, Settings } from './records';
 import type { AttemptQuery } from './repository';
 import { useRepository } from './useRepository';
@@ -67,19 +67,26 @@ export function useAttempts(query: AttemptQuery = {}) {
   return useQuery({ queryKey: [...learnerKeys.attempts, query], queryFn: () => repository.listAttempts(query) });
 }
 
+/** Caches an answer write can change. */
+const ANSWER_KEYS = [learnerKeys.attempts, learnerKeys.reviewStates, learnerKeys.mastery, learnerKeys.activity, learnerKeys.lessonProgress];
+
 /** Records an answer and refreshes everything that depends on it. */
 export function useRecordAnswer() {
   const repository = useRepository();
   const client = useQueryClient();
   return useMutation({
     mutationFn: (context: AnswerContext) => recordAnswer(repository, context),
-    onSuccess: async () => {
-      await Promise.all(
-        [learnerKeys.attempts, learnerKeys.reviewStates, learnerKeys.mastery, learnerKeys.activity, learnerKeys.lessonProgress].map((queryKey) =>
-          client.invalidateQueries({ queryKey }),
-        ),
-      );
-    },
+    onSuccess: () => Promise.all(ANSWER_KEYS.map((queryKey) => client.invalidateQueries({ queryKey }))),
+  });
+}
+
+/** Re-marks the most recent answer (see correctLatestAnswer) and refreshes the same caches. */
+export function useCorrectLatestAnswer() {
+  const repository = useRepository();
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({ recorded, context }: { recorded: RecordedAnswer; context: AnswerContext }) => correctLatestAnswer(repository, recorded, context),
+    onSuccess: () => Promise.all(ANSWER_KEYS.map((queryKey) => client.invalidateQueries({ queryKey }))),
   });
 }
 

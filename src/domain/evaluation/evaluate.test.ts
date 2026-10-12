@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { questionSchema } from '@/domain/content/schema';
 import type { Question } from '@/domain/content/types';
-import { confirmSelfReview, evaluate, type SyncQuestion } from './evaluate';
+import { acceptAsCorrect, canAcceptAsCorrect, confirmSelfReview, evaluate, type SyncQuestion } from './evaluate';
 import { compareKana } from './kana';
 import { matchAnswer } from './matchAnswer';
 import { matchOptionsSchema } from '@/domain/content/schema';
@@ -182,6 +182,17 @@ describe('evaluate', () => {
     expect(result.rubric?.map((criterion) => criterion.detected)).toEqual([true, true, false]);
     expect(result.missing).toEqual(['Names a remedy']);
     expect(confirmSelfReview(result, 1).verdict).toBe('correct');
+  });
+
+  it('lets the learner overrule a typed answer marked by wording, but not a choice', () => {
+    const short = parse({ id: 'q6', type: 'short', accepted: ['to be sorry'], match: { mode: 'meaning' } }) as SyncQuestion;
+    const wrong = evaluate(short, { type: 'short', text: 'my fault' });
+    expect(canAcceptAsCorrect(short, wrong)).toBe(true);
+    expect(acceptAsCorrect(wrong)).toMatchObject({ verdict: 'correct', score: 1, headline: 'Correct (marked by you)' });
+    expect(canAcceptAsCorrect(short, evaluate(short, { type: 'short', text: "I'm sorry" }))).toBe(false);
+
+    const choice = parse({ id: 'q7', type: 'choice', options: [{ id: 'a', text: 'A' }, { id: 'b', text: 'B' }], correct: ['a'] }) as SyncQuestion;
+    expect(canAcceptAsCorrect(choice, evaluate(choice, { type: 'choice', selected: ['b'] }))).toBe(false);
   });
 
   it('translations fall back to self-review with key-phrase coverage', () => {

@@ -6,10 +6,11 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import type { BubbleState } from '@/components/ui/Bubble';
 import type { PracticeMode } from '@/data/records';
-import { useRecordAnswer } from '@/data/queries';
+import { useCorrectLatestAnswer, useRecordAnswer } from '@/data/queries';
 import type { Question } from '@/domain/content/types';
-import { confirmSelfReview, isSyncQuestion } from '@/domain/evaluation/evaluate';
+import { acceptAsCorrect, canAcceptAsCorrect, confirmSelfReview, isSyncQuestion } from '@/domain/evaluation/evaluate';
 import type { Feedback, Response, Verdict } from '@/domain/evaluation/types';
+import { isLatestAnswer, type RecordedAnswer } from '@/domain/learning/recordAnswer';
 import type { RunResponse } from '@/workers/protocol';
 import { judgeResponse } from './judge';
 import { emptyResponse } from './responses';
@@ -37,6 +38,8 @@ export interface ItemState {
   /** Self-review feedback waiting for the learner to confirm a mark. */
   pendingSelfReview: boolean;
   lastVerdict?: Verdict;
+  /** The stored answer behind the feedback shown, so the learner can still re-mark it. */
+  recorded?: RecordedAnswer;
   error?: string;
 }
 
@@ -78,6 +81,8 @@ export interface PracticeSession {
   takeHint: () => void;
   reveal: () => void;
   confirmSelfReview: (score: number) => void;
+  /** Marks the shown answer correct ("I was right"); undefined when it cannot be re-marked. */
+  acceptAsCorrect?: () => void;
   retry: () => void;
   goTo: (index: number) => void;
   next: () => void;
@@ -91,6 +96,7 @@ export function usePracticeSession(items: SessionItem[], mode: PracticeMode, ini
   const record = useRecordAnswer();
   const recordRef = useRef(record.mutateAsync);
   recordRef.current = record.mutateAsync;
+  const correct = useCorrectLatestAnswer();
 
   const item = items[index];
   const state = item ? (states[item.question.id] ?? freshState(item.question)) : undefined;
@@ -101,7 +107,7 @@ export function usePracticeSession(items: SessionItem[], mode: PracticeMode, ini
 
   const persist = useCallback(
     async (target: SessionItem, itemState: ItemState, feedback: Feedback, extra: { revealed?: boolean; selfAssessed?: boolean } = {}) => {
-      await recordRef.current({
+      const recorded = await recordRef.current({
         question: target.question,
         topics: target.topics,
         courseId: target.courseId,
@@ -116,8 +122,9 @@ export function usePracticeSession(items: SessionItem[], mode: PracticeMode, ini
         firstAttemptInSession: itemState.attempts === 0,
         durationMs: Date.now() - itemState.shownAt,
       });
+      update(target.question.id, target.question, (current) => ({ ...current, recorded }));
     },
-    [mode],
+    [mode, update],
   );
 
   const markIndex = (position: number) => {
@@ -174,6 +181,23 @@ export function usePracticeSession(items: SessionItem[], mode: PracticeMode, ini
     },
     [item, state, index, persist, update],
   );
+
+  // Only the stored answer behind the feedback on screen, while nothing was recorded after it.
+  const recorded = state?.feedback && state.recorded?.baseline.context.feedback === state.feedback ? state.recorded : undefined;
+  const canOverrule =
+    item && state?.feedback && recorded && !state.revealed && !correct.isPending && isLatestAnswer(recorded) && canAcceptAsCorrect(item.question, state.feedback);
+
+  const acceptCorrect = useCallback(async () => {
+    if (!item || !state?.feedback || !recorded) return;
+    const feedback = acceptAsCorrect(state.feedback);
+    try {
+      const corrected = await correct.mutateAsync({ recorded, context: { ...recorded.baseline.context, feedback, selfAssessed: true } });
+      update(item.question.id, item.question, (current) => ({ ...current, feedback, lastVerdict: feedback.verdict, recorded: corrected, error: undefined }));
+      markIndex(index);
+    } catch (error) {
+      update(item.question.id, item.question, (current) => ({ ...current, error: error instanceof Error ? error.message : String(error) }));
+    }
+  }, [item, state, recorded, correct, index, update]);
 
   const reveal = useCallback(() => {
     if (!item || !state) return;
@@ -240,6 +264,7 @@ export function usePracticeSession(items: SessionItem[], mode: PracticeMode, ini
       update(item.question.id, item.question, (current) => ({ ...current, hintsUsed: Math.min(current.hintsUsed + 1, item.question.hints.length) })),
     reveal,
     confirmSelfReview: confirmSelf,
+    acceptAsCorrect: canOverrule ? () => void acceptCorrect() : undefined,
     retry: () =>
       item &&
       update(item.question.id, item.question, (current) => ({ ...current, feedback: undefined, run: undefined, pendingSelfReview: false, shownAt: Date.now() })),

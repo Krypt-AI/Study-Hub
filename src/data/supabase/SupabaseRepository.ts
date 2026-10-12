@@ -108,6 +108,10 @@ export class SupabaseRepository implements StudyRepository {
     await this.put('attempts', [attempt]);
   }
 
+  async replaceAttempt(attempt: AttemptRecord) {
+    await this.put('attempts', [attempt]);
+  }
+
   listAttempts(query: AttemptQuery = {}) {
     return this.select<AttemptRecord>(
       'attempts',

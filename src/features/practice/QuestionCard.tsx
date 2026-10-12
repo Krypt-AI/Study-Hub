@@ -139,6 +139,7 @@ export function QuestionCard({ session, contentLang, context }: QuestionCardProp
           run={state.run}
           pendingSelfReview={state.pendingSelfReview}
           onConfirmSelfReview={session.confirmSelfReview}
+          onAcceptAsCorrect={session.acceptAsCorrect}
         />
       )}
     </article>

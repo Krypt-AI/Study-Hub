@@ -4,12 +4,12 @@ import { LocalRepository } from '@/data/local/LocalRepository';
 import type { ActivityDayRecord } from '@/data/records';
 import { DEFAULT_SETTINGS } from '@/data/records';
 import { questionSchema } from '@/domain/content/schema';
-import { evaluateShort } from '@/domain/evaluation/evaluate';
+import { acceptAsCorrect, evaluateShort } from '@/domain/evaluation/evaluate';
 import type { ShortQuestion } from '@/domain/content/types';
 import { computeStreak, dailyGoalProgress } from './activity';
 import { completeLesson } from './lessonProgress';
 import { masteryLevel, updateMastery } from './mastery';
-import { recordAnswer } from './recordAnswer';
+import { correctLatestAnswer, isLatestAnswer, recordAnswer } from './recordAnswer';
 import { isDue } from './due';
 import { ratingFor, scheduleReview } from './srs';
 
@@ -125,6 +125,28 @@ describe('recordAnswer', () => {
     expect(retry.review).toBeUndefined();
     expect((await repository.getReviewState(question.id))?.due).toBe(first.review?.due);
     expect(await repository.listAttempts()).toHaveLength(2);
+  });
+
+  it('re-marks the latest answer as correct without counting it twice', async () => {
+    const wrong = await answer('laptop', true);
+    const context = { ...wrong.baseline.context, feedback: acceptAsCorrect(wrong.baseline.context.feedback), selfAssessed: true };
+    const corrected = await correctLatestAnswer(repository, wrong, context);
+
+    const attempts = await repository.listAttempts();
+    expect(attempts).toHaveLength(1);
+    expect(attempts[0]).toMatchObject({ id: wrong.attempt.id, verdict: 'correct', score: 1, selfAssessed: true });
+    expect(corrected.review?.lastRating).toBe(Rating.Good);
+    expect(corrected.review?.card.reps).toBe(1);
+    expect((await repository.listTopicMastery())[0]).toMatchObject({ attempts: 1, correct: 1, ema: 1 });
+    expect((await repository.listActivityDays())[0]).toMatchObject({ attempts: 1, correct: 1 });
+    expect(await repository.getLessonProgress('hsk-1.l06')).toMatchObject({ correctQuestionIds: [question.id] });
+  });
+
+  it('only re-marks an answer while nothing was recorded after it', async () => {
+    const wrong = await answer('laptop', true);
+    await answer('computer', false);
+    expect(isLatestAnswer(wrong)).toBe(false);
+    await expect(correctLatestAnswer(repository, wrong, wrong.baseline.context)).rejects.toThrow('most recent');
   });
 
   it('counts a completed lesson once', async () => {

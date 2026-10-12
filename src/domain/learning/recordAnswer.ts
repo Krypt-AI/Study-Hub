@@ -3,13 +3,13 @@
  * daily activity and lesson progress. This is the single write path for answers, so
  * lessons, reviews, quizzes and mock exams all update progress the same way.
  */
-import type { AttemptRecord, PracticeMode, ReviewStateRecord } from '@/data/records';
+import type { AttemptRecord, PracticeMode, ReviewStateRecord, TopicMasteryRecord } from '@/data/records';
 import type { StudyRepository } from '@/data/repository';
 import type { Question } from '@/domain/content/types';
 import { type Feedback, isPassing, type Response } from '@/domain/evaluation/types';
 import { dayKey } from '@/lib/dates';
 import { newId } from '@/lib/ids';
-import { updateMastery } from './mastery';
+import { masteryKey, updateMastery } from './mastery';
 import { ratingFor, scheduleReview } from './srs';
 
 export interface AnswerContext {
@@ -30,28 +30,72 @@ export interface AnswerContext {
   durationMs?: number;
 }
 
+/** The answer and the state it was applied to, so its mark can still be corrected. */
+interface AnswerBaseline {
+  context: AnswerContext;
+  /** Position among all answers written, to tell whether this one is still the latest. */
+  sequence: number;
+  recordedAt: Date;
+  /** Review state and mastery as they were just before the answer was recorded. */
+  review?: ReviewStateRecord;
+  mastery: ReadonlyMap<string, TopicMasteryRecord>;
+}
+
 export interface RecordedAnswer {
   attempt: AttemptRecord;
   review?: ReviewStateRecord;
+  baseline: AnswerBaseline;
 }
 
 let queue: Promise<unknown> = Promise.resolve();
+let latestSequence = 0;
 
 /**
- * Records answers one at a time, in the order given: each write reads and updates review
+ * Runs writes one at a time, in the order given: each write reads and updates review
  * state, mastery and lesson progress, so overlapping writes could lose an update.
  */
-export function recordAnswer(repository: StudyRepository, context: AnswerContext, now: Date = new Date()): Promise<RecordedAnswer> {
-  const write = queue.catch(() => undefined).then(() => writeAnswer(repository, context, now));
-  queue = write;
-  return write;
+function enqueue<T>(write: () => Promise<T>): Promise<T> {
+  const result = queue.catch(() => undefined).then(write);
+  queue = result;
+  return result;
 }
 
-async function writeAnswer(repository: StudyRepository, context: AnswerContext, now: Date): Promise<RecordedAnswer> {
+export function recordAnswer(repository: StudyRepository, context: AnswerContext, now: Date = new Date()): Promise<RecordedAnswer> {
+  return enqueue(async () => applyAnswer(repository, await readBaseline(repository, context, now)));
+}
+
+/** True while no other answer has been recorded since this one. */
+export const isLatestAnswer = (recorded: RecordedAnswer) => recorded.baseline.sequence === latestSequence;
+
+/**
+ * Re-marks the most recent answer as if it had been marked that way at the time (e.g. the
+ * learner's "I was right"): the attempt is replaced, and the schedule and mastery are
+ * recomputed from the state the answer was applied to, so nothing is counted twice. Only
+ * the latest answer can be re-marked, since later answers were built on the old mark.
+ */
+export function correctLatestAnswer(repository: StudyRepository, recorded: RecordedAnswer, context: AnswerContext): Promise<RecordedAnswer> {
+  return enqueue(async () => {
+    if (!isLatestAnswer(recorded)) throw new Error('Only your most recent answer can be re-marked.');
+    return applyAnswer(repository, { ...recorded.baseline, context }, recorded.attempt);
+  });
+}
+
+async function readBaseline(repository: StudyRepository, context: AnswerContext, now: Date): Promise<AnswerBaseline> {
+  const review = context.firstAttemptInSession ? await repository.getReviewState(context.question.id) : undefined;
+  const keys = new Set(context.topics.map((topicId) => masteryKey(topicId, context.question.skill)));
+  const mastery = keys.size ? (await repository.listTopicMastery()).filter((record) => keys.has(record.key)) : [];
+  latestSequence += 1;
+  return { context, sequence: latestSequence, recordedAt: now, review, mastery: new Map(mastery.map((record) => [record.key, record])) };
+}
+
+const countsAsCorrect = (attempt: Pick<AttemptRecord, 'verdict' | 'revealed'>) => isPassing(attempt.verdict) && !attempt.revealed;
+
+/** Writes an answer on top of its baseline; `replacing` is the attempt being re-marked, if any. */
+async function applyAnswer(repository: StudyRepository, baseline: AnswerBaseline, replacing?: AttemptRecord): Promise<RecordedAnswer> {
+  const { context, recordedAt: now } = baseline;
   const at = now.toISOString();
-  const passing = isPassing(context.feedback.verdict) && !context.revealed;
   const attempt: AttemptRecord = {
-    id: newId(),
+    id: replacing?.id ?? newId(),
     questionId: context.question.id,
     courseId: context.courseId,
     lessonId: context.lessonId,
@@ -70,15 +114,15 @@ async function writeAnswer(repository: StudyRepository, context: AnswerContext, 
     durationMs: context.durationMs,
     createdAt: at,
   };
-  await repository.addAttempt(attempt);
+  const passing = countsAsCorrect(attempt);
+  await (replacing ? repository.replaceAttempt(attempt) : repository.addAttempt(attempt));
 
   let review: ReviewStateRecord | undefined;
   if (context.firstAttemptInSession) {
     const settings = await repository.getSettings();
-    const previous = await repository.getReviewState(context.question.id);
     const rating = ratingFor(context.feedback, { hintsUsed: context.hintsUsed, revealed: context.revealed });
     review = scheduleReview(
-      previous,
+      baseline.review,
       { itemId: context.question.id, courseId: context.courseId, lessonId: context.lessonId, topics: context.topics },
       rating,
       now,
@@ -88,9 +132,8 @@ async function writeAnswer(repository: StudyRepository, context: AnswerContext, 
   }
 
   if (context.topics.length) {
-    const existing = new Map((await repository.listTopicMastery()).map((record) => [record.key, record]));
     const updates = context.topics.map((topicId) =>
-      updateMastery(existing.get(`${topicId}|${context.question.skill}`), {
+      updateMastery(baseline.mastery.get(masteryKey(topicId, context.question.skill)), {
         topicId,
         skill: context.question.skill,
         courseId: context.courseId,
@@ -103,13 +146,17 @@ async function writeAnswer(repository: StudyRepository, context: AnswerContext, 
     await repository.saveTopicMastery(updates);
   }
 
-  await repository.recordActivity(dayKey(now), { attempts: 1, correct: passing ? 1 : 0 });
+  if (!replacing) {
+    await repository.recordActivity(dayKey(now), { attempts: 1, correct: passing ? 1 : 0 });
+  } else if (passing !== countsAsCorrect(replacing)) {
+    await repository.recordActivity(dayKey(now), { correct: passing ? 1 : -1 });
+  }
 
   if (context.lessonId && context.courseId) {
     await recordLessonAnswer(repository, context.courseId, context.lessonId, context.question.id, passing, at);
   }
 
-  return { attempt, review };
+  return { attempt, review, baseline };
 }
 
 async function recordLessonAnswer(

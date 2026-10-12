@@ -166,6 +166,25 @@ export function evaluateLong(question: LongQuestion, text: string): Feedback {
   });
 }
 
+/**
+ * Typed answers are judged by wording, which can miss an answer that means the same thing,
+ * so the learner may overrule a mark below "correct" ("I was right").
+ */
+export function canAcceptAsCorrect(question: Question, feedback: Feedback): boolean {
+  const typed = question.type === 'short' || question.type === 'cloze' || question.type === 'translation';
+  return typed && (feedback.verdict === 'almost' || feedback.verdict === 'partial' || feedback.verdict === 'incorrect');
+}
+
+export function acceptAsCorrect(original: Feedback): Feedback {
+  return {
+    ...original,
+    verdict: 'correct',
+    score: 1,
+    headline: `${HEADLINES.correct} (marked by you)`,
+    points: [...original.points, { tone: 'info', message: 'You marked this answer as correct.' }],
+  };
+}
+
 /** Final result once the learner has confirmed a self-review (ticked rubric criteria or chose a grade). */
 export function confirmSelfReview(original: Feedback, score: number): Feedback {
   const clamped = Math.min(1, Math.max(0, score));

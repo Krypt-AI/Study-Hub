@@ -18,6 +18,10 @@ export class LocalRepository implements StudyRepository {
     await this.db.attempts.add(attempt);
   }
 
+  async replaceAttempt(attempt: Parameters<StudyRepository['replaceAttempt']>[0]) {
+    await this.db.attempts.put(attempt);
+  }
+
   async listAttempts(query: AttemptQuery = {}) {
     let collection = query.questionId
       ? this.db.attempts.where('questionId').equals(query.questionId)

@@ -1,7 +1,8 @@
 /**
  * What the learner sees after answering: the mark, specific feedback, the breakdown by gap
  * or test, the expected or model answer, the explanation, and how the answer was judged.
- * Self-reviewed answers end with the rubric checklist the learner confirms.
+ * Self-reviewed answers end with the rubric checklist the learner confirms; typed answers
+ * marked wrong by wording can be overruled ("I was right").
  */
 import { CheckCircle2, Info, TriangleAlert, XCircle } from 'lucide-react';
 import { useState } from 'react';
@@ -37,9 +38,11 @@ export interface FeedbackPanelProps {
   run?: RunResponse;
   pendingSelfReview: boolean;
   onConfirmSelfReview: (score: number) => void;
+  /** Lets the learner overrule a wording-based mark ("I was right"); omitted when not allowed. */
+  onAcceptAsCorrect?: () => void;
 }
 
-export function FeedbackPanel({ question, feedback, run, pendingSelfReview, onConfirmSelfReview }: FeedbackPanelProps) {
+export function FeedbackPanel({ question, feedback, run, pendingSelfReview, onConfirmSelfReview, onAcceptAsCorrect }: FeedbackPanelProps) {
   const imageOnlyChoice = isNumberedChoice(question);
   return (
     <section aria-live="polite" aria-label="Feedback" className="flex flex-col gap-4 border-t border-print-line pt-4">
@@ -93,6 +96,15 @@ export function FeedbackPanel({ question, feedback, run, pendingSelfReview, onCo
       {!pendingSelfReview && feedback.expected.length > 0 && feedback.verdict !== 'correct' && !imageOnlyChoice && <ExpectedAnswer question={question} feedback={feedback} />}
 
       {pendingSelfReview && <ExpectedAnswer question={question} feedback={feedback} />}
+
+      {onAcceptAsCorrect && (
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-md border border-dashed border-rule px-4 py-2.5">
+          <p className="text-sm text-ink-muted">Your answer means the same thing in another wording?</p>
+          <Button size="sm" icon={<CheckCircle2 className="size-4" />} onClick={onAcceptAsCorrect}>
+            I was right
+          </Button>
+        </div>
+      )}
 
       {question.explanation && !pendingSelfReview && (
         <div className="rounded-md bg-sheet-2 px-4 py-3">

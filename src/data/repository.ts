@@ -40,6 +40,8 @@ export interface StudyRepository {
   readonly backend: 'local' | 'supabase';
 
   addAttempt(attempt: AttemptRecord): Promise<void>;
+  /** Overwrites a recorded attempt with the same id, e.g. after the learner re-marks it. */
+  replaceAttempt(attempt: AttemptRecord): Promise<void>;
   /** Newest first. */
   listAttempts(query?: AttemptQuery): Promise<AttemptRecord[]>;
 
