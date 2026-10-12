@@ -5,10 +5,11 @@ The hosted site works like this:
 | Who | Can open | Progress |
 |---|---|---|
 | Anyone (guest) | University courses | kept only until the page is closed |
-| Signed in (Google, Discord or GitHub) | University courses | saved to their account |
-| Signed in **and on the members list** | every course | saved to their account |
+| Signed in (Google, Discord or GitHub) | every course: each person picks what to study | saved to their account |
 
-Netlify serves the app. Supabase handles sign-in and stores everyone's progress. Courses outside the University area (HSK, JLPT, 新にほんご500問, Python, SQL), their page images and audio are checked on every request by an edge function (`netlify/edge-functions/content-gate`). Without a member's sign-in the file is refused, so it cannot be downloaded by guessing its URL. The rules are in `src/domain/content/accessRules.ts`.
+Anyone who signs in gets full access: there is no list of approved accounts to keep. Share the link only with the people you study with.
+
+Netlify serves the app. Supabase handles sign-in and stores everyone's progress. Courses outside the University area (HSK, JLPT, 新にほんご500問, Python, SQL), their page images and audio are checked on every request by an edge function (`netlify/edge-functions/content-gate`). Without a sign-in the file is refused, so it cannot be downloaded by guessing its URL. The rules are in `src/domain/content/accessRules.ts`.
 
 You need about an hour for the first setup. Do the steps in order.
 
@@ -18,9 +19,8 @@ You need about an hour for the first setup. Do the steps in order.
 2. Apply the three migrations in `supabase/migrations/`, oldest first. Either:
    - `npx supabase login`, `npx supabase link --project-ref <ref>`, `npx supabase db push`, or
    - open **SQL Editor**, paste each file and run it, in name order.
-3. **Turn on the members hook**: **Authentication → Hooks → Customize Access Token (JWT) Claims → Postgres**, schema `public`, function `custom_access_token_hook`. Without it nobody is a member, so only University courses open.
-4. Note two values from **Project Settings → API Keys / Data API**: the project URL `https://<ref>.supabase.co` and the **publishable** key (`sb_publishable_…`, or the legacy `anon` key). Never use the secret / `service_role` key in the app.
-5. Check **Project Settings → JWT Keys**. If the current signing key is the **legacy JWT secret**, also copy that secret for step 3.4. If the project uses the newer signing keys, you need nothing else.
+3. Note two values from **Project Settings → API Keys / Data API**: the project URL `https://<ref>.supabase.co` and the **publishable** key (`sb_publishable_…`, or the legacy `anon` key). Never use the secret / `service_role` key in the app.
+4. Check **Project Settings → JWT Keys**. If the current signing key is the **legacy JWT secret**, also copy that secret for step 3.4. If the project uses the newer signing keys, you need nothing else.
 
 ## 2. Sign-in providers
 
@@ -55,7 +55,7 @@ The University and imported courses are not in git (they are your materials), so
    netlify env:set VITE_SUPABASE_URL https://<ref>.supabase.co
    netlify env:set VITE_SUPABASE_ANON_KEY <publishable key>
    netlify env:set VITE_AUTH_PROVIDERS google,discord,github
-   # only for a project still on the legacy JWT secret (step 1.5):
+   # only for a project still on the legacy JWT secret (step 1.4):
    netlify env:set SUPABASE_JWT_SECRET <legacy secret> --secret
    ```
 
@@ -72,35 +72,23 @@ Both run `npm run check:deploy` first. It stops the deploy if Supabase is not co
 
 Redeploy whenever content changes (new lessons, a new semester, imported books).
 
-## 5. Members
+## 5. Who has signed in
 
-Sign in on the live site yourself first. Then add the emails that may open every course, yourself included, in **SQL Editor**:
-
-```sql
-insert into private.member_emails (email, note) values
-  ('you@gmail.com', 'me'),
-  ('friend@gmail.com', 'Mei');
-```
-
-Use lower case. A friend's membership takes effect at their next sign-in or within the hour, or at once if they press **Check again** on a locked course. To remove someone: `delete from private.member_emails where email = 'friend@gmail.com';`.
-
-Membership needs the account's email to be **confirmed** by the provider, so typing someone else's address into another provider does not work. To see who has signed in (to copy an email), open **Table Editor → profiles**: it holds each user's email, name, picture and sign-in providers, refreshed at every sign-in.
+**Supabase → Table Editor → profiles** lists everyone who has signed in: email, name, picture and sign-in providers, refreshed at each sign-in. To remove someone, delete their user in **Authentication → Users** (their progress is deleted with it); they could sign in again with the link, so change the site name if the link has spread.
 
 ## 6. Check the live site
 
-1. In a private window: the catalog shows **Members** tags on the non-University courses, a University course opens, and an HSK course says *This course is for members*.
-2. Opening a members-only file directly, such as `https://<site>/content/courses/hsk-1.json`, answers **401**.
-3. Sign in with each provider. **Settings → Your account** shows your name, picture and provider. Before you are on the list it says *Not on the members list yet*.
-4. Add yourself to the members list, press **Check again**: every course opens, and search finds HSK and JLPT words.
+1. In a private window: the catalog shows **Sign in** tags on the non-University courses, a University course opens, and an HSK course says *Sign in to open this course*.
+2. Opening a locked file directly, such as `https://<site>/content/courses/hsk-1.json`, answers **401**.
+3. Sign in with each provider: every course opens, search finds HSK and JLPT words, and **Settings → Your account** shows your name, picture and provider.
 
 ## Running the hosted setup locally
 
-`npm run dev:netlify` runs the app behind the edge function at http://localhost:8888, using the same rules as the live site. Locally the edge function reads its settings from `.env.local`, not from variables set in your shell, so put `SUPABASE_JWT_SECRET` there too if your project uses the legacy secret. Without the settings it locks every members-only file, as intended. Plain `npm run dev` does not run the edge function: with Supabase configured you see the sign-in flow, but files are not locked. Without Supabase settings the app runs fully locally, as before, with nothing locked.
+`npm run dev:netlify` runs the app behind the edge function at http://localhost:8888, using the same rules as the live site. Locally the edge function reads its settings from `.env.local`, not from variables set in your shell, so put `SUPABASE_JWT_SECRET` there too if your project uses the legacy secret. Without the settings it locks every course outside the University area, as intended. Plain `npm run dev` does not run the edge function: with Supabase configured you see the sign-in flow, but files are not locked. Without Supabase settings the app runs fully locally, as before, with nothing locked.
 
 ## What is protected, and what is not
 
-- Members-only course files, their page images and audio, and the members' search index are refused without a valid member token. The token is signed by Supabase and checked with your project's signing keys, so it cannot be forged or edited in the browser.
+- The locked courses' files, their page images and audio, and their search index are refused without a valid sign-in. The token is signed by Supabase and checked with your project's signing keys, so it cannot be forged; Supabase's anonymous sign-ins (off by default) do not count.
 - The catalog (course titles, lesson titles and counts), the University courses and their pages are public.
 - Each user's progress is private to them: row level security in the database (see [SUPABASE.md](SUPABASE.md)).
-- Anyone can create an account. Without being on the members list it only lets them save University progress.
-- The HSK and JLPT material comes from copyrighted books. Keep the members list to the people you study with.
+- Anyone who has the link can sign in with a Google, Discord or GitHub account and open every course. The HSK and JLPT material comes from copyrighted books, so share the link only with the people you study with, and keep it out of public posts.

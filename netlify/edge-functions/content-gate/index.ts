@@ -1,14 +1,14 @@
 /**
- * Netlify edge function in front of every file: members-only content (all courses outside the
- * University area, their page images and audio, and the members' search index) is served only
- * to a signed-in member. See src/domain/content/accessRules.ts and docs/DEPLOY.md.
+ * Netlify edge function in front of every file: the courses outside the University area, their
+ * page images and audio, and their search index are served only to signed-in users. See
+ * src/domain/content/accessRules.ts and docs/DEPLOY.md.
  */
 import type { Config, Context } from '@netlify/edge-functions';
 import { ACCESS_COOKIE, ACCESS_MANIFEST_PATH, type AccessManifest } from '../../../src/domain/content/accessRules.ts';
 import { decide } from './gate.ts';
 import { supabaseTokenVerifier, type TokenVerifier } from './token.ts';
 
-/** With no manifest every course and material is treated as members-only. */
+/** With no manifest every course and material is locked. */
 const LOCKED: AccessManifest = { openCourses: [], openSources: [] };
 
 let manifest: Promise<AccessManifest> | undefined;
@@ -24,7 +24,7 @@ function loadManifest(origin: string): Promise<AccessManifest> {
 
 function tokenVerifier(): TokenVerifier {
   const supabaseUrl = Netlify.env.get('SUPABASE_URL') ?? Netlify.env.get('VITE_SUPABASE_URL');
-  // Without a Supabase project nobody can sign in, so members-only content stays locked.
+  // Without a Supabase project nobody can sign in, so locked content stays locked.
   verifier ??= supabaseUrl ? supabaseTokenVerifier({ supabaseUrl, jwtSecret: Netlify.env.get('SUPABASE_JWT_SECRET') }) : async () => undefined;
   return verifier;
 }
@@ -36,9 +36,9 @@ export default async function contentGate(request: Request, context: Context): P
   if (!decision.allow) {
     return Response.json({ error: decision.message }, { status: decision.status, headers: { 'Cache-Control': 'no-store' } });
   }
-  if (!decision.members) return undefined;
+  if (!decision.locked) return undefined;
 
-  // Members' files may be cached by the member's browser, never by a shared cache.
+  // Locked files may be cached by the user's browser, never by a shared cache.
   const response = await context.next();
   const headers = new Headers(response.headers);
   headers.set('Cache-Control', 'private, max-age=3600');

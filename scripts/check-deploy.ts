@@ -25,7 +25,7 @@ export function deployProblems(env: Record<string, string | undefined>, hasPriva
   const problems: string[] = [];
   const url = env.VITE_SUPABASE_URL?.trim();
   const key = env.VITE_SUPABASE_ANON_KEY?.trim();
-  if (!url) problems.push('VITE_SUPABASE_URL is not set: without Supabase nobody can sign in and every members-only course stays locked.');
+  if (!url) problems.push('VITE_SUPABASE_URL is not set: without Supabase nobody can sign in and every course outside the University area stays locked.');
   else if (!/^https:\/\/[^/]+$/u.test(url.replace(/\/+$/u, ''))) problems.push(`VITE_SUPABASE_URL should look like https://<project-ref>.supabase.co, not "${url}".`);
   if (!key) problems.push('VITE_SUPABASE_ANON_KEY is not set (Supabase: Project Settings -> API Keys, the publishable or anon key).');
   else if (key.startsWith('sb_secret_') || jwtRole(key) === 'service_role') {

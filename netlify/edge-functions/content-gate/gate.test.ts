@@ -21,24 +21,24 @@ beforeAll(async () => {
 
 describe('supabaseTokenVerifier', () => {
   it('accepts a token signed with the project key', async () => {
-    expect(await verify(await sign({ study_hub_member: true }))).toMatchObject({ sub: 'user-1', study_hub_member: true });
+    expect(await verify(await sign({ role: 'authenticated' }))).toMatchObject({ sub: 'user-1', role: 'authenticated' });
   });
 
   it('accepts a token signed with the legacy secret', async () => {
-    const token = await new SignJWT({ study_hub_member: true })
+    const token = await new SignJWT({ role: 'authenticated' })
       .setProtectedHeader({ alg: 'HS256' })
       .setIssuer(`${SUPABASE_URL}/auth/v1`)
       .setAudience('authenticated')
       .setExpirationTime('1h')
       .sign(new TextEncoder().encode(SECRET));
-    expect(await verify(token)).toMatchObject({ study_hub_member: true });
+    expect(await verify(token)).toMatchObject({ role: 'authenticated' });
   });
 
   it('rejects missing, expired, foreign, forged and garbage tokens', async () => {
     expect(await verify(undefined)).toBeUndefined();
     expect(await verify(await sign({}, { expiresIn: '-1m' }))).toBeUndefined();
     expect(await verify(await sign({}, { issuer: 'https://other.supabase.co/auth/v1' }))).toBeUndefined();
-    const forged = await new SignJWT({ study_hub_member: true })
+    const forged = await new SignJWT({ role: 'authenticated' })
       .setProtectedHeader({ alg: 'HS256' })
       .setIssuer(`${SUPABASE_URL}/auth/v1`)
       .setAudience('authenticated')
@@ -51,16 +51,17 @@ describe('supabaseTokenVerifier', () => {
 
 describe('decide', () => {
   it('lets anyone open university content', async () => {
-    expect(await decide('/content/courses/cmpd363.json', undefined, manifest, verify)).toEqual({ allow: true, members: false });
+    expect(await decide('/content/courses/cmpd363.json', undefined, manifest, verify)).toEqual({ allow: true, locked: false });
   });
 
-  it('asks signed-out visitors to sign in, and non-members to be added', async () => {
+  it('asks signed-out visitors, and anonymous or forged sessions, to sign in', async () => {
     expect(await decide('/content/courses/hsk-1.json', undefined, manifest, verify)).toMatchObject({ allow: false, status: 401 });
-    expect(await decide('/content/courses/hsk-1.json', await sign({ study_hub_member: false }), manifest, verify)).toMatchObject({ allow: false, status: 403 });
-    expect(await decide('/content/courses/hsk-1.json', await sign({}), manifest, verify)).toMatchObject({ allow: false, status: 403 });
+    expect(await decide('/content/courses/hsk-1.json', await sign({ role: 'authenticated', is_anonymous: true }), manifest, verify)).toMatchObject({ allow: false, status: 401 });
+    expect(await decide('/content/courses/hsk-1.json', await sign({ role: 'anon' }), manifest, verify)).toMatchObject({ allow: false, status: 401 });
   });
 
-  it('serves members', async () => {
-    expect(await decide('/materials/audio/n5/03.mp3', await sign({ study_hub_member: true }), manifest, verify)).toEqual({ allow: true, members: true });
+  it('serves every signed-in account', async () => {
+    expect(await decide('/materials/audio/n5/03.mp3', await sign({ role: 'authenticated' }), manifest, verify)).toEqual({ allow: true, locked: true });
+    expect(await decide('/content/courses/hsk-1.json', await sign({ role: 'authenticated', is_anonymous: false }), manifest, verify)).toEqual({ allow: true, locked: true });
   });
 });

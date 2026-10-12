@@ -10,8 +10,6 @@ export interface Account {
   avatarUrl?: string;
   /** Providers the account has signed in with, e.g. ['google']. */
   providers: string[];
-  /** On the members list: may open the courses outside the University area. */
-  member: boolean;
 }
 
 export type AuthState =
@@ -28,8 +26,8 @@ export interface AuthActions {
   /** Resolves to true when the account still has to be confirmed by email. */
   signUpWithEmail(email: string, password: string): Promise<boolean>;
   signOut(): Promise<void>;
-  /** Fetches a fresh token, picking up a change to the members list. */
-  refreshMembership(): Promise<void>;
+  /** Fetches a fresh access token, e.g. after the host refused an expired one. */
+  refreshSession(): Promise<void>;
 }
 
 export type Auth = AuthState & AuthActions;
@@ -42,5 +40,5 @@ export function useAuth(): Auth {
   return auth;
 }
 
-/** Members-only courses can be opened: always in local mode, otherwise by members. */
-export const canOpenMembersContent = (auth: AuthState) => auth.status === 'local' || (auth.status === 'signed-in' && auth.account.member);
+/** The courses outside the University area can be opened: in local mode, or once signed in. */
+export const canOpenLockedContent = (auth: AuthState) => auth.status === 'local' || auth.status === 'signed-in';

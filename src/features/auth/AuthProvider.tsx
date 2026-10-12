@@ -1,13 +1,13 @@
 /**
  * Tracks the Supabase session (when Supabase is configured) and keeps the access cookie in step
- * with it, so the host can serve members-only files. Sign-in with Google, Discord or GitHub goes
+ * with it, so the host can serve the locked courses' files. Sign-in with Google, Discord or GitHub goes
  * through Supabase and returns to /sign-in, which then continues to the page the user came from.
  */
 import type { Session } from '@supabase/supabase-js';
 import { type ReactNode, useEffect, useMemo, useState } from 'react';
 import { supabaseConfig } from '@/data/backend';
 import { supabaseClient } from '@/data/supabase/client';
-import { accessCookie, isMemberToken } from './accessToken';
+import { accessCookie } from './accessToken';
 import { type Account, type Auth, AuthContext, type AuthActions, type AuthState, type OAuthProviderId } from './useAuth';
 
 function accountFrom(session: Session): Account {
@@ -21,7 +21,6 @@ function accountFrom(session: Session): Account {
     name: text(metadata.full_name) ?? text(metadata.name) ?? text(metadata.user_name) ?? user.email?.split('@')[0] ?? 'You',
     avatarUrl: text(metadata.avatar_url) ?? text(metadata.picture),
     providers: Array.isArray(providers) ? providers.filter((provider): provider is string => typeof provider === 'string') : [],
-    member: isMemberToken(session.access_token),
   };
 }
 
@@ -36,7 +35,7 @@ const LOCAL: Auth = {
   signInWithEmail: () => Promise.resolve(),
   signUpWithEmail: () => Promise.resolve(false),
   signOut: () => Promise.resolve(),
-  refreshMembership: () => Promise.resolve(),
+  refreshSession: () => Promise.resolve(),
 };
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -79,7 +78,7 @@ function SupabaseAuthProvider({ children }: { children: ReactNode }) {
         // Start clean: every cached query belonged to the account.
         window.location.assign('/');
       },
-      async refreshMembership() {
+      async refreshSession() {
         fail((await auth().refreshSession()).error);
       },
     };

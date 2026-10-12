@@ -1,6 +1,5 @@
-/** Settings: who is signed in, with which providers, whether they are a member, and sign-out. */
-import { useQueryClient } from '@tanstack/react-query';
-import { LogIn, LogOut, RefreshCw } from 'lucide-react';
+/** Settings: who is signed in, with which providers, and sign-out. */
+import { LogIn, LogOut } from 'lucide-react';
 import { useState } from 'react';
 import { Button, ButtonLink } from '@/components/ui/Button';
 import { Tag } from '@/components/ui/Feedback';
@@ -13,15 +12,14 @@ const providerLabel = (provider: string) => PROVIDER_LABELS[provider as OAuthPro
 
 export function AccountSheet() {
   const auth = useAuth();
-  const queryClient = useQueryClient();
-  const [busy, setBusy] = useState<'refresh' | 'sign-out'>();
+  const [signingOut, setSigningOut] = useState(false);
 
   if (auth.status === 'guest') {
     return (
       <Sheet title="Your account">
         <div className="flex flex-col gap-3 text-sm">
           <p>You are browsing as a guest. Progress made now is kept only until you close or reload the page.</p>
-          <p className="text-ink-muted">Sign in with Google, Discord or GitHub to save your progress, reviews and code to your account.</p>
+          <p className="text-ink-muted">Sign in with Google, Discord or GitHub to open every course and save your progress, reviews and code to your account.</p>
           <ButtonLink to="/sign-in?next=%2Fsettings" variant="primary" icon={<LogIn className="size-4" />} className="self-start">
             Sign in
           </ButtonLink>
@@ -32,16 +30,12 @@ export function AccountSheet() {
   if (auth.status !== 'signed-in') return null;
   const { account } = auth;
 
-  const run = async (action: 'refresh' | 'sign-out') => {
-    setBusy(action);
+  const signOut = async () => {
+    setSigningOut(true);
     try {
-      if (action === 'sign-out') await auth.signOut();
-      else {
-        await auth.refreshMembership();
-        await queryClient.resetQueries({ queryKey: ['content'] });
-      }
+      await auth.signOut();
     } finally {
-      setBusy(undefined);
+      setSigningOut(false);
     }
   };
 
@@ -65,26 +59,10 @@ export function AccountSheet() {
             ))}
           </p>
         )}
-        <p>
-          {account.member ? (
-            <>
-              <Tag tone="print">Member</Tag> Every course is open to you.
-            </>
-          ) : (
-            <>Not on the members list yet: the University courses are open, the others need the owner of this Study Hub to add your email.</>
-          )}
-        </p>
-        <p className="text-ink-muted">Your progress, calendar and code are saved to your account. Only you can read or change them.</p>
-        <div className="flex flex-wrap gap-2">
-          {!account.member && (
-            <Button size="sm" icon={<RefreshCw className="size-4" />} loading={busy === 'refresh'} onClick={() => void run('refresh')}>
-              Check membership again
-            </Button>
-          )}
-          <Button size="sm" icon={<LogOut className="size-4" />} loading={busy === 'sign-out'} onClick={() => void run('sign-out')}>
-            Sign out
-          </Button>
-        </div>
+        <p className="text-ink-muted">Every course is open to you. Your progress, calendar and code are saved to your account; only you can read or change them.</p>
+        <Button size="sm" icon={<LogOut className="size-4" />} loading={signingOut} onClick={() => void signOut()} className="self-start">
+          Sign out
+        </Button>
       </div>
     </Sheet>
   );

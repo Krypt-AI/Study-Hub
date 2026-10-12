@@ -52,7 +52,7 @@ content/
   generated/     courses built from your books (git-ignored)
 scripts/         content build, importers, exercise verification
 supabase/        database migrations and their row-level-security tests
-netlify/         edge function that serves members-only content to members
+netlify/         edge function that serves the locked courses only to signed-in users
 tools/content-pipeline/   Python OCR and asset extraction
 e2e/             Playwright tests
 ```
@@ -62,6 +62,6 @@ e2e/             Playwright tests
 - [Architecture](docs/ARCHITECTURE.md): how the pieces fit, data model, evaluation, security
 - [Content pipeline](docs/CONTENT_PIPELINE.md): turning your books into courses, and authoring content
 - [Supabase](docs/SUPABASE.md): optional cloud storage and sign-in
-- [Deploy](docs/DEPLOY.md): hosting on Netlify, sign-in providers, the members list
+- [Deploy](docs/DEPLOY.md): hosting on Netlify with Google, Discord and GitHub sign-in
 - [Status](docs/STATUS.md): what is done, what is not, external services and costs
 - [Design system](DESIGN.md): the "answer sheet" visual language

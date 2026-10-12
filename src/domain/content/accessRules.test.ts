@@ -14,27 +14,27 @@ describe('accessFor', () => {
     expect(accessFor('/courses/hsk-1', manifest)).toBe('open');
   });
 
-  it('keeps every other course, material and the members search index for members', () => {
-    expect(accessFor('/content/courses/hsk-1.json', manifest)).toBe('members');
-    expect(accessFor('/materials/pages/hsk1-textbook/p0001.webp', manifest)).toBe('members');
-    expect(accessFor('/materials/audio/n5/03.mp3', manifest)).toBe('members');
-    expect(accessFor('/content/search-index-members.json', manifest)).toBe('members');
+  it('keeps every other course, its materials and their search index for signed-in users', () => {
+    expect(accessFor('/content/courses/hsk-1.json', manifest)).toBe('account');
+    expect(accessFor('/materials/pages/hsk1-textbook/p0001.webp', manifest)).toBe('account');
+    expect(accessFor('/materials/audio/n5/03.mp3', manifest)).toBe('account');
+    expect(accessFor('/content/search-index-account.json', manifest)).toBe('account');
   });
 
   it('cannot be bypassed by case, escapes or odd paths', () => {
-    expect(accessFor('/Content/Courses/HSK-1.json', manifest)).toBe('members');
-    expect(accessFor('/MATERIALS/pages/hsk1-textbook/p0001.webp', manifest)).toBe('members');
-    expect(accessFor('/content/courses/hsk%2D1.json', manifest)).toBe('members');
-    expect(accessFor('/content/courses/cmpd363%2f..%2fhsk-1.json', manifest)).toBe('members');
-    expect(accessFor('/content/courses/%E0%A4%A.json', manifest)).toBe('members');
-    expect(accessFor('/materials/hsk1-textbook', manifest)).toBe('members');
-    expect(accessFor('/content/search-index-members.json'.toUpperCase(), manifest)).toBe('members');
+    expect(accessFor('/Content/Courses/HSK-1.json', manifest)).toBe('account');
+    expect(accessFor('/MATERIALS/pages/hsk1-textbook/p0001.webp', manifest)).toBe('account');
+    expect(accessFor('/content/courses/hsk%2D1.json', manifest)).toBe('account');
+    expect(accessFor('/content/courses/cmpd363%2f..%2fhsk-1.json', manifest)).toBe('account');
+    expect(accessFor('/content/courses/%E0%A4%A.json', manifest)).toBe('account');
+    expect(accessFor('/materials/hsk1-textbook', manifest)).toBe('account');
+    expect(accessFor('/content/search-index-account.json'.toUpperCase(), manifest)).toBe('account');
   });
 
   it('locks everything when the manifest could not be loaded', () => {
     const empty = { openCourses: [], openSources: [] };
-    expect(accessFor('/content/courses/cmpd363.json', empty)).toBe('members');
-    expect(accessFor('/materials/pages/cmpd363-midterm-sem1-2526/p0001.webp', empty)).toBe('members');
+    expect(accessFor('/content/courses/cmpd363.json', empty)).toBe('account');
+    expect(accessFor('/materials/pages/cmpd363-midterm-sem1-2526/p0001.webp', empty)).toBe('account');
   });
 });
 
@@ -55,8 +55,8 @@ describe('buildAccessManifest', () => {
 describe('splitSearchDocuments', () => {
   it('puts open courses, certifications and roadmaps in the open index', () => {
     const document = (id: string, courseId?: string) => ({ id, courseId }) as SearchDocument;
-    const { open, members } = splitSearchDocuments([document('a', 'cmpd363'), document('b', 'hsk-1'), document('c')], manifest);
+    const { open, account } = splitSearchDocuments([document('a', 'cmpd363'), document('b', 'hsk-1'), document('c')], manifest);
     expect(open.map((item) => item.id)).toEqual(['a', 'c']);
-    expect(members.map((item) => item.id)).toEqual(['b']);
+    expect(account.map((item) => item.id)).toEqual(['b']);
   });
 });

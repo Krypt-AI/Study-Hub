@@ -44,7 +44,7 @@ export default function SignInPage() {
           <h1 className="font-display text-xl font-semibold">Sign in to Study Hub</h1>
         </header>
         <div className="flex flex-col gap-4 px-5 py-5">
-          <p className="text-sm text-ink-muted">Save your progress, reviews and code to your account and pick up on any device. Members can also open the language and IT courses.</p>
+          <p className="text-sm text-ink-muted">Open every course, including the language and IT ones, and save your progress, reviews and code to your account on any device.</p>
           <div className="flex flex-col gap-2">
             {methods
               .filter((method): method is OAuthProviderId => method !== 'email')

@@ -13,7 +13,7 @@ import { isOpenCategory } from '@/domain/content/accessManifest';
 import { useCatalog } from '@/domain/content/load';
 import type { CourseCategory, CourseSummary, University } from '@/domain/content/types';
 import { courseUrl } from '@/domain/content/urls';
-import { canOpenMembersContent, useAuth } from '@/features/auth/useAuth';
+import { canOpenLockedContent, useAuth } from '@/features/auth/useAuth';
 
 const CATEGORY_LABELS: Record<CourseCategory, string> = {
   chinese: 'Chinese (HSK)',
@@ -179,8 +179,8 @@ function CourseRow({ course, number, lessons }: { course: CourseSummary; number:
     return status === 'completed' ? 'filled' : status === 'in-progress' ? 'learning' : 'empty';
   });
   const started = Boolean(lessons?.size);
-  const membersContent = canOpenMembersContent(useAuth());
-  const locked = !membersContent && !isOpenCategory(course.category);
+  const signedIn = canOpenLockedContent(useAuth());
+  const locked = !signedIn && !isOpenCategory(course.category);
   return (
     <li className="grid grid-cols-[1.75rem_minmax(0,1fr)] gap-x-3 gap-y-2 px-4 py-3.5 md:grid-cols-[1.75rem_minmax(0,1.4fr)_minmax(0,1fr)_auto] md:items-center">
       <span className="display-numerals pt-0.5 text-right text-print">{number}</span>
@@ -191,9 +191,9 @@ function CourseRow({ course, number, lessons }: { course: CourseSummary; number:
         {course.subtitle && <p className="truncate text-sm text-ink-muted">{course.subtitle}</p>}
         <div className="mt-1 flex flex-wrap gap-1.5">
           {locked && (
-            <Tag tone="print" title="Members only: sign in with an account on the members list to open it">
+            <Tag tone="print" title="Sign in with Google, Discord or GitHub to open it">
               <Lock className="mr-1 inline size-3" aria-hidden />
-              Members
+              Sign in
             </Tag>
           )}
           {course.origin === 'user-material' ? <Tag tone="print">{course.category === 'university' ? 'Your materials' : 'Your book'}</Tag> : <Tag>Study Hub</Tag>}

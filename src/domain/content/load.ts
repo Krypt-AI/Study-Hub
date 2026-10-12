@@ -3,7 +3,7 @@
  * app only checks the schema version and caches files with React Query.
  */
 import { type UseQueryResult, useQueries, useQuery } from '@tanstack/react-query';
-import { MEMBERS_SEARCH_INDEX_PATH, OPEN_SEARCH_INDEX_PATH } from './accessRules';
+import { ACCOUNT_SEARCH_INDEX_PATH, OPEN_SEARCH_INDEX_PATH } from './accessRules';
 import type { Catalog, Course, SearchDocument } from './types';
 import { CONTENT_SCHEMA_VERSION } from './version';
 
@@ -14,20 +14,17 @@ export class ContentMissingError extends Error {
   }
 }
 
-/** The host refused a members-only file: the visitor is signed out (401) or not a member (403). */
+/** The host refused a file that needs an account: the visitor is signed out, or their sign-in has expired. */
 export class ContentLockedError extends Error {
-  constructor(
-    path: string,
-    readonly reason: 'signed-out' | 'not-member',
-  ) {
-    super(`${path} is for members.`);
+  constructor(path: string) {
+    super(`${path} needs an account.`);
     this.name = 'ContentLockedError';
   }
 }
 
 async function fetchJson<T>(path: string): Promise<T> {
   const response = await fetch(path);
-  if (response.status === 401 || response.status === 403) throw new ContentLockedError(path, response.status === 401 ? 'signed-out' : 'not-member');
+  if (response.status === 401 || response.status === 403) throw new ContentLockedError(path);
   if (!response.ok) throw new ContentMissingError(path);
   return (await response.json()) as T;
 }
@@ -42,13 +39,13 @@ export async function fetchCatalog(): Promise<Catalog> {
 
 export const fetchCourse = (courseId: string) => fetchJson<Course>(`/content/courses/${encodeURIComponent(courseId)}.json`);
 
-/** Open documents, plus the members' ones when the visitor may read them. */
-export async function fetchSearchDocuments(includeMembers: boolean): Promise<SearchDocument[]> {
-  const [open, members] = await Promise.all([
+/** Open documents, plus those of the locked courses when the visitor may read them. */
+export async function fetchSearchDocuments(includeLocked: boolean): Promise<SearchDocument[]> {
+  const [open, locked] = await Promise.all([
     fetchJson<SearchDocument[]>(OPEN_SEARCH_INDEX_PATH),
-    includeMembers ? fetchJson<SearchDocument[]>(MEMBERS_SEARCH_INDEX_PATH).catch(() => []) : [],
+    includeLocked ? fetchJson<SearchDocument[]>(ACCOUNT_SEARCH_INDEX_PATH).catch(() => []) : [],
   ]);
-  return [...open, ...members];
+  return [...open, ...locked];
 }
 
 const STATIC = {
@@ -61,7 +58,7 @@ const STATIC = {
 export const contentKeys = {
   catalog: ['content', 'catalog'] as const,
   course: (courseId: string) => ['content', 'course', courseId] as const,
-  search: (includeMembers: boolean) => ['content', 'search', includeMembers] as const,
+  search: (includeLocked: boolean) => ['content', 'search', includeLocked] as const,
 };
 
 export function useCatalog() {
@@ -97,6 +94,6 @@ export function useCourses(courseIds: readonly string[]): LoadedCourses {
   });
 }
 
-export function useSearchDocuments(enabled: boolean, includeMembers: boolean) {
-  return useQuery({ queryKey: contentKeys.search(includeMembers), queryFn: () => fetchSearchDocuments(includeMembers), enabled, ...STATIC });
+export function useSearchDocuments(enabled: boolean, includeLocked: boolean) {
+  return useQuery({ queryKey: contentKeys.search(includeLocked), queryFn: () => fetchSearchDocuments(includeLocked), enabled, ...STATIC });
 }

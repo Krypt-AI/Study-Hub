@@ -1,7 +1,7 @@
 /**
  * Row level security, checked on a real Postgres (PGlite) with the migrations applied:
  * learners reach only their own rows, signed-out requests get nothing, the atomic
- * functions keep to the caller's rows, and only listed, confirmed emails become members.
+ * functions keep to the caller's rows, and profiles stay private to their owner.
  */
 import { PGlite } from '@electric-sql/pglite';
 import { readdirSync, readFileSync } from 'node:fs';
@@ -11,15 +11,13 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 const MIGRATIONS_DIR = fileURLToPath(new URL('../migrations/', import.meta.url));
 const ALICE = '00000000-0000-4000-8000-00000000000a';
 const BOB = '00000000-0000-4000-8000-00000000000b';
-const CAROL = '00000000-0000-4000-8000-00000000000c';
 
-/** The parts of a Supabase database the migrations rely on: auth.users, auth.uid() and the API and Auth roles. */
+/** The parts of a Supabase database the migrations rely on: auth.users, auth.uid() and the API roles. */
 const SUPABASE_STANDINS = `
   create schema auth;
   create table auth.users (
     id uuid primary key,
     email text,
-    email_confirmed_at timestamptz,
     raw_user_meta_data jsonb not null default '{}',
     raw_app_meta_data jsonb not null default '{}'
   );
@@ -28,7 +26,6 @@ const SUPABASE_STANDINS = `
   $$;
   create role anon nologin;
   create role authenticated nologin;
-  create role supabase_auth_admin nologin;
   grant usage on schema public, auth to anon, authenticated;
   grant execute on function auth.uid() to anon, authenticated;
   alter default privileges in schema public grant all on tables to anon, authenticated;
@@ -57,11 +54,10 @@ beforeAll(async () => {
     await db.exec(readFileSync(`${MIGRATIONS_DIR}${file}`, 'utf8'));
   }
   await db.query(
-    `insert into auth.users (id, email, email_confirmed_at, raw_user_meta_data, raw_app_meta_data) values
-      ($1, 'alice@example.com', now(), '{"full_name": "Alice A", "avatar_url": "https://example.com/a.png"}', '{"providers": ["google"]}'),
-      ($2, 'bob@example.com', now(), '{"user_name": "bobcodes"}', '{"providers": ["github"]}'),
-      ($3, 'carol@example.com', null, '{}', '{"providers": ["discord"]}')`,
-    [ALICE, BOB, CAROL],
+    `insert into auth.users (id, email, raw_user_meta_data, raw_app_meta_data) values
+      ($1, 'alice@example.com', '{"full_name": "Alice A", "avatar_url": "https://example.com/a.png"}', '{"providers": ["google"]}'),
+      ($2, 'bob@example.com', '{"user_name": "bobcodes"}', '{"providers": ["github"]}')`,
+    [ALICE, BOB],
   );
 }, 60_000);
 
@@ -163,28 +159,5 @@ describe('accounts', () => {
     await db.query(`update auth.users set raw_app_meta_data = '{"providers": ["google", "github"]}' where id = $1`, [ALICE]);
     const alice = await as(ALICE, () => db.query(`select display_name, providers from public.profiles`));
     expect(alice.rows).toEqual([{ display_name: 'Ali', providers: ['google', 'github'] }]);
-  });
-
-  it('hides the members list from the API roles', async () => {
-    await expect(as(ALICE, () => db.query(`select * from private.member_emails`))).rejects.toThrow(/permission denied/u);
-    await expect(as(ALICE, () => db.query(`select public.custom_access_token_hook('{}')`))).rejects.toThrow(/permission denied/u);
-  });
-
-  it('marks only listed users with a confirmed email as members in their access token', async () => {
-    await db.query(`insert into private.member_emails (email) values ('alice@example.com'), ('carol@example.com')`);
-    const claim = async (user: string) => {
-      await db.exec('set role supabase_auth_admin;');
-      try {
-        const event = JSON.stringify({ user_id: user, claims: { sub: user, role: 'authenticated' } });
-        const result = await db.query<{ claims: Record<string, unknown> }>(`select public.custom_access_token_hook($1::jsonb) -> 'claims' as claims`, [event]);
-        return result.rows[0]?.claims;
-      } finally {
-        await db.exec('reset role;');
-      }
-    };
-    expect(await claim(ALICE)).toEqual({ sub: ALICE, role: 'authenticated', study_hub_member: true });
-    expect(await claim(BOB)).toMatchObject({ study_hub_member: false });
-    // Listed, but the email was never confirmed.
-    expect(await claim(CAROL)).toMatchObject({ study_hub_member: false });
   });
 });

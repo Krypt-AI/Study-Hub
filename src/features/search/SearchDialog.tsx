@@ -7,7 +7,7 @@ import { LoadingState, Tag } from '@/components/ui/Feedback';
 import { useCodeProjects } from '@/data/queries';
 import { useSearchDocuments } from '@/domain/content/load';
 import { projectUrl } from '@/domain/content/urls';
-import { canOpenMembersContent, useAuth } from '@/features/auth/useAuth';
+import { canOpenLockedContent, useAuth } from '@/features/auth/useAuth';
 import { cn } from '@/lib/cn';
 import { createSearchIndex, type SearchEntry, type SearchKind } from './searchIndex';
 
@@ -21,7 +21,7 @@ const KIND_LABELS: Record<SearchKind, string> = {
 };
 
 function useSearch(enabled: boolean) {
-  const documents = useSearchDocuments(enabled, canOpenMembersContent(useAuth()));
+  const documents = useSearchDocuments(enabled, canOpenLockedContent(useAuth()));
   const projects = useCodeProjects();
   const index = useMemo(() => {
     if (!documents.data) return undefined;

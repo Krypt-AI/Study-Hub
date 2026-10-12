@@ -1,11 +1,11 @@
 /**
  * Build-time side of the access rules (see accessRules.ts): which courses and material
- * sources are open, and the split of the search index into an open and a members part.
+ * sources are open, and the split of the search index into an open part and one that needs an account.
  */
 import type { AccessManifest } from './accessRules';
 import type { Course, CourseCategory, SearchDocument } from './types';
 
-/** University courses are open to everyone; all other courses are for members. */
+/** University courses are open to everyone; all other courses need an account. */
 export const isOpenCategory = (category: CourseCategory) => category === 'university';
 
 /** The material source a page image, source-pages block or audio file belongs to. */
@@ -25,7 +25,7 @@ function materialSources(value: unknown, found: Set<string>): Set<string> {
 }
 
 /**
- * A source is open only if no members-only course uses it, so a page shared with a locked
+ * A source is open only if no locked course uses it, so a page shared with a locked
  * course stays locked.
  */
 export function buildAccessManifest(courses: readonly Course[]): AccessManifest {
@@ -41,11 +41,11 @@ export function buildAccessManifest(courses: readonly Course[]): AccessManifest 
   };
 }
 
-/** Documents of open courses, certifications and roadmaps are open; the rest are for members. */
+/** Documents of open courses, certifications and roadmaps are open; the rest need an account. */
 export function splitSearchDocuments(documents: readonly SearchDocument[], manifest: AccessManifest) {
   const isOpen = (document: SearchDocument) => !document.courseId || manifest.openCourses.includes(document.courseId.toLowerCase());
   return {
     open: documents.filter(isOpen),
-    members: documents.filter((document) => !isOpen(document)),
+    account: documents.filter((document) => !isOpen(document)),
   };
 }
