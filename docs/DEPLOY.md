@@ -71,6 +71,8 @@ Both run `npm run check:deploy` first. It stops the deploy if Supabase is not co
 
 Redeploy whenever content changes (new lessons, a new semester, imported books).
 
+Netlify's own build from GitHub is switched off in `netlify.toml` (`ignore = "exit 0"`), because it cannot see your courses. Pushing to GitHub therefore does not change the live site; only `npm run deploy` does.
+
 ## 5. Who has signed in
 
 **Supabase → Table Editor → profiles** lists everyone who has signed in: email, name, picture and sign-in providers, refreshed at each sign-in. To remove someone, delete their user in **Authentication → Users** (their progress is deleted with it); they could sign in again with the link, so change the site name if the link has spread.

@@ -5,6 +5,9 @@
 [build]
   command = "npm run check:deploy && npm run build"
   publish = "dist"
+  # Netlify's own builds from git can never work: the courses are not in the repository. Skip them
+  # (exit 0 cancels a build). Deploys from this computer (`npm run deploy`) are not affected.
+  ignore = "exit 0"
 
 [build.environment]
   NODE_VERSION = "24"
