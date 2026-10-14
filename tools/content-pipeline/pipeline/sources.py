@@ -8,6 +8,7 @@ Import phases:
   1. First milestone: HSK 1-2 textbooks, JLPT N5-N4 (新にほんご500問 + official sample tests)
   2. Remaining textbooks: HSK 3-6, 新にほんご500問 N3-N1, JLPT N3-N1 sample tests
   3. Workbooks and teacher's books (exercise answer keys)
+  4. Shin Kanzen Master (新完全マスター) books, one at a time
 """
 
 from __future__ import annotations
@@ -30,6 +31,7 @@ SourceKind = Literal[
     "jlpt-sample-listening",
     "jlpt-sample-script",
     "jlpt-sample-answers",
+    "shin-kanzen",
 ]
 
 
@@ -193,6 +195,11 @@ SOURCES: list[Source] = [
         },
     ),
 ]
+
+# Shin Kanzen Master books, added one book at a time as each is imported.
+SOURCES.append(
+    Source("skm-n4-bunpou", "新完全マスター文法 N4", "JLPT/Shin Kanzen/Shin Kanzen Master N4/Shin_Kanzen_Master_N4.pdf", "ja", "N4", "shin-kanzen", 4),
+)
 
 SOURCES_BY_ID: dict[str, Source] = {source.id: source for source in SOURCES}
 
