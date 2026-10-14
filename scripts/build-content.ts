@@ -20,12 +20,14 @@ import {
   certificationSchema,
   courseSchema,
   roadmapSchema,
+  schoolSchema,
   universitySchema,
 } from '../src/domain/content/schema.ts';
 import { buildAccessManifest, splitSearchDocuments } from '../src/domain/content/accessManifest.ts';
 import type { Course, SearchDocument, University } from '../src/domain/content/types.ts';
 import { lessonUrl, courseUrl, certificationUrl } from '../src/domain/content/urls.ts';
 import { sectionByHeading } from '../src/domain/content/sections.ts';
+import { tierOf } from '../src/domain/learning/tiers.ts';
 
 const ROOT = process.cwd();
 const AUTHORED_DIR = join(ROOT, 'content', 'authored');
@@ -172,6 +174,11 @@ function loadCourses(): Course[] {
 // Integrity checks across files
 // ---------------------------------------------------------------------------
 
+const courseQuestions = (course: Course) => [
+  ...course.units.flatMap((unit) => unit.lessons.flatMap((lesson) => lesson.questions)),
+  ...course.assessments.flatMap((assessment) => assessment.sections.flatMap((section) => section.questions)),
+];
+
 function checkIntegrity(courses: Course[], certificationIds: Set<string>): Set<string> {
   const courseIds = new Set<string>();
   const questionIds = new Map<string, string>();
@@ -179,8 +186,7 @@ function checkIntegrity(courses: Course[], certificationIds: Set<string>): Set<s
     if (courseIds.has(course.id)) errors.push(`duplicate course id ${course.id}`);
     courseIds.add(course.id);
     const topicIds = new Set(course.topics.map((topic) => topic.id));
-    const lessons = course.units.flatMap((unit) => unit.lessons);
-    const questions = [...lessons.flatMap((lesson) => lesson.questions), ...course.assessments.flatMap((assessment) => assessment.sections.flatMap((section) => section.questions))];
+    const questions = courseQuestions(course);
     for (const question of questions) {
       const owner = questionIds.get(question.id);
       if (owner) errors.push(`question id ${question.id} used in ${owner} and ${course.id}`);
@@ -306,6 +312,42 @@ function loadUniversity(courses: Course[]): University | undefined {
   }
 }
 
+const SCHOOL_LEVELS = ['elementary', 'secondary'] as const;
+const isSchoolCourse = (course: Course): course is Course & { category: (typeof SCHOOL_LEVELS)[number] } => (SCHOOL_LEVELS as readonly string[]).includes(course.category);
+
+/**
+ * School courses name a year listed in school.yaml and the language they are taught in, and every
+ * question in them is in that language (filled in where a question does not say). Other courses have
+ * neither a year nor a language.
+ */
+function checkSchoolCourses(courses: Course[]): void {
+  const school = courses.filter(isSchoolCourse);
+  for (const course of courses.filter((candidate) => !isSchoolCourse(candidate))) {
+    if (course.year !== undefined || course.language !== undefined) errors.push(`${course.id}: only primary and secondary school courses have a year and a language`);
+  }
+  if (!school.length) return;
+  const path = join(AUTHORED_DIR, 'school.yaml');
+  let years: { elementary: number[]; secondary: number[] } | undefined;
+  try {
+    years = schoolSchema.parse(readYaml(path));
+  } catch (error) {
+    report('school.yaml', error);
+    return;
+  }
+  for (const course of school) {
+    if (course.year === undefined) errors.push(`school course ${course.id}: missing year`);
+    else if (!years[course.category].includes(course.year)) errors.push(`school course ${course.id}: year ${course.year} is not listed for ${course.category} in school.yaml`);
+    if (!course.language) {
+      errors.push(`school course ${course.id}: missing language (ms or en)`);
+      continue;
+    }
+    for (const question of courseQuestions(course)) {
+      question.language ??= course.language;
+      if (question.language !== course.language) errors.push(`${course.id}: question ${question.id} is in ${question.language}, but the course is taught in ${course.language}`);
+    }
+  }
+}
+
 function main(): void {
   const certifications = loadList(join(AUTHORED_DIR, 'certifications.yaml'), certificationSchema, 'certifications.yaml');
   const roadmapsDir = join(AUTHORED_DIR, 'roadmaps');
@@ -324,6 +366,7 @@ function main(): void {
   const courses = loadCourses();
   const courseIds = checkIntegrity(courses, new Set(certifications.map((certification) => certification.id)));
   const university = loadUniversity(courses);
+  checkSchoolCourses(courses);
   checkCertificationLinks(certifications, courseIds);
 
   for (const warning of warnings) console.warn(`warning: ${warning}`);
@@ -348,6 +391,8 @@ function main(): void {
         level: course.level,
         code: course.code,
         term: course.term,
+        year: course.year,
+        language: course.language,
         difficulty: course.difficulty,
         tags: course.tags,
         prerequisites: course.prerequisites,
@@ -359,9 +404,8 @@ function main(): void {
         lessonCount: lessons.length,
         questionCount: course.units.flatMap((unit) => unit.lessons).reduce((sum, lesson) => sum + lesson.questions.length, 0),
         assessmentCount: course.assessments.length,
-        hasCode: [...course.units.flatMap((unit) => unit.lessons).flatMap((lesson) => lesson.questions), ...course.assessments.flatMap((assessment) => assessment.sections.flatMap((section) => section.questions))].some(
-          (question) => question.type === 'code' || question.type === 'sql',
-        ),
+        hasCode: courseQuestions(course).some((question) => question.type === 'code' || question.type === 'sql'),
+        hasTiers: courseQuestions(course).some((question) => tierOf(question) !== undefined),
         lessons,
         assessments: course.assessments.map((assessment) => ({ id: assessment.id, title: assessment.title, kind: assessment.kind, paper: assessment.paper })),
       };

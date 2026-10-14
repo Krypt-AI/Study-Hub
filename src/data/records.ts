@@ -2,7 +2,9 @@
  * Records persisted per learner. Both storage backends (IndexedDB and Supabase) store
  * exactly these shapes; content is referenced by its stable content ids.
  */
-import type { CodeLanguage, CodeTest, QuestionType, Skill } from '@/domain/content/types';
+import type { CodeLanguage, CodeTest, CourseLanguage, QuestionType, Skill } from '@/domain/content/types';
+import type { ExtraCategory } from '@/domain/content/visibility';
+import type { QuestionTier } from '@/domain/learning/tiers';
 import type { Response, Verdict } from '@/domain/evaluation/types';
 import type { LearnerProfile } from '@/domain/profile/profile';
 
@@ -211,6 +213,14 @@ export interface Settings {
   todayCourseIds: string[];
   /** Age and school level from the Welcome page; absent until it is answered. */
   profile?: LearnerProfile;
+  /** Extras the learner shows in their lists (signed in or local mode; guests see none). */
+  visibleCategories: ExtraCategory[];
+  /** Set once "What do you want to study?" has been answered or skipped. */
+  extrasChosen?: boolean;
+  /** For school subjects taught in both languages, keyed by subject: absent means BM. */
+  languageBySubject: Record<string, CourseLanguage>;
+  /** Which multiple-choice questions practice sessions offer, per course: absent means medium. */
+  questionTiers: Record<string, QuestionTier>;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -219,6 +229,9 @@ export const DEFAULT_SETTINGS: Settings = {
   reviewSessionSize: 30,
   desiredRetention: 0.9,
   todayCourseIds: [],
+  visibleCategories: [],
+  languageBySubject: {},
+  questionTiers: {},
 };
 
 // Calendar ------------------------------------------------------------------------------

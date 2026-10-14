@@ -65,7 +65,9 @@ export const mediaSchema = z.discriminatedUnion('kind', [
 
 /** Which kind of knowledge a question exercises. Mastery is tracked per topic and skill. */
 export const skillSchema = z.enum(['recognize', 'recall', 'explain', 'apply']);
-export const answerLanguageSchema = z.enum(['en', 'zh', 'ja']);
+export const answerLanguageSchema = z.enum(['en', 'ms', 'zh', 'ja']);
+/** The language a school course is taught in: Bahasa Malaysia or English. */
+export const courseLanguageSchema = z.enum(['ms', 'en']);
 
 /**
  * How a typed answer is compared with the accepted answers.
@@ -134,6 +136,8 @@ export const choiceQuestionSchema = z.object({
   correct: z.array(z.string()).min(1),
   multiple: z.boolean().default(false),
   shuffle: z.boolean().default(true),
+  /** Offered when the learner picks this tier for the subject; without one, at every tier. */
+  tier: z.enum(['easy', 'medium', 'hard']).optional(),
 });
 
 export const shortQuestionSchema = z.object({
@@ -348,7 +352,7 @@ export const assessmentSchema = z.object({
   source: sourceRefSchema,
 });
 
-export const courseCategorySchema = z.enum(['chinese', 'japanese', 'ai-engineering', 'it', 'university']);
+export const courseCategorySchema = z.enum(['chinese', 'japanese', 'ai-engineering', 'it', 'university', 'elementary', 'secondary']);
 export const difficultySchema = z.enum(['beginner', 'intermediate', 'advanced']);
 
 export const courseSchema = z.object({
@@ -364,6 +368,13 @@ export const courseSchema = z.object({
   code: z.string().optional(),
   /** University subjects: the semester it is taken in, one of the terms in content/authored/university.yaml. */
   term: z.string().optional(),
+  /** School courses: Standard 1–6 (elementary) or Form 1–5 (secondary), one of the years in content/authored/school.yaml. */
+  year: z.number().int().positive().optional(),
+  /**
+   * School courses: the language they are taught in. A subject taught in both is two courses with the
+   * same subject and year; the learner picks one. Every question in the course is in this language.
+   */
+  language: courseLanguageSchema.optional(),
   difficulty: difficultySchema,
   tags: z.array(z.string()).default([]),
   prerequisites: z.array(contentId).default([]),
@@ -453,6 +464,8 @@ export const courseSummarySchema = courseSchema
     level: true,
     code: true,
     term: true,
+    year: true,
+    language: true,
     difficulty: true,
     tags: true,
     prerequisites: true,
@@ -468,6 +481,8 @@ export const courseSummarySchema = courseSchema
     assessmentCount: z.number().int(),
     /** The course has code or SQL exercises: learning it makes the playground useful. */
     hasCode: z.boolean().default(false),
+    /** Some multiple-choice questions have a difficulty, so the learner can pick easy, medium or hard. */
+    hasTiers: z.boolean().default(false),
     lessons: z.array(z.object({ id: contentId, title: z.string(), unitId: contentId })),
     assessments: z.array(z.object({ id: contentId, title: z.string(), kind: z.enum(['quiz', 'mock-exam']), paper: pastPaperKindSchema.optional() })).default([]),
   });
@@ -480,6 +495,12 @@ export const universitySchema = z
     currentTerm: z.string(),
   })
   .refine((university) => university.terms.includes(university.currentTerm), { message: 'currentTerm must be one of terms', path: ['currentTerm'] });
+
+/** The school years that courses may name (content/authored/school.yaml). */
+export const schoolSchema = z.object({
+  elementary: z.array(z.number().int().min(1).max(6)),
+  secondary: z.array(z.number().int().min(1).max(5)),
+});
 
 export const catalogSchema = z.object({
   schemaVersion: z.literal(CONTENT_SCHEMA_VERSION),

@@ -8,6 +8,7 @@ import { isRomaji, toHiragana } from 'wanakana';
 import type { ShortQuestion } from '@/domain/content/types';
 import { toMarkedPinyin } from '@/domain/evaluation/pinyin';
 import { cn } from '@/lib/cn';
+import { LANGUAGE_TAGS } from '@/domain/content/language';
 
 export interface ShortInputProps {
   question: ShortQuestion;
@@ -18,7 +19,6 @@ export interface ShortInputProps {
   verdictTone?: 'correct' | 'wrong' | 'slip';
 }
 
-const LANG_ATTR = { zh: 'zh-CN', ja: 'ja', en: 'en' } as const;
 
 function preview(question: ShortQuestion, value: string): string | undefined {
   const text = value.trim();
@@ -49,7 +49,7 @@ export const ShortInput = forwardRef<HTMLInputElement, ShortInputProps>(function
           }
         }}
         disabled={disabled}
-        lang={question.language ? LANG_ATTR[question.language] : undefined}
+        lang={question.language ? LANGUAGE_TAGS[question.language] : undefined}
         aria-label="Your answer"
         autoComplete="off"
         autoCorrect="off"

@@ -72,7 +72,7 @@ Notes written from your own course materials (lecture slides, lab sheets) go in 
 
 ```
 content/authored/courses/<course-id>/
-  course.yaml                 title, category (chinese, japanese, ai-engineering, it, university), code and term (university), topics, units (lists of lesson file names)
+  course.yaml                 title, category (chinese, japanese, ai-engineering, it, university, elementary, secondary), code and term (university), subject, year and language (school), topics, units (lists of lesson file names)
   lessons/01-name.md          frontmatter (id, title, objectives, topics, resources) + Markdown body
   lessons/01-name.questions.yaml
   fixtures/*.sql              optional shared SQL databases (`schemaFile: name.sql` in a question)
@@ -81,5 +81,7 @@ content/authored/courses/<course-id>/
 Question types: `choice`, `short`, `cloze`, `long` (rubric), `translation`, `code` (tests: `assert` or `stdout`), `sql` (reference query). The schema is `src/domain/content/schema.ts`; the build reports any field that does not match it. After writing exercises, run `npm run content:verify` to prove every reference solution passes.
 
 A question that points at something in its lesson ("In Example 2...") can carry `reference: { heading: "Example 2", label: "See Example 2" }`. The build copies that lesson section into the question, and the learner opens it with the button under the prompt. `image` (an asset) can be given instead of or as well as `heading`; a heading that is not in the lesson fails the build.
+
+**School courses** (`category: elementary` for Standard 1–6, `secondary` for Form 1–5) name a `year` listed in `content/authored/school.yaml` and the `language` they are taught in (`ms` or `en`); a subject taught in both is two courses with the same `subject` and `year`. Every question in a school course is in its language: the build fills `language` in where a question leaves it out and fails where a question says otherwise, as it does for a missing or unlisted year. A multiple-choice question can have a `tier` (easy, medium or hard) for the learner's difficulty choice; without one it is offered at every tier.
 
 Certifications are in `content/authored/certifications.yaml`: every entry records `verifiedOn`, its official `verificationSources` and the facts that could not be verified. Re-check them before relying on prices or exam formats.

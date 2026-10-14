@@ -22,6 +22,7 @@ import { useCatalog } from '@/domain/content/load';
 import { AccountSheet } from '@/features/auth/AccountSheet';
 import { LearnersSheet } from '@/features/learners/LearnersSheet';
 import { AboutYouSheet } from '@/features/profile/AboutYouSheet';
+import { CoursesToSeeSheet } from '@/features/profile/CoursesToSeeSheet';
 import { TodaySubjectsSheet } from './TodaySubjectsSheet';
 import { useAuth } from '@/features/auth/useAuth';
 import { dayKey, formatDate } from '@/lib/dates';
@@ -37,12 +38,13 @@ export default function SettingsPage() {
       <div className="grid items-start gap-6 lg:grid-cols-2">
         <div className="flex min-w-0 flex-col gap-6">
           <AboutYouSheet key={JSON.stringify(settings.data.profile)} settings={settings.data} />
+          <CoursesToSeeSheet />
           <TodaySubjectsSheet />
           <AppearanceSheet />
-          <GoalsSheet key={JSON.stringify(settings.data)} settings={settings.data} />
         </div>
         <div className="flex min-w-0 flex-col gap-6">
           <LearnersSheet />
+          <GoalsSheet key={JSON.stringify(settings.data)} settings={settings.data} />
           <StorageSheet />
           <BackupSheet />
           <LegacyNotesSheet />

@@ -1,14 +1,10 @@
 /** One course as a ruled row: its name, what it holds, and (once started) its lesson strip. Where it comes from is on the course page. */
-import { ArrowRight, Lock } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router';
 import { BubbleStrip, type BubbleState } from '@/components/ui/Bubble';
 import { ButtonLink } from '@/components/ui/Button';
-import { Tag } from '@/components/ui/Feedback';
-import { isOpenCategory } from '@/domain/content/accessManifest';
 import type { CourseSummary } from '@/domain/content/types';
 import { courseUrl } from '@/domain/content/urls';
-import { providerNames } from '@/features/auth/signInOptions';
-import { canOpenLockedContent, useAuth } from '@/features/auth/useAuth';
 import type { LessonStatuses } from './useLessonStatuses';
 
 /** "12 lessons, 2 past papers" */
@@ -22,8 +18,6 @@ function contentsLine(course: CourseSummary): string {
 }
 
 export function CourseRow({ course, lessons }: { course: CourseSummary; lessons?: LessonStatuses }) {
-  const signedIn = canOpenLockedContent(useAuth());
-  const locked = !signedIn && !isOpenCategory(course.category);
   const started = Boolean(lessons?.size);
   const states: BubbleState[] = course.lessons.map((lesson) => {
     const status = lessons?.get(lesson.id);
@@ -38,15 +32,7 @@ export function CourseRow({ course, lessons }: { course: CourseSummary; lessons?
           {course.title}
         </Link>
         {course.subtitle && <p className="truncate text-sm text-ink-muted">{course.subtitle}</p>}
-        <p className="mt-1 flex flex-wrap items-center gap-2 text-sm text-ink-faint">
-          {locked && (
-            <Tag tone="print" title={`Sign in with ${providerNames()} to open it`}>
-              <Lock className="mr-1 inline size-3" aria-hidden />
-              Sign in
-            </Tag>
-          )}
-          <span className="tabular">{contentsLine(course)}</span>
-        </p>
+        <p className="tabular mt-1 text-sm text-ink-faint">{contentsLine(course)}</p>
       </div>
       {started && states.length <= 40 && (
         <div className="flex flex-col gap-1 sm:w-56">

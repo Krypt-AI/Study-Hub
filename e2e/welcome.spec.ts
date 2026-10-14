@@ -1,6 +1,6 @@
 /** The Welcome page: the first thing a new learner answers, and Settings › About you afterwards. */
 import { expect, test } from './fixtures';
-import { answerWelcome } from './welcomeSteps';
+import { answerWelcome, chooseExtras } from './welcomeSteps';
 
 test.use({ storageState: { cookies: [], origins: [] } });
 
@@ -18,6 +18,7 @@ test('a first visit asks the Welcome questions, suggesting the year from the age
 
   await page.getByLabel('What should we call you? (you can skip this)').fill('Aina');
   await page.getByRole('button', { name: 'Start' }).click();
+  await chooseExtras(page, []);
   await expect(page.getByRole('heading', { level: 1, name: 'Today' })).toBeVisible();
   await expect(page.getByRole('button', { name: /Aina/u })).toBeVisible();
 
@@ -28,12 +29,14 @@ test('a first visit asks the Welcome questions, suggesting the year from the age
 test('a link opened first shows its page once the Welcome questions are answered', async ({ page }) => {
   await page.goto('/calendar');
   await answerWelcome(page, { age: '20' });
+  await chooseExtras(page, []);
   await expect(page.getByRole('heading', { level: 1, name: 'Calendar' })).toBeVisible();
 });
 
 test('changing the school year in Settings asks first', async ({ page }) => {
   await page.goto('/settings');
   await answerWelcome(page, { age: '14' });
+  await chooseExtras(page, []);
   const about = page.getByRole('region', { name: 'About you' });
   await about.getByLabel('Which year are you in?').selectOption({ label: 'Form 3' });
   await about.getByRole('button', { name: 'Save' }).click();
@@ -50,6 +53,7 @@ test('changing the school year in Settings asks first', async ({ page }) => {
 test('a learner added by mistake can switch back from the Welcome page', async ({ page }) => {
   await page.goto('/');
   await answerWelcome(page, { age: '20' });
+  await chooseExtras(page, []);
   await page.getByRole('button', { name: /Switch learner/u }).click();
   await page.getByLabel('New learner’s name').fill('Adam');
   await page.getByRole('button', { name: 'Add learner' }).click();

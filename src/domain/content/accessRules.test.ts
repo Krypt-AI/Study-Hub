@@ -50,6 +50,12 @@ describe('buildAccessManifest', () => {
     ];
     expect(buildAccessManifest(courses)).toEqual({ openCourses: ['cmpd363'], openSources: ['cmpd363-paper'] });
   });
+
+  it('opens primary and secondary school courses to guests, like University', () => {
+    const lesson = { lessons: [{ questions: [] }] };
+    const courses = [course('sains-t3', 'elementary', lesson), course('sejarah-f2', 'secondary', lesson), course('jlpt-n5', 'japanese', lesson)];
+    expect(buildAccessManifest(courses).openCourses).toEqual(['sains-t3', 'sejarah-f2']);
+  });
 });
 
 describe('splitSearchDocuments', () => {

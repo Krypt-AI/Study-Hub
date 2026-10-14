@@ -9,8 +9,8 @@ import { describeFlag, REASSURING_FLAGS } from '@/domain/content/flags';
 import type { Block } from '@/domain/content/types';
 import { cn } from '@/lib/cn';
 import { PageViewer } from './PageViewer';
+import { LANGUAGE_TAGS } from '@/domain/content/language';
 
-const LANG_ATTR = { zh: 'zh-CN', ja: 'ja', en: 'en' } as const;
 
 export function LessonBlock({ block, sourceTitle }: { block: Block; sourceTitle?: string }) {
   switch (block.kind) {
@@ -24,7 +24,7 @@ export function LessonBlock({ block, sourceTitle }: { block: Block; sourceTitle?
       return (
         <figure className="flex flex-col gap-2">
           {block.title && <figcaption className="font-display text-lg font-semibold">{block.title}</figcaption>}
-          <ol className="flex flex-col gap-2" lang={LANG_ATTR[block.language]}>
+          <ol className="flex flex-col gap-2" lang={LANGUAGE_TAGS[block.language]}>
             {block.lines.map((line, index) => (
               <li key={index} className="flex gap-3">
                 {line.speaker && <span className="w-10 shrink-0 font-medium text-print">{line.speaker}</span>}
@@ -44,7 +44,7 @@ export function LessonBlock({ block, sourceTitle }: { block: Block; sourceTitle?
           <h3 className="text-lg font-semibold">{block.title}</h3>
           {block.body && <Markdown>{block.body}</Markdown>}
           {block.examples.length > 0 && (
-            <ul className="flex flex-col gap-1.5" lang={LANG_ATTR[block.language]}>
+            <ul className="flex flex-col gap-1.5" lang={LANGUAGE_TAGS[block.language]}>
               {block.examples.map((example, index) => (
                 <li key={index}>
                   <span className="text-lg">{example.text}</span>
@@ -144,7 +144,7 @@ function VocabularyTable({ block }: { block: Extract<Block, { kind: 'vocab' }> }
               return (
                 <tr key={item.id} className="border-b border-rule align-top last:border-b-0 hover:bg-sheet-2/60">
                   <td className="display-numerals px-3 py-2 text-print">{index + 1}</td>
-                  <td className="px-3 py-2 text-xl whitespace-nowrap" lang={LANG_ATTR[block.language]}>
+                  <td className="px-3 py-2 text-xl whitespace-nowrap" lang={LANGUAGE_TAGS[block.language]}>
                     {item.term}
                   </td>
                   <td className="px-3 py-2 whitespace-nowrap" lang={block.language === 'ja' ? 'ja' : undefined}>

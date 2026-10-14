@@ -5,8 +5,8 @@
 import type { AccessManifest } from './accessRules';
 import type { Course, CourseCategory, SearchDocument } from './types';
 
-/** University courses are open to everyone; all other courses need an account. */
-export const isOpenCategory = (category: CourseCategory) => category === 'university';
+/** The school levels and University are open to guests; the extras need an account. */
+export const isOpenCategory = (category: CourseCategory) => category === 'university' || category === 'elementary' || category === 'secondary';
 
 /** The material source a page image, source-pages block or audio file belongs to. */
 function materialSources(value: unknown, found: Set<string>): Set<string> {

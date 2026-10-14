@@ -1,7 +1,7 @@
 /**
  * /sign-in: continue with the configured providers (Google by default; see signInOptions.ts). Providers return
  * here with `?next=` naming the page to go back to; a provider's refusal comes back as
- * `error_description`. Signing in is optional: guests can open the University courses.
+ * `error_description`. Signing in is optional: guests can open the University and school courses.
  */
 import { type FormEvent, useState } from 'react';
 import { Link, Navigate, useSearchParams } from 'react-router';
@@ -72,7 +72,7 @@ export default function SignInPage() {
             <Link to={next} className="text-print-strong hover:underline">
               Continue as a guest
             </Link>{' '}
-            to open the University courses. A guest’s progress is saved on this device only.
+            to open the University and school courses. A guest’s progress is saved on this device only.
           </p>
         </div>
       </div>

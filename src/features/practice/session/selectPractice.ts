@@ -10,6 +10,7 @@ import { isPassing } from '@/domain/evaluation/types';
 import { needsPractice } from '@/domain/learning/mastery';
 import { isDue } from '@/domain/learning/due';
 import type { SessionItem } from './usePracticeSession';
+import { offeredAt, type QuestionTier, tierFor } from '@/domain/learning/tiers';
 
 export interface QuestionRef {
   questionId: string;
@@ -106,15 +107,26 @@ export function resolveRefs(refs: QuestionRef[], courses: ReadonlyMap<string, Co
   return { items, missing };
 }
 
-/** Lesson questions only: mock-exam questions repeat lesson items and belong to the exam sitting. */
-const lessonQuestions = (course: Course) => [...questionIndex(course).values()].filter((location) => location.lessonId !== undefined);
+/**
+ * Lesson questions only: mock-exam questions repeat lesson items and belong to the exam sitting. Of the
+ * multiple-choice questions, only those of the learner's tier for the course.
+ */
+const lessonQuestions = (course: Course, tiers: Readonly<Record<string, QuestionTier>>) => {
+  const tier = tierFor(tiers, course.id);
+  return [...questionIndex(course).values()].filter((location) => location.lessonId !== undefined && offeredAt(location.question, tier));
+};
 
 /**
  * Questions for weak spots, interleaved so every spot gets practice. Within a spot: questions
  * of the weak skill first, then ones last answered wrong, then unanswered, then the rest
  * (longest since answered first).
  */
-export function weaknessItems(spots: WeakSpot[], courses: ReadonlyMap<string, Course>, attempts: AttemptRecord[], limit = 20): SessionItem[] {
+export function weaknessItems(
+  spots: WeakSpot[],
+  courses: ReadonlyMap<string, Course>,
+  attempts: AttemptRecord[],
+  { tiers = {}, limit = 20 }: { tiers?: Readonly<Record<string, QuestionTier>>; limit?: number } = {},
+): SessionItem[] {
   const latest = latestAttempts(attempts);
   const status = (questionId: string) => {
     const attempt = latest.get(questionId);
@@ -125,7 +137,7 @@ export function weaknessItems(spots: WeakSpot[], courses: ReadonlyMap<string, Co
   const queues = spots.map((spot) => {
     const course = courses.get(spot.courseId);
     if (!course) return [];
-    return lessonQuestions(course)
+    return lessonQuestions(course, tiers)
       .filter((location) => location.topics.includes(spot.topicId))
       .map((location) => ({ location, skill: location.question.skill === spot.skill ? 0 : 1, ...status(location.question.id) }))
       .sort((a, b) => a.skill - b.skill || a.order - b.order || a.at - b.at)
@@ -149,9 +161,12 @@ function interleave(queues: QuestionLocation[][], limit: number): QuestionLocati
 }
 
 /** A random set of lesson questions, limited to the given lessons when there are any. */
-export function quizItems(course: Course, options: { count: number; lessonIds?: ReadonlySet<string>; random?: () => number }): SessionItem[] {
-  const { count, lessonIds, random = Math.random } = options;
-  const pool = lessonQuestions(course).filter((location) => !lessonIds?.size || lessonIds.has(location.lessonId as string));
+export function quizItems(
+  course: Course,
+  options: { count: number; lessonIds?: ReadonlySet<string>; tiers?: Readonly<Record<string, QuestionTier>>; random?: () => number },
+): SessionItem[] {
+  const { count, lessonIds, tiers = {}, random = Math.random } = options;
+  const pool = lessonQuestions(course, tiers).filter((location) => !lessonIds?.size || lessonIds.has(location.lessonId as string));
   for (let index = pool.length - 1; index > 0; index--) {
     const swap = Math.floor(random() * (index + 1));
     [pool[index], pool[swap]] = [pool[swap] as QuestionLocation, pool[index] as QuestionLocation];

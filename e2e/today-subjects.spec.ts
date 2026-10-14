@@ -19,6 +19,7 @@ test('switching a subject on shows it on Today, and Settings lists it', async ({
   await expect(listed).toHaveAttribute('aria-checked', 'true');
   await listed.click();
   await expect(listed).toHaveAttribute('aria-checked', 'false');
+  // With none on Today, Start here offers the learner's own level again (their university subjects here).
   await page.goto('/');
-  await expect(page.getByRole('region', { name: 'Start here' }).getByText('HSK 1')).toBeVisible();
+  await expect(page.getByRole('region', { name: 'Start here' }).getByRole('listitem')).toHaveCount(5);
 });

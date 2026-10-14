@@ -20,6 +20,7 @@ import { assessmentUrl, certificationUrl, courseUrl, lessonUrl } from '@/domain/
 import { masteryKey, masteryLevel, SKILL_LABELS, SKILLS } from '@/domain/learning/mastery';
 import { useBookmark } from '@/features/practice/useBookmark';
 import { CourseLoadError } from '@/features/auth/LockedContent';
+import { CourseVisibilityNotes } from '@/features/profile/CourseVisibilityNotes';
 import { CourseAbout } from './CourseAbout';
 import { ResetChapterButton } from './ResetChapterButton';
 import { ShowOnTodaySwitch } from './ShowOnTodaySwitch';
@@ -72,6 +73,9 @@ export default function CoursePage() {
           </Tag>
         </div>
         <ShowOnTodaySwitch courseId={data.id} className="mt-4 max-w-lg" />
+        <div className="mt-4 flex flex-col items-start gap-3 empty:hidden">
+          <CourseVisibilityNotes course={data} />
+        </div>
       </PageHeader>
 
       <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">

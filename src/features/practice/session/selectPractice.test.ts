@@ -144,7 +144,7 @@ describe('weakness practice', () => {
       { topicId: 't.a', skill: 'recall' as const, courseId: 'c1', score: 0.3, attempts: 3 },
       { topicId: 't.b', skill: 'recall' as const, courseId: 'c1', score: 0.4, attempts: 3 },
     ];
-    expect(weaknessItems(spots, courses, [], 3).map((item) => item.question.id)).toEqual(['q1', 'q4', 'q3']);
+    expect(weaknessItems(spots, courses, [], { limit: 3 }).map((item) => item.question.id)).toEqual(['q1', 'q4', 'q3']);
   });
 });
 
@@ -155,5 +155,18 @@ describe('quizItems', () => {
     expect(new Set(all.map((item) => item.question.id)).size).toBe(5);
     expect(quizItems(course, { count: 10, lessonIds: new Set(['l2']) }).map((item) => item.question.id).sort()).toEqual(['q4', 'q5']);
     expect(quizItems(course, { count: 2 })).toHaveLength(2);
+  });
+
+  it('offers the multiple-choice questions of the subject’s tier, and every other question', () => {
+    const choice = (id: string, tier?: string) => ({ id, type: 'choice', skill: 'recognize', prompt: id, options: [{ id: 'a', text: 'A' }, { id: 'b', text: 'B' }], correct: ['a'], tier, source });
+    const tiered = courseSchema.parse({
+      ...course,
+      units: [{ id: 'u1', title: 'Unit', lessons: [{ id: 'l1', title: 'L1', source, questions: [choice('easy', 'easy'), choice('medium', 'medium'), choice('hard', 'hard'), choice('untiered'), shortQuestion('typed', 'recall')] }] }],
+      assessments: [],
+    });
+    const ids = (tiers: Record<string, 'easy' | 'medium' | 'hard'>) => quizItems(tiered, { count: 10, tiers }).map((item) => item.question.id).sort();
+    expect(ids({})).toEqual(['medium', 'typed', 'untiered']);
+    expect(ids({ c1: 'hard' })).toEqual(['hard', 'typed', 'untiered']);
+    expect(ids({ other: 'easy' })).toEqual(['medium', 'typed', 'untiered']);
   });
 });

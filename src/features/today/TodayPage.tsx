@@ -13,28 +13,29 @@ import { ErrorState, LoadingState } from '@/components/ui/Feedback';
 import { Sheet } from '@/components/ui/Sheet';
 import {
   useActivityDays,
-  useFocusReviewStates,
   useLessonProgress,
   useSettings,
   useTopicMastery,
 } from '@/data/queries';
 import type { LessonProgressRecord } from '@/data/records';
-import { useCatalog, useCourse } from '@/domain/content/load';
+import { useCourse } from '@/domain/content/load';
 import { findLesson } from '@/domain/content/navigation';
 import type { Catalog, CourseSummary } from '@/domain/content/types';
 import { courseUrl, lessonUrl } from '@/domain/content/urls';
+import { learnerYearFirst } from '@/domain/content/visibility';
 import { inFocus } from '@/domain/learning/focus';
 import { SKILL_LABELS } from '@/domain/learning/mastery';
 import { ComingUpSheet } from '@/features/calendar/ComingUpSheet';
 import { LearnerSwitcher } from '@/features/learners/LearnerSwitcher';
 import { DueReviewsSheet } from '@/features/practice/DueReviewsSheet';
+import { useFocusReviewStates, useVisibleCatalog, type VisibleCatalog } from '@/features/profile/useVisibility';
 import { addDays, dayKey, parseDayKey } from '@/lib/dates';
 import { computeTodayModel, type ResumeTarget, type TodayModel, type WeakTopic, type WeekDay } from './todayModel';
 
 const STRIP_LIMIT = 40;
 
 export default function TodayPage() {
-  const catalog = useCatalog();
+  const catalog = useVisibleCatalog();
   const settings = useSettings();
   const progress = useLessonProgress();
   const reviews = useFocusReviewStates();
@@ -155,11 +156,20 @@ function ResumeSheet({ resume }: { resume: ResumeTarget }) {
   );
 }
 
+/** Good first courses in each extra, offered when the learner sees them. */
 const STARTING_POINTS = ['hsk-1', 'jlpt-n5', 'shin500-n4n5', 'ai-01-python', 'it-sql'];
+const START_COUNT = 5;
 
-function StartHere({ catalog, todayCourseIds }: { catalog: Catalog; todayCourseIds: string[] }) {
-  const ids = todayCourseIds.length ? todayCourseIds : STARTING_POINTS;
-  const starts = ids.map((id) => catalog.courses.find((course) => course.id === id)).filter((course): course is CourseSummary => Boolean(course));
+/** The subjects on Today, else the starting points the learner sees, else their own level's courses (their year first). */
+function startingCourses(catalog: VisibleCatalog, todayCourseIds: string[]): CourseSummary[] {
+  const byId = (ids: string[]) => ids.map((id) => catalog.courses.find((course) => course.id === id)).filter((course): course is CourseSummary => Boolean(course));
+  if (todayCourseIds.length) return byId(todayCourseIds);
+  const level = learnerYearFirst(catalog.courses.filter((course) => course.category === catalog.visibility.profile?.level), catalog.visibility.profile);
+  return [...level, ...byId(STARTING_POINTS)].slice(0, START_COUNT);
+}
+
+function StartHere({ catalog, todayCourseIds }: { catalog: VisibleCatalog; todayCourseIds: string[] }) {
+  const starts = startingCourses(catalog, todayCourseIds);
   return (
     <Sheet title="Start here">
       <p className="mb-4 max-w-[60ch] text-ink-muted">

@@ -11,16 +11,17 @@ import { ButtonLink } from '@/components/ui/Button';
 import { EmptyState, ErrorState, LoadingState, Tag } from '@/components/ui/Feedback';
 import { PageHeader, Sheet } from '@/components/ui/Sheet';
 import { useAttempts, useBookmarks, useLessonProgress, useReviewStates, useTopicMastery } from '@/data/queries';
-import { useCatalog } from '@/domain/content/load';
 import type { CourseSummary } from '@/domain/content/types';
 import { type MasteryLevel, masteryLevel, SKILL_LABELS, SKILLS } from '@/domain/learning/mastery';
+import { useVisibleCatalog } from '@/features/profile/useVisibility';
 import { relativeTime } from '@/lib/dates';
 import { PRACTICE_MODES, type PracticeModeId, practiceUrl, RECENT_ATTEMPTS } from './practiceModes';
 import type { WeakSpot } from './session/selectPractice';
+import { TierSwitch } from './TierSwitch';
 import { type PracticeRecords, practisedCourseIds, type SubjectPractice, subjectPractice } from './subjectPractice';
 
 export default function PracticeHubPage() {
-  const catalog = useCatalog();
+  const catalog = useVisibleCatalog();
   const reviews = useReviewStates();
   const mastery = useTopicMastery();
   const attempts = useAttempts(RECENT_ATTEMPTS);
@@ -78,7 +79,9 @@ function SubjectPage({ course, records }: { course: CourseSummary; records: Prac
   return (
     <div className="mx-auto max-w-6xl">
       <AreaBack to="/practice" label="All subjects" />
-      <PageHeader title={course.title} lead="Every answer updates your review schedule and topic mastery." />
+      <PageHeader title={course.title} lead="Every answer updates your review schedule and topic mastery.">
+        {course.hasTiers && <TierSwitch courseId={course.id} />}
+      </PageHeader>
       <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]">
         <div className="flex min-w-0 flex-col gap-6">
           <SessionsSheet courseId={course.id} practice={practice} />

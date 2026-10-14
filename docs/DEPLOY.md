@@ -81,7 +81,7 @@ Netlify's own build from GitHub is switched off in `netlify.toml` (`ignore = "ex
 
 ## 6. Check the live site
 
-1. In a private window: the catalog shows **Sign in** tags on the non-University courses, a University course opens, and an HSK course says *Sign in to open this course*.
+1. In a private window: after the Welcome page, Courses shows only the chosen level with a *Sign in to add Chinese, Japanese, AI and IT courses* note, a University course opens, and an HSK course opened by its link says *Sign in to open this course*.
 2. Opening a locked file directly, such as `https://<site>/content/courses/hsk-1.json`, answers **401**.
 3. Sign in with Google: every course opens, search finds HSK and JLPT words, and **Settings → Your account** shows your name, picture and provider.
 

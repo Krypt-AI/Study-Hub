@@ -22,8 +22,8 @@ export interface LearnerRecords {
 
 export type SessionPlan =
   | { kind: 'refs'; refs: QuestionRef[]; nextDue?: string }
-  | { kind: 'weak'; spots: WeakSpot[]; attempts: AttemptRecord[] }
-  | { kind: 'quiz'; courseId: string; lessonIds: string[]; count: number }
+  | { kind: 'weak'; spots: WeakSpot[]; attempts: AttemptRecord[]; tiers: Settings['questionTiers'] }
+  | { kind: 'quiz'; courseId: string; lessonIds: string[]; count: number; tiers: Settings['questionTiers'] }
   | { kind: 'choose-course' };
 
 export const DEFAULT_QUIZ_SIZE = 10;
@@ -45,13 +45,13 @@ export function planSession(mode: PracticeModeId, params: URLSearchParams, learn
       return { kind: 'refs', refs: known(savedRefs(learner.bookmarks)) };
     case 'weak': {
       const mastery = subject ? learner.mastery.filter((record) => record.courseId === subject) : learner.mastery;
-      return { kind: 'weak', spots: known(weakSpots(mastery, { topicId: params.get('topic') ?? undefined })), attempts: learner.attempts };
+      return { kind: 'weak', spots: known(weakSpots(mastery, { topicId: params.get('topic') ?? undefined })), attempts: learner.attempts, tiers: learner.settings.questionTiers };
     }
     case 'quiz': {
       const courseId = params.get('course');
       if (!courseId || !knownCourseIds.has(courseId)) return { kind: 'choose-course' };
       const count = Math.min(50, Math.max(1, Number(params.get('count')) || DEFAULT_QUIZ_SIZE));
-      return { kind: 'quiz', courseId, lessonIds: learner.progress.map((record) => record.lessonId), count };
+      return { kind: 'quiz', courseId, lessonIds: learner.progress.map((record) => record.lessonId), count, tiers: learner.settings.questionTiers };
     }
   }
 }
@@ -74,10 +74,10 @@ export function buildItems(plan: SessionPlan, courses: ReadonlyMap<string, Cours
     case 'refs':
       return resolveRefs(plan.refs, courses);
     case 'weak':
-      return { items: weaknessItems(plan.spots, courses, plan.attempts), missing: 0 };
+      return { items: weaknessItems(plan.spots, courses, plan.attempts, { tiers: plan.tiers }), missing: 0 };
     case 'quiz': {
       const course = courses.get(plan.courseId);
-      return { items: course ? quizItems(course, { count: plan.count, lessonIds: new Set(plan.lessonIds) }) : [], missing: 0 };
+      return { items: course ? quizItems(course, { count: plan.count, lessonIds: new Set(plan.lessonIds), tiers: plan.tiers }) : [], missing: 0 };
     }
     case 'choose-course':
       return { items: [], missing: 0 };

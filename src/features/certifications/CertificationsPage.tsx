@@ -11,11 +11,12 @@ import { EmptyState, ErrorState, LoadingState, Tag } from '@/components/ui/Feedb
 import { PageHeader, Sheet } from '@/components/ui/Sheet';
 import { useCertificationProgress } from '@/data/queries';
 import type { CertificationProgressRecord } from '@/data/records';
-import { useCatalog } from '@/domain/content/load';
-import type { Catalog, Certification } from '@/domain/content/types';
+import type { Certification } from '@/domain/content/types';
 import { certificationUrl } from '@/domain/content/urls';
 import { CourseRow } from '@/features/courses/CourseRow';
 import { useLessonStatuses } from '@/features/courses/useLessonStatuses';
+import { COURSES_TO_SEE_ID } from '@/features/profile/CoursesToSeeSheet';
+import { useVisibleCatalog, type VisibleCatalog } from '@/features/profile/useVisibility';
 import { formatDate, parseDayKey, relativeDay } from '@/lib/dates';
 import {
   CATEGORY_LABELS,
@@ -46,7 +47,7 @@ const CATEGORY_DESCRIPTIONS: Record<CertificationCategory, string> = {
 };
 
 export default function CertificationsPage() {
-  const catalog = useCatalog();
+  const catalog = useVisibleCatalog();
   const progress = useCertificationProgress();
   const [params] = useSearchParams();
   const area = params.get('area');
@@ -54,6 +55,7 @@ export default function CertificationsPage() {
 
   if (catalog.error) return <ErrorState title="Certification data is not built yet" error={catalog.error} />;
   if (!catalog.data) return <LoadingState />;
+  if (!catalog.data.showsCertifications) return <NoExtras catalog={catalog.data} />;
   if (area === IT_COURSES) return <ItCourses catalog={catalog.data} />;
   if (area && (CATEGORY_ORDER as string[]).includes(area)) return <AreaCertifications category={area as CertificationCategory} catalog={catalog.data} tracking={tracking} />;
 
@@ -91,7 +93,7 @@ export default function CertificationsPage() {
   );
 }
 
-function AreaCertifications({ category, catalog, tracking }: { category: CertificationCategory; catalog: Catalog; tracking: Map<string, CertificationProgressRecord> }) {
+function AreaCertifications({ category, catalog, tracking }: { category: CertificationCategory; catalog: VisibleCatalog; tracking: Map<string, CertificationProgressRecord> }) {
   const [includeRetired, setIncludeRetired] = useState(false);
   const inArea = catalog.certifications.filter((certification) => certification.category === category);
   const retiredCount = inArea.filter((certification) => certification.status === 'retired').length;
@@ -121,7 +123,34 @@ function AreaCertifications({ category, catalog, tracking }: { category: Certifi
   );
 }
 
-function ItCourses({ catalog }: { catalog: Catalog }) {
+/** Opened by a link before any extra is chosen: certifications follow the extras. */
+function NoExtras({ catalog }: { catalog: VisibleCatalog }) {
+  return (
+    <div className="mx-auto max-w-3xl">
+      <PageHeader title="Certifications" />
+      <EmptyState title="Certifications follow the courses you choose">
+        {catalog.visibility.extrasAllowed ? (
+          <>
+            Turn on Chinese, Japanese, AI or IT in{' '}
+            <Link to={`/settings#${COURSES_TO_SEE_ID}`} className="text-print-strong hover:underline">
+              Courses I want to see
+            </Link>{' '}
+            and their certifications appear here.
+          </>
+        ) : (
+          <>
+            <Link to="/sign-in?next=%2Fcertifications" className="text-print-strong hover:underline">
+              Sign in
+            </Link>{' '}
+            to add Chinese, Japanese, AI and IT courses and their certifications.
+          </>
+        )}
+      </EmptyState>
+    </div>
+  );
+}
+
+function ItCourses({ catalog }: { catalog: VisibleCatalog }) {
   const statuses = useLessonStatuses();
   return (
     <div className="mx-auto max-w-5xl">

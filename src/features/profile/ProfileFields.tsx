@@ -46,7 +46,7 @@ export function ProfileFields({ draft, onChange }: { draft: ProfileDraft; onChan
   return (
     <div className="flex flex-col gap-5">
       <Field label="How old are you?" error={ageError}>
-        {(props) => <Input {...props} type="number" inputMode="numeric" min={MIN_AGE} max={MAX_AGE} step={1} value={draft.age} onChange={(event) => changeAge(event.target.value)} className="w-28" />}
+        {(props) => <Input {...props} type="number" inputMode="numeric" min={MIN_AGE} max={MAX_AGE} step={1} value={draft.age} onChange={(event) => changeAge(event.target.value)} className="max-w-28" />}
       </Field>
 
       <fieldset className="flex flex-col gap-2">
@@ -67,7 +67,7 @@ export function ProfileFields({ draft, onChange }: { draft: ProfileDraft; onChan
       {schoolLevel && (
         <Field label="Which year are you in?">
           {(props) => (
-            <Select {...props} value={draft.year ?? 1} onChange={(event) => onChange({ ...draft, year: Number(event.target.value), followAge: false })} className="w-40">
+            <Select {...props} value={draft.year ?? 1} onChange={(event) => onChange({ ...draft, year: Number(event.target.value), followAge: false })} className="max-w-40">
               {Array.from({ length: YEARS_IN_LEVEL[schoolLevel] }, (_, index) => index + 1).map((year) => (
                 <option key={year} value={year}>
                   {yearLabel({ level: schoolLevel, year })}

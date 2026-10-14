@@ -1,0 +1,4 @@
+# Years of the Malaysian school levels that school courses may name (`year` in course.yaml):
+# primary school (KSSR) Standard 1-6 and secondary school (KSSM) Form 1-5.
+elementary: [1, 2, 3, 4, 5, 6]
+secondary: [1, 2, 3, 4, 5]

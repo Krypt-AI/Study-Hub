@@ -4,12 +4,12 @@ import { Link } from 'react-router';
 import { EmptyState } from '@/components/ui/Feedback';
 import { Sheet } from '@/components/ui/Sheet';
 import { useLessonProgress, useSettings } from '@/data/queries';
-import { useCatalog } from '@/domain/content/load';
 import { courseUrl } from '@/domain/content/urls';
 import { ShowOnTodaySwitch } from '@/features/courses/ShowOnTodaySwitch';
+import { useVisibleCatalog } from '@/features/profile/useVisibility';
 
 export function TodaySubjectsSheet() {
-  const catalog = useCatalog();
+  const catalog = useVisibleCatalog();
   const settings = useSettings();
   const progress = useLessonProgress();
   const listed = new Set([...(settings.data?.todayCourseIds ?? []), ...(progress.data ?? []).map((record) => record.courseId)]);

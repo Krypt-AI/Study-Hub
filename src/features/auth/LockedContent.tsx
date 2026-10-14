@@ -49,7 +49,7 @@ export function LockedContent() {
         </>
       ) : (
         <>
-          <p className="text-sm text-ink-muted">Sign in with {providerNames()} to open every course. The University courses are open to everyone.</p>
+          <p className="text-sm text-ink-muted">Sign in with {providerNames()} to open every course. The University and school courses are open to everyone.</p>
           <ButtonLink to={`/sign-in?next=${encodeURIComponent(next)}`} variant="primary" icon={<LogIn className="size-4" />}>
             Sign in
           </ButtonLink>

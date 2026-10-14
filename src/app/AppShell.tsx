@@ -21,14 +21,18 @@ import { lazy, type ReactNode, Suspense, useEffect, useState } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router';
 import { IconButton } from '@/components/ui/Button';
 import { Kbd, LoadingState } from '@/components/ui/Feedback';
-import { useFocusReviewStates, useSettings } from '@/data/queries';
+import { useSettings } from '@/data/queries';
+import { showsCertifications } from '@/domain/content/visibility';
 import { isDue } from '@/domain/learning/due';
 import { AccountRailItem } from '@/features/auth/AccountRailItem';
+import { canOpenLockedContent, useAuth } from '@/features/auth/useAuth';
 import { BringDeviceProgress } from '@/features/learners/BringDeviceProgress';
 import { cn } from '@/lib/cn';
 import { useStudyTimer } from '@/features/today/useStudyTimer';
 import { usePlaygroundInRail } from '@/features/playground/usePlaygroundInRail';
+import { ExtrasChoicePage } from '@/features/profile/ExtrasChoicePage';
 import { WelcomePage } from '@/features/profile/WelcomePage';
+import { useFocusReviewStates, useVisibility } from '@/features/profile/useVisibility';
 import { useTheme } from './useTheme';
 
 // Search loads its index library only when first opened.
@@ -50,6 +54,7 @@ const NAV: NavItem[] = [
   { to: '/certifications', label: 'Certifications', icon: <Award className="size-4" /> },
 ];
 const PLAYGROUND = '/playground';
+const CERTIFICATIONS = '/certifications';
 
 function DueCount() {
   // Only the subjects on Today count (all when none is chosen): other subjects never add pressure.
@@ -90,7 +95,14 @@ function RailLink({ item, onNavigate }: { item: NavItem; onNavigate?: () => void
 function Rail({ onNavigate, onSearch }: { onNavigate?: () => void; onSearch: () => void }) {
   const { resolved, setPreference } = useTheme();
   const showPlayground = usePlaygroundInRail();
-  const onPlayground = useLocation().pathname.startsWith(PLAYGROUND);
+  const visibility = useVisibility();
+  const { pathname } = useLocation();
+  // Shown while open, so following a link there never leaves the rail without the current page.
+  const shown = (item: NavItem) => {
+    if (item.to === PLAYGROUND) return showPlayground || pathname.startsWith(PLAYGROUND);
+    if (item.to === CERTIFICATIONS) return (visibility !== undefined && showsCertifications(visibility)) || pathname.startsWith(CERTIFICATIONS);
+    return true;
+  };
   return (
     <nav aria-label="Main" className="flex h-full flex-col gap-1 border-r border-print-line bg-rail px-3 py-4">
       <div className="mb-3 flex items-baseline gap-2 px-2.5">
@@ -107,7 +119,7 @@ function Rail({ onNavigate, onSearch }: { onNavigate?: () => void; onSearch: () 
           <Kbd>Ctrl K</Kbd>
         </span>
       </button>
-      {NAV.filter((item) => item.to !== PLAYGROUND || showPlayground || onPlayground).map((item) => (
+      {NAV.filter(shown).map((item) => (
         <RailLink key={item.to} item={item} onNavigate={onNavigate} />
       ))}
       <div className="mt-auto flex flex-col gap-1 border-t border-rule pt-3">
@@ -126,11 +138,16 @@ function Rail({ onNavigate, onSearch }: { onNavigate?: () => void; onSearch: () 
   );
 }
 
-/** A learner without a profile answers the Welcome page first, whichever page they opened. */
+/**
+ * Whichever page they opened, a learner without a profile answers the Welcome page first, and one who
+ * can choose extras (signed in, or local mode) is then asked once what they want to study.
+ */
 export function AppShell() {
   const settings = useSettings();
-  if (settings.isPending) return <LoadingState className="min-h-dvh justify-center" />;
+  const auth = useAuth();
+  if (settings.isPending || auth.status === 'loading') return <LoadingState className="min-h-dvh justify-center" />;
   if (settings.data && !settings.data.profile) return <WelcomePage settings={settings.data} />;
+  if (settings.data && canOpenLockedContent(auth) && !settings.data.extrasChosen) return <ExtrasChoicePage settings={settings.data} />;
   return <AppFrame />;
 }
 

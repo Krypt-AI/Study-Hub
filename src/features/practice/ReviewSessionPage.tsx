@@ -10,9 +10,9 @@ import { BubbleStrip } from '@/components/ui/Bubble';
 import { Button, ButtonLink } from '@/components/ui/Button';
 import { EmptyState, ErrorState, LoadingState } from '@/components/ui/Feedback';
 import { PageHeader, Sheet } from '@/components/ui/Sheet';
-import { useAttempts, useBookmarks, useFocusReviewStates, useLessonProgress, useReviewStates, useSettings, useTopicMastery } from '@/data/queries';
+import { useAttempts, useBookmarks, useLessonProgress, useReviewStates, useSettings, useTopicMastery } from '@/data/queries';
 import { contentLanguage } from '@/domain/content/language';
-import { useCatalog, useCourses } from '@/domain/content/load';
+import { useCourses } from '@/domain/content/load';
 import { findLesson, topicTitle } from '@/domain/content/navigation';
 import type { Catalog, Course } from '@/domain/content/types';
 import { assessmentUrl, courseUrl, lessonUrl } from '@/domain/content/urls';
@@ -22,6 +22,7 @@ import { QuestionCard } from './QuestionCard';
 import { buildItems, courseIdsOf, type LearnerRecords, planSession, type SessionPlan } from './session/practicePlan';
 import { type PracticeSession, type SessionItem, usePracticeSession } from './session/usePracticeSession';
 import { CourseLoadError } from '@/features/auth/LockedContent';
+import { useFocusReviewStates, useVisibleCatalog } from '@/features/profile/useVisibility';
 
 export default function ReviewSessionPage() {
   const { mode } = useParams();
@@ -39,7 +40,7 @@ interface SessionProps {
 }
 
 function PracticeLoader({ mode, params, onRestart }: SessionProps) {
-  const catalog = useCatalog();
+  const catalog = useVisibleCatalog();
   const settings = useSettings();
   // A session for one chosen subject covers it whether or not it is on Today.
   const allReviews = useReviewStates();

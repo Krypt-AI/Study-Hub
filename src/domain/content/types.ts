@@ -1,5 +1,6 @@
 import type { z } from 'zod';
 import type {
+  answerLanguageSchema,
   assessmentSchema,
   pastPaperKindSchema,
   assessmentSectionSchema,
@@ -12,6 +13,7 @@ import type {
   codeQuestionSchema,
   codeTestSchema,
   courseCategorySchema,
+  courseLanguageSchema,
   courseSchema,
   courseSummarySchema,
   lessonSchema,
@@ -59,6 +61,8 @@ export type PastPaperKind = z.output<typeof pastPaperKindSchema>;
 export type AssessmentSection = z.output<typeof assessmentSectionSchema>;
 export type Course = z.output<typeof courseSchema>;
 export type CourseCategory = z.output<typeof courseCategorySchema>;
+export type CourseLanguage = z.output<typeof courseLanguageSchema>;
+export type AnswerLanguage = z.output<typeof answerLanguageSchema>;
 export type CourseSummary = z.output<typeof courseSummarySchema>;
 
 export type Certification = z.output<typeof certificationSchema>;

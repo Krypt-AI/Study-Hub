@@ -1,8 +1,8 @@
 /** Multi-line answers: explanations (with a word count) and translations. Ctrl/Cmd+Enter submits. */
 import type { LongQuestion, TranslationQuestion } from '@/domain/content/types';
 import { countWords } from '@/domain/evaluation/normalize';
+import { LANGUAGE_TAGS } from '@/domain/content/language';
 
-const LANG_ATTR = { zh: 'zh-CN', ja: 'ja', en: 'en' } as const;
 
 export interface TextAnswerInputProps {
   question: LongQuestion | TranslationQuestion;
@@ -29,7 +29,7 @@ export function TextAnswerInput({ question, value, onChange, onSubmit, disabled 
           }
         }}
         disabled={disabled}
-        lang={language ? LANG_ATTR[language] : undefined}
+        lang={language ? LANGUAGE_TAGS[language] : undefined}
         rows={isLong ? 7 : 3}
         aria-label="Your answer"
         placeholder={isLong ? 'Explain in your own words…' : 'Your translation…'}

@@ -64,8 +64,8 @@ function accountOf(authorization: string | undefined, accounts: StubAccount[]): 
 }
 
 const MAIN_LEARNER = { id: 'main', name: 'Learner 1', createdAt: '2026-10-01T00:00:00.000Z', updatedAt: '2026-10-01T00:00:00.000Z' };
-/** Accounts have answered the Welcome page unless their rows say otherwise: writes are not kept, so it could not be answered here. */
-const ANSWERED_SETTINGS = { profile: { age: 20, level: 'university' } };
+/** Accounts have answered the Welcome page and chosen every extra unless their rows say otherwise: writes are not kept, so neither could be answered here. */
+const ANSWERED_SETTINGS = { profile: { age: 20, level: 'university' }, visibleCategories: ['chinese', 'japanese', 'ai-engineering', 'it'], extrasChosen: true };
 
 /** Answers auth and REST requests: each account sees only its own rows; every write is accepted. */
 async function answerSupabase(route: Route, accounts: StubAccount[]): Promise<void> {

@@ -6,8 +6,10 @@ import { Input } from '@/components/ui/Field';
 import { LoadingState, Tag } from '@/components/ui/Feedback';
 import { useCodeProjects } from '@/data/queries';
 import { useSearchDocuments } from '@/domain/content/load';
-import { projectUrl } from '@/domain/content/urls';
+import type { SearchDocument } from '@/domain/content/types';
+import { certificationUrl, projectUrl } from '@/domain/content/urls';
 import { canOpenLockedContent, useAuth } from '@/features/auth/useAuth';
+import { useVisibleCatalog } from '@/features/profile/useVisibility';
 import { cn } from '@/lib/cn';
 import { createSearchIndex, type SearchEntry, type SearchKind } from './searchIndex';
 
@@ -20,17 +22,29 @@ const KIND_LABELS: Record<SearchKind, string> = {
   project: 'Code',
 };
 
+/** Results only from what the learner's lists show: their courses and the certifications that follow their extras. */
+function useVisibleDocuments(documents: SearchDocument[] | undefined): SearchDocument[] | undefined {
+  const catalog = useVisibleCatalog();
+  return useMemo(() => {
+    if (!documents || !catalog.data) return undefined;
+    const courses = new Set(catalog.data.courses.map((course) => course.id));
+    const certifications = new Set(catalog.data.certifications.map((certification) => certificationUrl(certification.id)));
+    return documents.filter((document) => (document.courseId ? courses.has(document.courseId) : document.kind !== 'certification' || certifications.has(document.url)));
+  }, [documents, catalog.data]);
+}
+
 function useSearch(enabled: boolean) {
   const documents = useSearchDocuments(enabled, canOpenLockedContent(useAuth()));
+  const visible = useVisibleDocuments(documents.data);
   const projects = useCodeProjects();
   const index = useMemo(() => {
-    if (!documents.data) return undefined;
+    if (!visible) return undefined;
     const entries: SearchEntry[] = [
-      ...documents.data.map((document) => ({ id: document.id, kind: document.kind, title: document.title, text: document.text, url: document.url })),
+      ...visible.map((document) => ({ id: document.id, kind: document.kind, title: document.title, text: document.text, url: document.url })),
       ...(projects.data ?? []).map((project) => ({ id: `project:${project.id}`, kind: 'project' as const, title: project.title, text: `${project.description} ${project.code}`, url: projectUrl(project.id) })),
     ];
     return createSearchIndex(entries);
-  }, [documents.data, projects.data]);
+  }, [visible, projects.data]);
   return { index, isLoading: documents.isLoading, error: documents.error };
 }
 
