@@ -21,6 +21,7 @@ import { TextAnswerInput } from './inputs/TextAnswerInput';
 import { hasAnswer } from './session/responses';
 import type { PracticeSession } from './session/usePracticeSession';
 import { useBookmark } from './useBookmark';
+import { QuestionReference } from './QuestionReference';
 
 export interface QuestionCardProps {
   session: PracticeSession;
@@ -71,6 +72,7 @@ export function QuestionCard({ session, contentLang, context }: QuestionCardProp
         <Markdown className="text-[1.0625rem]">{question.prompt}</Markdown>
       </div>
       <MediaList media={question.media} />
+      {question.reference && <QuestionReference reference={question.reference} />}
 
       <QuestionInput question={question} draft={state.draft} onChange={session.setDraft} onSubmit={() => void session.submit()} locked={locked} feedback={state.feedback} />
 

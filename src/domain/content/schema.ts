@@ -106,6 +106,20 @@ const questionBase = {
   language: answerLanguageSchema.optional(),
   /** Short instruction shown under the input, e.g. "Pinyin with tone marks or numbers (ni3 hao3)". */
   answerHint: z.string().optional(),
+  /**
+   * What the question refers to ("the slides' example", "Table 2"), shown on request beside it: a heading
+   * of the question's lesson, whose section the content build copies into `excerpt`, and/or a page image.
+   */
+  reference: z
+    .object({
+      heading: z.string().optional(),
+      /** Button text; "See the example" by default. */
+      label: z.string().optional(),
+      excerpt: markdown.optional(),
+      image: mediaSchema.optional(),
+    })
+    .refine((reference) => reference.heading || reference.image, 'A reference names a lesson heading or an image.')
+    .optional(),
   /** Where the question sits on a printed answer sheet, e.g. group "文法 問題2", number "8". */
   sheet: z.object({ group: z.string(), number: z.string() }).optional(),
   tags: z.array(z.string()).default([]),

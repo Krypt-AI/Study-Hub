@@ -77,3 +77,14 @@ test('a chapter can be reset to start it again', async ({ page }) => {
   await expect(page.getByRole('button', { name: 'Reset' })).toHaveCount(0);
   await expect(page.getByRole('link', { name: /Start course/u })).toBeVisible();
 });
+
+test('a question that refers to an example shows it on request', async ({ page }) => {
+  await page.goto('/courses/cmpd203/lessons/cmpd203.l07');
+  await page.getByRole('list', { name: 'Answer strip: choose a question' }).getByRole('button', { name: /^Question 7\b/u }).click();
+  const see = page.getByRole('button', { name: 'See Example 2' });
+  await expect(see).toHaveAttribute('aria-expanded', 'false');
+  await see.click();
+  const example = page.getByRole('region', { name: 'See Example 2' });
+  await expect(example.getByRole('heading', { name: /Example 2/u })).toBeVisible();
+  await expect(example.getByText('date_diff', { exact: false }).first()).toBeVisible();
+});

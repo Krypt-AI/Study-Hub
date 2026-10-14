@@ -80,4 +80,6 @@ content/authored/courses/<course-id>/
 
 Question types: `choice`, `short`, `cloze`, `long` (rubric), `translation`, `code` (tests: `assert` or `stdout`), `sql` (reference query). The schema is `src/domain/content/schema.ts`; the build reports any field that does not match it. After writing exercises, run `npm run content:verify` to prove every reference solution passes.
 
+A question that points at something in its lesson ("In Example 2...") can carry `reference: { heading: "Example 2", label: "See Example 2" }`. The build copies that lesson section into the question, and the learner opens it with the button under the prompt. `image` (an asset) can be given instead of or as well as `heading`; a heading that is not in the lesson fails the build.
+
 Certifications are in `content/authored/certifications.yaml`: every entry records `verifiedOn`, its official `verificationSources` and the facts that could not be verified. Re-check them before relying on prices or exam formats.

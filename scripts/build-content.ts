@@ -25,6 +25,7 @@ import {
 import { buildAccessManifest, splitSearchDocuments } from '../src/domain/content/accessManifest.ts';
 import type { Course, SearchDocument, University } from '../src/domain/content/types.ts';
 import { lessonUrl, courseUrl, certificationUrl } from '../src/domain/content/urls.ts';
+import { sectionByHeading } from '../src/domain/content/sections.ts';
 
 const ROOT = process.cwd();
 const AUTHORED_DIR = join(ROOT, 'content', 'authored');
@@ -92,8 +93,17 @@ function loadAuthoredLesson(courseDir: string, name: string, courseSource: Sourc
       ...[sourcePages ?? []].flat().map((pages) => ({ kind: 'source-pages', ...pages })),
       ...(resources?.length ? [{ kind: 'resources', title: 'Official resources', items: resources }] : []),
     ],
-    questions: questions.map((question) => ({ source: lessonSource, ...(question as object) })),
+    questions: questions.map((question) => withReferenceExcerpt({ source: lessonSource, ...(question as object) }, body, name)),
   };
+}
+
+/** Copies the lesson section a question refers to into the question, so the app can show it beside it. */
+function withReferenceExcerpt(question: { id?: unknown; reference?: { heading?: string } & Record<string, unknown> } & Record<string, unknown>, lessonBody: string, lessonName: string): object {
+  const heading = question.reference?.heading;
+  if (!heading) return question;
+  const excerpt = sectionByHeading(lessonBody, heading);
+  if (!excerpt) throw new Error(`lesson ${lessonName}: question ${String(question.id)} refers to the heading "${heading}", which the lesson does not have`);
+  return { ...question, reference: { ...question.reference, excerpt } };
 }
 
 type AuthoredAssessment = { source?: SourceRefInput; sections?: Array<{ questions?: object[] } & Record<string, unknown>> } & Record<string, unknown>;
