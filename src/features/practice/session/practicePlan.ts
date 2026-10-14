@@ -28,20 +28,25 @@ export type SessionPlan =
 
 export const DEFAULT_QUIZ_SIZE = 10;
 
+/** A session covers one subject when `course` is given (as the Practice page always does), else every subject. */
 export function planSession(mode: PracticeModeId, params: URLSearchParams, learner: LearnerRecords, knownCourseIds: ReadonlySet<string>, now = new Date()): SessionPlan {
-  const known = <T extends { courseId: string }>(entries: T[]) => entries.filter((entry) => knownCourseIds.has(entry.courseId));
+  const subject = params.get('course');
+  const known = <T extends { courseId: string }>(entries: T[]) => entries.filter((entry) => knownCourseIds.has(entry.courseId) && (!subject || entry.courseId === subject));
   const limit = learner.settings.reviewSessionSize;
   switch (mode) {
     case 'review': {
-      const upcoming = learner.reviews.filter((review) => !isDue(review, now)).sort((a, b) => Date.parse(a.due) - Date.parse(b.due));
-      return { kind: 'refs', refs: known(dueReviewRefs(learner.reviews, now, limit)), nextDue: upcoming[0]?.due };
+      const reviews = subject ? learner.reviews.filter((review) => review.courseId === subject) : learner.reviews;
+      const upcoming = reviews.filter((review) => !isDue(review, now)).sort((a, b) => Date.parse(a.due) - Date.parse(b.due));
+      return { kind: 'refs', refs: known(dueReviewRefs(reviews, now, limit)), nextDue: upcoming[0]?.due };
     }
     case 'mistakes':
-      return { kind: 'refs', refs: known(mistakeRefs(learner.attempts, limit)) };
+      return { kind: 'refs', refs: known(mistakeRefs(subject ? learner.attempts.filter((attempt) => attempt.courseId === subject) : learner.attempts, limit)) };
     case 'saved':
       return { kind: 'refs', refs: known(savedRefs(learner.bookmarks)) };
-    case 'weak':
-      return { kind: 'weak', spots: known(weakSpots(learner.mastery, { topicId: params.get('topic') ?? undefined })), attempts: learner.attempts };
+    case 'weak': {
+      const mastery = subject ? learner.mastery.filter((record) => record.courseId === subject) : learner.mastery;
+      return { kind: 'weak', spots: known(weakSpots(mastery, { topicId: params.get('topic') ?? undefined })), attempts: learner.attempts };
+    }
     case 'quiz': {
       const courseId = params.get('course');
       if (!courseId || !knownCourseIds.has(courseId)) return { kind: 'choose-course' };

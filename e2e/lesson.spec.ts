@@ -35,7 +35,10 @@ test('a typed answer is marked, explained and remembered', async ({ page }) => {
   // The answers feed Today and Practice.
   await page.goto('/');
   await expect(page.getByRole('heading', { name: 'Python and Programming Fundamentals' }).or(page.getByText('Python and Programming Fundamentals').first())).toBeVisible();
+  // Practice starts by choosing the subject.
   await page.goto('/practice');
+  await page.getByRole('navigation', { name: 'Subjects' }).getByRole('link', { name: /Python and Programming Fundamentals/u }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'Python and Programming Fundamentals' })).toBeVisible();
   const mistakes = page.getByRole('link', { name: /Recent mistakes/u });
   await expect(mistakes).toContainText('1');
   await mistakes.click();

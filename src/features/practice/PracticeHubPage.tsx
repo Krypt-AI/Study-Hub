@@ -1,111 +1,156 @@
 /**
- * The practice hub: what is due, where you are weakest, quick sessions, mock exams, and how
- * your knowledge splits across the four skills (recognise, recall, explain, apply).
+ * Practice in two steps: first the subject, then everything waiting in it: due reviews, weak spots,
+ * recent mistakes, saved questions and a quiz, and how its knowledge splits across the four skills.
  */
-import { ChevronRight, ClipboardCheck } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { useMemo } from 'react';
-import { Link } from 'react-router';
+import { Link, useSearchParams } from 'react-router';
+import { type AreaEntry, AreaBack, AreaIndex } from '@/components/ui/AreaIndex';
 import { Bubble } from '@/components/ui/Bubble';
 import { ButtonLink } from '@/components/ui/Button';
-import { ErrorState, LoadingState, Tag } from '@/components/ui/Feedback';
+import { EmptyState, ErrorState, LoadingState, Tag } from '@/components/ui/Feedback';
 import { PageHeader, Sheet } from '@/components/ui/Sheet';
-import { useAttempts, useBookmarks, useFocusReviewStates, useTopicMastery } from '@/data/queries';
-import type { AttemptRecord, BookmarkRecord, ReviewStateRecord, TopicMasteryRecord } from '@/data/records';
+import { useAttempts, useBookmarks, useLessonProgress, useReviewStates, useTopicMastery } from '@/data/queries';
 import { useCatalog } from '@/domain/content/load';
-import type { Catalog, CourseSummary } from '@/domain/content/types';
-import { assessmentUrl } from '@/domain/content/urls';
-import { levelCountsBySkill, type MasteryLevel, masteryLevel, SKILL_LABELS, SKILLS } from '@/domain/learning/mastery';
-import { dueCountsByCourse, isDue } from '@/domain/learning/due';
+import type { CourseSummary } from '@/domain/content/types';
+import { type MasteryLevel, masteryLevel, SKILL_LABELS, SKILLS } from '@/domain/learning/mastery';
 import { relativeTime } from '@/lib/dates';
-import { DueReviewsSheet } from './DueReviewsSheet';
 import { PRACTICE_MODES, type PracticeModeId, practiceUrl, RECENT_ATTEMPTS } from './practiceModes';
-import { mistakeRefs, savedRefs, type WeakSpot, weakSpots } from './session/selectPractice';
+import type { WeakSpot } from './session/selectPractice';
+import { type PracticeRecords, practisedCourseIds, type SubjectPractice, subjectPractice } from './subjectPractice';
 
 export default function PracticeHubPage() {
   const catalog = useCatalog();
-  const reviews = useFocusReviewStates();
+  const reviews = useReviewStates();
   const mastery = useTopicMastery();
   const attempts = useAttempts(RECENT_ATTEMPTS);
   const bookmarks = useBookmarks();
+  const progress = useLessonProgress();
+  const [params] = useSearchParams();
 
-  const error = [catalog, reviews, mastery, attempts, bookmarks].find((query) => query.error)?.error;
+  const error = [catalog, reviews, mastery, attempts, bookmarks, progress].find((query) => query.error)?.error;
   if (error) return <ErrorState title="Practice could not be loaded" error={error} />;
-  if (!catalog.data || !reviews.data || !mastery.data || !attempts.data || !bookmarks.data) return <LoadingState />;
-  return <PracticeHub catalog={catalog.data} reviews={reviews.data} mastery={mastery.data} attempts={attempts.data} bookmarks={bookmarks.data} />;
+  if (!catalog.data || !reviews.data || !mastery.data || !attempts.data || !bookmarks.data || !progress.data) return <LoadingState />;
+  const records: PracticeRecords = { reviews: reviews.data, mastery: mastery.data, attempts: attempts.data, bookmarks: bookmarks.data };
+  const course = catalog.data.courses.find((candidate) => candidate.id === params.get('course'));
+  if (course) return <SubjectPage course={course} records={records} />;
+  const practised = practisedCourseIds(records, progress.data.map((record) => record.courseId));
+  return <SubjectChoice courses={catalog.data.courses.filter((candidate) => practised.has(candidate.id))} records={records} />;
 }
 
-interface HubData {
-  catalog: Catalog;
-  reviews: ReviewStateRecord[];
-  mastery: TopicMasteryRecord[];
-  attempts: AttemptRecord[];
-  bookmarks: BookmarkRecord[];
+/** "12 due, 3 weak spots", or what to do next. */
+function waitingNote(practice: SubjectPractice): string | undefined {
+  const parts = [practice.due ? `${practice.due} due` : '', practice.counts.weak ? `${practice.counts.weak} weak spot${practice.counts.weak === 1 ? '' : 's'}` : ''].filter(Boolean);
+  return parts.length ? parts.join(', ') : undefined;
 }
 
-function PracticeHub({ catalog, reviews, mastery, attempts, bookmarks }: HubData) {
-  const model = useMemo(() => {
+function SubjectChoice({ courses, records }: { courses: CourseSummary[]; records: PracticeRecords }) {
+  const entries = useMemo(() => {
     const now = new Date();
-    const courseById = new Map(catalog.courses.map((course) => [course.id, course]));
-    const known = <T extends { courseId: string }>(entries: T[]) => entries.filter((entry) => courseById.has(entry.courseId));
-    const due = dueCountsByCourse(reviews, now).map((entry) => ({ ...entry, course: courseById.get(entry.courseId) }));
-    const upcoming = reviews.filter((review) => !isDue(review, now)).sort((a, b) => Date.parse(a.due) - Date.parse(b.due));
-    const lastSat = new Map<string, string>();
-    for (const attempt of attempts) if (attempt.assessmentId && !lastSat.has(attempt.assessmentId)) lastSat.set(attempt.assessmentId, attempt.createdAt);
-    return {
-      courseById,
-      due,
-      dueTotal: due.reduce((sum, entry) => sum + entry.due, 0),
-      nextDue: upcoming[0]?.due,
-      spots: known(weakSpots(mastery)),
-      counts: {
-        weak: known(weakSpots(mastery, { limit: Infinity })).length,
-        mistakes: known(mistakeRefs(attempts, Infinity)).length,
-        saved: known(savedRefs(bookmarks)).length,
-      },
-      levels: levelCountsBySkill(mastery),
-      lastSat,
-    };
-  }, [catalog, reviews, mastery, attempts, bookmarks]);
+    return courses
+      .map((course) => ({ course, practice: subjectPractice(course.id, records, now) }))
+      .sort((a, b) => b.practice.due - a.practice.due || a.course.title.localeCompare(b.course.title))
+      .map(({ course, practice }): AreaEntry => ({
+        id: course.id,
+        title: course.title,
+        description: practice.due || practice.counts.weak ? 'Reviews, weak spots and quizzes for this subject.' : 'Nothing waiting right now: take a quiz or revise saved questions.',
+        note: waitingNote(practice),
+        to: `/practice?course=${course.id}`,
+      }));
+  }, [courses, records]);
 
   return (
+    <div className="mx-auto max-w-4xl">
+      <PageHeader title="Practice" lead="Choose a subject to see what is waiting in it." />
+      {entries.length === 0 ? (
+        <EmptyState title="Nothing to practise yet" action={<ButtonLink to="/courses">Choose a course</ButtonLink>}>
+          Answer a few questions in a lesson first: they come back here to review, and the topics you miss become weak spots.
+        </EmptyState>
+      ) : (
+        <AreaIndex label="Subjects" entries={entries} />
+      )}
+    </div>
+  );
+}
+
+function SubjectPage({ course, records }: { course: CourseSummary; records: PracticeRecords }) {
+  const practice = useMemo(() => subjectPractice(course.id, records), [course.id, records]);
+  return (
     <div className="mx-auto max-w-6xl">
-      <PageHeader title="Practice" lead="Reviews, weak spots and mock exams. Every answer updates your review schedule and topic mastery." />
+      <AreaBack to="/practice" label="All subjects" />
+      <PageHeader title={course.title} lead="Every answer updates your review schedule and topic mastery." />
       <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]">
         <div className="flex min-w-0 flex-col gap-6">
-          <DueReviewsSheet title="Due reviews" due={model.due} total={model.dueTotal} nextDue={model.nextDue} />
-          <WeakSpotsSheet spots={model.spots} courseById={model.courseById} />
-          <SkillsSheet levels={model.levels} />
+          <SessionsSheet courseId={course.id} practice={practice} />
+          <WeakSpotsSheet spots={practice.spots} course={course} />
         </div>
-        <div className="flex min-w-0 flex-col gap-6">
-          <SessionsSheet counts={model.counts} />
-          <ExamsSheet courses={catalog.courses} lastSat={model.lastSat} />
-        </div>
+        <SkillsSheet levels={practice.levels} />
       </div>
     </div>
   );
 }
 
-function WeakSpotsSheet({ spots, courseById }: { spots: WeakSpot[]; courseById: Map<string, CourseSummary> }) {
+const SESSIONS: PracticeModeId[] = ['review', 'weak', 'mistakes', 'saved', 'quiz'];
+
+/** The subject's sessions with how many questions each holds; empty ones say so instead of starting. */
+function SessionsSheet({ courseId, practice }: { courseId: string; practice: SubjectPractice }) {
+  const count: Partial<Record<PracticeModeId, number>> = { review: practice.due, weak: practice.counts.weak, mistakes: practice.counts.mistakes, saved: practice.counts.saved };
   return (
-    <Sheet title="Weak spots" aside={spots.length > 0 ? <Link to={practiceUrl('weak')} className="hover:text-ink">Practise all</Link> : undefined}>
+    <Sheet title="Sessions" padded={false}>
+      <ul className="divide-y divide-rule">
+        {SESSIONS.map((mode) => {
+          const info = PRACTICE_MODES[mode];
+          const value = count[mode];
+          const empty = value === 0;
+          const detail =
+            mode === 'review' && empty && practice.nextDue
+              ? `Nothing due. The next review is due ${relativeTime(practice.nextDue)}.`
+              : mode === 'quiz'
+                ? 'A random set of questions from this subject.'
+                : info.description;
+          return (
+            <li key={mode}>
+              <Link
+                to={practiceUrl(mode, { course: courseId })}
+                aria-disabled={empty || undefined}
+                className={empty ? 'pointer-events-none grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-5 py-3.5 opacity-60' : 'group grid grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 px-5 py-3.5 hover:bg-sheet-2'}
+              >
+                <span className="min-w-0">
+                  <span className="flex items-center gap-2 font-medium group-hover:text-print-strong">
+                    {info.title}
+                    {mode === 'review' && practice.overdue > 0 && <Tag tone="wrong">{practice.overdue} overdue</Tag>}
+                  </span>
+                  <span className="block text-sm text-ink-muted">{detail}</span>
+                </span>
+                {value !== undefined && <span className="display-numerals text-xl text-ink">{value}</span>}
+                {!empty && <ChevronRight className="size-4 text-ink-faint" aria-hidden />}
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </Sheet>
+  );
+}
+
+function WeakSpotsSheet({ spots, course }: { spots: WeakSpot[]; course: CourseSummary }) {
+  return (
+    <Sheet title="Weak spots">
       {spots.length === 0 ? (
         <p className="text-sm text-ink-muted">After a few answers per topic, the topics and skills you keep missing are listed here, weakest first.</p>
       ) : (
         <ul className="flex flex-col">
           {spots.map((spot) => {
-            const course = courseById.get(spot.courseId);
             const level = masteryLevel({ ema: spot.score, attempts: spot.attempts });
             return (
               <li key={`${spot.topicId}|${spot.skill}`} className="flex items-center gap-3 border-b border-rule py-2 last:border-b-0">
                 <Bubble state={level} title={level} />
                 <div className="min-w-0 flex-1">
-                  <p className="truncate">{course?.topics.find((topic) => topic.id === spot.topicId)?.title ?? spot.topicId}</p>
-                  <p className="truncate text-xs text-ink-faint">
-                    {SKILL_LABELS[spot.skill]} · {course?.title}
-                  </p>
+                  <p className="truncate">{course.topics.find((topic) => topic.id === spot.topicId)?.title ?? spot.topicId}</p>
+                  <p className="truncate text-xs text-ink-faint">{SKILL_LABELS[spot.skill]}</p>
                 </div>
                 <span className="tabular text-sm text-ink-muted">{Math.round(spot.score * 100)}%</span>
-                <ButtonLink to={practiceUrl('weak', { topic: spot.topicId })} size="sm" variant="ghost">
+                <ButtonLink to={practiceUrl('weak', { course: course.id, topic: spot.topicId })} size="sm" variant="ghost">
                   Practise
                 </ButtonLink>
               </li>
@@ -130,7 +175,7 @@ const SKILL_MEANING: Record<(typeof SKILLS)[number], string> = {
   apply: 'use it in a task or code',
 };
 
-function SkillsSheet({ levels }: { levels: ReturnType<typeof levelCountsBySkill> }) {
+function SkillsSheet({ levels }: { levels: SubjectPractice['levels'] }) {
   const practised = SKILLS.some((skill) => LEVEL_COLUMNS.some(({ level }) => levels[skill][level] > 0));
   return (
     <Sheet title="Knowledge by skill">
@@ -167,67 +212,6 @@ function SkillsSheet({ levels }: { levels: ReturnType<typeof levelCountsBySkill>
           </tbody>
         </table>
       )}
-    </Sheet>
-  );
-}
-
-const QUICK_SESSIONS: Array<{ mode: PracticeModeId; count?: 'weak' | 'mistakes' | 'saved' }> = [
-  { mode: 'weak', count: 'weak' },
-  { mode: 'mistakes', count: 'mistakes' },
-  { mode: 'saved', count: 'saved' },
-  { mode: 'quiz' },
-];
-
-function SessionsSheet({ counts }: { counts: Record<'weak' | 'mistakes' | 'saved', number> }) {
-  return (
-    <Sheet title="Quick sessions" padded={false}>
-      <ul className="divide-y divide-rule">
-        {QUICK_SESSIONS.map(({ mode, count }) => {
-          const info = PRACTICE_MODES[mode];
-          const value = count ? counts[count] : undefined;
-          return (
-            <li key={mode}>
-              <Link to={practiceUrl(mode)} className="group grid grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 px-4 py-3 hover:bg-sheet-2">
-                <span className="min-w-0">
-                  <span className="block font-medium group-hover:text-print-strong">{info.title}</span>
-                  <span className="block text-sm text-ink-muted">{info.description}</span>
-                </span>
-                <span className="display-numerals text-lg text-ink">{value ?? ''}</span>
-                <ChevronRight className="size-4 text-ink-faint" aria-hidden />
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-    </Sheet>
-  );
-}
-
-function ExamsSheet({ courses, lastSat }: { courses: CourseSummary[]; lastSat: Map<string, string> }) {
-  const exams = courses.flatMap((course) => course.assessments.map((assessment) => ({ course, assessment })));
-  if (exams.length === 0) return null;
-  return (
-    <Sheet title="Mock exams and quizzes" padded={false}>
-      <ul className="divide-y divide-rule">
-        {exams.map(({ course, assessment }) => {
-          const sat = lastSat.get(assessment.id);
-          return (
-            <li key={assessment.id} className="flex items-center gap-3 px-4 py-3">
-              <ClipboardCheck className="size-4 shrink-0 text-print" aria-hidden />
-              <div className="min-w-0 flex-1">
-                <p className="truncate font-medium">{assessment.title}</p>
-                <p className="truncate text-xs text-ink-faint">
-                  {course.title} · {sat ? `last sat ${relativeTime(sat)}` : 'not sat yet'}
-                </p>
-              </div>
-              {assessment.kind === 'mock-exam' && <Tag>timed</Tag>}
-              <ButtonLink to={assessmentUrl(course.id, assessment.id)} size="sm">
-                Open
-              </ButtonLink>
-            </li>
-          );
-        })}
-      </ul>
     </Sheet>
   );
 }
