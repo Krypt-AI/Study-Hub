@@ -10,8 +10,9 @@ Recorded from the shipped code (`src/styles/global.css`, `src/components/ui/`) o
 2. **Printed structure, pencil content.** Headers, rules, numbers and empty bubbles are print ink; anything the learner did is ink or mark colour.
 3. **Low glare at night.** The default night theme is graphite, never pure black or pure white.
 4. **Ruled rows, not card grids.** Lists are rows on a sheet, like an answer sheet. Browse pages start with an index of areas (large ruled rows, like a test booklet's contents page) and open one area at a time, so nobody scrolls past what they don't study.
-6. **Bubbles mean progress.** Bubbles appear only where they record answers, lessons, goals or a tracked plan; navigation and decoration never use them, and lists never repeat a symbol on every row.
 5. **Honest labels.** Provenance, "editor only", estimates and unverified facts are always visible.
+6. **Bubbles mean progress.** Bubbles appear only where they record answers, lessons, goals or a tracked plan; navigation and decoration never use them, and lists never repeat a symbol on every row.
+7. **The task first.** What a learner came to do (the chapters, the questions, the switches) starts on the first screen. Long descriptions are cut to three lines with "More about this course", empty states are one or two short sentences (or the section is left out when another page covers it), and reference material sits behind closed `<details>` rows.
 
 ## Colour tokens
 

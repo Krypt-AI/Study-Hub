@@ -48,11 +48,11 @@ export function ComingUpSheet() {
     <Sheet title="Today’s classes" aside={<Link to="/calendar" className="hover:text-ink">Calendar</Link>}>
       {unused ? (
         <p className="text-sm text-ink-muted">
-          Optional: add your timetable and the dates of quizzes, tests and exams in the{' '}
+          Add your timetable to the{' '}
           <Link to="/calendar" className="text-print-strong hover:underline">
             calendar
-          </Link>
-          , and link each class to its subject: today’s classes then appear here, ready to study.
+          </Link>{' '}
+          and link each class to its subject. Today’s classes then show here.
         </p>
       ) : (
         <div className="flex flex-col gap-4">

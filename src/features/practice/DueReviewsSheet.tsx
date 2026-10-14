@@ -16,7 +16,7 @@ export function DueReviewsSheet({ due, total }: DueReviewsSheetProps) {
   return (
     <Sheet title="Due today" aside={total > 0 ? <span className="display-numerals text-lg text-ink">{total}</span> : undefined} padded={due.length === 0}>
       {due.length === 0 ? (
-        <p className="text-sm text-ink-muted">Nothing is due. Questions you answer in lessons come back here when it is time to review them.</p>
+        <p className="text-sm text-ink-muted">Nothing to review today. Answers come back here when it is time to review them.</p>
       ) : (
         <ul className="divide-y divide-rule">
           {due.map((entry) => (

@@ -5,7 +5,6 @@
 import { Award, Bookmark, BookmarkCheck, ClipboardCheck, Play } from 'lucide-react';
 import { useMemo } from 'react';
 import { Link, useParams } from 'react-router';
-import { Markdown } from '@/components/Markdown';
 import { SourceBadge } from '@/components/SourceBadge';
 import { Bubble, type BubbleState } from '@/components/ui/Bubble';
 import { ButtonLink, IconButton } from '@/components/ui/Button';
@@ -21,6 +20,7 @@ import { assessmentUrl, certificationUrl, courseUrl, lessonUrl } from '@/domain/
 import { masteryKey, masteryLevel, SKILL_LABELS, SKILLS } from '@/domain/learning/mastery';
 import { useBookmark } from '@/features/practice/useBookmark';
 import { CourseLoadError } from '@/features/auth/LockedContent';
+import { CourseAbout } from './CourseAbout';
 import { ResetChapterButton } from './ResetChapterButton';
 import { ShowOnTodaySwitch } from './ShowOnTodaySwitch';
 import { groupAssessments } from '@/domain/content/pastPapers';
@@ -76,12 +76,7 @@ export default function CoursePage() {
 
       <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
         <div className="flex min-w-0 flex-col gap-6">
-          <Markdown className="max-w-[70ch]">{data.description}</Markdown>
-          {data.contentNotice && (
-            <aside className="rounded-md bg-print-soft px-4 py-3 text-sm">
-              <Markdown compact>{data.contentNotice}</Markdown>
-            </aside>
-          )}
+          <CourseAbout description={data.description} notice={data.contentNotice} />
           {data.units.map((unit) => (
             <Sheet
               key={unit.id}

@@ -89,7 +89,7 @@ export default function TodayPage() {
         <div className="flex min-w-0 flex-col gap-6">
           <ComingUpSheet />
           <DueReviewsSheet due={model.dueByCourse} total={model.dueTotal} />
-          <WeakTopicsSheet topics={model.weakTopics} />
+          {model.weakTopics.length > 0 && <WeakTopicsSheet topics={model.weakTopics} />}
           <WeekSheet week={model.week} streak={model.streak.current} longest={model.streak.longest} />
         </div>
       </div>
@@ -233,26 +233,22 @@ function CourseProgressSheet({ catalog, progress, chosenCount }: { catalog: Cata
 
 function WeakTopicsSheet({ topics }: { topics: WeakTopic[] }) {
   return (
-    <Sheet title="Weakest topics" aside={topics.length > 0 ? <Link to="/practice/weak" className="hover:text-ink">Practise all</Link> : undefined}>
-      {topics.length === 0 ? (
-        <p className="text-sm text-ink-muted">After a few answers, topics you keep missing are listed here so you can practise them directly.</p>
-      ) : (
-        <ul className="flex flex-col">
-          {topics.map((topic) => (
-            <li key={topic.topicId} className="flex items-center gap-3 border-b border-rule py-2 last:border-b-0">
-              <Bubble state={topic.level === 'weak' ? 'weak' : 'learning'} title={topic.level} />
-              <div className="min-w-0 flex-1">
-                <p className="truncate">{topic.title}</p>
-                <p className="truncate text-xs text-ink-faint">{[SKILL_LABELS[topic.skill], topic.course?.title].filter(Boolean).join(' · ')}</p>
-              </div>
-              <span className="tabular text-sm text-ink-muted">{Math.round(topic.score * 100)}%</span>
-              <ButtonLink to={`/practice/weak?topic=${encodeURIComponent(topic.topicId)}`} size="sm" variant="ghost">
-                Practise
-              </ButtonLink>
-            </li>
-          ))}
-        </ul>
-      )}
+    <Sheet title="Weakest topics" aside={<Link to="/practice/weak" className="hover:text-ink">Practise all</Link>}>
+      <ul className="flex flex-col">
+        {topics.map((topic) => (
+          <li key={topic.topicId} className="flex items-center gap-3 border-b border-rule py-2 last:border-b-0">
+            <Bubble state={topic.level === 'weak' ? 'weak' : 'learning'} title={topic.level} />
+            <div className="min-w-0 flex-1">
+              <p className="truncate">{topic.title}</p>
+              <p className="truncate text-xs text-ink-faint">{[SKILL_LABELS[topic.skill], topic.course?.title].filter(Boolean).join(' · ')}</p>
+            </div>
+            <span className="tabular text-sm text-ink-muted">{Math.round(topic.score * 100)}%</span>
+            <ButtonLink to={`/practice/weak?topic=${encodeURIComponent(topic.topicId)}`} size="sm" variant="ghost">
+              Practise
+            </ButtonLink>
+          </li>
+        ))}
+      </ul>
     </Sheet>
   );
 }

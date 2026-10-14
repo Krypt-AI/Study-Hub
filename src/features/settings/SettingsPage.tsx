@@ -4,7 +4,7 @@
  */
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Download, Trash2, Upload } from 'lucide-react';
-import { type ChangeEvent, useEffect, useRef, useState } from 'react';
+import { type ChangeEvent, type ReactNode, useEffect, useRef, useState } from 'react';
 import { type ThemePreference, useTheme } from '@/app/useTheme';
 import { Button } from '@/components/ui/Button';
 import { Dialog } from '@/components/ui/Dialog';
@@ -38,15 +38,13 @@ export default function SettingsPage() {
           <TodaySubjectsSheet />
           <AppearanceSheet />
           <GoalsSheet key={JSON.stringify(settings.data)} settings={settings.data} />
-          <ShortcutsSheet />
         </div>
         <div className="flex min-w-0 flex-col gap-6">
           <LearnersSheet />
           <StorageSheet />
           <BackupSheet />
           <LegacyNotesSheet />
-          <ExecutionSheet />
-          <ContentSheet />
+          <AboutSheet />
         </div>
       </div>
     </div>
@@ -131,7 +129,35 @@ function GoalsSheet({ settings }: { settings: Settings }) {
   );
 }
 
-function ShortcutsSheet() {
+/** Reference for the curious: closed until asked for, so Settings stays short. */
+function AboutSheet() {
+  return (
+    <Sheet title="About Study Hub">
+      <div className="flex flex-col divide-y divide-rule text-sm">
+        <AboutPart title="Keyboard shortcuts">
+          <Shortcuts />
+        </AboutPart>
+        <AboutPart title="How code runs">
+          <ExecutionNotes />
+        </AboutPart>
+        <AboutPart title="Where the courses come from">
+          <ContentNotes />
+        </AboutPart>
+      </div>
+    </Sheet>
+  );
+}
+
+function AboutPart({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <details className="py-2 first:pt-0 last:pb-0">
+      <summary className="cursor-pointer text-ink-muted hover:text-ink">{title}</summary>
+      <div className="mt-3">{children}</div>
+    </details>
+  );
+}
+
+function Shortcuts() {
   const shortcuts: Array<[string[], string]> = [
     [['Ctrl', 'K'], 'Search courses, lessons, words and certifications'],
     [['Enter'], 'Check a typed answer'],
@@ -139,18 +165,16 @@ function ShortcutsSheet() {
     [['Ctrl', 'Enter'], 'Run code, or check a long answer'],
   ];
   return (
-    <Sheet title="Keyboard shortcuts">
-      <dl className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-4 gap-y-2 text-sm">
-        {shortcuts.map(([keys, action]) => (
-          <div key={action} className="contents">
-            <dt className="flex gap-1">
-              {keys.map((key) => (key === '…' ? <span key={key} className="text-ink-faint">…</span> : <Kbd key={key}>{key}</Kbd>))}
-            </dt>
-            <dd className="text-ink-muted">{action}</dd>
-          </div>
-        ))}
-      </dl>
-    </Sheet>
+    <dl className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-4 gap-y-2">
+      {shortcuts.map(([keys, action]) => (
+        <div key={action} className="contents">
+          <dt className="flex gap-1">
+            {keys.map((key) => (key === '…' ? <span key={key} className="text-ink-faint">…</span> : <Kbd key={key}>{key}</Kbd>))}
+          </dt>
+          <dd className="text-ink-muted">{action}</dd>
+        </div>
+      ))}
+    </dl>
   );
 }
 
@@ -341,37 +365,33 @@ function notesAsMarkdown(notes: LegacyNote[]): string {
   return notes.map((note) => `# ${note.title || 'Untitled note'}\n\n_Last edited ${formatDate(note.updatedAt)}_\n\n${note.body.trim()}\n`).join('\n---\n\n');
 }
 
-function ExecutionSheet() {
+function ExecutionNotes() {
   return (
-    <Sheet title="Running code">
-      <ul className="flex list-disc flex-col gap-1.5 pl-5 text-sm text-ink-muted">
-        <li>Python, JavaScript, TypeScript and SQL run in isolated Web Workers inside this browser, never on a server, with a time limit for every run.</li>
-        <li>
-          The workers have no access to the page or to your stored data, and their network access is blocked except for Python&apos;s runtime (Pyodide, about 10 MB) and its
-          packages, downloaded from cdn.jsdelivr.net the first time they are needed.
-        </li>
-        <li>C, Java and Bash are editor-only: they are saved and can be compared with solutions, but they are never run, and Study Hub never reports them as tested.</li>
-      </ul>
-    </Sheet>
+    <ul className="flex list-disc flex-col gap-1.5 pl-5 text-ink-muted">
+      <li>Python, JavaScript, TypeScript and SQL run in isolated Web Workers inside this browser, never on a server, with a time limit for every run.</li>
+      <li>
+        The workers have no access to the page or to your stored data, and their network access is blocked except for Python&apos;s runtime (Pyodide, about 10 MB) and its
+        packages, downloaded from cdn.jsdelivr.net the first time they are needed.
+      </li>
+      <li>C, Java and Bash are editor-only: they are saved and can be compared with solutions, but they are never run, and Study Hub never reports them as tested.</li>
+    </ul>
   );
 }
 
-function ContentSheet() {
+function ContentNotes() {
   const catalog = useCatalog();
   const fromBooks = catalog.data?.courses.filter((course) => course.origin === 'user-material').length ?? 0;
   return (
-    <Sheet title="Course content">
-      <div className="flex flex-col gap-2 text-sm text-ink-muted">
-        {catalog.data && (
-          <p>
-            {catalog.data.courses.length} courses ({fromBooks} from your own books) and {catalog.data.certifications.length} certifications, built {formatDate(catalog.data.generatedAt)}.
-          </p>
-        )}
+    <div className="flex flex-col gap-2 text-ink-muted">
+      {catalog.data && (
         <p>
-          Lessons from your HSK and JLPT books are generated on this computer from your own files, for your personal study. They are kept out of the source repository and must not be
-          published.
+          {catalog.data.courses.length} courses ({fromBooks} from your own books) and {catalog.data.certifications.length} certifications, built {formatDate(catalog.data.generatedAt)}.
         </p>
-      </div>
-    </Sheet>
+      )}
+      <p>
+        Lessons from your HSK and JLPT books are generated on this computer from your own files, for your personal study. They are kept out of the source repository and must not be
+        published.
+      </p>
+    </div>
   );
 }
