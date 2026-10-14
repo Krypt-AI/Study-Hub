@@ -9,7 +9,7 @@
  */
 import { canonicalKana } from '../../../src/domain/evaluation/kana.ts';
 import { compactCjk } from '../../../src/domain/evaluation/normalize.ts';
-import { HAS_CJK, lineHeight, type OcrLine, type OcrPage } from '../ocr.ts';
+import { centerY, HAS_CJK, lineHeight, type OcrLine, type OcrPage, rowsOf, toHalfWidth } from '../ocr.ts';
 
 export type Shin500Category = 'moji' | 'goi' | 'bunpou';
 
@@ -56,9 +56,7 @@ const OPTION_MARKER_COLUMNS: Array<[number, number]> = [
 /** Left edge of the question-number box; the stem itself starts further right. */
 const NUMBER_BOX_RIGHT = 0.245;
 
-const toHalfWidth = (text: string) => text.replace(/[０-９]/gu, (digit) => String.fromCharCode(digit.charCodeAt(0) - 0xfee0));
-const centre = (line: OcrLine) => (line.bbox[1] + line.bbox[3]) / 2;
-const inBand = (line: OcrLine, band: [number, number]) => centre(line) >= band[0] && centre(line) < band[1];
+const inBand = (line: OcrLine, band: [number, number]) => centerY(line) >= band[0] && centerY(line) < band[1];
 const isFurigana = (line: OcrLine) => lineHeight(line) < FURIGANA_MAX_HEIGHT;
 const isCategoryLabel = (line: OcrLine) => /^(もじ|ごい|ぶん[ぽぼ]う)$/u.test(line.text.trim());
 const isCheckbox = (line: OcrLine) => line.bbox[0] > 0.62 && /^[\d□口\s]+$/u.test(line.text.trim());
@@ -94,22 +92,6 @@ function describePage(page: OcrPage): PageInfo {
 // ---------------------------------------------------------------------------
 // Shared line handling
 // ---------------------------------------------------------------------------
-
-interface Row {
-  y: number;
-  lines: OcrLine[];
-}
-
-function rowsOf(lines: OcrLine[], tolerance = 0.009): Row[] {
-  const rows: Row[] = [];
-  for (const line of [...lines].sort((a, b) => a.bbox[1] - b.bbox[1])) {
-    const row = rows.find((candidate) => Math.abs(candidate.y - centre(line)) < tolerance);
-    if (row) row.lines.push(line);
-    else rows.push({ y: centre(line), lines: [line] });
-  }
-  for (const row of rows) row.lines.sort((a, b) => a.bbox[0] - b.bbox[0]);
-  return rows;
-}
 
 /** Join a stem's segments; a wide horizontal gap inside a row is the blank to fill in. */
 function joinStem(lines: OcrLine[]): string {
@@ -182,7 +164,7 @@ function parseOptions(lines: OcrLine[], count: number): { slots: OptionSlot[]; f
     if (!text) {
       // A separate number box: the option text is the nearest line to its right on the same row.
       const neighbour = lines
-        .filter((other) => !used.has(other) && other !== line && other.bbox[0] > line.bbox[0] && Math.abs(centre(other) - centre(line)) < 0.012)
+        .filter((other) => !used.has(other) && other !== line && other.bbox[0] > line.bbox[0] && Math.abs(centerY(other) - centerY(line)) < 0.012)
         .sort((a, b) => a.bbox[0] - b.bbox[0])[0];
       if (neighbour && !/^[1-4]/u.test(toHalfWidth(neighbour.text.trim()))) {
         text = neighbour.text.trim();
@@ -190,7 +172,7 @@ function parseOptions(lines: OcrLine[], count: number): { slots: OptionSlot[]; f
       }
     }
     members.forEach((member) => used.add(member));
-    for (const part of splitMergedOption({ number, text, y: centre(line), lines: members })) {
+    for (const part of splitMergedOption({ number, text, y: centerY(line), lines: members })) {
       if (!slots.some((slot) => slot.number === part.number)) slots.push(part);
     }
   }
@@ -206,11 +188,11 @@ function parseOptions(lines: OcrLine[], count: number): { slots: OptionSlot[]; f
     for (const number of missing) {
       const expectedY = first.y + (number - first.number) * spacing;
       const candidate = lines.find(
-        (line) => !used.has(line) && line.bbox[0] >= 0.272 && line.bbox[0] <= 0.36 && Math.abs(centre(line) - expectedY) < spacing * 0.4,
+        (line) => !used.has(line) && line.bbox[0] >= 0.272 && line.bbox[0] <= 0.36 && Math.abs(centerY(line) - expectedY) < spacing * 0.4,
       );
       if (candidate) {
         used.add(candidate);
-        slots.push({ number, text: candidate.text.trim(), y: centre(candidate), lines: [candidate] });
+        slots.push({ number, text: candidate.text.trim(), y: centerY(candidate), lines: [candidate] });
         flags.push('option-number-inferred');
       }
     }
@@ -237,7 +219,7 @@ function parseQuestionBand(page: OcrPage, band: [number, number], expectedNumber
   const { slots, flags } = parseOptions(content, 4);
   const optionLines = new Set(slots.flatMap((slot) => slot.lines));
   const firstOptionY = slots.length ? Math.min(...slots.map((slot) => slot.y)) : band[1];
-  const stemLines = content.filter((line) => !optionLines.has(line) && centre(line) < firstOptionY - 0.008);
+  const stemLines = content.filter((line) => !optionLines.has(line) && centerY(line) < firstOptionY - 0.008);
   const mergedNumber = stemLines.some((line) => withoutMergedNumber(line, expectedNumber) !== line);
   if (stemLines.length === 0) flags.push('stem-missing');
   return {
@@ -325,12 +307,12 @@ function parseAnswerBand(page: OcrPage, band: [number, number], expectedNumber: 
     answer = Number(leading[1]);
   } else {
     const digit = all.find(
-      (line) => /^[1-4１-４]$/u.test(line.text.trim()) && line.bbox[0] > 0.2 && line.bbox[0] < 0.25 && Math.abs(centre(line) - centre(first)) < 0.012,
+      (line) => /^[1-4１-４]$/u.test(line.text.trim()) && line.bbox[0] > 0.2 && line.bbox[0] < 0.25 && Math.abs(centerY(line) - centerY(first)) < 0.012,
     );
     // Otherwise the number box and the answer digit may form one line of their own ("36 4", "2061").
     const numberBox = new RegExp(`^${expectedNumber}\\s*([1-4])$`, 'u');
     const box = all
-      .filter((line) => line.bbox[0] < NUMBER_BOX_RIGHT && Math.abs(centre(line) - centre(first)) < 0.012)
+      .filter((line) => line.bbox[0] < NUMBER_BOX_RIGHT && Math.abs(centerY(line) - centerY(first)) < 0.012)
       .map((line) => numberBox.exec(toHalfWidth(line.text.trim())))
       .find(Boolean);
     const found = digit ? toHalfWidth(digit.text.trim()) : box?.[1];
@@ -415,7 +397,7 @@ function parseFooterAnswers(page: OcrPage | undefined): Map<number, number> {
   const marker = page?.lines.find((line) => FOOTER_ANSWERS.test(line.text));
   if (!page || !marker) return answers;
   const tokens = page.lines
-    .filter((line) => line !== marker && Math.abs(centre(line) - centre(marker)) < 0.012 && line.bbox[0] > marker.bbox[2] - 0.01)
+    .filter((line) => line !== marker && Math.abs(centerY(line) - centerY(marker)) < 0.012 && line.bbox[0] > marker.bbox[2] - 0.01)
     .flatMap((line) => {
       const pieces = toHalfWidth(line.text).replace(/[^\d\s]/gu, ' ').trim().split(/\s+/u).filter(Boolean);
       const width = (line.bbox[2] - line.bbox[0]) / Math.max(1, pieces.length);
