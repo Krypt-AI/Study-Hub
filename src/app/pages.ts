@@ -2,6 +2,7 @@
 import { lazy } from 'react';
 
 export const TodayPage = lazy(() => import('@/features/today/TodayPage'));
+export const StreakPage = lazy(() => import('@/features/today/StreakPage'));
 export const CatalogPage = lazy(() => import('@/features/courses/CatalogPage'));
 export const CoursePage = lazy(() => import('@/features/courses/CoursePage'));
 export const LessonPage = lazy(() => import('@/features/courses/LessonPage'));

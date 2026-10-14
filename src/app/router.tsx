@@ -17,6 +17,7 @@ import {
   RoadmapPage,
   SettingsPage,
   SignInPage,
+  StreakPage,
   TodayPage,
 } from './pages';
 import { NotFoundPage, RouteErrorPage } from './RouteErrorPage';
@@ -37,6 +38,7 @@ export const router = createBrowserRouter([
     errorElement: <RouteErrorPage />,
     children: [
       { index: true, element: <TodayPage /> },
+      { path: 'streak', element: <StreakPage /> },
       { path: 'courses', element: <CatalogPage /> },
       { path: 'courses/:courseId', element: <CoursePage /> },
       { path: 'courses/:courseId/lessons/:lessonId', element: <LessonPage /> },

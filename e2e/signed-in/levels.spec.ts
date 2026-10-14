@@ -31,13 +31,16 @@ for (const { age, year } of [
   });
 }
 
-test('a university guest sees their subjects and the sign-in note, and is not asked about extras', async ({ page }) => {
+test('a university guest sees their subjects and the sign-in note, is not asked about extras, and has a streak page', async ({ page }) => {
   await asGuest(page);
   await page.goto('/courses');
   await answerWelcome(page, { age: '20' });
   await expect(page.getByRole('region', { name: 'Subjects' })).toBeVisible();
   await expect(signInNote(page)).toBeVisible();
   await expect(page.getByRole('heading', { name: 'What do you want to study?' })).toHaveCount(0);
+
+  await page.goto('/streak');
+  await expect(page.getByRole('table', { name: 'Study on each day of the last 12 weeks' })).toBeVisible();
 });
 
 test('a signed-in learner is asked once what to study, with extras they already used ticked', async ({ page }) => {

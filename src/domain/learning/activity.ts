@@ -1,6 +1,6 @@
 /** Study streaks and daily-goal progress derived from daily activity records. */
 import type { ActivityDayRecord, DayKey, Settings } from '@/data/records';
-import { addDays, dayKey } from '@/lib/dates';
+import { addDays, dayKey, parseDayKey } from '@/lib/dates';
 
 export function isActiveDay(day: Pick<ActivityDayRecord, 'minutes' | 'attempts' | 'lessonsCompleted' | 'codeRuns'>): boolean {
   return day.attempts > 0 || day.minutes >= 1 || day.lessonsCompleted > 0 || day.codeRuns > 0;
@@ -45,4 +45,31 @@ export function dailyGoalProgress(day: ActivityDayRecord | undefined, settings: 
   const questions = day?.attempts ?? 0;
   const ratio = Math.min(1, Math.max(minutes / settings.dailyGoalMinutes, questions / settings.dailyGoalQuestions));
   return { minutes, minutesGoal: settings.dailyGoalMinutes, questions, questionsGoal: settings.dailyGoalQuestions, ratio };
+}
+
+/** How much a day held: nothing, some study, or the daily goal met. */
+export type ActivityLevel = 'none' | 'some' | 'goal';
+
+export interface CalendarDayActivity {
+  day: DayKey;
+  level: ActivityLevel;
+  minutes: number;
+  answers: number;
+  /** After today: shown blank. */
+  future: boolean;
+}
+
+/** `weeks` weeks of days, Monday first, ending with the week that holds `today`: one array per week. */
+export function activityWeeks(days: ActivityDayRecord[], settings: Settings, today: DayKey = dayKey(), weeks = 12): CalendarDayActivity[][] {
+  const byDay = new Map(days.map((day) => [day.day, day]));
+  const sinceMonday = (parseDayKey(today).getDay() + 6) % 7;
+  const first = addDays(today, -sinceMonday - 7 * (weeks - 1));
+  return Array.from({ length: weeks }, (_, week) =>
+    Array.from({ length: 7 }, (_, weekday) => {
+      const day = addDays(first, week * 7 + weekday);
+      const record = byDay.get(day);
+      const level: ActivityLevel = !record || !isActiveDay(record) ? 'none' : dailyGoalProgress(record, settings).ratio >= 1 ? 'goal' : 'some';
+      return { day, level, minutes: Math.round(record?.minutes ?? 0), answers: record?.attempts ?? 0, future: day > today };
+    }),
+  );
 }

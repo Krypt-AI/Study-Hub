@@ -6,7 +6,7 @@ import { DEFAULT_SETTINGS } from '@/data/records';
 import { questionSchema } from '@/domain/content/schema';
 import { acceptAsCorrect, evaluateShort } from '@/domain/evaluation/evaluate';
 import type { ShortQuestion } from '@/domain/content/types';
-import { computeStreak, dailyGoalProgress } from './activity';
+import { activityWeeks, computeStreak, dailyGoalProgress } from './activity';
 import { completeLesson } from './lessonProgress';
 import { masteryLevel, updateMastery } from './mastery';
 import { correctLatestAnswer, isLatestAnswer, recordAnswer } from './recordAnswer';
@@ -81,6 +81,17 @@ describe('streaks and goals', () => {
   it('reports the better of the minutes and questions goals', () => {
     const progress = dailyGoalProgress({ ...day('2026-10-11', 10), minutes: 6 }, DEFAULT_SETTINGS);
     expect(progress.ratio).toBeCloseTo(0.5);
+  });
+
+  it('lays out twelve weeks, Monday first, ending with this week, marking study and met goals', () => {
+    // 2026-10-14 is a Wednesday.
+    const weeks = activityWeeks([day('2026-10-12', 3), day('2026-10-13', 25)], DEFAULT_SETTINGS, '2026-10-14');
+    expect(weeks).toHaveLength(12);
+    expect(weeks[0]?.[0]?.day).toBe('2026-07-27');
+    const thisWeek = weeks[11] ?? [];
+    expect(thisWeek.map((entry) => entry.day)).toEqual(['2026-10-12', '2026-10-13', '2026-10-14', '2026-10-15', '2026-10-16', '2026-10-17', '2026-10-18']);
+    expect(thisWeek.map((entry) => entry.level)).toEqual(['some', 'goal', 'none', 'none', 'none', 'none', 'none']);
+    expect(thisWeek.map((entry) => entry.future)).toEqual([false, false, false, true, true, true, true]);
   });
 });
 

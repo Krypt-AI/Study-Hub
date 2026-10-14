@@ -265,7 +265,7 @@ function WeakTopicsSheet({ topics }: { topics: WeakTopic[] }) {
 
 function WeekSheet({ week, streak, longest }: { week: WeekDay[]; streak: number; longest: number }) {
   return (
-    <Sheet title="This week" aside={<span className="tabular">best streak {longest}</span>}>
+    <Sheet title="This week" aside={<Link to="/streak" className="hover:text-ink">Your streak</Link>}>
       <ol className="grid grid-cols-7 gap-1 text-center">
         {week.map((day) => {
           const date = parseDayKey(day.day);
@@ -281,7 +281,10 @@ function WeekSheet({ week, streak, longest }: { week: WeekDay[]; streak: number;
           );
         })}
       </ol>
-      <p className="mt-3 text-sm text-ink-muted">{streak > 0 ? `${streak} day${streak === 1 ? '' : 's'} in a row.` : 'Study today to start a streak.'}</p>
+      <p className="mt-3 text-sm text-ink-muted">
+        {streak > 0 ? `${streak} day${streak === 1 ? '' : 's'} in a row.` : 'Study today to start a streak.'}
+        {longest > 0 && ` Longest: ${longest}.`}
+      </p>
     </Sheet>
   );
 }
