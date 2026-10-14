@@ -147,6 +147,18 @@ export class SupabaseRepository implements StudyRepository {
     await this.put('lesson_progress', [record]);
   }
 
+  async deleteLessonProgress(lessonId: string) {
+    await this.remove('lesson_progress', 'id', lessonId);
+  }
+
+  async deleteReviewStates(itemIds: string[]) {
+    // In batches: the ids travel in the request URL.
+    for (let start = 0; start < itemIds.length; start += 200) {
+      const { error } = await this.client.from('review_states').delete().eq('learner_id', this.learnerId).in('id', itemIds.slice(start, start + 200));
+      if (error) throw failure('review_states', error);
+    }
+  }
+
   getReviewState(itemId: string) {
     return this.get<ReviewStateRecord>('review_states', itemId);
   }

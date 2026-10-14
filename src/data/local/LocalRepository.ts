@@ -48,6 +48,14 @@ export class LocalRepository implements StudyRepository {
     await this.db.lessonProgress.put(record);
   }
 
+  async deleteLessonProgress(lessonId: string) {
+    await this.db.lessonProgress.delete(lessonId);
+  }
+
+  async deleteReviewStates(itemIds: string[]) {
+    await this.db.reviewStates.bulkDelete(itemIds);
+  }
+
   getReviewState(itemId: string) {
     return this.db.reviewStates.get(itemId);
   }

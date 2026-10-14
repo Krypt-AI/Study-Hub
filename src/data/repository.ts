@@ -49,10 +49,14 @@ export interface StudyRepository {
   getLessonProgress(lessonId: string): Promise<LessonProgressRecord | undefined>;
   listLessonProgress(courseId?: string): Promise<LessonProgressRecord[]>;
   saveLessonProgress(record: LessonProgressRecord): Promise<void>;
+  /** Forgets a lesson's progress (its answer strip and completion), e.g. when the learner resets a chapter. */
+  deleteLessonProgress(lessonId: string): Promise<void>;
 
   getReviewState(itemId: string): Promise<ReviewStateRecord | undefined>;
   listReviewStates(): Promise<ReviewStateRecord[]>;
   saveReviewState(record: ReviewStateRecord): Promise<void>;
+  /** Takes questions out of the review schedule. */
+  deleteReviewStates(itemIds: string[]): Promise<void>;
 
   listTopicMastery(): Promise<TopicMasteryRecord[]>;
   saveTopicMastery(records: TopicMasteryRecord[]): Promise<void>;

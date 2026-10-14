@@ -21,6 +21,7 @@ import { assessmentUrl, certificationUrl, courseUrl, lessonUrl } from '@/domain/
 import { masteryKey, masteryLevel, SKILL_LABELS, SKILLS } from '@/domain/learning/mastery';
 import { useBookmark } from '@/features/practice/useBookmark';
 import { CourseLoadError } from '@/features/auth/LockedContent';
+import { ResetChapterButton } from './ResetChapterButton';
 import { ShowOnTodaySwitch } from './ShowOnTodaySwitch';
 import { groupAssessments } from '@/domain/content/pastPapers';
 
@@ -82,7 +83,18 @@ export default function CoursePage() {
             </aside>
           )}
           {data.units.map((unit) => (
-            <Sheet key={unit.id} title={unit.title} aside={<span className="tabular">{unit.lessons.length} lesson{unit.lessons.length === 1 ? '' : 's'}</span>} padded={false}>
+            <Sheet
+              key={unit.id}
+              title={unit.title}
+              aside={
+                unit.lessons.some((lesson) => records.has(lesson.id)) ? (
+                  <ResetChapterButton title={unit.title} lessons={unit.lessons} />
+                ) : (
+                  <span className="tabular">{unit.lessons.length} lesson{unit.lessons.length === 1 ? '' : 's'}</span>
+                )
+              }
+              padded={false}
+            >
               <ol className="divide-y divide-rule">
                 {unit.lessons.map((lesson) => {
                   const record = records.get(lesson.id);

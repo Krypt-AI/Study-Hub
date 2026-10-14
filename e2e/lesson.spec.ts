@@ -63,3 +63,17 @@ test('a typed answer marked wrong can be overruled with "I was right"', async ({
   const strip = page.getByRole('list', { name: 'Answer strip: choose a question' });
   await expect(strip.getByRole('button', { name: 'Question 2: correct' })).toBeVisible();
 });
+
+test('a chapter can be reset to start it again', async ({ page }) => {
+  await page.goto('/courses/ai-01-python/lessons/ai-01-python.l01');
+  await page.getByRole('button', { name: 'Mark complete' }).click();
+  await expect(page.getByText('Completed', { exact: true })).toBeVisible();
+
+  await page.goto('/courses/ai-01-python');
+  await page.getByRole('button', { name: 'Reset' }).first().click();
+  const confirm = page.getByRole('group', { name: /^Reset /u });
+  await expect(confirm.getByText('Start this chapter again? Your answer history stays.')).toBeVisible();
+  await confirm.getByRole('button', { name: 'Reset chapter' }).click();
+  await expect(page.getByRole('button', { name: 'Reset' })).toHaveCount(0);
+  await expect(page.getByRole('link', { name: /Start course/u })).toBeVisible();
+});
