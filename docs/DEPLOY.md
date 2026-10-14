@@ -16,7 +16,7 @@ You need about an hour for the first setup. Do the steps in order.
 ## 1. Supabase project
 
 1. Create a project at [supabase.com](https://supabase.com) (the free plan is enough for a group of friends; check current limits at supabase.com/pricing).
-2. Apply the three migrations in `supabase/migrations/`, oldest first. Either:
+2. Apply every migration in `supabase/migrations/`, oldest first. Either:
    - `npx supabase login`, `npx supabase link --project-ref <ref>`, `npx supabase db push`, or
    - open **SQL Editor**, paste each file and run it, in name order.
 3. Note two values from **Project Settings → API Keys / Data API**: the project URL `https://<ref>.supabase.co` and the **publishable** key (`sb_publishable_…`, or the legacy `anon` key). Never use the secret / `service_role` key in the app.
@@ -93,3 +93,12 @@ Netlify's own build from GitHub is switched off in `netlify.toml` (`ignore = "ex
 - The catalog (course titles, lesson titles and counts), the University courses and their pages are public.
 - Each user's progress is private to them: row level security in the database (see [SUPABASE.md](SUPABASE.md)).
 - Anyone who has the link can sign in with a Google account and open every course. The HSK and JLPT material comes from copyrighted books, so share the link only with the people you study with, and keep it out of public posts.
+
+## Troubleshooting
+
+| What you see | Cause | Fix |
+|---|---|---|
+| Google shows **Error 400: redirect_uri_mismatch** | The Google client does not list Supabase's callback | In the Google Cloud Console, open the OAuth client and add `https://<ref>.supabase.co/auth/v1/callback` under **Authorized redirect URIs** |
+| After choosing a Google account you land on **localhost:3000** | Supabase does not allow the app's address as a redirect, so it falls back to its default Site URL | **Supabase → Authentication → URL Configuration**: set **Site URL** to the site's address and add `https://<your-site-name>.netlify.app/**` (and `http://localhost:5173/**` for development) under **Redirect URLs** |
+| Sign-in fails at once, or requests go to `…/auth/v1/callback/auth/v1/…` | `VITE_SUPABASE_URL` contains the callback path | Set it to the bare project URL `https://<ref>.supabase.co`, in `.env.local` and on Netlify, then redeploy |
+| Signed in, but progress is not saved and the browser console shows **permission denied for table …** (code 42501) | The project does not grant table privileges to signed-in users. Supabase projects created since 30 May 2026 no longer grant them by default | Apply every migration in `supabase/migrations/`, including `20261014000000_explicit_grants.sql` |

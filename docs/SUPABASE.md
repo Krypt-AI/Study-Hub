@@ -5,7 +5,7 @@ By default Study Hub keeps your data in the browser. Connect Supabase to sign in
 ## Set up
 
 1. Create a project at [supabase.com](https://supabase.com).
-2. Apply the migrations in `supabase/migrations/`, oldest first (the second adds the calendar tables, the third profiles):
+2. Apply the migrations in `supabase/migrations/`, oldest first (the second adds the calendar tables, the third profiles, the fourth the table privileges signed-in users need):
    - with the Supabase CLI: `supabase link --project-ref <ref>` then `supabase db push`, or
    - paste each SQL file into the dashboard's SQL editor and run it once, in name order.
 3. Turn on the sign-in providers: [DEPLOY.md, step 2](DEPLOY.md#2-sign-in-providers).

@@ -12,7 +12,11 @@ const MIGRATIONS_DIR = fileURLToPath(new URL('../migrations/', import.meta.url))
 const ALICE = '00000000-0000-4000-8000-00000000000a';
 const BOB = '00000000-0000-4000-8000-00000000000b';
 
-/** The parts of a Supabase database the migrations rely on: auth.users, auth.uid() and the API roles. */
+/**
+ * The parts of a Supabase database the migrations rely on: auth.users, auth.uid() and the API roles.
+ * Like Supabase projects created since 30 May 2026, tables get no default privileges for the API
+ * roles: the migrations must grant every privilege the app needs.
+ */
 const SUPABASE_STANDINS = `
   create schema auth;
   create table auth.users (
@@ -28,10 +32,29 @@ const SUPABASE_STANDINS = `
   create role authenticated nologin;
   grant usage on schema public, auth to anon, authenticated;
   grant execute on function auth.uid() to anon, authenticated;
-  alter default privileges in schema public grant all on tables to anon, authenticated;
 `;
 
+/** Projects created before 30 May 2026 granted every table privilege to the API roles by default. */
+const OLDER_PROJECT_DEFAULTS = 'alter default privileges in schema public grant all on tables to anon, authenticated;';
+
+/** Every table the app reads and writes as a signed-in learner (profiles has its own narrower grants). */
+const LEARNER_TABLES = [
+  'attempts', 'lesson_progress', 'review_states', 'topic_mastery', 'note_folders', 'notes', 'code_projects', 'code_versions',
+  'custom_exercises', 'submissions', 'bookmarks', 'certification_progress', 'activity_days', 'settings',
+  'semesters', 'timetable_classes', 'important_dates',
+];
+
 let db: PGlite;
+
+/** A fresh database with the Supabase stand-ins, the given default privileges and every migration. */
+async function migratedDatabase(defaultPrivileges = ''): Promise<PGlite> {
+  const database = await PGlite.create();
+  await database.exec(SUPABASE_STANDINS + defaultPrivileges);
+  for (const file of readdirSync(MIGRATIONS_DIR).filter((name) => name.endsWith('.sql')).sort()) {
+    await database.exec(readFileSync(`${MIGRATIONS_DIR}${file}`, 'utf8'));
+  }
+  return database;
+}
 
 /** Runs statements as a signed-in learner (or signed out with `null`), like requests through the API. */
 async function as<T>(user: string | null, run: () => Promise<T>): Promise<T> {
@@ -48,11 +71,7 @@ const importantDate = (id: string, extra: Record<string, unknown> = {}) => JSON.
 const note = (id: string, extra: Record<string, unknown> = {}) => JSON.stringify({ id, title: id, body: '', folderId: null, tags: [], pinned: false, links: [], linkKeys: [], ...extra });
 
 beforeAll(async () => {
-  db = await PGlite.create();
-  await db.exec(SUPABASE_STANDINS);
-  for (const file of readdirSync(MIGRATIONS_DIR).filter((name) => name.endsWith('.sql')).sort()) {
-    await db.exec(readFileSync(`${MIGRATIONS_DIR}${file}`, 'utf8'));
-  }
+  db = await migratedDatabase();
   await db.query(
     `insert into auth.users (id, email, raw_user_meta_data, raw_app_meta_data) values
       ($1, 'alice@example.com', '{"full_name": "Alice A", "avatar_url": "https://example.com/a.png"}', '{"providers": ["google"]}'),
@@ -103,6 +122,31 @@ describe('row level security', () => {
   it('keeps the row key equal to the record id', async () => {
     await expect(as(ALICE, () => db.query(`insert into public.important_dates (id, record) values ('n3', $1)`, [importantDate('other')]))).rejects.toThrow(/important_dates_id_matches_record/u);
   });
+});
+
+describe.each([
+  ['created since 30 May 2026', ''],
+  ['created earlier, with default grants', OLDER_PROJECT_DEFAULTS],
+])('table privileges on a project %s', (_kind, defaultPrivileges) => {
+  it('lets signed-in learners read and write their tables, with nothing that bypasses row level security, and gives anon nothing', async () => {
+    const database = await migratedDatabase(defaultPrivileges);
+    /** The tables on which `role` holds (any of) `privileges`, or, with `holds` false, does not. */
+    const tablesWhere = async (role: string, privileges: string, tables: string[], holds: boolean) =>
+      (
+        await database.query<{ name: string }>(
+          `select t.name from unnest($1::text[]) as t(name) where has_table_privilege($2, format('public.%I', t.name), $3) = $4`,
+          [tables, role, privileges, holds],
+        )
+      ).rows.map((row) => row.name);
+    try {
+      for (const privilege of ['SELECT', 'INSERT', 'UPDATE', 'DELETE']) expect(await tablesWhere('authenticated', privilege, LEARNER_TABLES, false)).toEqual([]);
+      // TRUNCATE ignores row level security.
+      expect(await tablesWhere('authenticated', 'TRUNCATE, REFERENCES, TRIGGER', [...LEARNER_TABLES, 'profiles'], true)).toEqual([]);
+      expect(await tablesWhere('anon', 'SELECT, INSERT, UPDATE, DELETE, TRUNCATE', [...LEARNER_TABLES, 'profiles'], true)).toEqual([]);
+    } finally {
+      await database.close();
+    }
+  }, 60_000);
 });
 
 describe('atomic functions', () => {

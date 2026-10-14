@@ -34,3 +34,6 @@ content/private/
 
 # Local Netlify folder
 .netlify
+
+# Supabase CLI state (project link, versions)
+supabase/.temp/
