@@ -4,7 +4,7 @@
  * without a browser; days are local "YYYY-MM-DD" keys throughout.
  */
 import type { ClassKind, ClockTime, DatedSemester, DayKey, ImportantDateKind, ImportantDateRecord, SemesterRecord, TimetableClassRecord } from '@/data/records';
-import { addDays, parseDayKey } from '@/lib/dates';
+import { addDays, parseDayKey, relativeDay } from '@/lib/dates';
 
 export const WEEKDAYS = [
   { value: 1, label: 'Monday', short: 'Mon' },
@@ -28,11 +28,12 @@ export const IMPORTANT_KIND_LABELS: Record<ImportantDateKind, string> = {
   final: 'Final exam',
   assignment: 'Assignment due',
   'extra-class': 'Extra or make-up class',
+  holiday: 'Holiday or break',
   other: 'Other',
 };
 
 /** The kind as a short name, for tags and default titles ("CMPD363 Extra class"). */
-export const importantKindShortLabel = (kind: ImportantDateKind) => (kind === 'extra-class' ? 'Extra class' : IMPORTANT_KIND_LABELS[kind]);
+export const importantKindShortLabel = (kind: ImportantDateKind) => (kind === 'extra-class' ? 'Extra class' : kind === 'holiday' ? 'Holiday' : IMPORTANT_KIND_LABELS[kind]);
 
 /** A date's title when the learner leaves it empty: "CMPD363 Midterm" or "CMPD363 Extra class", or just the kind. */
 export const defaultDateTitle = (kind: ImportantDateKind, subjectCode?: string) => (subjectCode ? `${subjectCode} ${importantKindShortLabel(kind)}` : importantKindShortLabel(kind));
@@ -114,21 +115,42 @@ export function classesOn(day: DayKey, classes: TimetableClassRecord[], semester
     .sort(byStart);
 }
 
+/** The last day an important date covers: its end date for a multi-day event, else the day itself. */
+export const lastDayOf = (entry: Pick<ImportantDateRecord, 'date' | 'endDate'>): DayKey => (entry.endDate && entry.endDate > entry.date ? entry.endDate : entry.date);
+
+export const isMultiDay = (entry: Pick<ImportantDateRecord, 'date' | 'endDate'>) => lastDayOf(entry) !== entry.date;
+
+/** The dates covering a day; events spanning several days come first, then the rest by time. */
 export function datesOn(day: DayKey, dates: ImportantDateRecord[]): ImportantDateRecord[] {
-  return dates.filter((entry) => entry.date === day).sort(byStart);
+  return dates.filter((entry) => entry.date <= day && day <= lastDayOf(entry)).sort((a, b) => Number(isMultiDay(b)) - Number(isMultiDay(a)) || byStart(a, b));
 }
 
 const chronological = (a: ImportantDateRecord, b: ImportantDateRecord) => a.date.localeCompare(b.date) || byStart(a, b);
 
-/** Dates from today on, soonest first; `withinDays` limits how far ahead. */
+/** Dates from today on (including events still running), soonest first; `withinDays` limits how far ahead. */
 export function upcomingDates(dates: ImportantDateRecord[], today: DayKey, withinDays?: number): ImportantDateRecord[] {
   const until = withinDays === undefined ? undefined : addDays(today, withinDays);
-  return dates.filter((entry) => entry.date >= today && (!until || entry.date <= until)).sort(chronological);
+  return dates.filter((entry) => lastDayOf(entry) >= today && (!until || entry.date <= until)).sort(chronological);
 }
 
-/** Dates before today, most recent first. */
+/** Dates over before today, most recent first. */
 export function pastDates(dates: ImportantDateRecord[], today: DayKey): ImportantDateRecord[] {
-  return dates.filter((entry) => entry.date < today).sort((a, b) => chronological(b, a));
+  return dates.filter((entry) => lastDayOf(entry) < today).sort((a, b) => chronological(b, a));
+}
+
+/** When a date falls, from today: "in 3 days", or "until Fri, 17 Oct" for an event already running. */
+export function whenLabel(entry: ImportantDateRecord, today: DayKey): string {
+  if (entry.date < today && lastDayOf(entry) >= today) return `until ${parseDayKey(lastDayOf(entry)).toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' })}`;
+  return relativeDay(entry.date, today);
+}
+
+/** "13 Oct" or "13–17 Oct" (or "29 Sep – 3 Oct" across months). */
+export function dateRangeLabel(entry: Pick<ImportantDateRecord, 'date' | 'endDate'>): string {
+  const first = parseDayKey(entry.date);
+  const short = (date: Date) => date.toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
+  if (!isMultiDay(entry)) return short(first);
+  const last = parseDayKey(lastDayOf(entry));
+  return first.getMonth() === last.getMonth() ? `${first.getDate()}–${short(last)}` : `${short(first)} – ${short(last)}`;
 }
 
 const minutesOf = (time: ClockTime) => {

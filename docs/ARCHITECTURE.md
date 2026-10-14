@@ -26,7 +26,7 @@ workers/ sandboxed runtimes, spoken to through features/playground/execution/cod
 ## Calendar (`domain/calendar`)
 
 - **Weekly classes** are a Lecture or a Lab. Classes saved as tutorials or "other" before are read as lectures by one function, `normalizeTimetableClass` (`data/records.ts`), used by both repositories and by backup import; a Supabase migration and an IndexedDB upgrade (version 4) rewrite the stored values too.
-- **Important dates** are one-off: quizzes, tests, midterms, finals, deadlines, and extra or make-up classes.
+- **Important dates**: quizzes, tests, midterms, finals, deadlines, extra or make-up classes, and holidays or breaks. A date can span several days (`endDate`): it shows on each of them, listed before that day's other dates, and stays upcoming ("until Fri 17 Oct") while it runs. A month cell shows one title, the multi-day event first, and the rest when the day is opened.
 - **Semesters** (`semesters.ts`): the catalog's terms (`content/authored/university.yaml`) plus those the learner adds, stored as `SemesterRecord`s with `addedByLearner` and optional dates. A name in both is one semester. The list is newest first: the learner's own (most recently added first), then the catalog's in their authored order. The calendar and the catalog open on the semester whose dates contain today, else the catalog's current term, else the newest. Only learner-added semesters can be removed, with their classes and dates.
 
 ## Evaluation (`domain/evaluation`)

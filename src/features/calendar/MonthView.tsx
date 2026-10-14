@@ -5,7 +5,7 @@
 import { CalendarPlus, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button, IconButton } from '@/components/ui/Button';
 import type { DatedSemester, DayKey, ImportantDateRecord, TimetableClassRecord } from '@/data/records';
-import { addMonths, classesOn, datesOn, monthGrid, WEEKDAYS } from '@/domain/calendar/calendar';
+import { addMonths, classesOn, datesOn, isMultiDay, monthGrid, WEEKDAYS } from '@/domain/calendar/calendar';
 import { parseDayKey } from '@/lib/dates';
 import { cn } from '@/lib/cn';
 import { ClassItem, DateItem } from './AgendaItems';
@@ -27,7 +27,8 @@ export interface MonthViewProps {
   onAddDate: (day: DayKey) => void;
 }
 
-const MARKERS_SHOWN = 2;
+/** One title per day cell: the event spanning several days if there is one; the rest show when the day is opened. */
+const MARKERS_SHOWN = 1;
 
 export function MonthView({ month, onMonthChange, selected, onSelect, today, classes, dates, semester, clashing, onEditClass, onEditDate, onAddDate }: MonthViewProps) {
   const semesters = semester ? [semester] : [];
@@ -91,7 +92,7 @@ export function MonthView({ month, onMonthChange, selected, onSelect, today, cla
                   </span>
                   <span className="hidden flex-col gap-0.5 sm:flex" aria-hidden>
                     {dayDates.slice(0, MARKERS_SHOWN).map((entry) => (
-                      <span key={entry.id} className="truncate rounded bg-print-soft px-1 text-[0.6875rem] text-print-strong">
+                      <span key={entry.id} className={cn('truncate rounded px-1 text-[0.6875rem]', isMultiDay(entry) ? 'bg-print text-on-print' : 'bg-print-soft text-print-strong')}>
                         {entry.title}
                       </span>
                     ))}

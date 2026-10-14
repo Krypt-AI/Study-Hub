@@ -24,6 +24,8 @@ interface Draft {
   courseId: string;
   title: string;
   date: DayKey;
+  /** Empty for a single day. */
+  endDate: DayKey | '';
   start: string;
   end: string;
   location: string;
@@ -41,6 +43,7 @@ export function DateDialog({ initial, subjects, onClose }: DateDialogProps) {
     courseId: existing?.courseId ?? '',
     title: existing?.title ?? '',
     date: initial.date,
+    endDate: existing?.endDate ?? '',
     start: existing?.start ?? '',
     end: existing?.end ?? '',
     location: existing?.location ?? '',
@@ -54,12 +57,14 @@ export function DateDialog({ initial, subjects, onClose }: DateDialogProps) {
   const title = draft.title.trim() || defaultTitle(draft.kind, subject);
   const timeInvalid = Boolean(draft.end) && !isValidTimeRange(draft.start, draft.end);
   const dateError = submitted && !draft.date ? 'Choose the day.' : undefined;
+  const endInvalid = Boolean(draft.endDate) && draft.endDate < draft.date;
+  const endError = submitted && endInvalid ? 'The last day must be on or after the first.' : undefined;
   const timeError = submitted && timeInvalid ? 'The end must be after the start.' : undefined;
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();
     setSubmitted(true);
-    if (!draft.date || timeInvalid) return;
+    if (!draft.date || timeInvalid || endInvalid) return;
     const at = nowIso();
     await saveDate.mutateAsync({
       id: existing?.id ?? newId(),
@@ -68,6 +73,7 @@ export function DateDialog({ initial, subjects, onClose }: DateDialogProps) {
       title,
       kind: draft.kind,
       date: draft.date,
+      endDate: draft.endDate && draft.endDate > draft.date ? draft.endDate : undefined,
       start: draft.start || undefined,
       end: (draft.start && draft.end) || undefined,
       location: draft.location.trim() || undefined,
@@ -106,9 +112,12 @@ export function DateDialog({ initial, subjects, onClose }: DateDialogProps) {
         <Field label="Name" hint={draft.title ? undefined : `Leave empty to use "${defaultTitle(draft.kind, subject)}".`}>
           {(props) => <Input {...props} value={draft.title} onChange={(event) => update({ title: event.target.value })} placeholder={defaultTitle(draft.kind, subject)} />}
         </Field>
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Day" error={dateError}>
             {(props) => <Input {...props} type="date" required value={draft.date} onChange={(event) => update({ date: event.target.value })} />}
+          </Field>
+          <Field label="Last day" hint="Optional: for something that lasts several days, such as a holiday week." error={endError}>
+            {(props) => <Input {...props} type="date" min={draft.date} value={draft.endDate} onChange={(event) => update({ endDate: event.target.value })} />}
           </Field>
           <Field label="Starts" hint="Optional." error={timeError}>
             {(props) => <Input {...props} type="time" value={draft.start} onChange={(event) => update({ start: event.target.value })} />}

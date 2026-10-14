@@ -2,7 +2,7 @@
 import { MapPin, TriangleAlert } from 'lucide-react';
 import type { ReactNode } from 'react';
 import type { ImportantDateRecord, TimetableClassRecord } from '@/data/records';
-import { CLASS_KIND_LABELS, IMPORTANT_KIND_LABELS, timeRangeLabel } from '@/domain/calendar/calendar';
+import { CLASS_KIND_LABELS, dateRangeLabel, IMPORTANT_KIND_LABELS, isMultiDay, timeRangeLabel } from '@/domain/calendar/calendar';
 import { cn } from '@/lib/cn';
 import { ImportantDateTag } from './ImportantDateTag';
 
@@ -47,6 +47,7 @@ export function DateItem({ entry, onSelect, aside }: { entry: ImportantDateRecor
     <Row onSelect={onSelect} className={cn('border-print-line bg-print-soft', onSelect && 'hover:border-print')}>
       <span className="flex flex-wrap items-center gap-1.5">
         <ImportantDateTag kind={entry.kind} />
+        {isMultiDay(entry) && <span className="tabular text-xs text-ink-muted">{dateRangeLabel(entry)}</span>}
         {entry.start && <span className="tabular text-xs text-ink-muted">{timeRangeLabel(entry.start, entry.end)}</span>}
         {aside && <span className="ml-auto text-xs text-ink-muted">{aside}</span>}
       </span>

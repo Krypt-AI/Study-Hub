@@ -1,6 +1,6 @@
 /** Class types, extra classes and semesters the learner adds. */
 import { addClass, addImportantDate, todayWeekday, weekColumn } from './calendarSteps';
-import { todayKey } from './dates';
+import { addDaysTo, todayKey } from './dates';
 import { expect, test } from './fixtures';
 
 test('a weekly lab is shown as a lab', async ({ page }) => {
@@ -70,4 +70,24 @@ test('a semester without materials keeps its own classes, and can be removed wit
   // It is also gone from the University area of the catalog.
   await page.goto('/courses?area=university');
   await expect(page.getByRole('combobox', { name: 'Semester' }).locator('option', { hasText: 'Sem 3 2030' })).toHaveCount(0);
+});
+
+test('a holiday week shows on each of its days, before the other dates of that day', async ({ page }) => {
+  await page.goto('/calendar');
+  await addImportantDate(page, { kind: 'Holiday or break', day: todayKey(), lastDay: addDaysTo(todayKey(), 4) });
+  await addImportantDate(page, { kind: 'Quiz', subject: 'CMPD103 Statistics for Computer Science', day: todayKey() });
+
+  // The week view lists the holiday first on today, and it is still there two days later.
+  const today = weekColumn(page, todayWeekday());
+  await expect(today.getByRole('button').first()).toContainText('Holiday');
+  await expect(today.getByRole('button').nth(1)).toContainText('CMPD103 Quiz');
+
+  // The month cell features the holiday; opening the day shows both.
+  await page.getByRole('tab', { name: 'Month' }).click();
+  const cell = page.getByRole('gridcell', { name: /2 important dates/u }).first();
+  await expect(cell).toContainText('Holiday');
+  await expect(cell).toContainText('+1 more');
+  await cell.click();
+  const selected = page.getByRole('region', { name: 'Selected day' });
+  await expect(selected.getByText('CMPD103 Quiz')).toBeVisible();
 });

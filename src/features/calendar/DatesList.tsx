@@ -1,8 +1,8 @@
 /** Every important date: upcoming ones with a countdown, past ones folded away. */
 import { EmptyState } from '@/components/ui/Feedback';
 import type { DatedSemester, DayKey, ImportantDateRecord } from '@/data/records';
-import { pastDates, semesterWeek, upcomingDates } from '@/domain/calendar/calendar';
-import { parseDayKey, relativeDay } from '@/lib/dates';
+import { isMultiDay, lastDayOf, pastDates, semesterWeek, upcomingDates, whenLabel } from '@/domain/calendar/calendar';
+import { parseDayKey } from '@/lib/dates';
 import { DateItem } from './AgendaItems';
 
 export interface DatesListProps {
@@ -21,7 +21,8 @@ export function DatesList({ dates, today, semester, onEditDate }: DatesListProps
 
   const describe = (entry: ImportantDateRecord) => {
     const week = semester ? semesterWeek(entry.date, semester) : undefined;
-    return [fullDate(entry.date), week === undefined ? undefined : `week ${week}`].filter(Boolean).join(' · ');
+    const days = isMultiDay(entry) ? `${fullDate(entry.date)} to ${fullDate(lastDayOf(entry))}` : fullDate(entry.date);
+    return week === undefined ? days : `${days}, week ${week}`;
   };
 
   if (dates.length === 0) {
@@ -41,7 +42,7 @@ export function DatesList({ dates, today, semester, onEditDate }: DatesListProps
           {upcoming.map((entry) => (
             <li key={entry.id} className="grid gap-x-4 gap-y-1 sm:grid-cols-[11rem_minmax(0,1fr)] sm:items-start">
               <div className="text-sm">
-                <p className="font-medium text-ink">{relativeDay(entry.date, today)}</p>
+                <p className="font-medium text-ink">{whenLabel(entry, today)}</p>
                 <p className="text-xs text-ink-muted">{describe(entry)}</p>
               </div>
               <DateItem entry={entry} onSelect={() => onEditDate(entry)} />

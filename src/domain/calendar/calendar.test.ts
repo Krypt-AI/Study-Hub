@@ -3,6 +3,8 @@ import type { DatedSemester, ImportantDateRecord, TimetableClassRecord } from '@
 import {
   classesOn,
   clashingClassIds,
+  dateRangeLabel,
+  datesOn,
   daysBetween,
   defaultDateTitle,
   isoWeekday,
@@ -13,6 +15,7 @@ import {
   semesterWeekCount,
   startOfWeek,
   upcomingDates,
+  whenLabel,
 } from './calendar';
 
 const semester: DatedSemester = { term: 'Sem 1 2026', startsOn: '2026-10-05', endsOn: '2027-01-29', updatedAt: '' };
@@ -90,5 +93,27 @@ describe('important dates', () => {
     expect(upcomingDates(dates, '2026-10-12').map((entry) => entry.id)).toEqual(['quiz am', 'quiz pm', 'final']);
     expect(upcomingDates(dates, '2026-10-12', 14).map((entry) => entry.id)).toEqual(['quiz am', 'quiz pm']);
     expect(pastDates(dates, '2026-10-12').map((entry) => entry.id)).toEqual(['done']);
+  });
+});
+
+describe('events over several days', () => {
+  const holiday: ImportantDateRecord = { id: 'break', title: 'Mid-semester break', kind: 'holiday', date: '2026-10-12', endDate: '2026-10-16', createdAt: '', updatedAt: '' };
+  const quiz = important('quiz', '2026-10-14', '09:00');
+
+  it('covers every day of the event, listed before the other dates of that day', () => {
+    expect(datesOn('2026-10-14', [quiz, holiday]).map((entry) => entry.id)).toEqual(['break', 'quiz']);
+    expect(datesOn('2026-10-16', [quiz, holiday]).map((entry) => entry.id)).toEqual(['break']);
+    expect(datesOn('2026-10-17', [quiz, holiday])).toEqual([]);
+  });
+
+  it('is upcoming while it runs, and past once its last day is over', () => {
+    expect(upcomingDates([holiday], '2026-10-15').map((entry) => entry.id)).toEqual(['break']);
+    expect(pastDates([holiday], '2026-10-15')).toEqual([]);
+    expect(pastDates([holiday], '2026-10-17').map((entry) => entry.id)).toEqual(['break']);
+  });
+
+  it('says how long it runs', () => {
+    expect(dateRangeLabel(holiday)).toMatch(/^12.16/u);
+    expect(whenLabel(holiday, '2026-10-14')).toMatch(/^until /u);
   });
 });

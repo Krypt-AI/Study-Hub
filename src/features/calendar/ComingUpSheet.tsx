@@ -6,12 +6,12 @@
 import { Link } from 'react-router';
 import { Sheet } from '@/components/ui/Sheet';
 import { useImportantDates, useTimetableClasses } from '@/data/queries';
-import { classesOn, datesOn, upcomingDates } from '@/domain/calendar/calendar';
+import { classesOn, datesOn, upcomingDates, whenLabel } from '@/domain/calendar/calendar';
 import { defaultTerm } from '@/domain/calendar/semesters';
 import { useCatalog } from '@/domain/content/load';
 import { courseUrl } from '@/domain/content/urls';
 import { useTerms } from '@/features/semesters/useTerms';
-import { addDays, dayKey, relativeDay } from '@/lib/dates';
+import { addDays, dayKey } from '@/lib/dates';
 import { ClassItem, DateItem } from './AgendaItems';
 
 /** How far ahead important dates are listed. */
@@ -30,7 +30,7 @@ export function ComingUpSheet() {
   const semesters = terms.terms.flatMap((entry) => (entry.semester ? [entry.semester] : []));
   const todaysClasses = classesOn(today, classes.data.filter((entry) => entry.term === term), semesters);
   const todaysDates = datesOn(today, dates.data);
-  const soon = upcomingDates(dates.data, addDays(today, 1), HORIZON_DAYS - 1);
+  const soon = upcomingDates(dates.data, addDays(today, 1), HORIZON_DAYS - 1).filter((entry) => !todaysDates.includes(entry));
   const unused = classes.data.length === 0 && dates.data.length === 0;
   const courseTitle = (courseId?: string) => catalog.data?.courses.find((course) => course.id === courseId)?.title;
 
@@ -81,7 +81,7 @@ export function ComingUpSheet() {
             {soon.length === 0 ? (
               <p className="text-sm text-ink-faint">No quizzes, tests or exams in the next three weeks.</p>
             ) : (
-              soon.slice(0, DATES_SHOWN).map((entry) => <DateItem key={entry.id} entry={entry} aside={relativeDay(entry.date, today)} />)
+              soon.slice(0, DATES_SHOWN).map((entry) => <DateItem key={entry.id} entry={entry} aside={whenLabel(entry, today)} />)
             )}
             {soon.length > DATES_SHOWN && (
               <Link to="/calendar?view=dates" className="text-sm text-print-strong hover:underline">

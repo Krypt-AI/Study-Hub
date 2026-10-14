@@ -267,16 +267,19 @@ export interface TimetableClassRecord {
   updatedAt: Timestamp;
 }
 
-export type ImportantDateKind = 'quiz' | 'test' | 'midterm' | 'final' | 'assignment' | 'extra-class' | 'other';
+export type ImportantDateKind = 'quiz' | 'test' | 'midterm' | 'final' | 'assignment' | 'extra-class' | 'holiday' | 'other';
 
-/** A one-off date worth preparing for: a quiz, test, exam, deadline, or an extra or make-up class. */
+/** A date worth knowing: a quiz, test, exam, deadline, extra or make-up class, or a holiday or break that can span several days. */
 export interface ImportantDateRecord {
   id: string;
   term?: string;
   courseId?: string;
   title: string;
   kind: ImportantDateKind;
+  /** The (first) day. */
   date: DayKey;
+  /** The last day of an event that spans several days, such as a holiday week; absent for one day. */
+  endDate?: DayKey;
   start?: ClockTime;
   end?: ClockTime;
   location?: string;

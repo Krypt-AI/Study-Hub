@@ -3,13 +3,14 @@ import { Tag } from '@/components/ui/Feedback';
 import type { ImportantDateKind } from '@/data/records';
 import { importantKindShortLabel } from '@/domain/calendar/calendar';
 
-const TONES: Record<ImportantDateKind, 'neutral' | 'print' | 'wrong' | 'slip'> = {
+const TONES: Record<ImportantDateKind, 'neutral' | 'print' | 'wrong' | 'slip' | 'correct'> = {
   quiz: 'slip',
   test: 'print',
   midterm: 'print',
   final: 'wrong',
   assignment: 'neutral',
   'extra-class': 'neutral',
+  holiday: 'correct',
   other: 'neutral',
 };
 
