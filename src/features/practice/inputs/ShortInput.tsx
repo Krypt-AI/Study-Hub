@@ -9,6 +9,7 @@ import type { ShortQuestion } from '@/domain/content/types';
 import { toMarkedPinyin } from '@/domain/evaluation/pinyin';
 import { cn } from '@/lib/cn';
 import { LANGUAGE_TAGS } from '@/domain/content/language';
+import { paperWords } from '../paperWords';
 
 export interface ShortInputProps {
   question: ShortQuestion;
@@ -55,7 +56,7 @@ export const ShortInput = forwardRef<HTMLInputElement, ShortInputProps>(function
         autoCorrect="off"
         autoCapitalize="off"
         spellCheck={false}
-        placeholder="Type your answer"
+        placeholder={paperWords(question.language).shortPlaceholder}
         className={cn(
           'h-12 w-full rounded-md border-b-2 border-x border-t bg-sheet px-3.5 text-lg text-ink placeholder:text-ink-faint',
           'border-x-rule border-t-rule border-b-print-line transition-colors focus:border-b-print focus:outline-none',

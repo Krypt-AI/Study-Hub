@@ -13,6 +13,8 @@ export interface PaperWords {
   confirmMark: string;
   total: string;
   answerPlaceholder: string;
+  /** The one-line answer box. */
+  shortPlaceholder: string;
   submitHint: string;
   /** The heading over a marking scheme's points. */
   scheme: string;
@@ -32,6 +34,7 @@ const english: PaperWords = {
   confirmMark: 'Confirm my mark',
   total: 'Total',
   answerPlaceholder: 'Explain in your own words…',
+  shortPlaceholder: 'Type your answer',
   submitHint: 'Ctrl + Enter to check',
   scheme: 'Marking scheme',
   sections: (count) => `${count} ${count === 1 ? 'section' : 'sections'}`,
@@ -50,6 +53,7 @@ const malay: PaperWords = {
   confirmMark: 'Sahkan markah saya',
   total: 'Jumlah',
   answerPlaceholder: 'Tulis jawapan anda di sini…',
+  shortPlaceholder: 'Taip jawapan anda',
   submitHint: 'Ctrl + Enter untuk menyemak',
   scheme: 'Panduan penskoran',
   sections: (count) => `${count} bahagian`,
