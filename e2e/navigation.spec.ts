@@ -35,10 +35,39 @@ test('unknown routes show the not-found page', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1, name: 'Page not found' })).toBeVisible();
 });
 
-test('the University area opens on the current semester and can show all semesters', async ({ page }) => {
+test('courses open on their areas, and the University area on the current semester', async ({ page }) => {
   await page.goto('/courses');
+  const areas = page.getByRole('navigation', { name: 'Course areas' });
+  await expect(areas.getByRole('link', { name: /Japanese \(JLPT\)/u })).toBeVisible();
+  await expect(areas.getByRole('link', { name: /AI Engineering/u })).toBeVisible();
+  await areas.getByRole('link', { name: /^University/u }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'University' })).toBeVisible();
   const semester = page.getByRole('combobox', { name: 'Semester' });
   await expect(semester).toHaveValue('Sem 1 2026');
   await semester.selectOption('all');
   await expect(semester).toHaveValue('all');
+});
+
+test('certifications open on their areas, with JLPT and HSK among them', async ({ page }) => {
+  await page.goto('/certifications');
+  const areas = page.getByRole('navigation', { name: 'Certification areas' });
+  await areas.getByRole('link', { name: /Japanese \(JLPT\)/u }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'Japanese (JLPT)' })).toBeVisible();
+  await page.getByRole('link', { name: /Japanese-Language Proficiency Test N5/u }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'Japanese-Language Proficiency Test N5' })).toBeVisible();
+
+  await page.goto('/certifications');
+  await page.getByRole('navigation', { name: 'Certification areas' }).getByRole('link', { name: /IT courses/u }).click();
+  await expect(page.getByRole('link', { name: 'Databases and SQL' })).toBeVisible();
+});
+
+test('the playground joins the rail once a coding subject is chosen', async ({ page }) => {
+  await page.goto('/');
+  const rail = page.getByRole('navigation', { name: 'Main' }).first();
+  await expect(rail.getByRole('link', { name: 'Today' })).toBeVisible();
+  await expect(rail.getByRole('link', { name: 'Playground' })).toHaveCount(0);
+
+  await page.goto('/courses/ai-01-python');
+  await page.getByRole('switch', { name: 'Show on Today' }).click();
+  await expect(rail.getByRole('link', { name: 'Playground' })).toBeVisible();
 });

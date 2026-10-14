@@ -68,6 +68,6 @@ test('a semester without materials keeps its own classes, and can be removed wit
   await expect(page.getByRole('combobox', { name: 'Semester' }).locator('option', { hasText: 'Sem 3 2030' })).toHaveCount(0);
 
   // It is also gone from the University area of the catalog.
-  await page.goto('/courses');
+  await page.goto('/courses?area=university');
   await expect(page.getByRole('combobox', { name: 'Semester' }).locator('option', { hasText: 'Sem 3 2030' })).toHaveCount(0);
 });

@@ -9,7 +9,8 @@ Recorded from the shipped code (`src/styles/global.css`, `src/components/ui/`) o
 1. **Fill, then mark.** A bubble fills when you answer and gets its mark (check, cross, dashed check for "almost") when it is graded. This is the only signature motion; it is skipped under reduced motion.
 2. **Printed structure, pencil content.** Headers, rules, numbers and empty bubbles are print ink; anything the learner did is ink or mark colour.
 3. **Low glare at night.** The default night theme is graphite, never pure black or pure white.
-4. **Ruled rows, not card grids.** Lists are numbered rows on a sheet, like an answer sheet.
+4. **Ruled rows, not card grids.** Lists are rows on a sheet, like an answer sheet. Browse pages start with an index of areas (large ruled rows, like a test booklet's contents page) and open one area at a time, so nobody scrolls past what they don't study.
+6. **Bubbles mean progress.** Bubbles appear only where they record answers, lessons, goals or a tracked plan; navigation and decoration never use them, and lists never repeat a symbol on every row.
 5. **Honest labels.** Provenance, "editor only", estimates and unverified facts are always visible.
 
 ## Colour tokens
@@ -44,10 +45,12 @@ Printing always uses the day palette on white.
 - **Button**: primary (print fill), secondary (bordered sheet), ghost, danger; sizes sm 32 px, md 36 px, lg 44 px. **IconButton**: 32 px, always labelled.
 - **Field / Input / Select / Textarea**: write-in boxes, print focus ring. **Tabs** (underlined in print), **Segmented** (small exclusive toggles), **Tag** (neutral, print, correct, wrong, slip), **Dialog** (native `<dialog>`), **Toast**.
 - **Feedback**: loading, empty (dashed border) and error states.
+- **AreaIndex / AreaBack**: the first step of Courses and Certifications: one ruled row per area with its name in the display face (26 px), a one-line description, a count and a chevron (two columns from `lg` when there are many); `AreaBack` returns from an opened area.
+- **Switch**: an on/off control with a visible label and description (or only its accessible name, in lists).
 
 ## Layout
 
-- Rail 15 rem on large screens; a drawer below 1024 px. Content max width 64–96 rem depending on the page; 16–40 px gutters.
+- Rail 15 rem on large screens; a drawer below 1024 px. Its items are icon and label only (40 px tall); the current page is a raised sheet in semibold. Playground is listed only for learners of a course with code exercises. Content max width 64–96 rem depending on the page; 16–40 px gutters.
 - Two-column pages (main + side sheets) collapse to one column below `xl`.
 - The lesson page is a single reading column (max 56 rem).
 - The calendar week view gives each weekday a column from `lg` (weekends only when something is on them) and stacks the days below it; the month grid keeps seven columns and shows dots instead of titles below `sm`.

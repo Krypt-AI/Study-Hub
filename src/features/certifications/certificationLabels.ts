@@ -14,9 +14,11 @@ export const CATEGORY_LABELS: Record<CertificationCategory, string> = {
   linux: 'Linux and Kubernetes',
   software: 'Software',
   'it-fundamentals': 'IT fundamentals',
+  japanese: 'Japanese (JLPT)',
+  chinese: 'Chinese (HSK)',
 };
 
-export const CATEGORY_ORDER: CertificationCategory[] = ['ai-ml', 'cloud', 'data', 'security', 'networking', 'linux', 'software', 'it-fundamentals'];
+export const CATEGORY_ORDER: CertificationCategory[] = ['ai-ml', 'cloud', 'data', 'security', 'networking', 'linux', 'software', 'it-fundamentals', 'japanese', 'chinese'];
 
 export const LEVEL_LABELS: Record<Certification['level'], string> = {
   foundational: 'Foundational',

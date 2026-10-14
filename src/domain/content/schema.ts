@@ -373,7 +373,7 @@ export const certificationSchema = z.object({
   code: z.string().optional(),
   provider: z.string(),
   url: z.url(),
-  category: z.enum(['ai-ml', 'cloud', 'data', 'networking', 'security', 'linux', 'software', 'it-fundamentals']),
+  category: z.enum(['ai-ml', 'cloud', 'data', 'networking', 'security', 'linux', 'software', 'it-fundamentals', 'japanese', 'chinese']),
   /** Proctored professional certification vs. course completion certificate vs. free badge. */
   credentialType: z.enum(['professional-certification', 'completion-certificate', 'badge']),
   level: z.enum(['foundational', 'associate', 'professional', 'specialty', 'expert']),
@@ -452,6 +452,8 @@ export const courseSummarySchema = courseSchema
     lessonCount: z.number().int(),
     questionCount: z.number().int(),
     assessmentCount: z.number().int(),
+    /** The course has code or SQL exercises: learning it makes the playground useful. */
+    hasCode: z.boolean().default(false),
     lessons: z.array(z.object({ id: contentId, title: z.string(), unitId: contentId })),
     assessments: z.array(z.object({ id: contentId, title: z.string(), kind: z.enum(['quiz', 'mock-exam']), paper: pastPaperKindSchema.optional() })).default([]),
   });

@@ -909,3 +909,290 @@
   relatedCourses: [it-operating-systems]
   verifiedOn: "2026-10-11"
   verificationSources: ["https://training.linuxfoundation.org/certification/linux-foundation-certified-sysadmin-lfcs/"]
+
+# ---------------------------------------------------------------------------
+# Japanese (JLPT) and Chinese (HSK)
+# ---------------------------------------------------------------------------
+
+- id: jlpt-n5
+  name: Japanese-Language Proficiency Test N5
+  code: JLPT N5
+  provider: The Japan Foundation and Japan Educational Exchanges and Services
+  url: https://www.jlpt.jp/e/
+  category: japanese
+  credentialType: professional-certification
+  level: foundational
+  status: active
+  summary: "Some basic Japanese: typical expressions and sentences, and key information from short, slow conversations."
+  objectives: [Language knowledge (vocabulary and grammar), Reading, Listening]
+  prerequisites: None. Levels can be taken in any order.
+  exam:
+    durationMinutes: 90
+    passingScore: "80 / 180, with at least 38 of 120 in Language Knowledge・Reading and 19 of 60 in Listening"
+    format: "Multiple choice on a computer-scored answer sheet (paper); sections in minutes: Vocabulary 20, Grammar・Reading 40, Listening 30"
+    delivery: Twice a year, in July and December (some cities outside Japan hold only one); apply through the local host institution
+    validity: Does not expire
+  cost: { note: "Set by each local host institution; the official site does not state it." }
+  resources:
+    - { title: "JLPT official site", url: "https://www.jlpt.jp/e/", free: true, official: true }
+    - { title: "Sample questions", url: "https://www.jlpt.jp/e/samples/forlearners.html", free: true, official: true }
+  relatedCourses: [jlpt-n5, shin500-n4n5]
+  verifiedOn: "2026-10-14"
+  verificationSources: ["https://www.jlpt.jp/e/guideline/testsections.html", "https://www.jlpt.jp/e/guideline/results.html", "https://www.jlpt.jp/e/about/levelsummary.html", "https://www.jlpt.jp/e/faq/index.html"]
+  unverified: ["Test fees (set locally; not on the official site).", "Section times may change, the official site notes; the total is the sum of the section times."]
+
+- id: jlpt-n4
+  name: Japanese-Language Proficiency Test N4
+  code: JLPT N4
+  provider: The Japan Foundation and Japan Educational Exchanges and Services
+  url: https://www.jlpt.jp/e/
+  category: japanese
+  credentialType: professional-certification
+  level: foundational
+  status: active
+  summary: "Basic Japanese: passages on familiar daily topics and everyday conversations spoken slowly."
+  objectives: [Language knowledge (vocabulary and grammar), Reading, Listening]
+  prerequisites: None. Levels can be taken in any order.
+  exam:
+    durationMinutes: 115
+    passingScore: "90 / 180, with at least 38 of 120 in Language Knowledge・Reading and 19 of 60 in Listening"
+    format: "Multiple choice on a computer-scored answer sheet (paper); sections in minutes: Vocabulary 25, Grammar・Reading 55, Listening 35"
+    delivery: Twice a year, in July and December (some cities outside Japan hold only one); apply through the local host institution
+    validity: Does not expire
+  cost: { note: "Set by each local host institution; the official site does not state it." }
+  resources:
+    - { title: "JLPT official site", url: "https://www.jlpt.jp/e/", free: true, official: true }
+    - { title: "Sample questions", url: "https://www.jlpt.jp/e/samples/forlearners.html", free: true, official: true }
+  relatedCourses: [jlpt-n4, shin500-n4n5]
+  verifiedOn: "2026-10-14"
+  verificationSources: ["https://www.jlpt.jp/e/guideline/testsections.html", "https://www.jlpt.jp/e/guideline/results.html", "https://www.jlpt.jp/e/about/levelsummary.html", "https://www.jlpt.jp/e/faq/index.html"]
+  unverified: ["Test fees (set locally; not on the official site).", "Section times may change, the official site notes; the total is the sum of the section times."]
+
+- id: jlpt-n3
+  name: Japanese-Language Proficiency Test N3
+  code: JLPT N3
+  provider: The Japan Foundation and Japan Educational Exchanges and Services
+  url: https://www.jlpt.jp/e/
+  category: japanese
+  credentialType: professional-certification
+  level: associate
+  status: active
+  summary: "Everyday Japanese to a moderate degree: texts on everyday topics and coherent conversations at near-natural speed."
+  objectives: [Language knowledge (vocabulary and grammar), Reading, Listening]
+  prerequisites: None. Levels can be taken in any order.
+  exam:
+    durationMinutes: 140
+    passingScore: "95 / 180, with at least 19 of 60 in each of Language Knowledge, Reading and Listening"
+    format: "Multiple choice on a computer-scored answer sheet (paper); sections in minutes: Vocabulary 30, Grammar・Reading 70, Listening 40"
+    delivery: Twice a year, in July and December (some cities outside Japan hold only one); apply through the local host institution
+    validity: Does not expire
+  cost: { note: "Set by each local host institution; the official site does not state it." }
+  resources:
+    - { title: "JLPT official site", url: "https://www.jlpt.jp/e/", free: true, official: true }
+    - { title: "Sample questions", url: "https://www.jlpt.jp/e/samples/forlearners.html", free: true, official: true }
+  relatedCourses: [jlpt-n3, shin500-n3]
+  verifiedOn: "2026-10-14"
+  verificationSources: ["https://www.jlpt.jp/e/guideline/testsections.html", "https://www.jlpt.jp/e/guideline/results.html", "https://www.jlpt.jp/e/about/levelsummary.html", "https://www.jlpt.jp/e/faq/index.html"]
+  unverified: ["Test fees (set locally; not on the official site).", "Section times may change, the official site notes; the total is the sum of the section times."]
+
+- id: jlpt-n2
+  name: Japanese-Language Proficiency Test N2
+  code: JLPT N2
+  provider: The Japan Foundation and Japan Educational Exchanges and Services
+  url: https://www.jlpt.jp/e/
+  category: japanese
+  credentialType: professional-certification
+  level: professional
+  status: active
+  summary: "Everyday Japanese and, to a certain degree, Japanese in a variety of circumstances: clearly written articles and conversations at nearly natural speed."
+  objectives: [Language knowledge (vocabulary and grammar), Reading, Listening]
+  prerequisites: None. Levels can be taken in any order.
+  exam:
+    durationMinutes: 155
+    passingScore: "90 / 180, with at least 19 of 60 in each of Language Knowledge, Reading and Listening"
+    format: "Multiple choice on a computer-scored answer sheet (paper); sections in minutes: Vocabulary・Grammar・Reading 105, Listening 50"
+    delivery: Twice a year, in July and December (some cities outside Japan hold only one); apply through the local host institution
+    validity: Does not expire
+  cost: { note: "Set by each local host institution; the official site does not state it." }
+  resources:
+    - { title: "JLPT official site", url: "https://www.jlpt.jp/e/", free: true, official: true }
+    - { title: "Sample questions", url: "https://www.jlpt.jp/e/samples/forlearners.html", free: true, official: true }
+  relatedCourses: [jlpt-n2, shin500-n2]
+  verifiedOn: "2026-10-14"
+  verificationSources: ["https://www.jlpt.jp/e/guideline/testsections.html", "https://www.jlpt.jp/e/guideline/results.html", "https://www.jlpt.jp/e/about/levelsummary.html", "https://www.jlpt.jp/e/faq/index.html"]
+  unverified: ["Test fees (set locally; not on the official site).", "Section times may change, the official site notes; the total is the sum of the section times."]
+
+- id: jlpt-n1
+  name: Japanese-Language Proficiency Test N1
+  code: JLPT N1
+  provider: The Japan Foundation and Japan Educational Exchanges and Services
+  url: https://www.jlpt.jp/e/
+  category: japanese
+  credentialType: professional-certification
+  level: expert
+  status: active
+  summary: "Japanese used in a variety of circumstances: logically complex writing and fast, natural speech."
+  objectives: [Language knowledge (vocabulary and grammar), Reading, Listening]
+  prerequisites: None. Levels can be taken in any order.
+  exam:
+    durationMinutes: 165
+    passingScore: "100 / 180, with at least 19 of 60 in each of Language Knowledge, Reading and Listening"
+    format: "Multiple choice on a computer-scored answer sheet (paper); sections in minutes: Vocabulary・Grammar・Reading 110, Listening 55"
+    delivery: Twice a year, in July and December (some cities outside Japan hold only one); apply through the local host institution
+    validity: Does not expire
+  cost: { note: "Set by each local host institution; the official site does not state it." }
+  resources:
+    - { title: "JLPT official site", url: "https://www.jlpt.jp/e/", free: true, official: true }
+    - { title: "Sample questions", url: "https://www.jlpt.jp/e/samples/forlearners.html", free: true, official: true }
+  relatedCourses: [jlpt-n1, shin500-n1]
+  verifiedOn: "2026-10-14"
+  verificationSources: ["https://www.jlpt.jp/e/guideline/testsections.html", "https://www.jlpt.jp/e/guideline/results.html", "https://www.jlpt.jp/e/about/levelsummary.html", "https://www.jlpt.jp/e/faq/index.html"]
+  unverified: ["Test fees (set locally; not on the official site).", "Section times may change, the official site notes; the total is the sum of the section times."]
+
+- id: hsk-1-exam
+  name: HSK Level 1
+  code: HSK 1
+  provider: Center for Language Education and Cooperation (CLEC)
+  url: https://www.chinesetest.cn/HSK/1
+  category: chinese
+  credentialType: professional-certification
+  level: foundational
+  status: active
+  summary: "Beginners with fundamental listening and reading skills."
+  objectives: [Listening, Reading]
+  prerequisites: None.
+  exam:
+    questions: "40"
+    durationMinutes: 40
+    passingScore: "120 / 200"
+    format: "Listening and reading; about 40 minutes in all including 5 minutes for personal information"
+  cost: { note: "Set by each test centre; the official site does not state it." }
+  resources:
+    - { title: "HSK on the official test site", url: "https://www.chinesetest.cn/HSK/1", free: true, official: true }
+  relatedCourses: [hsk-1]
+  verifiedOn: "2026-10-14"
+  verificationSources: ["https://www.chinesetest.cn/HSK/1"]
+  unverified: ["Test fees and test dates (set by each test centre).", "HSK 3.0 (nine levels) is being introduced: check which version your test centre offers."]
+
+- id: hsk-2-exam
+  name: HSK Level 2
+  code: HSK 2
+  provider: Center for Language Education and Cooperation (CLEC)
+  url: https://www.chinesetest.cn/HSK/2
+  category: chinese
+  credentialType: professional-certification
+  level: foundational
+  status: active
+  summary: "Beginners at a slightly more advanced level."
+  objectives: [Listening, Reading]
+  prerequisites: None.
+  exam:
+    questions: "60"
+    durationMinutes: 55
+    passingScore: "120 / 200"
+    format: "Listening and reading; about 55 minutes in all including 5 minutes for personal information"
+  cost: { note: "Set by each test centre; the official site does not state it." }
+  resources:
+    - { title: "HSK on the official test site", url: "https://www.chinesetest.cn/HSK/2", free: true, official: true }
+  relatedCourses: [hsk-2]
+  verifiedOn: "2026-10-14"
+  verificationSources: ["https://www.chinesetest.cn/HSK/2"]
+  unverified: ["Test fees and test dates (set by each test centre).", "HSK 3.0 (nine levels) is being introduced: check which version your test centre offers."]
+
+- id: hsk-3-exam
+  name: HSK Level 3
+  code: HSK 3
+  provider: Center for Language Education and Cooperation (CLEC)
+  url: https://www.chinesetest.cn/HSK/3
+  category: chinese
+  credentialType: professional-certification
+  level: associate
+  status: active
+  summary: "Beginners with broader listening, reading and basic writing skills."
+  objectives: [Listening, Reading, Writing]
+  prerequisites: None.
+  exam:
+    questions: "80"
+    durationMinutes: 90
+    passingScore: "180 / 300"
+    format: "Listening, reading and writing; about 90 minutes in all including 5 minutes for personal information"
+  cost: { note: "Set by each test centre; the official site does not state it." }
+  resources:
+    - { title: "HSK on the official test site", url: "https://www.chinesetest.cn/HSK/3", free: true, official: true }
+  relatedCourses: [hsk-3]
+  verifiedOn: "2026-10-14"
+  verificationSources: ["https://www.chinesetest.cn/HSK/3"]
+  unverified: ["Test fees and test dates (set by each test centre).", "HSK 3.0 (nine levels) is being introduced: check which version your test centre offers."]
+
+- id: hsk-4-exam
+  name: HSK Level 4
+  code: HSK 4
+  provider: Center for Language Education and Cooperation (CLEC)
+  url: https://www.chinesetest.cn/HSK/4
+  category: chinese
+  credentialType: professional-certification
+  level: associate
+  status: active
+  summary: "Intermediate learners."
+  objectives: [Listening, Reading, Writing]
+  prerequisites: None.
+  exam:
+    questions: "100"
+    durationMinutes: 105
+    passingScore: "180 / 300"
+    format: "Listening, reading and writing; about 105 minutes in all including 5 minutes for personal information"
+  cost: { note: "Set by each test centre; the official site does not state it." }
+  resources:
+    - { title: "HSK on the official test site", url: "https://www.chinesetest.cn/HSK/4", free: true, official: true }
+  relatedCourses: [hsk-4]
+  verifiedOn: "2026-10-14"
+  verificationSources: ["https://www.chinesetest.cn/HSK/4"]
+  unverified: ["Test fees and test dates (set by each test centre).", "HSK 3.0 (nine levels) is being introduced: check which version your test centre offers."]
+
+- id: hsk-5-exam
+  name: HSK Level 5
+  code: HSK 5
+  provider: Center for Language Education and Cooperation (CLEC)
+  url: https://www.chinesetest.cn/HSK/5
+  category: chinese
+  credentialType: professional-certification
+  level: professional
+  status: active
+  summary: "Intermediate learners and proficient users."
+  objectives: [Listening, Reading, Writing]
+  prerequisites: None.
+  exam:
+    questions: "100"
+    durationMinutes: 125
+    format: "Listening, reading and writing; about 125 minutes in all including 5 minutes for personal information"
+  cost: { note: "Set by each test centre; the official site does not state it." }
+  resources:
+    - { title: "HSK on the official test site", url: "https://www.chinesetest.cn/HSK/5", free: true, official: true }
+  relatedCourses: [hsk-5]
+  verifiedOn: "2026-10-14"
+  verificationSources: ["https://www.chinesetest.cn/HSK/5"]
+  unverified: ["The HSK 5 page does not state the pass mark.", "Test fees and test dates (set by each test centre).", "HSK 3.0 (nine levels) is being introduced: check which version your test centre offers."]
+
+- id: hsk-6-exam
+  name: HSK Level 6
+  code: HSK 6
+  provider: Center for Language Education and Cooperation (CLEC)
+  url: https://www.chinesetest.cn/HSK/6
+  category: chinese
+  credentialType: professional-certification
+  level: expert
+  status: active
+  summary: "Intermediate learners and proficient users with specific listening, reading and writing skills."
+  objectives: [Listening (50 questions), Reading (50 questions), Writing (1 question)]
+  prerequisites: None.
+  exam:
+    questions: "101"
+    durationMinutes: 140
+    format: "Listening (50), reading (50) and writing (1); about 140 minutes in all including 5 minutes for personal information (the page’s table totals about 135)"
+  cost: { note: "Set by each test centre; the official site does not state it." }
+  resources:
+    - { title: "HSK on the official test site", url: "https://www.chinesetest.cn/HSK/6", free: true, official: true }
+  relatedCourses: [hsk-6]
+  verifiedOn: "2026-10-14"
+  verificationSources: ["https://www.chinesetest.cn/HSK/6"]
+  unverified: ["The HSK 6 page does not state the pass mark.", "Test fees and test dates (set by each test centre).", "HSK 3.0 (nine levels) is being introduced: check which version your test centre offers."]

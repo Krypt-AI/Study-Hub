@@ -349,6 +349,9 @@ function main(): void {
         lessonCount: lessons.length,
         questionCount: course.units.flatMap((unit) => unit.lessons).reduce((sum, lesson) => sum + lesson.questions.length, 0),
         assessmentCount: course.assessments.length,
+        hasCode: [...course.units.flatMap((unit) => unit.lessons).flatMap((lesson) => lesson.questions), ...course.assessments.flatMap((assessment) => assessment.sections.flatMap((section) => section.questions))].some(
+          (question) => question.type === 'code' || question.type === 'sql',
+        ),
         lessons,
         assessments: course.assessments.map((assessment) => ({ id: assessment.id, title: assessment.title, kind: assessment.kind, paper: assessment.paper })),
       };

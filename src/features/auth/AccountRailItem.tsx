@@ -1,13 +1,12 @@
 /** The rail's account row: "Sign in" for guests, the account's name and picture once signed in. */
 import { LogIn } from 'lucide-react';
 import { Link, useLocation } from 'react-router';
-import { Bubble } from '@/components/ui/Bubble';
 import { type Account, useAuth } from './useAuth';
 
 export function AccountRailItem({ onNavigate }: { onNavigate?: () => void }) {
   const auth = useAuth();
   const location = useLocation();
-  const row = 'flex h-9 items-center gap-2.5 rounded-md px-2.5 text-sm transition-colors duration-150 hover:bg-sheet/60';
+  const row = 'flex h-10 items-center gap-3 rounded-md px-3 text-[0.9375rem] transition-colors duration-150 hover:bg-sheet/60';
 
   if (auth.status === 'guest') {
     return (
@@ -17,7 +16,6 @@ export function AccountRailItem({ onNavigate }: { onNavigate?: () => void }) {
         title="Sign in to save your progress"
         className={`${row} text-print-strong`}
       >
-        <Bubble state="empty" size="sm" />
         <LogIn className="size-4" aria-hidden />
         <span>Sign in</span>
       </Link>

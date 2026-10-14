@@ -19,7 +19,6 @@ import {
 } from 'lucide-react';
 import { lazy, type ReactNode, Suspense, useEffect, useState } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router';
-import { Bubble } from '@/components/ui/Bubble';
 import { IconButton } from '@/components/ui/Button';
 import { Kbd, LoadingState } from '@/components/ui/Feedback';
 import { useFocusReviewStates } from '@/data/queries';
@@ -28,6 +27,7 @@ import { AccountRailItem } from '@/features/auth/AccountRailItem';
 import { BringDeviceProgress } from '@/features/learners/BringDeviceProgress';
 import { cn } from '@/lib/cn';
 import { useStudyTimer } from '@/features/today/useStudyTimer';
+import { usePlaygroundInRail } from '@/features/playground/usePlaygroundInRail';
 import { useTheme } from './useTheme';
 
 // Search loads its index library only when first opened.
@@ -48,9 +48,10 @@ const NAV: NavItem[] = [
   { to: '/playground', label: 'Playground', icon: <Code2 className="size-4" /> },
   { to: '/certifications', label: 'Certifications', icon: <Award className="size-4" /> },
 ];
+const PLAYGROUND = '/playground';
 
 function DueCount() {
-  // Only starred courses count (all when none is starred): other courses never add pressure.
+  // Only the subjects on Today count (all when none is chosen): other subjects never add pressure.
   const { data: states = [] } = useFocusReviewStates();
   const due = states.filter((state) => isDue(state)).length;
   if (!due) return null;
@@ -69,14 +70,13 @@ function RailLink({ item, onNavigate }: { item: NavItem; onNavigate?: () => void
       onClick={onNavigate}
       className={({ isActive }) =>
         cn(
-          'group flex h-9 items-center gap-2.5 rounded-md px-2.5 text-sm transition-colors duration-150',
-          isActive ? 'bg-sheet font-medium text-ink' : 'text-ink-muted hover:bg-sheet/60 hover:text-ink',
+          'group flex h-10 items-center gap-3 rounded-md px-3 text-[0.9375rem] transition-colors duration-150',
+          isActive ? 'bg-sheet font-semibold text-ink shadow-[0_1px_2px_rgb(0_0_0/0.12)]' : 'text-ink-muted hover:bg-sheet/60 hover:text-ink',
         )
       }
     >
       {({ isActive }) => (
         <>
-          <Bubble state={isActive ? 'filled' : 'empty'} size="sm" />
           <span className={cn('transition-colors', isActive ? 'text-print' : 'text-ink-faint group-hover:text-ink-muted')}>{item.icon}</span>
           <span>{item.label}</span>
           {item.to === '/practice' && <DueCount />}
@@ -88,6 +88,8 @@ function RailLink({ item, onNavigate }: { item: NavItem; onNavigate?: () => void
 
 function Rail({ onNavigate, onSearch }: { onNavigate?: () => void; onSearch: () => void }) {
   const { resolved, setPreference } = useTheme();
+  const showPlayground = usePlaygroundInRail();
+  const onPlayground = useLocation().pathname.startsWith(PLAYGROUND);
   return (
     <nav aria-label="Main" className="flex h-full flex-col gap-1 border-r border-print-line bg-rail px-3 py-4">
       <div className="mb-3 flex items-baseline gap-2 px-2.5">
@@ -104,7 +106,7 @@ function Rail({ onNavigate, onSearch }: { onNavigate?: () => void; onSearch: () 
           <Kbd>Ctrl K</Kbd>
         </span>
       </button>
-      {NAV.map((item) => (
+      {NAV.filter((item) => item.to !== PLAYGROUND || showPlayground || onPlayground).map((item) => (
         <RailLink key={item.to} item={item} onNavigate={onNavigate} />
       ))}
       <div className="mt-auto flex flex-col gap-1 border-t border-rule pt-3">
@@ -113,9 +115,8 @@ function Rail({ onNavigate, onSearch }: { onNavigate?: () => void; onSearch: () 
         <button
           type="button"
           onClick={() => setPreference(resolved === 'dark' ? 'light' : 'dark')}
-          className="flex h-9 items-center gap-2.5 rounded-md px-2.5 text-sm text-ink-muted transition-colors hover:bg-sheet/60 hover:text-ink"
+          className="flex h-10 items-center gap-3 rounded-md px-3 text-[0.9375rem] text-ink-muted transition-colors hover:bg-sheet/60 hover:text-ink"
         >
-          <Bubble state="empty" size="sm" />
           {resolved === 'dark' ? <Sun className="size-4 text-ink-faint" aria-hidden /> : <Moon className="size-4 text-ink-faint" aria-hidden />}
           {resolved === 'dark' ? 'Day theme' : 'Night theme'}
         </button>

@@ -8,7 +8,7 @@ A personal learning platform for university subjects, IT, AI engineering, profes
 - **Learners**: several people can share one device or one account (siblings on one computer), each with their own progress, calendar and settings. Guests keep their progress on the device; after signing in, it can be brought into the account once.
 - **Calendar** (optional): your weekly timetable for each semester and the dates of quizzes, tests, midterms, finals and deadlines, in week, month and list views; the next dates show on Today with a countdown.
 - **Playground**: Python (Pyodide), JavaScript, TypeScript and SQL (SQLite) run in sandboxed Web Workers in the browser; C, Java and Bash are clearly labelled editor-only. Projects keep versions; you can write your own exercises with tests.
-- **Certifications**: 33 AI, cloud, security, networking and Linux certifications checked against official sources, with your own plan (status, target and exam dates), and a 14-stage AI engineering roadmap.
+- **Certifications**: 44 AI, cloud, security, networking, Linux, JLPT and HSK certifications checked against official sources, with your own plan (status, target and exam dates); the IT courses sit beside them, and the 14-stage AI engineering roadmap under Courses.
 
 ## Quick start
 
