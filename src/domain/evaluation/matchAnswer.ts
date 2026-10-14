@@ -108,8 +108,11 @@ function matchCharacters(response: string, answer: string): ScoredMatch {
   return { verdict: 'incorrect', closest: answer, messages, distance: editDistance(given.join(''), expected.join('')) };
 }
 
+/** A decimal ("0.4", "1,000") or a simple fraction ("2/5"), as answers to probability questions often are. */
 function parseNumber(text: string): number | null {
-  const value = Number(fold(text).replace(/[,\s_]/gu, ''));
+  const compact = fold(text).replace(/[,\s_]/gu, '');
+  const fraction = /^(-?[\d.]+)\/([\d.]+)$/u.exec(compact);
+  const value = fraction ? Number(fraction[1]) / Number(fraction[2]) : Number(compact);
   return Number.isFinite(value) ? value : null;
 }
 

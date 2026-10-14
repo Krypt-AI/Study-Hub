@@ -1,6 +1,7 @@
 import type { z } from 'zod';
 import type {
   assessmentSchema,
+  pastPaperKindSchema,
   assessmentSectionSchema,
   blockSchema,
   catalogSchema,
@@ -54,6 +55,7 @@ export type VocabItem = z.output<typeof vocabItemSchema>;
 export type Lesson = z.output<typeof lessonSchema>;
 export type Unit = z.output<typeof unitSchema>;
 export type Assessment = z.output<typeof assessmentSchema>;
+export type PastPaperKind = z.output<typeof pastPaperKindSchema>;
 export type AssessmentSection = z.output<typeof assessmentSectionSchema>;
 export type Course = z.output<typeof courseSchema>;
 export type CourseCategory = z.output<typeof courseCategorySchema>;

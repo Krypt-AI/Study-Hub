@@ -16,12 +16,13 @@ import type { TopicMasteryRecord } from '@/data/records';
 import { contentLanguage } from '@/domain/content/language';
 import { useCatalog, useCourse } from '@/domain/content/load';
 import { lessonsInOrder } from '@/domain/content/navigation';
-import type { Course } from '@/domain/content/types';
+import type { Assessment, Course } from '@/domain/content/types';
 import { assessmentUrl, certificationUrl, courseUrl, lessonUrl } from '@/domain/content/urls';
 import { masteryKey, masteryLevel, SKILL_LABELS, SKILLS } from '@/domain/learning/mastery';
 import { useBookmark } from '@/features/practice/useBookmark';
 import { CourseLoadError } from '@/features/auth/LockedContent';
 import { StarButton } from './StarButton';
+import { groupAssessments } from '@/domain/content/pastPapers';
 
 export default function CoursePage() {
   const { courseId = '' } = useParams();
@@ -40,6 +41,7 @@ export default function CoursePage() {
   const completed = lessons.filter(({ lesson }) => records.get(lesson.id)?.status === 'completed').length;
   const certifications = (catalog.data?.certifications ?? []).filter((certification) => data.certifications.includes(certification.id) || certification.relatedCourses.includes(data.id));
   const prerequisites = (catalog.data?.courses ?? []).filter((candidate) => data.prerequisites.includes(candidate.id));
+  const { pastPapers, practice } = groupAssessments(data.assessments);
 
   return (
     <div className="mx-auto max-w-6xl">
@@ -80,7 +82,7 @@ export default function CoursePage() {
             </aside>
           )}
           {data.units.map((unit) => (
-            <Sheet key={unit.id} title={unit.title} aside={<span className="tabular">{unit.lessons.length} lessons</span>} padded={false}>
+            <Sheet key={unit.id} title={unit.title} aside={<span className="tabular">{unit.lessons.length} lesson{unit.lessons.length === 1 ? '' : 's'}</span>} padded={false}>
               <ol className="divide-y divide-rule">
                 {unit.lessons.map((lesson) => {
                   const record = records.get(lesson.id);
@@ -111,20 +113,27 @@ export default function CoursePage() {
         </div>
 
         <div className="flex min-w-0 flex-col gap-6">
-          {data.assessments.length > 0 && (
+          {pastPapers.length > 0 && (
+            <Sheet title="Past papers">
+              <div className="flex flex-col gap-5">
+                {pastPapers.map((group) => (
+                  <section key={group.kind} aria-label={group.title} className="flex flex-col gap-3">
+                    <h3 className="text-sm font-semibold tracking-wide text-ink-muted uppercase">{group.title}</h3>
+                    <ul className="flex flex-col gap-3">
+                      {group.papers.map((assessment) => (
+                        <AssessmentItem key={assessment.id} courseId={data.id} assessment={assessment} action="Try this paper" />
+                      ))}
+                    </ul>
+                  </section>
+                ))}
+              </div>
+            </Sheet>
+          )}
+          {practice.length > 0 && (
             <Sheet title="Mock exams and quizzes">
               <ul className="flex flex-col gap-3">
-                {data.assessments.map((assessment) => (
-                  <li key={assessment.id} className="flex flex-col gap-2">
-                    <p className="font-medium">{assessment.title}</p>
-                    <p className="text-sm text-ink-muted">
-                      {assessment.sections.length} sections · {assessment.sections.reduce((sum, section) => sum + section.questions.length, 0)} questions
-                      {assessment.timeLimitMinutes ? ` · ${assessment.timeLimitMinutes} min` : ''}
-                    </p>
-                    <ButtonLink to={assessmentUrl(data.id, assessment.id)} icon={<ClipboardCheck className="size-4" />} className="self-start">
-                      Take {assessment.kind === 'mock-exam' ? 'the mock exam' : 'the quiz'}
-                    </ButtonLink>
-                  </li>
+                {practice.map((assessment) => (
+                  <AssessmentItem key={assessment.id} courseId={data.id} assessment={assessment} action={assessment.kind === 'mock-exam' ? 'Take the mock exam' : 'Take the quiz'} />
                 ))}
               </ul>
             </Sheet>
@@ -212,5 +221,21 @@ function MasterySheet({ course, mastery }: { course: Course; mastery: TopicMaste
         </table>
       )}
     </Sheet>
+  );
+}
+
+function AssessmentItem({ courseId, assessment, action }: { courseId: string; assessment: Assessment; action: string }) {
+  const questions = assessment.sections.reduce((sum, section) => sum + section.questions.length, 0);
+  return (
+    <li className="flex flex-col gap-2">
+      <p className="font-medium">{assessment.title}</p>
+      <p className="text-sm text-ink-muted">
+        {assessment.sections.length} section{assessment.sections.length === 1 ? '' : 's'} · {questions} questions
+        {assessment.timeLimitMinutes ? ` · ${assessment.timeLimitMinutes} min` : ''}
+      </p>
+      <ButtonLink to={assessmentUrl(courseId, assessment.id)} icon={<ClipboardCheck className="size-4" />} className="self-start">
+        {action}
+      </ButtonLink>
+    </li>
   );
 }

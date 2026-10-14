@@ -8,10 +8,10 @@ Last updated 2026-10-14.
 |---|---|
 | `npm run typecheck` | passes (app, workers, node scripts, tests) |
 | `npm run lint` | no problems |
-| `npm test` | 160 tests in 24 files pass, including the RLS, table-privilege and learner tests on PGlite (for projects created before and after Supabase's 30 May 2026 change) |
-| `npm run content:build` | 23 courses, 25,471 lesson questions, 33 certifications, 1 roadmap |
+| `npm test` | 162 tests in 25 files pass, including the RLS, table-privilege and learner tests on PGlite (for projects created before and after Supabase's 30 May 2026 change) |
+| `npm run content:build` | 23 courses, 25,500 lesson questions, 33 certifications, 1 roadmap |
 | `npm run content:verify` | 49 exercises (Python and SQL): every reference solution passes. 20 have no runnable solution (Java, which is self-marked; the Java in CMPD363 was compiled and run with JDK 25 by hand) |
-| `npm run test:e2e` | 38 tests pass in Chrome: 33 in local mode, including real Python (Pyodide), JavaScript and SQL runs, two learners on one device, a weekly lab, an extra class on its day only, a semester added without materials, and starring a course, and 5 against a stubbed Supabase (a guest is asked to sign in for a locked course; a signed-in learner opens it; a guest's class and date survive a reload; signing out and into another account shows nothing of the first; the device's progress is brought into an empty account once) |
+| `npm run test:e2e` | 39 tests pass in Chrome: 34 in local mode, including real Python (Pyodide), JavaScript and SQL runs, two learners on one device, a weekly lab, an extra class on its day only, a semester added without materials, starring a course, and sitting a past paper, and 5 against a stubbed Supabase (a guest is asked to sign in for a locked course; a signed-in learner opens it; a guest's class and date survive a reload; signing out and into another account shows nothing of the first; the device's progress is brought into an empty account once) |
 | `npm run build` | production build succeeds |
 
 ## Done
@@ -25,14 +25,14 @@ Last updated 2026-10-14.
 
   | Course | Lessons | Questions | Written from |
   |---|---|---|---|
-  | CMPD103 Statistics for Computer Science | 8 | 96 | Chapter 1–6 notes and slides, and your Chapter 1–2 summary |
-  | CMPD203 Web Programming | 5 | 76 | Chapter 1–4 notes |
-  | CMPD2123 Machine Learning and Data Analytics | 6 | 64 | Chapter 1–3 slides, including 5 Python exercises |
+  | CMPD103 Statistics for Computer Science | 8 | 96 | Chapter 1–6 notes and slides, and your Chapter 1–2 summary; past papers: Tests 1 and 2 (2025/2026) and four finals (2017/18, 2018/19, 2019/20, 2021/22) |
+  | CMPD203 Web Programming | 7 | 105 | Chapter 1–6 notes (Chapters 5–6: PHP basics and PHP for form data) |
+  | CMPD2123 Machine Learning and Data Analytics | 6 | 64 | Chapter 1–3 slides, including 5 Python exercises; past paper: the CMPD383 2023/24 final (this subject's earlier code) |
   | CMPD2143 Human Computer Interaction | 7 | 81 | Chapter 1–3 slides |
   | CMPD333 Cyber Security Essentials | 12 | 169 | Topic 1–7 slides (the updated Encryption part 1–3 decks), including 10 Python exercises and one SQL-injection query |
   | CMPD363 Object-Oriented Programming | 12 | 138 | the 2025/2026 midterms and the Chapter 1–8 slides; both midterms as timed mock exams with worked answers |
 
-  Every exercise with a runnable solution passes `content:verify`. Each course's `contentNotice` lists the slide errors its notes correct. Rendered but not yet used by a course: the CMPD2123 past paper (the CMPD383 2023/24 Semester 1 paper) and SDG 13 assignment, and the CMPD333 group assignment 2 (see "Waiting for a decision").
+  Every exercise with a runnable solution passes `content:verify`. Each course's `contentNotice` lists the slide errors its notes correct. Past papers sit in each subject's **Past papers** section, grouped into midterms, tests and finals; every question can be answered and is marked (drawings are self-reviewed against a model answer). The papers have no answer keys, so the answers are worked by Study Hub, and each ambiguous question accepts every defensible answer with an explanation. Group assignments are left out, and the CMPD203 exercise sheets are not used.
 - **Starred courses**: star the courses you are taking (catalog rows and the course page); Today, the due count and due reviews then show only those, and other courses wait quietly. With nothing starred, everything counts as before.
 - **Learners**: several learners per device and per account (siblings on one computer), each with their own progress, calendar, settings and unfinished exam sittings; "Switch learner" on Today, rename and remove in Settings. Guests keep their progress on the device (it survives reloads); after the first sign-in, a device with progress can bring every learner into an empty account, once. Unfinished mock-exam sittings are saved with the learner's data, so they sync to the account.
 - **Calendar** (optional; replaced the notebook): weekly timetable per semester (lectures and labs) with teaching-week numbers and clash warnings, and important dates (quiz, test, midterm, final, assignment, extra or make-up class) in week, month and list views; the next 21 days show on Today. Learners can add a semester that has no materials yet (Calendar or the catalog), with optional dates, and remove one they added together with its classes and dates. Works for guests, signed-in learners and local mode. Notes from the old notebook stay in the browser until downloaded or deleted in Settings.
@@ -57,10 +57,6 @@ Last updated 2026-10-14.
 
 ## Waiting for a decision
 
-- **CMPD103**: the past papers (Final exams TRI 2 2017/18, TRI 2 2018/19, June 2020, APR22; tests 1 and 2) and the assignment are Word files, not yet converted: mock exams or reference only?
-- **CMPD203**: Chapter 5–6 notes not yet written; exercise sheets (Chapter 1–4, Chapter 3 E1/E2): practice questions or documents?
-- **CMPD2123**: does the CMPD383 2023/24 paper belong to CMPD2123, and should it become a mock exam?
-- **CMPD333**: group assignment 2: reference or graded practice brief?
 - **JLPT**: Shin Kanzen Master N1–N4 and JLPT Workbooks 1–5 as typed-question courses, with audio for listening questions (Phase 4 plan first).
 
 ## External services

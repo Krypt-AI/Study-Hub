@@ -317,10 +317,15 @@ export const assessmentSectionSchema = z.object({
   questions: z.array(questionSchema).min(1),
 });
 
+/** The kind of a past paper, as its title names it. */
+export const pastPaperKindSchema = z.enum(['midterm', 'test', 'final']);
+
 export const assessmentSchema = z.object({
   id: contentId,
   title: z.string(),
   kind: z.enum(['quiz', 'mock-exam']),
+  /** Set for a real past paper (not a practice set): the course lists it under Past papers, grouped by kind. */
+  paper: pastPaperKindSchema.optional(),
   description: markdown.optional(),
   timeLimitMinutes: z.number().positive().optional(),
   /** Fraction of points needed to pass (0..1). */
@@ -448,7 +453,7 @@ export const courseSummarySchema = courseSchema
     questionCount: z.number().int(),
     assessmentCount: z.number().int(),
     lessons: z.array(z.object({ id: contentId, title: z.string(), unitId: contentId })),
-    assessments: z.array(z.object({ id: contentId, title: z.string(), kind: z.enum(['quiz', 'mock-exam']) })).default([]),
+    assessments: z.array(z.object({ id: contentId, title: z.string(), kind: z.enum(['quiz', 'mock-exam']), paper: pastPaperKindSchema.optional() })).default([]),
   });
 
 /** The university area: your semesters, newest first, and the one in progress. */

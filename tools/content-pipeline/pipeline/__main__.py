@@ -5,7 +5,7 @@ Commands:
   ocr        OCR (or text-extract) pages into the cache. Resumable.
   manifest   Write cache/sources.json, the source list read by the TypeScript importers.
   pages      Render page images (WebP) for the web app's "view original page" feature.
-  course-pages  Render the documents (past papers) of private University courses.
+  course-pages  Render the documents (past papers, notes) of private courses of any category.
   audio      Extract JLPT listening audio and map each clip to its question.
   phase      Run ocr + manifest + pages + audio for one import phase.
 """

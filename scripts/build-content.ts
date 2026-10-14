@@ -350,7 +350,7 @@ function main(): void {
         questionCount: course.units.flatMap((unit) => unit.lessons).reduce((sum, lesson) => sum + lesson.questions.length, 0),
         assessmentCount: course.assessments.length,
         lessons,
-        assessments: course.assessments.map((assessment) => ({ id: assessment.id, title: assessment.title, kind: assessment.kind })),
+        assessments: course.assessments.map((assessment) => ({ id: assessment.id, title: assessment.title, kind: assessment.kind, paper: assessment.paper })),
       };
     }),
     certifications,

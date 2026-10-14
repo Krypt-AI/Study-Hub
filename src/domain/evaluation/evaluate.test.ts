@@ -112,6 +112,13 @@ describe('matchAnswer: language modes', () => {
     expect(matchAnswer('0.333', ['0.3333'], options({ mode: 'number', tolerance: 0.001 })).verdict).toBe('correct');
     expect(matchAnswer('254', ['256'], options({ mode: 'number' })).verdict).toBe('incorrect');
   });
+
+  it('number: accepts a simple fraction for a decimal answer', () => {
+    expect(matchAnswer('2/5', ['0.4'], options({ mode: 'number', tolerance: 0.001 })).verdict).toBe('correct');
+    expect(matchAnswer(' 3 / 8 ', ['0.375'], options({ mode: 'number', tolerance: 0.001 })).verdict).toBe('correct');
+    expect(matchAnswer('1/3', ['0.333'], options({ mode: 'number', tolerance: 0.001 })).verdict).toBe('correct');
+    expect(matchAnswer('1/0', ['0'], options({ mode: 'number' })).messages).toEqual(['Enter a number.']);
+  });
 });
 
 describe('evaluate', () => {
