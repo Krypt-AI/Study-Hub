@@ -1,9 +1,10 @@
 /**
  * Today: the session's answer sheet. What is due, where you stopped, how much of the
- * goal is filled, and which topics need practice. When courses are starred, only their
- * work shows here (domain/learning/focus.ts).
+ * goal is filled, which topics need practice, and today's classes from the calendar. Resume is
+ * always the latest lesson; reviews, weak topics and "Your courses" cover only the subjects
+ * switched to "Show on Today" (all of them when none is; domain/learning/focus.ts).
  */
-import { ArrowRight, Play, Star } from 'lucide-react';
+import { ArrowRight, Play } from 'lucide-react';
 import { useMemo } from 'react';
 import { Link } from 'react-router';
 import { Bubble, type BubbleState, BubbleStrip } from '@/components/ui/Bubble';
@@ -40,22 +41,22 @@ export default function TodayPage() {
   const mastery = useTopicMastery();
   const activity = useActivityDays(addDays(dayKey(), -400));
 
-  const starred = settings.data?.starredCourseIds;
-  const focusedProgress = useMemo(() => (progress.data && starred ? inFocus(progress.data, starred) : undefined), [progress.data, starred]);
+  const todayCourseIds = settings.data?.todayCourseIds;
   const model = useMemo(() => {
-    if (!catalog.data || !settings.data || !focusedProgress || !reviews.data || !mastery.data || !activity.data) return undefined;
+    if (!catalog.data || !settings.data || !progress.data || !reviews.data || !mastery.data || !activity.data) return undefined;
     return computeTodayModel({
       catalog: catalog.data,
       settings: settings.data,
-      progress: focusedProgress,
+      // All progress: Resume is the latest lesson, whichever subject it belongs to.
+      progress: progress.data,
       reviews: reviews.data,
-      mastery: inFocus(mastery.data, settings.data.starredCourseIds),
+      mastery: inFocus(mastery.data, settings.data.todayCourseIds),
       activity: activity.data,
     });
-  }, [catalog.data, settings.data, focusedProgress, reviews.data, mastery.data, activity.data]);
+  }, [catalog.data, settings.data, progress.data, reviews.data, mastery.data, activity.data]);
 
   if (catalog.error) return <ErrorState title="Course content is not built yet" error={catalog.error} onRetry={() => void catalog.refetch()} />;
-  if (!model || !catalog.data || !starred) return <LoadingState />;
+  if (!model || !catalog.data || !todayCourseIds) return <LoadingState />;
 
   const today = new Date();
   return (
@@ -82,9 +83,8 @@ export default function TodayPage() {
 
       <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
         <div className="flex min-w-0 flex-col gap-6">
-          <FocusNote starredCount={starred.length} />
-          {model.resume ? <ResumeSheet resume={model.resume} /> : <StartHere catalog={catalog.data} starred={starred} />}
-          <CourseProgressSheet catalog={catalog.data} progress={focusedProgress ?? []} />
+          {model.resume ? <ResumeSheet resume={model.resume} /> : <StartHere catalog={catalog.data} todayCourseIds={todayCourseIds} />}
+          <CourseProgressSheet catalog={catalog.data} progress={inFocus(progress.data ?? [], todayCourseIds)} chosenCount={todayCourseIds.length} />
         </div>
         <div className="flex min-w-0 flex-col gap-6">
           <ComingUpSheet />
@@ -155,35 +155,10 @@ function ResumeSheet({ resume }: { resume: ResumeTarget }) {
   );
 }
 
-/** What Today is showing: the starred courses, or every course with a tip to star some. */
-function FocusNote({ starredCount }: { starredCount: number }) {
-  return (
-    <p className="flex items-center gap-2 text-sm text-ink-muted">
-      <Star className={starredCount ? 'size-4 fill-current text-print' : 'size-4'} aria-hidden />
-      {starredCount ? (
-        <span>
-          Showing your {starredCount} starred course{starredCount === 1 ? '' : 's'}. Other courses wait quietly until you open them.{' '}
-          <Link to="/courses" className="text-print-strong hover:underline">
-            Change stars
-          </Link>
-        </span>
-      ) : (
-        <span>
-          Tip: star the courses you are taking on the{' '}
-          <Link to="/courses" className="text-print-strong hover:underline">
-            Courses
-          </Link>{' '}
-          page, and Today will show only those.
-        </span>
-      )}
-    </p>
-  );
-}
-
 const STARTING_POINTS = ['hsk-1', 'jlpt-n5', 'shin500-n4n5', 'ai-01-python', 'it-sql'];
 
-function StartHere({ catalog, starred }: { catalog: Catalog; starred: string[] }) {
-  const ids = starred.length ? starred : STARTING_POINTS;
+function StartHere({ catalog, todayCourseIds }: { catalog: Catalog; todayCourseIds: string[] }) {
+  const ids = todayCourseIds.length ? todayCourseIds : STARTING_POINTS;
   const starts = ids.map((id) => catalog.courses.find((course) => course.id === id)).filter((course): course is CourseSummary => Boolean(course));
   return (
     <Sheet title="Start here">
@@ -210,7 +185,8 @@ function StartHere({ catalog, starred }: { catalog: Catalog; starred: string[] }
   );
 }
 
-function CourseProgressSheet({ catalog, progress }: { catalog: Catalog; progress: LessonProgressRecord[] }) {
+/** Started subjects on Today (every started subject while none is chosen). */
+function CourseProgressSheet({ catalog, progress, chosenCount }: { catalog: Catalog; progress: LessonProgressRecord[]; chosenCount: number }) {
   const started = useMemo(() => {
     const byCourse = new Map<string, LessonProgressRecord[]>();
     for (const record of progress) byCourse.set(record.courseId, [...(byCourse.get(record.courseId) ?? []), record]);
@@ -229,9 +205,13 @@ function CourseProgressSheet({ catalog, progress }: { catalog: Catalog; progress
   }, [catalog, progress]);
 
   return (
-    <Sheet title="Your courses" aside={<Link to="/courses" className="hover:text-ink">All courses</Link>}>
+    <Sheet title="Your courses" aside={<Link to="/settings#subjects-on-today" className="hover:text-ink">{chosenCount ? `${chosenCount} on Today` : 'Choose subjects'}</Link>}>
       {started.length === 0 ? (
-        <p className="text-sm text-ink-muted">Courses you start appear here with one bubble per lesson.</p>
+        <p className="text-sm text-ink-muted">
+          {chosenCount
+            ? 'The subjects you chose for Today appear here once you start them.'
+            : 'Courses you start appear here. Switch "Show on Today" on for the subjects you are taking, and only they bring reviews here.'}
+        </p>
       ) : (
         <ul className="flex flex-col divide-y divide-rule">
           {started.map(({ course, states, completed }) => (

@@ -21,7 +21,7 @@ import { assessmentUrl, certificationUrl, courseUrl, lessonUrl } from '@/domain/
 import { masteryKey, masteryLevel, SKILL_LABELS, SKILLS } from '@/domain/learning/mastery';
 import { useBookmark } from '@/features/practice/useBookmark';
 import { CourseLoadError } from '@/features/auth/LockedContent';
-import { StarButton } from './StarButton';
+import { ShowOnTodaySwitch } from './ShowOnTodaySwitch';
 import { groupAssessments } from '@/domain/content/pastPapers';
 
 export default function CoursePage() {
@@ -50,7 +50,6 @@ export default function CoursePage() {
         lead={data.subtitle}
         actions={
           <>
-            <StarButton courseId={data.id} courseTitle={data.title} />
             <IconButton label={bookmark.isBookmarked ? 'Remove bookmark' : 'Bookmark course'} onClick={bookmark.toggle} aria-pressed={bookmark.isBookmarked}>
               {bookmark.isBookmarked ? <BookmarkCheck className="size-4 text-print" /> : <Bookmark className="size-4" />}
             </IconButton>
@@ -71,6 +70,7 @@ export default function CoursePage() {
             {completed} / {lessons.length} lessons
           </Tag>
         </div>
+        <ShowOnTodaySwitch courseId={data.id} className="mt-4 max-w-lg" />
       </PageHeader>
 
       <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">

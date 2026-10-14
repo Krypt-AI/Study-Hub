@@ -24,7 +24,7 @@ import { ConfirmDeleteButton } from './ConfirmDeleteButton';
 import { DatesList } from './DatesList';
 import { MonthView } from './MonthView';
 import { useCalendarMutations } from './useCalendarMutations';
-import { useSubjects } from './useSubjects';
+import { subjectsFor, useSubjects } from './useSubjects';
 import { WeekView } from './WeekView';
 
 type View = 'week' | 'month' | 'dates';
@@ -59,7 +59,7 @@ export default function CalendarPage() {
   if (isLoading || terms.isLoading || !shownTerm || !classes.data || !dates.data) return <LoadingState />;
 
   const allDates = dates.data;
-  const termSubjects = subjects.filter((subject) => !subject.term || subject.term === activeTerm);
+  const termSubjects = subjectsFor(subjects, activeTerm);
   const editClass = (entry: TimetableClassRecord) => setEditing({ kind: 'class', initial: entry });
   const editDate = (entry: ImportantDateRecord) => setEditing({ kind: 'date', initial: entry });
   const addDate = (day: DayKey) => setEditing({ kind: 'date', initial: { term: activeTerm, date: day } });
@@ -91,7 +91,7 @@ export default function CalendarPage() {
           today={today}
           classes={classes.data}
           dates={allDates}
-          hasSubjects={termSubjects.length > 0}
+          hasSubjects={termSubjects.some((subject) => subject.category === 'university')}
         />
 
         <div className="flex flex-col gap-4">

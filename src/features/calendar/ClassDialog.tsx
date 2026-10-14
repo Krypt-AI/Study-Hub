@@ -9,6 +9,7 @@ import { nowIso } from '@/lib/dates';
 import { newId } from '@/lib/ids';
 import { ConfirmDeleteButton } from './ConfirmDeleteButton';
 import { useCalendarMutations } from './useCalendarMutations';
+import { SubjectSelect } from './SubjectSelect';
 import { type Subject, subjectLabel } from './useSubjects';
 
 export interface ClassDialogProps {
@@ -81,17 +82,8 @@ export function ClassDialog({ initial, subjects, onClose }: ClassDialogProps) {
     <Dialog open onClose={onClose} title={existing ? 'Edit class' : 'Add a class'}>
       <form onSubmit={(event) => void submit(event)} className="flex flex-col gap-4 p-4">
         <p className="text-sm text-ink-muted">Repeats every week of {initial.term}.</p>
-        <Field label="Subject" hint="Optional: link the class to one of your University subjects.">
-          {(props) => (
-            <Select {...props} value={draft.courseId} onChange={(event) => update({ courseId: event.target.value })}>
-              <option value="">None</option>
-              {subjects.map((entry) => (
-                <option key={entry.courseId} value={entry.courseId}>
-                  {subjectLabel(entry)}
-                </option>
-              ))}
-            </Select>
-          )}
+        <Field label="Subject" hint="Optional: link the class to the course you study for it. Today then links to it.">
+          {(props) => <SubjectSelect {...props} subjects={subjects} value={draft.courseId} onChange={(event) => update({ courseId: event.target.value })} />}
         </Field>
         <Field label="Name" error={titleError} hint={subject && !draft.title ? `Leave empty to use "${subjectLabel(subject)}".` : undefined}>
           {(props) => <Input {...props} value={draft.title} onChange={(event) => update({ title: event.target.value })} placeholder={subject ? subjectLabel(subject) : 'e.g. Statistics lab'} />}

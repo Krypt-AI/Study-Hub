@@ -16,8 +16,27 @@ test('an extra class appears on its day only, and on Today', async ({ page }) =>
   await expect(page.getByRole('region').filter({ hasText: 'CMPD363 Extra class' })).toHaveCount(1);
   await expect(weekColumn(page, todayWeekday()).getByText('CMPD363 Extra class')).toBeVisible();
 
+  // On Today, under today's classes, with a link to its subject.
   await page.goto('/');
-  await expect(page.getByRole('region', { name: 'Important dates' }).getByText('CMPD363 Extra class')).toBeVisible();
+  const today = page.getByRole('region', { name: 'Today', exact: true });
+  await expect(today.getByText('CMPD363 Extra class')).toBeVisible();
+  await today.getByRole('link', { name: 'Open Object-Oriented Programming' }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'Object-Oriented Programming' })).toBeVisible();
+});
+
+test('a class linked to a JLPT course shows on Today with a link to it', async ({ page }) => {
+  await page.goto('/calendar');
+  await page.getByRole('button', { name: 'Add class' }).click();
+  const dialog = page.getByRole('dialog', { name: 'Add a class' });
+  await dialog.getByLabel('Subject').selectOption({ label: 'JLPT N4' });
+  await dialog.getByLabel('Name').fill('Japanese class');
+  await dialog.getByLabel('Day').selectOption({ label: todayWeekday() });
+  await dialog.getByRole('button', { name: 'Add class' }).click();
+
+  await page.goto('/');
+  const today = page.getByRole('region', { name: 'Today', exact: true });
+  await expect(today.getByText('Japanese class')).toBeVisible();
+  await expect(today.getByRole('link', { name: 'Open JLPT N4' })).toBeVisible();
 });
 
 test('a semester without materials keeps its own classes, and can be removed with them', async ({ page }) => {

@@ -206,8 +206,8 @@ export interface Settings {
   reviewSessionSize: number;
   /** Target probability of recalling an item when it comes due (FSRS). */
   desiredRetention: number;
-  /** Courses the learner is taking now: Today and due reviews show only these (all courses when empty). */
-  starredCourseIds: string[];
+  /** Subjects switched to "Show on Today": Today and due reviews show only these (all subjects when empty). */
+  todayCourseIds: string[];
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -215,7 +215,7 @@ export const DEFAULT_SETTINGS: Settings = {
   dailyGoalQuestions: 20,
   reviewSessionSize: 30,
   desiredRetention: 0.9,
-  starredCourseIds: [],
+  todayCourseIds: [],
 };
 
 // Calendar ------------------------------------------------------------------------------

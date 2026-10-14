@@ -9,7 +9,8 @@ import { nowIso } from '@/lib/dates';
 import { newId } from '@/lib/ids';
 import { ConfirmDeleteButton } from './ConfirmDeleteButton';
 import { useCalendarMutations } from './useCalendarMutations';
-import { type Subject, subjectLabel } from './useSubjects';
+import { SubjectSelect } from './SubjectSelect';
+import { type Subject, subjectShortName } from './useSubjects';
 
 export interface DateDialogProps {
   /** The date to edit, or the fields to start a new one with. */
@@ -31,7 +32,7 @@ interface Draft {
 
 const isSaved = (initial: DateDialogProps['initial']): initial is ImportantDateRecord => 'id' in initial;
 
-const defaultTitle = (kind: ImportantDateKind, subject?: Subject) => defaultDateTitle(kind, subject?.code);
+const defaultTitle = (kind: ImportantDateKind, subject?: Subject) => defaultDateTitle(kind, subject && subjectShortName(subject));
 
 export function DateDialog({ initial, subjects, onClose }: DateDialogProps) {
   const existing = isSaved(initial) ? initial : undefined;
@@ -99,16 +100,7 @@ export function DateDialog({ initial, subjects, onClose }: DateDialogProps) {
             )}
           </Field>
           <Field label="Subject">
-            {(props) => (
-              <Select {...props} value={draft.courseId} onChange={(event) => update({ courseId: event.target.value })}>
-                <option value="">None</option>
-                {subjects.map((entry) => (
-                  <option key={entry.courseId} value={entry.courseId}>
-                    {subjectLabel(entry)}
-                  </option>
-                ))}
-              </Select>
-            )}
+            {(props) => <SubjectSelect {...props} subjects={subjects} value={draft.courseId} onChange={(event) => update({ courseId: event.target.value })} />}
           </Field>
         </div>
         <Field label="Name" hint={draft.title ? undefined : `Leave empty to use "${defaultTitle(draft.kind, subject)}".`}>

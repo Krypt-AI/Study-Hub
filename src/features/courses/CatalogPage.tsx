@@ -18,7 +18,6 @@ import { providerNames } from '@/features/auth/signInOptions';
 import { canOpenLockedContent, useAuth } from '@/features/auth/useAuth';
 import { AddSemesterDialog } from '@/features/semesters/AddSemesterDialog';
 import { useTerms } from '@/features/semesters/useTerms';
-import { StarButton } from './StarButton';
 import { dayKey } from '@/lib/dates';
 
 const CATEGORY_LABELS: Record<CourseCategory, string> = {
@@ -219,8 +218,7 @@ function CourseRow({ course, number, lessons }: { course: CourseSummary; number:
           {course.assessmentCount ? ` · ${course.assessmentCount} mock exam${course.assessmentCount > 1 ? 's' : ''}` : ''}
         </span>
       </div>
-      <div className="col-start-2 flex items-center gap-1 md:col-start-auto">
-        <StarButton courseId={course.id} courseTitle={course.title} />
+      <div className="col-start-2 md:col-start-auto">
         <ButtonLink to={courseUrl(course.id)} size="sm" variant={started ? 'primary' : 'secondary'} icon={<ArrowRight className="size-3.5" />}>
           {started ? 'Continue' : 'Open'}
         </ButtonLink>

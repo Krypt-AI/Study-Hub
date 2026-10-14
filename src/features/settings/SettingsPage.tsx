@@ -21,6 +21,7 @@ import { useRepository } from '@/data/useRepository';
 import { useCatalog } from '@/domain/content/load';
 import { AccountSheet } from '@/features/auth/AccountSheet';
 import { LearnersSheet } from '@/features/learners/LearnersSheet';
+import { TodaySubjectsSheet } from './TodaySubjectsSheet';
 import { useAuth } from '@/features/auth/useAuth';
 import { dayKey, formatDate } from '@/lib/dates';
 import { downloadText } from '@/lib/download';
@@ -34,6 +35,7 @@ export default function SettingsPage() {
       <PageHeader title="Settings" />
       <div className="grid items-start gap-6 lg:grid-cols-2">
         <div className="flex min-w-0 flex-col gap-6">
+          <TodaySubjectsSheet />
           <AppearanceSheet />
           <GoalsSheet key={JSON.stringify(settings.data)} settings={settings.data} />
           <ShortcutsSheet />

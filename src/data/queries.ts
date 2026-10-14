@@ -4,7 +4,7 @@
  */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useMemo } from 'react';
-import { inFocus, toggleStar } from '@/domain/learning/focus';
+import { inFocus, setOnToday } from '@/domain/learning/focus';
 import { type AnswerContext, correctLatestAnswer, recordAnswer, type RecordedAnswer } from '@/domain/learning/recordAnswer';
 import type { ActivityDelta, Settings } from './records';
 import type { AttemptQuery } from './repository';
@@ -55,23 +55,23 @@ export function useReviewStates() {
   return useQuery({ queryKey: learnerKeys.reviewStates, queryFn: () => repository.listReviewStates() });
 }
 
-/** Review states of the starred courses (all courses when none is starred): what due counts and due reviews use. */
+/** Review states of the subjects on Today (all subjects when none is chosen): what due counts and due reviews use. */
 export function useFocusReviewStates() {
   const reviews = useReviewStates();
   const settings = useSettings();
-  const data = useMemo(() => (reviews.data && settings.data ? inFocus(reviews.data, settings.data.starredCourseIds) : undefined), [reviews.data, settings.data]);
+  const data = useMemo(() => (reviews.data && settings.data ? inFocus(reviews.data, settings.data.todayCourseIds) : undefined), [reviews.data, settings.data]);
   return { data, error: reviews.error ?? settings.error };
 }
 
-/** Stars or unstars a course for the current learner. */
-export function useToggleStar() {
+/** Switches "Show on Today" on or off for a subject, for the current learner. */
+export function useSetOnToday() {
   const repository = useRepository();
   const client = useQueryClient();
   return useMutation({
-    // Read-modify-write on the stored settings, so a star never overwrites another change.
-    mutationFn: async (courseId: string) => {
+    // Read-modify-write on the stored settings, so this never overwrites another change.
+    mutationFn: async ({ courseId, on }: { courseId: string; on: boolean }) => {
       const settings = await repository.getSettings();
-      await repository.saveSettings({ ...settings, starredCourseIds: toggleStar(settings.starredCourseIds, courseId) });
+      await repository.saveSettings({ ...settings, todayCourseIds: setOnToday(settings.todayCourseIds, courseId, on) });
     },
     onSuccess: () => client.invalidateQueries({ queryKey: learnerKeys.settings }),
   });
