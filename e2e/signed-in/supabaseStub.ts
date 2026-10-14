@@ -64,6 +64,8 @@ function accountOf(authorization: string | undefined, accounts: StubAccount[]): 
 }
 
 const MAIN_LEARNER = { id: 'main', name: 'Learner 1', createdAt: '2026-10-01T00:00:00.000Z', updatedAt: '2026-10-01T00:00:00.000Z' };
+/** Accounts have answered the Welcome page unless their rows say otherwise: writes are not kept, so it could not be answered here. */
+const ANSWERED_SETTINGS = { profile: { age: 20, level: 'university' } };
 
 /** Answers auth and REST requests: each account sees only its own rows; every write is accepted. */
 async function answerSupabase(route: Route, accounts: StubAccount[]): Promise<void> {
@@ -79,7 +81,7 @@ async function answerSupabase(route: Route, accounts: StubAccount[]): Promise<vo
   if (pathname.startsWith('/rest/v1/')) {
     if (request.method() !== 'GET' && request.method() !== 'HEAD') return json(201, []);
     const table = pathname.slice('/rest/v1/'.length);
-    const records = table === 'learners' ? [MAIN_LEARNER] : (account?.rows?.[table] ?? []);
+    const records = table === 'learners' ? [MAIN_LEARNER] : (account?.rows?.[table] ?? (table === 'settings' ? [ANSWERED_SETTINGS] : []));
     return route.fulfill({ status: 200, contentType: 'application/json', headers: { 'content-range': `*/${records.length}` }, body: JSON.stringify(records.map((record) => ({ record }))) });
   }
   return json(404, { message: `No stub for ${pathname}` });

@@ -8,11 +8,14 @@
  *    guest database, and tests that reload to check saved progress depend on local mode.
  *  - "signed-in" (e2e/signed-in): Supabase pointed at a stub origin that the tests answer in the
  *    browser (supabaseStub.ts), for guests and a stubbed signed-in session.
+ * Each project starts from the storage global setup saved after answering the Welcome page
+ * (e2e/warmUp.ts); tests of the Welcome page itself start empty.
  * Servers are never reused, so the tests cannot silently run against another server (e.g. an
  * old `vite preview` build).
  */
 import { defineConfig } from '@playwright/test';
 import { STUB_SUPABASE_URL } from './e2e/signed-in/supabaseStub';
+import { storageStatePath } from './e2e/warmUp';
 
 /** Not 4173, the default `vite preview` port. */
 const LOCAL_PORT = 4199;
@@ -45,8 +48,8 @@ export default defineConfig({
     trace: 'retain-on-failure',
   },
   projects: [
-    { name: 'local', testIgnore: 'signed-in/**', use: { baseURL: `http://localhost:${LOCAL_PORT}` } },
-    { name: 'signed-in', testMatch: 'signed-in/**/*.spec.ts', use: { baseURL: `http://localhost:${SIGNED_IN_PORT}` } },
+    { name: 'local', testIgnore: 'signed-in/**', use: { baseURL: `http://localhost:${LOCAL_PORT}`, storageState: storageStatePath('local') } },
+    { name: 'signed-in', testMatch: 'signed-in/**/*.spec.ts', use: { baseURL: `http://localhost:${SIGNED_IN_PORT}`, storageState: storageStatePath('signed-in') } },
   ],
   webServer: [
     // Empty values select local mode.

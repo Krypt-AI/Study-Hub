@@ -2,6 +2,7 @@
 import { addImportantDate, openImportantDates } from './calendarSteps';
 import { addDaysTo, todayKey } from './dates';
 import { expect, test } from './fixtures';
+import { answerWelcome } from './welcomeSteps';
 
 test('learners on one device keep their data apart', async ({ page }) => {
   await openImportantDates(page);
@@ -13,6 +14,8 @@ test('learners on one device keep their data apart', async ({ page }) => {
   await page.getByRole('button', { name: /Switch learner/u }).click();
   await page.getByLabel('New learner’s name').fill('Adam');
   await page.getByRole('button', { name: 'Add learner' }).click();
+  // A new learner answers the Welcome questions for themselves.
+  await answerWelcome(page, { age: '10' });
   await expect(page.getByRole('button', { name: 'Adam · Switch learner' })).toBeVisible();
 
   await openImportantDates(page);

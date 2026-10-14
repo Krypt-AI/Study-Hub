@@ -10,7 +10,7 @@ describe('backups', () => {
     await source.saveTimetableClass({ id: 'c1', term: 'Sem 1 2026', title: 'CMPD333 lecture', kind: 'lecture', weekday: 2, start: '08:00', end: '10:00', createdAt: 'a', updatedAt: 'a' });
     await source.saveImportantDate({ id: 'd1', title: 'CMPD363 midterm', kind: 'midterm', date: '2026-11-18', createdAt: 'a', updatedAt: 'a' });
     await source.recordActivity('2026-10-11', { minutes: 3 });
-    await source.saveSettings({ dailyGoalMinutes: 45, dailyGoalQuestions: 10, reviewSessionSize: 25, desiredRetention: 0.85, todayCourseIds: ['cmpd363'] });
+    await source.saveSettings({ dailyGoalMinutes: 45, dailyGoalQuestions: 10, reviewSessionSize: 25, desiredRetention: 0.85, todayCourseIds: ['cmpd363'], profile: { age: 14, level: 'secondary', year: 2 } });
     await source.saveExamDraft({ id: 'jlpt-n5/mock', courseId: 'jlpt-n5', assessmentId: 'mock', sectionIndex: 1, startedAt: 1, timesMs: [600], timed: true, answers: { q1: { type: 'choice', selected: ['a'] } }, updatedAt: 'a' });
 
     const backup = parseBackup(JSON.stringify(await source.exportAll()));
@@ -23,6 +23,7 @@ describe('backups', () => {
     expect((await target.listActivityDays()).map((day) => day.minutes)).toEqual([3]);
     expect((await target.getSettings()).dailyGoalMinutes).toBe(45);
     expect((await target.getSettings()).todayCourseIds).toEqual(['cmpd363']);
+    expect((await target.getSettings()).profile).toEqual({ age: 14, level: 'secondary', year: 2 });
     expect((await target.getExamDraft('jlpt-n5/mock'))?.sectionIndex).toBe(1);
     source.close();
     target.close();
@@ -47,6 +48,12 @@ describe('backups', () => {
 
     const backup = parseBackup(JSON.stringify({ format: 'study-hub-backup', version: 2, exportedAt: 'a', ...empty, semesters: [], timetableClasses: [legacy('o', 'other')], importantDates: [] }));
     expect(backup.timetableClasses.map((entry) => entry.kind)).toEqual(['lecture']);
+  });
+
+  it('keeps a valid profile from a backup and drops one that is not valid', () => {
+    const withProfile = (profile: unknown) => parseBackup(JSON.stringify({ format: 'study-hub-backup', version: 1, exportedAt: 'a', ...empty, settings: { dailyGoalMinutes: 20, profile } })).settings;
+    expect(withProfile({ age: 9, level: 'elementary', year: 3 })).toEqual({ dailyGoalMinutes: 20, profile: { age: 9, level: 'elementary', year: 3 } });
+    expect(withProfile({ age: 'nine', level: 'elementary' })).toEqual({ dailyGoalMinutes: 20 });
   });
 
   it('imports version 2 backups, keeping their calendar', () => {

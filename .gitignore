@@ -37,3 +37,5 @@ content/private/
 
 # Supabase CLI state (project link, versions)
 supabase/.temp/
+# Browser storage saved by the e2e global setup
+e2e/.state/

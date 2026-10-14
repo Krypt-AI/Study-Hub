@@ -1,5 +1,6 @@
 /** Reading backup files: the format is checked before anything is imported. */
 import { z } from 'zod';
+import { parseProfile } from '@/domain/profile/profile';
 import { dayKey } from '@/lib/dates';
 import { type BackupFile, normalizeTimetableClass } from './records';
 
@@ -43,7 +44,14 @@ export function parseBackup(text: string): BackupFile {
   // Older versions lack the calendar (version 1) and unfinished exam sittings (versions 1 and 2).
   const backup = { semesters: [], timetableClasses: [], importantDates: [], examDrafts: [], ...result.data, version: 3 as const } as unknown as BackupFile;
   // Records were written by Study Hub's own export; their inner shape is trusted from there, brought up to current kinds.
-  return { ...backup, timetableClasses: backup.timetableClasses.map(normalizeTimetableClass) };
+  return { ...backup, settings: withValidProfile(backup.settings), timetableClasses: backup.timetableClasses.map(normalizeTimetableClass) };
+}
+
+/** A profile that does not read as one is dropped, so the Welcome page asks for it again. */
+function withValidProfile(settings: BackupFile['settings']): BackupFile['settings'] {
+  const { profile, ...rest } = settings;
+  const valid = parseProfile(profile);
+  return valid ? { ...rest, profile: valid } : rest;
 }
 
 export const backupFileName = (date = new Date()) => `study-hub-backup-${dayKey(date)}.json`;

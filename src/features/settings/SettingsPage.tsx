@@ -21,6 +21,7 @@ import { useRepository } from '@/data/useRepository';
 import { useCatalog } from '@/domain/content/load';
 import { AccountSheet } from '@/features/auth/AccountSheet';
 import { LearnersSheet } from '@/features/learners/LearnersSheet';
+import { AboutYouSheet } from '@/features/profile/AboutYouSheet';
 import { TodaySubjectsSheet } from './TodaySubjectsSheet';
 import { useAuth } from '@/features/auth/useAuth';
 import { dayKey, formatDate } from '@/lib/dates';
@@ -35,6 +36,7 @@ export default function SettingsPage() {
       <PageHeader title="Settings" />
       <div className="grid items-start gap-6 lg:grid-cols-2">
         <div className="flex min-w-0 flex-col gap-6">
+          <AboutYouSheet key={JSON.stringify(settings.data.profile)} settings={settings.data} />
           <TodaySubjectsSheet />
           <AppearanceSheet />
           <GoalsSheet key={JSON.stringify(settings.data)} settings={settings.data} />
@@ -84,7 +86,7 @@ function GoalsSheet({ settings }: { settings: Settings }) {
   const toast = useToast();
   const [draft, setDraft] = useState(settings);
   const dirty = JSON.stringify(draft) !== JSON.stringify(settings);
-  const number = (key: keyof Settings, min: number, max: number) => ({
+  const number = (key: 'dailyGoalMinutes' | 'dailyGoalQuestions' | 'reviewSessionSize', min: number, max: number) => ({
     type: 'number' as const,
     min,
     max,

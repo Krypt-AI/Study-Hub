@@ -4,6 +4,7 @@
  */
 import type { CodeLanguage, CodeTest, QuestionType, Skill } from '@/domain/content/types';
 import type { Response, Verdict } from '@/domain/evaluation/types';
+import type { LearnerProfile } from '@/domain/profile/profile';
 
 /** ISO-8601 timestamp, e.g. "2026-10-11T09:30:00.000Z". */
 export type Timestamp = string;
@@ -208,6 +209,8 @@ export interface Settings {
   desiredRetention: number;
   /** Subjects switched to "Show on Today": Today and due reviews show only these (all subjects when empty). */
   todayCourseIds: string[];
+  /** Age and school level from the Welcome page; absent until it is answered. */
+  profile?: LearnerProfile;
 }
 
 export const DEFAULT_SETTINGS: Settings = {

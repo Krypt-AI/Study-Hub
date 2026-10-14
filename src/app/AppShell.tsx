@@ -21,13 +21,14 @@ import { lazy, type ReactNode, Suspense, useEffect, useState } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router';
 import { IconButton } from '@/components/ui/Button';
 import { Kbd, LoadingState } from '@/components/ui/Feedback';
-import { useFocusReviewStates } from '@/data/queries';
+import { useFocusReviewStates, useSettings } from '@/data/queries';
 import { isDue } from '@/domain/learning/due';
 import { AccountRailItem } from '@/features/auth/AccountRailItem';
 import { BringDeviceProgress } from '@/features/learners/BringDeviceProgress';
 import { cn } from '@/lib/cn';
 import { useStudyTimer } from '@/features/today/useStudyTimer';
 import { usePlaygroundInRail } from '@/features/playground/usePlaygroundInRail';
+import { WelcomePage } from '@/features/profile/WelcomePage';
 import { useTheme } from './useTheme';
 
 // Search loads its index library only when first opened.
@@ -125,7 +126,15 @@ function Rail({ onNavigate, onSearch }: { onNavigate?: () => void; onSearch: () 
   );
 }
 
+/** A learner without a profile answers the Welcome page first, whichever page they opened. */
 export function AppShell() {
+  const settings = useSettings();
+  if (settings.isPending) return <LoadingState className="min-h-dvh justify-center" />;
+  if (settings.data && !settings.data.profile) return <WelcomePage settings={settings.data} />;
+  return <AppFrame />;
+}
+
+function AppFrame() {
   const location = useLocation();
   // The drawer belongs to the page it was opened on: navigating anywhere closes it.
   const [drawerPath, setDrawerPath] = useState<string>();
