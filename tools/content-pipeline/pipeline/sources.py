@@ -197,9 +197,12 @@ SOURCES: list[Source] = [
 ]
 
 # Shin Kanzen Master books, added one book at a time as each is imported.
-SOURCES.append(
+SOURCES.extend([
     Source("skm-n4-bunpou", "新完全マスター文法 N4", "JLPT/Shin Kanzen/Shin Kanzen Master N4/Shin_Kanzen_Master_N4.pdf", "ja", "N4", "shin-kanzen", 4),
-)
+    Source("skm-n3-bunpou", "新完全マスター文法 N3", "JLPT/Shin Kanzen/Shin Kanzen Master N3/Shin_Kanzen_Master_N3-Bunpou.pdf", "ja", "N3", "shin-kanzen", 4),
+    Source("skm-n3-goi", "新完全マスター語彙 N3", "JLPT/Shin Kanzen/Shin Kanzen Master N3/SHIN KANZEN MASTER N3 GOI.pdf", "ja", "N3", "shin-kanzen", 4),
+    Source("skm-n3-dokkai", "新完全マスター読解 N3", "JLPT/Shin Kanzen/Shin Kanzen Master N3/Shin-Kanzen-Master-N3-Dokkai.pdf", "ja", "N3", "shin-kanzen", 4),
+])
 
 SOURCES_BY_ID: dict[str, Source] = {source.id: source for source in SOURCES}
 

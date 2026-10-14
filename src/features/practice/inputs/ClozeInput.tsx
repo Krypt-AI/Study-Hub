@@ -29,7 +29,7 @@ function renderText(text: string, key: string): ReactNode {
 export function ClozeInput({ question, values, onChange, onSubmit, parts, disabled = false }: ClozeInputProps) {
   const segments = question.text.split(/\[\[([^\]]+)\]\]/u);
   return (
-    <p className="text-lg leading-[2.4]" lang={question.language === 'zh' ? 'zh-CN' : question.language}>
+    <p className="whitespace-pre-line text-lg leading-[2.4]" lang={question.language === 'zh' ? 'zh-CN' : question.language}>
       {segments.map((segment, index) => {
         if (index % 2 === 0) return <Fragment key={index}>{renderText(segment, String(index))}</Fragment>;
         const blankIndex = question.blanks.findIndex((blank) => blank.id === segment);
