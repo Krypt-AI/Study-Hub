@@ -3,6 +3,8 @@
  * mutation invalidates exactly the caches its write can affect.
  */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMemo } from 'react';
+import { inFocus, toggleStar } from '@/domain/learning/focus';
 import { type AnswerContext, correctLatestAnswer, recordAnswer, type RecordedAnswer } from '@/domain/learning/recordAnswer';
 import type { ActivityDelta, Settings } from './records';
 import type { AttemptQuery } from './repository';
@@ -51,6 +53,28 @@ export function useLessonProgress(courseId?: string) {
 export function useReviewStates() {
   const repository = useRepository();
   return useQuery({ queryKey: learnerKeys.reviewStates, queryFn: () => repository.listReviewStates() });
+}
+
+/** Review states of the starred courses (all courses when none is starred): what due counts and due reviews use. */
+export function useFocusReviewStates() {
+  const reviews = useReviewStates();
+  const settings = useSettings();
+  const data = useMemo(() => (reviews.data && settings.data ? inFocus(reviews.data, settings.data.starredCourseIds) : undefined), [reviews.data, settings.data]);
+  return { data, error: reviews.error ?? settings.error };
+}
+
+/** Stars or unstars a course for the current learner. */
+export function useToggleStar() {
+  const repository = useRepository();
+  const client = useQueryClient();
+  return useMutation({
+    // Read-modify-write on the stored settings, so a star never overwrites another change.
+    mutationFn: async (courseId: string) => {
+      const settings = await repository.getSettings();
+      await repository.saveSettings({ ...settings, starredCourseIds: toggleStar(settings.starredCourseIds, courseId) });
+    },
+    onSuccess: () => client.invalidateQueries({ queryKey: learnerKeys.settings }),
+  });
 }
 
 export function useTopicMastery() {

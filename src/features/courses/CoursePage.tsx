@@ -21,6 +21,7 @@ import { assessmentUrl, certificationUrl, courseUrl, lessonUrl } from '@/domain/
 import { masteryKey, masteryLevel, SKILL_LABELS, SKILLS } from '@/domain/learning/mastery';
 import { useBookmark } from '@/features/practice/useBookmark';
 import { CourseLoadError } from '@/features/auth/LockedContent';
+import { StarButton } from './StarButton';
 
 export default function CoursePage() {
   const { courseId = '' } = useParams();
@@ -47,6 +48,7 @@ export default function CoursePage() {
         lead={data.subtitle}
         actions={
           <>
+            <StarButton courseId={data.id} courseTitle={data.title} />
             <IconButton label={bookmark.isBookmarked ? 'Remove bookmark' : 'Bookmark course'} onClick={bookmark.toggle} aria-pressed={bookmark.isBookmarked}>
               {bookmark.isBookmarked ? <BookmarkCheck className="size-4 text-print" /> : <Bookmark className="size-4" />}
             </IconButton>

@@ -1,8 +1,9 @@
 /**
  * Today: the session's answer sheet. What is due, where you stopped, how much of the
- * goal is filled, and which topics need practice.
+ * goal is filled, and which topics need practice. When courses are starred, only their
+ * work shows here (domain/learning/focus.ts).
  */
-import { ArrowRight, Play } from 'lucide-react';
+import { ArrowRight, Play, Star } from 'lucide-react';
 import { useMemo } from 'react';
 import { Link } from 'react-router';
 import { Bubble, type BubbleState, BubbleStrip } from '@/components/ui/Bubble';
@@ -11,8 +12,8 @@ import { ErrorState, LoadingState } from '@/components/ui/Feedback';
 import { Sheet } from '@/components/ui/Sheet';
 import {
   useActivityDays,
+  useFocusReviewStates,
   useLessonProgress,
-  useReviewStates,
   useSettings,
   useTopicMastery,
 } from '@/data/queries';
@@ -21,6 +22,7 @@ import { useCatalog, useCourse } from '@/domain/content/load';
 import { findLesson } from '@/domain/content/navigation';
 import type { Catalog, CourseSummary } from '@/domain/content/types';
 import { courseUrl, lessonUrl } from '@/domain/content/urls';
+import { inFocus } from '@/domain/learning/focus';
 import { SKILL_LABELS } from '@/domain/learning/mastery';
 import { ComingUpSheet } from '@/features/calendar/ComingUpSheet';
 import { LearnerSwitcher } from '@/features/learners/LearnerSwitcher';
@@ -34,24 +36,26 @@ export default function TodayPage() {
   const catalog = useCatalog();
   const settings = useSettings();
   const progress = useLessonProgress();
-  const reviews = useReviewStates();
+  const reviews = useFocusReviewStates();
   const mastery = useTopicMastery();
   const activity = useActivityDays(addDays(dayKey(), -400));
 
+  const starred = settings.data?.starredCourseIds;
+  const focusedProgress = useMemo(() => (progress.data && starred ? inFocus(progress.data, starred) : undefined), [progress.data, starred]);
   const model = useMemo(() => {
-    if (!catalog.data || !settings.data || !progress.data || !reviews.data || !mastery.data || !activity.data) return undefined;
+    if (!catalog.data || !settings.data || !focusedProgress || !reviews.data || !mastery.data || !activity.data) return undefined;
     return computeTodayModel({
       catalog: catalog.data,
       settings: settings.data,
-      progress: progress.data,
+      progress: focusedProgress,
       reviews: reviews.data,
-      mastery: mastery.data,
+      mastery: inFocus(mastery.data, settings.data.starredCourseIds),
       activity: activity.data,
     });
-  }, [catalog.data, settings.data, progress.data, reviews.data, mastery.data, activity.data]);
+  }, [catalog.data, settings.data, focusedProgress, reviews.data, mastery.data, activity.data]);
 
   if (catalog.error) return <ErrorState title="Course content is not built yet" error={catalog.error} onRetry={() => void catalog.refetch()} />;
-  if (!model || !catalog.data) return <LoadingState />;
+  if (!model || !catalog.data || !starred) return <LoadingState />;
 
   const today = new Date();
   return (
@@ -78,8 +82,9 @@ export default function TodayPage() {
 
       <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
         <div className="flex min-w-0 flex-col gap-6">
-          {model.resume ? <ResumeSheet resume={model.resume} /> : <StartHere catalog={catalog.data} />}
-          <CourseProgressSheet catalog={catalog.data} progress={progress.data ?? []} />
+          <FocusNote starredCount={starred.length} />
+          {model.resume ? <ResumeSheet resume={model.resume} /> : <StartHere catalog={catalog.data} starred={starred} />}
+          <CourseProgressSheet catalog={catalog.data} progress={focusedProgress ?? []} />
         </div>
         <div className="flex min-w-0 flex-col gap-6">
           <ComingUpSheet />
@@ -150,10 +155,36 @@ function ResumeSheet({ resume }: { resume: ResumeTarget }) {
   );
 }
 
+/** What Today is showing: the starred courses, or every course with a tip to star some. */
+function FocusNote({ starredCount }: { starredCount: number }) {
+  return (
+    <p className="flex items-center gap-2 text-sm text-ink-muted">
+      <Star className={starredCount ? 'size-4 fill-current text-print' : 'size-4'} aria-hidden />
+      {starredCount ? (
+        <span>
+          Showing your {starredCount} starred course{starredCount === 1 ? '' : 's'}. Other courses wait quietly until you open them.{' '}
+          <Link to="/courses" className="text-print-strong hover:underline">
+            Change stars
+          </Link>
+        </span>
+      ) : (
+        <span>
+          Tip: star the courses you are taking on the{' '}
+          <Link to="/courses" className="text-print-strong hover:underline">
+            Courses
+          </Link>{' '}
+          page, and Today will show only those.
+        </span>
+      )}
+    </p>
+  );
+}
+
 const STARTING_POINTS = ['hsk-1', 'jlpt-n5', 'shin500-n4n5', 'ai-01-python', 'it-sql'];
 
-function StartHere({ catalog }: { catalog: Catalog }) {
-  const starts = STARTING_POINTS.map((id) => catalog.courses.find((course) => course.id === id)).filter((course): course is CourseSummary => Boolean(course));
+function StartHere({ catalog, starred }: { catalog: Catalog; starred: string[] }) {
+  const ids = starred.length ? starred : STARTING_POINTS;
+  const starts = ids.map((id) => catalog.courses.find((course) => course.id === id)).filter((course): course is CourseSummary => Boolean(course));
   return (
     <Sheet title="Start here">
       <p className="mb-4 max-w-[60ch] text-ink-muted">

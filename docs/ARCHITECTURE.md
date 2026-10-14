@@ -44,6 +44,7 @@ Each question type has a rule-based judge that returns a verdict (`correct`, `al
 - **Spaced repetition**: FSRS (ts-fsrs) with configurable target recall. Only the first attempt at a question in a session moves its schedule; retries are free practice. Hints and revealed answers lower the rating.
 - **Mastery**: an exponential moving average per topic and skill (recognise, recall, explain, apply), with levels new, learning, weak and mastered. "Practise my weaknesses" picks the weakest topic-skill pairs and orders their questions: weak skill first, then recently failed, unanswered, and longest since answered.
 - **Activity**: active minutes (visible tab, recent interaction), answers and completions per day; streaks and a daily goal (minutes or questions, whichever is met first).
+- **Starred courses** (`focus.ts`): the learner stars the courses they are taking now (`starredCourseIds` in their settings). Once any course is starred, Today (resume, your courses, due reviews, weakest topics), the rail's due count, the Practice hub's due counts and the due-review session cover only starred courses, so other courses add no pressure; their lessons still work when opened. With nothing starred, every course counts, and Today suggests starring.
 
 ## Code execution (`workers/`)
 

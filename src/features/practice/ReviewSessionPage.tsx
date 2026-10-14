@@ -10,7 +10,7 @@ import { BubbleStrip } from '@/components/ui/Bubble';
 import { Button, ButtonLink } from '@/components/ui/Button';
 import { EmptyState, ErrorState, LoadingState } from '@/components/ui/Feedback';
 import { PageHeader, Sheet } from '@/components/ui/Sheet';
-import { useAttempts, useBookmarks, useLessonProgress, useReviewStates, useSettings, useTopicMastery } from '@/data/queries';
+import { useAttempts, useBookmarks, useFocusReviewStates, useLessonProgress, useSettings, useTopicMastery } from '@/data/queries';
 import { contentLanguage } from '@/domain/content/language';
 import { useCatalog, useCourses } from '@/domain/content/load';
 import { findLesson, topicTitle } from '@/domain/content/navigation';
@@ -41,7 +41,7 @@ interface SessionProps {
 function PracticeLoader({ mode, params, onRestart }: SessionProps) {
   const catalog = useCatalog();
   const settings = useSettings();
-  const reviews = useReviewStates();
+  const reviews = useFocusReviewStates();
   const mastery = useTopicMastery();
   const attempts = useAttempts(RECENT_ATTEMPTS);
   const bookmarks = useBookmarks();

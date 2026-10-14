@@ -31,22 +31,22 @@ test('a semester without materials keeps its own classes, and can be removed wit
   await dialog.getByRole('button', { name: 'Add semester' }).click();
   await expect(dialog).toBeHidden();
 
-  await expect(page.getByLabel('Semester', { exact: true })).toHaveValue('Sem 3 2030');
+  await expect(page.getByRole('combobox', { name: 'Semester' })).toHaveValue('Sem 3 2030');
   await expect(page.getByText('No materials for this semester yet', { exact: false })).toBeVisible();
   await addClass(page, { name: 'Robotics lecture', type: 'Lecture', weekday: todayWeekday() });
   await expect(weekColumn(page, todayWeekday()).getByText('Robotics lecture')).toBeVisible();
 
   // The class belongs to that semester only.
-  await page.getByLabel('Semester', { exact: true }).selectOption('Sem 1 2026');
+  await page.getByRole('combobox', { name: 'Semester' }).selectOption('Sem 1 2026');
   await expect(page.getByText('Robotics lecture')).toHaveCount(0);
 
   // Semesters from the catalog cannot be removed; one the learner added can.
   await expect(page.getByRole('button', { name: 'Remove semester' })).toHaveCount(0);
-  await page.getByLabel('Semester', { exact: true }).selectOption('Sem 3 2030');
+  await page.getByRole('combobox', { name: 'Semester' }).selectOption('Sem 3 2030');
   await page.getByRole('button', { name: 'Remove semester' }).click();
   await expect(page.getByText('Remove Sem 3 2030 with its 1 class and 0 dates?')).toBeVisible();
   await page.getByRole('group', { name: /Remove Sem 3 2030/u }).getByRole('button', { name: 'Remove semester' }).click();
-  await expect(page.getByLabel('Semester', { exact: true }).locator('option', { hasText: 'Sem 3 2030' })).toHaveCount(0);
+  await expect(page.getByRole('combobox', { name: 'Semester' }).locator('option', { hasText: 'Sem 3 2030' })).toHaveCount(0);
 
   // It is also gone from the University area of the catalog.
   await page.goto('/courses');

@@ -22,7 +22,7 @@ import { NavLink, Outlet, useLocation } from 'react-router';
 import { Bubble } from '@/components/ui/Bubble';
 import { IconButton } from '@/components/ui/Button';
 import { Kbd, LoadingState } from '@/components/ui/Feedback';
-import { useReviewStates } from '@/data/queries';
+import { useFocusReviewStates } from '@/data/queries';
 import { isDue } from '@/domain/learning/due';
 import { AccountRailItem } from '@/features/auth/AccountRailItem';
 import { BringDeviceProgress } from '@/features/learners/BringDeviceProgress';
@@ -50,7 +50,8 @@ const NAV: NavItem[] = [
 ];
 
 function DueCount() {
-  const { data: states = [] } = useReviewStates();
+  // Only starred courses count (all when none is starred): other courses never add pressure.
+  const { data: states = [] } = useFocusReviewStates();
   const due = states.filter((state) => isDue(state)).length;
   if (!due) return null;
   return (

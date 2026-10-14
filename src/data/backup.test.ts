@@ -10,7 +10,7 @@ describe('backups', () => {
     await source.saveTimetableClass({ id: 'c1', term: 'Sem 1 2026', title: 'CMPD333 lecture', kind: 'lecture', weekday: 2, start: '08:00', end: '10:00', createdAt: 'a', updatedAt: 'a' });
     await source.saveImportantDate({ id: 'd1', title: 'CMPD363 midterm', kind: 'midterm', date: '2026-11-18', createdAt: 'a', updatedAt: 'a' });
     await source.recordActivity('2026-10-11', { minutes: 3 });
-    await source.saveSettings({ dailyGoalMinutes: 45, dailyGoalQuestions: 10, reviewSessionSize: 25, desiredRetention: 0.85 });
+    await source.saveSettings({ dailyGoalMinutes: 45, dailyGoalQuestions: 10, reviewSessionSize: 25, desiredRetention: 0.85, starredCourseIds: ['cmpd363'] });
     await source.saveExamDraft({ id: 'jlpt-n5/mock', courseId: 'jlpt-n5', assessmentId: 'mock', sectionIndex: 1, startedAt: 1, timesMs: [600], timed: true, answers: { q1: { type: 'choice', selected: ['a'] } }, updatedAt: 'a' });
 
     const backup = parseBackup(JSON.stringify(await source.exportAll()));
@@ -22,6 +22,7 @@ describe('backups', () => {
     expect((await target.listImportantDates()).map((entry) => entry.kind)).toEqual(['midterm']);
     expect((await target.listActivityDays()).map((day) => day.minutes)).toEqual([3]);
     expect((await target.getSettings()).dailyGoalMinutes).toBe(45);
+    expect((await target.getSettings()).starredCourseIds).toEqual(['cmpd363']);
     expect((await target.getExamDraft('jlpt-n5/mock'))?.sectionIndex).toBe(1);
     source.close();
     target.close();

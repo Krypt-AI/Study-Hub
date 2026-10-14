@@ -8,10 +8,10 @@ Last updated 2026-10-14.
 |---|---|
 | `npm run typecheck` | passes (app, workers, node scripts, tests) |
 | `npm run lint` | no problems |
-| `npm test` | 157 tests in 23 files pass, including the RLS, table-privilege and learner tests on PGlite (for projects created before and after Supabase's 30 May 2026 change) |
+| `npm test` | 160 tests in 24 files pass, including the RLS, table-privilege and learner tests on PGlite (for projects created before and after Supabase's 30 May 2026 change) |
 | `npm run content:build` | 23 courses, 25,471 lesson questions, 33 certifications, 1 roadmap |
 | `npm run content:verify` | 49 exercises (Python and SQL): every reference solution passes. 20 have no runnable solution (Java, which is self-marked; the Java in CMPD363 was compiled and run with JDK 25 by hand) |
-| `npm run test:e2e` | 37 tests pass in Chrome: 32 in local mode, including real Python (Pyodide), JavaScript and SQL runs, two learners on one device, a weekly lab, an extra class on its day only, and a semester added without materials, and 5 against a stubbed Supabase (a guest is asked to sign in for a locked course; a signed-in learner opens it; a guest's class and date survive a reload; signing out and into another account shows nothing of the first; the device's progress is brought into an empty account once) |
+| `npm run test:e2e` | 38 tests pass in Chrome: 33 in local mode, including real Python (Pyodide), JavaScript and SQL runs, two learners on one device, a weekly lab, an extra class on its day only, a semester added without materials, and starring a course, and 5 against a stubbed Supabase (a guest is asked to sign in for a locked course; a signed-in learner opens it; a guest's class and date survive a reload; signing out and into another account shows nothing of the first; the device's progress is brought into an empty account once) |
 | `npm run build` | production build succeeds |
 
 ## Done
@@ -33,6 +33,7 @@ Last updated 2026-10-14.
   | CMPD363 Object-Oriented Programming | 12 | 138 | the 2025/2026 midterms and the Chapter 1–8 slides; both midterms as timed mock exams with worked answers |
 
   Every exercise with a runnable solution passes `content:verify`. Each course's `contentNotice` lists the slide errors its notes correct. Rendered but not yet used by a course: the CMPD2123 past paper (the CMPD383 2023/24 Semester 1 paper) and SDG 13 assignment, and the CMPD333 group assignment 2 (see "Waiting for a decision").
+- **Starred courses**: star the courses you are taking (catalog rows and the course page); Today, the due count and due reviews then show only those, and other courses wait quietly. With nothing starred, everything counts as before.
 - **Learners**: several learners per device and per account (siblings on one computer), each with their own progress, calendar, settings and unfinished exam sittings; "Switch learner" on Today, rename and remove in Settings. Guests keep their progress on the device (it survives reloads); after the first sign-in, a device with progress can bring every learner into an empty account, once. Unfinished mock-exam sittings are saved with the learner's data, so they sync to the account.
 - **Calendar** (optional; replaced the notebook): weekly timetable per semester (lectures and labs) with teaching-week numbers and clash warnings, and important dates (quiz, test, midterm, final, assignment, extra or make-up class) in week, month and list views; the next 21 days show on Today. Learners can add a semester that has no materials yet (Calendar or the catalog), with optional dates, and remove one they added together with its classes and dates. Works for guests, signed-in learners and local mode. Notes from the old notebook stay in the browser until downloaded or deleted in Settings.
 - **Playground, certifications, settings, backups** (backup format version 2 adds the calendar; version 1 files still import), light and dark themes, keyboard use, mobile layout.

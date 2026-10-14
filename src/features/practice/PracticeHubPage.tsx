@@ -9,7 +9,7 @@ import { Bubble } from '@/components/ui/Bubble';
 import { ButtonLink } from '@/components/ui/Button';
 import { ErrorState, LoadingState, Tag } from '@/components/ui/Feedback';
 import { PageHeader, Sheet } from '@/components/ui/Sheet';
-import { useAttempts, useBookmarks, useReviewStates, useTopicMastery } from '@/data/queries';
+import { useAttempts, useBookmarks, useFocusReviewStates, useTopicMastery } from '@/data/queries';
 import type { AttemptRecord, BookmarkRecord, ReviewStateRecord, TopicMasteryRecord } from '@/data/records';
 import { useCatalog } from '@/domain/content/load';
 import type { Catalog, CourseSummary } from '@/domain/content/types';
@@ -23,7 +23,7 @@ import { mistakeRefs, savedRefs, type WeakSpot, weakSpots } from './session/sele
 
 export default function PracticeHubPage() {
   const catalog = useCatalog();
-  const reviews = useReviewStates();
+  const reviews = useFocusReviewStates();
   const mastery = useTopicMastery();
   const attempts = useAttempts(RECENT_ATTEMPTS);
   const bookmarks = useBookmarks();
