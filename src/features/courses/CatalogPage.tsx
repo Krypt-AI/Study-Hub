@@ -1,9 +1,9 @@
 /** All courses as ruled rows, grouped by area, with lesson-progress bubbles. */
-import { ArrowRight, Lock, Map as MapIcon } from 'lucide-react';
+import { ArrowRight, FolderPlus, Lock, Map as MapIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import { BubbleStrip, type BubbleState } from '@/components/ui/Bubble';
-import { ButtonLink } from '@/components/ui/Button';
+import { Button, ButtonLink } from '@/components/ui/Button';
 import { EmptyState, ErrorState, LoadingState, Tag } from '@/components/ui/Feedback';
 import { Input, Select } from '@/components/ui/Field';
 import { PageHeader, Sheet } from '@/components/ui/Sheet';
@@ -11,10 +11,14 @@ import { Tabs } from '@/components/ui/Tabs';
 import { useLessonProgress } from '@/data/queries';
 import { isOpenCategory } from '@/domain/content/accessManifest';
 import { useCatalog } from '@/domain/content/load';
-import type { CourseCategory, CourseSummary, University } from '@/domain/content/types';
+import { defaultTerm, type Term } from '@/domain/calendar/semesters';
+import type { CourseCategory, CourseSummary } from '@/domain/content/types';
 import { courseUrl } from '@/domain/content/urls';
 import { providerNames } from '@/features/auth/signInOptions';
 import { canOpenLockedContent, useAuth } from '@/features/auth/useAuth';
+import { AddSemesterDialog } from '@/features/semesters/AddSemesterDialog';
+import { useTerms } from '@/features/semesters/useTerms';
+import { dayKey } from '@/lib/dates';
 
 const CATEGORY_LABELS: Record<CourseCategory, string> = {
   chinese: 'Chinese (HSK)',
@@ -36,8 +40,9 @@ export default function CatalogPage() {
   const [category, setCategory] = useState<Filter>('all');
   const [difficulty, setDifficulty] = useState('all');
   const [query, setQuery] = useState('');
-  /** Semester shown in the University area; undefined until chosen, meaning the current one. */
+  /** Semester shown in the University area; undefined until chosen, meaning the default one. */
   const [term, setTerm] = useState<string>();
+  const terms = useTerms();
 
   const progressByCourse = useMemo(() => {
     const map = new Map<string, LessonStatuses>();
@@ -61,8 +66,7 @@ export default function CatalogPage() {
   );
   const counts = Object.fromEntries(CATEGORY_ORDER.map((key) => [key, catalog.data.courses.filter((course) => course.category === key).length]));
   const aiRoadmap = catalog.data.roadmaps.find((roadmap) => roadmap.id === 'ai-engineering');
-  const university = catalog.data.university;
-  const selectedTerm = term ?? university?.currentTerm ?? ALL_TERMS;
+  const selectedTerm = term ?? defaultTerm(terms.terms, terms.currentTerm, dayKey()) ?? ALL_TERMS;
   const unfiltered = !needle && difficulty === 'all';
   const universityCourses = visible.filter((course) => course.category === 'university' && (selectedTerm === ALL_TERMS || course.term === selectedTerm));
   // The university area stays visible while it is empty, so it is clear where subjects go and the semester can be changed.
@@ -101,7 +105,8 @@ export default function CatalogPage() {
               showUniversity && (
                 <UniversitySheet
                   key={key}
-                  university={university}
+                  terms={terms.terms}
+                  currentTerm={terms.currentTerm}
                   term={selectedTerm}
                   onTermChange={setTerm}
                   courses={universityCourses}
@@ -128,38 +133,41 @@ export default function CatalogPage() {
 }
 
 interface UniversitySheetProps {
-  university?: University;
+  terms: Term[];
+  currentTerm?: string;
   term: string;
   onTermChange: (term: string) => void;
   courses: CourseSummary[];
   progressByCourse: Map<string, LessonStatuses>;
 }
 
-/** Your university subjects, one semester at a time (the current one first). */
-function UniversitySheet({ university, term, onTermChange, courses, progressByCourse }: UniversitySheetProps) {
-  const termLabel = term === ALL_TERMS ? 'any semester' : term;
+/** Your university subjects, one semester at a time (the current one first); semesters can be added here. */
+function UniversitySheet({ terms, currentTerm, term, onTermChange, courses, progressByCourse }: UniversitySheetProps) {
+  const [adding, setAdding] = useState(false);
   return (
     <Sheet
       title={CATEGORY_LABELS.university}
       aside={
         <>
-          {university && (
-            <Select value={term} onChange={(event) => onTermChange(event.target.value)} aria-label="Semester" className="h-8 w-auto py-0 text-sm">
-              {university.terms.map((candidate) => (
-                <option key={candidate} value={candidate}>
-                  {candidate === university.currentTerm ? `${candidate} (current)` : candidate}
-                </option>
-              ))}
-              <option value={ALL_TERMS}>All semesters</option>
-            </Select>
-          )}
+          <Select value={term} onChange={(event) => onTermChange(event.target.value)} aria-label="Semester" className="h-8 w-auto py-0 text-sm">
+            {terms.map((candidate) => (
+              <option key={candidate.name} value={candidate.name}>
+                {candidate.name === currentTerm ? `${candidate.name} (current)` : candidate.name}
+              </option>
+            ))}
+            <option value={ALL_TERMS}>All semesters</option>
+          </Select>
+          <Button size="sm" variant="ghost" icon={<FolderPlus className="size-4" />} onClick={() => setAdding(true)}>
+            Add semester
+          </Button>
           <span className="tabular">{courses.length}</span>
+          {adding && <AddSemesterDialog terms={terms} onAdded={onTermChange} onClose={() => setAdding(false)} />}
         </>
       }
       padded={courses.length === 0}
     >
       {courses.length === 0 ? (
-        <EmptyState title={`No subjects for ${termLabel} yet`}>
+        <EmptyState title={term === ALL_TERMS ? 'No subjects yet' : 'No materials for this semester yet'}>
           Each subject becomes a course built from your own lecture notes, slides and past papers, with lessons, typed practice and
           reviews like the other courses. Your materials stay private: they are imported locally and never published.
         </EmptyState>

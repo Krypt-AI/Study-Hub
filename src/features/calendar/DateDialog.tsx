@@ -1,10 +1,10 @@
-/** Add or edit an important date: a quiz, test, midterm, final exam or deadline. */
+/** Add or edit an important date: a quiz, test, midterm, final exam, deadline, or an extra or make-up class. */
 import { type FormEvent, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Dialog } from '@/components/ui/Dialog';
 import { Field, Input, Select, Textarea } from '@/components/ui/Field';
 import type { DayKey, ImportantDateKind, ImportantDateRecord } from '@/data/records';
-import { IMPORTANT_KIND_LABELS, isValidTimeRange } from '@/domain/calendar/calendar';
+import { defaultDateTitle, IMPORTANT_KIND_LABELS, isValidTimeRange } from '@/domain/calendar/calendar';
 import { nowIso } from '@/lib/dates';
 import { newId } from '@/lib/ids';
 import { ConfirmDeleteButton } from './ConfirmDeleteButton';
@@ -31,8 +31,7 @@ interface Draft {
 
 const isSaved = (initial: DateDialogProps['initial']): initial is ImportantDateRecord => 'id' in initial;
 
-/** "CMPD363 Midterm" when a subject is chosen, otherwise just the kind. */
-const defaultTitle = (kind: ImportantDateKind, subject?: Subject) => (subject?.code ? `${subject.code} ${IMPORTANT_KIND_LABELS[kind]}` : IMPORTANT_KIND_LABELS[kind]);
+const defaultTitle = (kind: ImportantDateKind, subject?: Subject) => defaultDateTitle(kind, subject?.code);
 
 export function DateDialog({ initial, subjects, onClose }: DateDialogProps) {
   const existing = isSaved(initial) ? initial : undefined;

@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import type { ImportantDateRecord, SemesterRecord, TimetableClassRecord } from '@/data/records';
+import type { DatedSemester, ImportantDateRecord, TimetableClassRecord } from '@/data/records';
 import {
   classesOn,
   clashingClassIds,
   daysBetween,
+  defaultDateTitle,
   isoWeekday,
   isValidTimeRange,
   monthGrid,
@@ -14,7 +15,7 @@ import {
   upcomingDates,
 } from './calendar';
 
-const semester: SemesterRecord = { term: 'Sem 1 2026', startsOn: '2026-10-05', endsOn: '2027-01-29', updatedAt: '' };
+const semester: DatedSemester = { term: 'Sem 1 2026', startsOn: '2026-10-05', endsOn: '2027-01-29', updatedAt: '' };
 const lesson = (id: string, weekday: number, start: string, end: string, term = 'Sem 1 2026'): TimetableClassRecord => ({
   id,
   term,
@@ -61,6 +62,8 @@ describe('timetable', () => {
 
   it('repeats every week when the semester has no dates', () => {
     expect(classesOn('2026-09-28', classes, []).map((entry) => entry.id)).toEqual(['early', 'late']);
+    // A semester the learner added without dates does not bound its classes.
+    expect(classesOn('2026-09-28', classes, [{ term: 'Sem 1 2026', addedByLearner: true, updatedAt: '' }]).map((entry) => entry.id)).toEqual(['early', 'late']);
   });
 
   it('finds overlapping classes in the same term and weekday only', () => {
@@ -75,6 +78,12 @@ describe('timetable', () => {
 });
 
 describe('important dates', () => {
+  it('names an untitled date after its subject and kind', () => {
+    expect(defaultDateTitle('midterm', 'CMPD363')).toBe('CMPD363 Midterm');
+    expect(defaultDateTitle('extra-class', 'CMPD363')).toBe('CMPD363 Extra class');
+    expect(defaultDateTitle('extra-class')).toBe('Extra class');
+  });
+
   const dates = [important('final', '2027-01-20'), important('quiz pm', '2026-10-20', '14:00'), important('quiz am', '2026-10-20', '09:00'), important('done', '2026-10-01')];
 
   it('lists upcoming dates soonest first, optionally within a horizon', () => {

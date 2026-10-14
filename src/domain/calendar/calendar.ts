@@ -3,7 +3,7 @@
  * one-off important dates (quizzes, tests, exams, deadlines). Pure so it can be tested
  * without a browser; days are local "YYYY-MM-DD" keys throughout.
  */
-import type { ClassKind, ClockTime, DayKey, ImportantDateKind, ImportantDateRecord, SemesterRecord, TimetableClassRecord } from '@/data/records';
+import type { ClassKind, ClockTime, DatedSemester, DayKey, ImportantDateKind, ImportantDateRecord, SemesterRecord, TimetableClassRecord } from '@/data/records';
 import { addDays, parseDayKey } from '@/lib/dates';
 
 export const WEEKDAYS = [
@@ -19,8 +19,6 @@ export const WEEKDAYS = [
 export const CLASS_KIND_LABELS: Record<ClassKind, string> = {
   lecture: 'Lecture',
   lab: 'Lab',
-  tutorial: 'Tutorial',
-  other: 'Class',
 };
 
 export const IMPORTANT_KIND_LABELS: Record<ImportantDateKind, string> = {
@@ -29,8 +27,15 @@ export const IMPORTANT_KIND_LABELS: Record<ImportantDateKind, string> = {
   midterm: 'Midterm',
   final: 'Final exam',
   assignment: 'Assignment due',
+  'extra-class': 'Extra or make-up class',
   other: 'Other',
 };
+
+/** The kind as a short name, for tags and default titles ("CMPD363 Extra class"). */
+export const importantKindShortLabel = (kind: ImportantDateKind) => (kind === 'extra-class' ? 'Extra class' : IMPORTANT_KIND_LABELS[kind]);
+
+/** A date's title when the learner leaves it empty: "CMPD363 Midterm" or "CMPD363 Extra class", or just the kind. */
+export const defaultDateTitle = (kind: ImportantDateKind, subjectCode?: string) => (subjectCode ? `${subjectCode} ${importantKindShortLabel(kind)}` : importantKindShortLabel(kind));
 
 const DAY_MS = 86_400_000;
 
@@ -76,16 +81,19 @@ export function addMonths(month: string, amount: number): string {
 }
 
 export function isValidSemester(semester: Pick<SemesterRecord, 'startsOn' | 'endsOn'>): boolean {
-  return Boolean(semester.startsOn && semester.endsOn) && semester.startsOn <= semester.endsOn;
+  return Boolean(semester.startsOn && semester.endsOn && semester.startsOn <= semester.endsOn);
 }
 
+/** True when the semester's first and last day are known (and in order). */
+export const isDated = (semester: SemesterRecord | undefined): semester is DatedSemester => !!semester && isValidSemester(semester);
+
 /** Teaching week of the semester (week 1 holds the first day), or undefined outside it. */
-export function semesterWeek(day: DayKey, semester: SemesterRecord): number | undefined {
+export function semesterWeek(day: DayKey, semester: DatedSemester): number | undefined {
   if (day < semester.startsOn || day > semester.endsOn) return undefined;
   return Math.floor(daysBetween(startOfWeek(semester.startsOn), day) / 7) + 1;
 }
 
-export function semesterWeekCount(semester: SemesterRecord): number {
+export function semesterWeekCount(semester: DatedSemester): number {
   return semesterWeek(semester.endsOn, semester) ?? 0;
 }
 
@@ -96,7 +104,7 @@ const byStart = (a: { start?: ClockTime }, b: { start?: ClockTime }) => (a.start
  * set (without dates the timetable applies every week).
  */
 export function classesOn(day: DayKey, classes: TimetableClassRecord[], semesters: SemesterRecord[]): TimetableClassRecord[] {
-  const semesterOf = new Map(semesters.map((semester) => [semester.term, semester]));
+  const semesterOf = new Map(semesters.filter(isDated).map((semester) => [semester.term, semester]));
   const weekday = isoWeekday(day);
   return classes
     .filter((entry) => {

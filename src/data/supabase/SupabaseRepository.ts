@@ -27,7 +27,7 @@ import type {
   TimetableClassRecord,
   TopicMasteryRecord,
 } from '../records';
-import { DEFAULT_SETTINGS } from '../records';
+import { DEFAULT_SETTINGS, normalizeTimetableClass } from '../records';
 import { MAIN_LEARNER_ID } from '../learners/learners';
 import type { AttemptQuery, ImportMode, StudyRepository } from '../repository';
 
@@ -175,8 +175,12 @@ export class SupabaseRepository implements StudyRepository {
     await this.put('semesters', [record]);
   }
 
-  listTimetableClasses() {
-    return this.select<TimetableClassRecord>('timetable_classes');
+  async deleteSemester(term: string) {
+    await this.remove('semesters', 'id', term);
+  }
+
+  async listTimetableClasses() {
+    return (await this.select<TimetableClassRecord>('timetable_classes')).map(normalizeTimetableClass);
   }
 
   async saveTimetableClass(record: TimetableClassRecord) {

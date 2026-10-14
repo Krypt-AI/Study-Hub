@@ -1,5 +1,5 @@
 /** Guests keep their data on the device; signing out or switching accounts leaves nothing of the previous account. */
-import { addImportantDate, openImportantDates } from '../calendarSteps';
+import { addClass, addImportantDate, openImportantDates, todayWeekday, weekColumn } from '../calendarSteps';
 import { addDaysTo, todayKey } from '../dates';
 import { expect, test } from '../fixtures';
 import { asGuest, asSignedIn, localStorageKeys, signInAs, type StubAccount } from './supabaseStub';
@@ -9,11 +9,13 @@ const dateRecord = (id: string, title: string) => ({ id, title, kind: 'test', da
 const ALICE: StubAccount = { id: '00000000-0000-4000-8000-00000000a11c', name: 'Alice Tan', email: 'alice@example.com', rows: { important_dates: [dateRecord('a1', 'Alice’s test')] } };
 const BOB: StubAccount = { id: '00000000-0000-4000-8000-0000000000b0', name: 'Bob Lim', email: 'bob@example.com', rows: { important_dates: [dateRecord('b1', 'Bob’s test')] } };
 
-test('a guest’s important date survives a reload', async ({ page }) => {
+test('a guest’s class and important date survive a reload', async ({ page }) => {
   await asGuest(page);
-  await openImportantDates(page);
+  await page.goto('/calendar');
+  await addClass(page, { name: 'Web lab', type: 'Lab', weekday: todayWeekday() });
   await addImportantDate(page, { kind: 'Quiz', subject: 'CMPD203 Web Programming', day: addDaysTo(todayKey(), 4) });
   await page.reload();
+  await expect(weekColumn(page, todayWeekday()).getByText('Web lab')).toBeVisible();
   await page.getByRole('tab', { name: /Important dates/u }).click();
   await expect(page.getByRole('button', { name: /CMPD203 Quiz/u })).toBeVisible();
 });

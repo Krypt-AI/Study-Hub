@@ -1,7 +1,7 @@
 /** One week of the timetable, with that week's important dates on their days. */
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button, IconButton } from '@/components/ui/Button';
-import type { DayKey, ImportantDateRecord, SemesterRecord, TimetableClassRecord } from '@/data/records';
+import type { DatedSemester, DayKey, ImportantDateRecord, TimetableClassRecord } from '@/data/records';
 import { classesOn, datesOn, isoWeekday, semesterWeek, startOfWeek, WEEKDAYS, weekDays } from '@/domain/calendar/calendar';
 import { addDays, parseDayKey } from '@/lib/dates';
 import { cn } from '@/lib/cn';
@@ -14,7 +14,8 @@ export interface WeekViewProps {
   today: DayKey;
   classes: TimetableClassRecord[];
   dates: ImportantDateRecord[];
-  semester?: SemesterRecord;
+  /** The shown semester, when its dates are known. */
+  semester?: DatedSemester;
   clashing: Set<string>;
   onEditClass: (entry: TimetableClassRecord) => void;
   onEditDate: (entry: ImportantDateRecord) => void;

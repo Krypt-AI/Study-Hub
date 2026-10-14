@@ -59,6 +59,8 @@ export interface StudyRepository {
 
   listSemesters(): Promise<SemesterRecord[]>;
   saveSemester(record: SemesterRecord): Promise<void>;
+  deleteSemester(term: string): Promise<void>;
+  /** Kinds saved before only Lecture and Lab existed are read as lectures (normalizeTimetableClass). */
   listTimetableClasses(): Promise<TimetableClassRecord[]>;
   saveTimetableClass(record: TimetableClassRecord): Promise<void>;
   deleteTimetableClass(id: string): Promise<void>;

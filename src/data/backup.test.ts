@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { parseBackup } from './backup';
 import { LocalRepository } from './local/LocalRepository';
+import type { TimetableClassRecord } from './records';
 
 describe('backups', () => {
   it('round-trips everything a learner owns through export and import', async () => {
@@ -33,6 +34,18 @@ describe('backups', () => {
     expect(backup.version).toBe(3);
     expect(backup.importantDates).toEqual([]);
     expect(backup.examDrafts).toEqual([]);
+  });
+
+  it('reads classes saved as tutorials or "other" as lectures, from storage and from backups', async () => {
+    const legacy = (id: string, kind: string) => ({ id, term: 'Sem 1 2026', title: id, kind, weekday: 1, start: '08:00', end: '10:00', createdAt: 'a', updatedAt: 'a' }) as unknown as TimetableClassRecord;
+    const repository = new LocalRepository('class-kinds');
+    await repository.saveTimetableClass(legacy('t', 'tutorial'));
+    await repository.saveTimetableClass(legacy('l', 'lab'));
+    expect((await repository.listTimetableClasses()).map((entry) => [entry.id, entry.kind])).toEqual([['l', 'lab'], ['t', 'lecture']]);
+    repository.close();
+
+    const backup = parseBackup(JSON.stringify({ format: 'study-hub-backup', version: 2, exportedAt: 'a', ...empty, semesters: [], timetableClasses: [legacy('o', 'other')], importantDates: [] }));
+    expect(backup.timetableClasses.map((entry) => entry.kind)).toEqual(['lecture']);
   });
 
   it('imports version 2 backups, keeping their calendar', () => {

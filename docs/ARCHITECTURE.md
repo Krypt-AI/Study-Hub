@@ -23,6 +23,12 @@ workers/ sandboxed runtimes, spoken to through features/playground/execution/cod
   `RepositoryProvider` opens the active learner (the one chosen last on this device, else the first) and remounts the app under that learner's repository, with an empty query cache, whenever the user or the learner changes. After the first sign-in, when the device has progress and the account has none, `BringDeviceProgress` offers once to copy every device learner into the account (a merge import per learner, safe to repeat).
 - **One write path for answers**: `domain/learning/recordAnswer.ts` stores the attempt, updates the review schedule, topic mastery, daily activity and lesson progress. Lessons, reviews, quizzes and mock exams all use it, and writes are serialised so concurrent answers cannot lose updates.
 
+## Calendar (`domain/calendar`)
+
+- **Weekly classes** are a Lecture or a Lab. Classes saved as tutorials or "other" before are read as lectures by one function, `normalizeTimetableClass` (`data/records.ts`), used by both repositories and by backup import; a Supabase migration and an IndexedDB upgrade (version 4) rewrite the stored values too.
+- **Important dates** are one-off: quizzes, tests, midterms, finals, deadlines, and extra or make-up classes.
+- **Semesters** (`semesters.ts`): the catalog's terms (`content/authored/university.yaml`) plus those the learner adds, stored as `SemesterRecord`s with `addedByLearner` and optional dates. A name in both is one semester. The list is newest first: the learner's own (most recently added first), then the catalog's in their authored order. The calendar and the catalog open on the semester whose dates contain today, else the catalog's current term, else the newest. Only learner-added semesters can be removed, with their classes and dates.
+
 ## Evaluation (`domain/evaluation`)
 
 Each question type has a rule-based judge that returns a verdict (`correct`, `almost`, `partial`, `incorrect`, `self-review`), a score, specific feedback points, the expected answers and, for approximate judgements, how it judged.

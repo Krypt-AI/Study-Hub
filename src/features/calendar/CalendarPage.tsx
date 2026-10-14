@@ -1,8 +1,9 @@
 /**
  * Calendar (optional): the learner's weekly timetable for a semester and the important
  * dates to prepare for. Nothing here is required; upcoming dates also show on Today.
+ * Semesters come from the catalog, and the learner can add their own (domain/calendar/semesters.ts).
  */
-import { CalendarPlus, Plus } from 'lucide-react';
+import { CalendarPlus, FolderPlus, Plus } from 'lucide-react';
 import { type FormEvent, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router';
 import { Button } from '@/components/ui/Button';
@@ -10,12 +11,16 @@ import { ErrorState, LoadingState } from '@/components/ui/Feedback';
 import { Field, Input, Select } from '@/components/ui/Field';
 import { PageHeader, Sheet } from '@/components/ui/Sheet';
 import { Tabs } from '@/components/ui/Tabs';
-import { useImportantDates, useSemesters, useTimetableClasses } from '@/data/queries';
-import type { DayKey, ImportantDateRecord, SemesterRecord, TimetableClassRecord } from '@/data/records';
-import { clashingClassIds, isValidSemester, semesterWeek, semesterWeekCount, upcomingDates } from '@/domain/calendar/calendar';
+import { useImportantDates, useTimetableClasses } from '@/data/queries';
+import type { DayKey, ImportantDateRecord, TimetableClassRecord } from '@/data/records';
+import { clashingClassIds, isDated, isValidSemester, semesterWeek, semesterWeekCount, upcomingDates } from '@/domain/calendar/calendar';
+import { contentsLabel, defaultTerm, semesterContents, type Term } from '@/domain/calendar/semesters';
+import { AddSemesterDialog } from '@/features/semesters/AddSemesterDialog';
+import { useTerms } from '@/features/semesters/useTerms';
 import { dayKey, nowIso, relativeDay } from '@/lib/dates';
 import { ClassDialog, type ClassDialogProps } from './ClassDialog';
 import { DateDialog, type DateDialogProps } from './DateDialog';
+import { ConfirmDeleteButton } from './ConfirmDeleteButton';
 import { DatesList } from './DatesList';
 import { MonthView } from './MonthView';
 import { useCalendarMutations } from './useCalendarMutations';
@@ -32,25 +37,26 @@ export default function CalendarPage() {
   const today = dayKey();
   const [searchParams, setSearchParams] = useSearchParams();
   const view: View = isView(searchParams.get('view')) ? (searchParams.get('view') as View) : 'week';
-  const { terms, currentTerm, subjects, isLoading } = useSubjects();
+  const { subjects, isLoading } = useSubjects();
+  const terms = useTerms();
   const [term, setTerm] = useState<string>();
-  const activeTerm = term ?? currentTerm;
+  const activeTerm = (term && terms.terms.some((entry) => entry.name === term) ? term : undefined) ?? defaultTerm(terms.terms, terms.currentTerm, today) ?? '';
   const [weekAnchor, setWeekAnchor] = useState(today);
   const [month, setMonth] = useState(today.slice(0, 7));
   const [selectedDay, setSelectedDay] = useState(today);
   const [editing, setEditing] = useState<Editing>();
 
-  const semesters = useSemesters();
   const classes = useTimetableClasses();
   const dates = useImportantDates();
 
   const termClasses = useMemo(() => (classes.data ?? []).filter((entry) => entry.term === activeTerm), [classes.data, activeTerm]);
   const clashing = useMemo(() => clashingClassIds(termClasses), [termClasses]);
-  const semester = semesters.data?.find((entry) => entry.term === activeTerm);
+  const shownTerm = terms.terms.find((entry) => entry.name === activeTerm);
+  const semester = isDated(shownTerm?.semester) ? shownTerm.semester : undefined;
 
-  const error = semesters.error ?? classes.error ?? dates.error;
+  const error = terms.error ?? classes.error ?? dates.error;
   if (error) return <ErrorState title="Your calendar could not be loaded" error={error} />;
-  if (isLoading || !semesters.data || !classes.data || !dates.data) return <LoadingState />;
+  if (isLoading || terms.isLoading || !shownTerm || !classes.data || !dates.data) return <LoadingState />;
 
   const allDates = dates.data;
   const termSubjects = subjects.filter((subject) => !subject.term || subject.term === activeTerm);
@@ -77,7 +83,16 @@ export default function CalendarPage() {
       />
 
       <div className="flex flex-col gap-6">
-        <SemesterSheet key={activeTerm} term={activeTerm} terms={terms} onTermChange={setTerm} semester={semester} today={today} classCount={termClasses.length} />
+        <SemesterSheet
+          key={activeTerm}
+          term={shownTerm}
+          terms={terms.terms}
+          onTermChange={setTerm}
+          today={today}
+          classes={classes.data}
+          dates={allDates}
+          hasSubjects={termSubjects.length > 0}
+        />
 
         <div className="flex flex-col gap-4">
           <Tabs
@@ -120,29 +135,38 @@ export default function CalendarPage() {
 }
 
 interface SemesterSheetProps {
-  term: string;
-  terms: string[];
+  term: Term;
+  terms: Term[];
   onTermChange: (term: string) => void;
-  semester?: SemesterRecord;
   today: DayKey;
-  classCount: number;
+  classes: TimetableClassRecord[];
+  dates: ImportantDateRecord[];
+  hasSubjects: boolean;
 }
 
-/** Which semester is shown, and its first and last day (used to number weeks and bound the timetable). */
-function SemesterSheet({ term, terms, onTermChange, semester, today, classCount }: SemesterSheetProps) {
-  const [draft, setDraft] = useState({ startsOn: semester?.startsOn ?? '', endsOn: semester?.endsOn ?? '' });
+/**
+ * Which semester is shown, and its first and last day (used to number weeks and bound the timetable).
+ * Semesters can be added here; one the learner added can be removed with its classes and dates.
+ */
+function SemesterSheet({ term, terms, onTermChange, today, classes, dates, hasSubjects }: SemesterSheetProps) {
+  const record = term.semester;
+  const [draft, setDraft] = useState({ startsOn: record?.startsOn ?? '', endsOn: record?.endsOn ?? '' });
   const [submitted, setSubmitted] = useState(false);
-  const { saveSemester } = useCalendarMutations();
-  const changed = draft.startsOn !== (semester?.startsOn ?? '') || draft.endsOn !== (semester?.endsOn ?? '');
+  const [adding, setAdding] = useState(false);
+  const { saveSemester, removeSemester } = useCalendarMutations();
+  const changed = draft.startsOn !== (record?.startsOn ?? '') || draft.endsOn !== (record?.endsOn ?? '');
   const invalid = !isValidSemester(draft);
+  const contents = semesterContents(term.name, classes, dates);
+  const termClassCount = contents.classes.length;
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();
     setSubmitted(true);
     if (invalid) return;
-    await saveSemester.mutateAsync({ term, ...draft, updatedAt: nowIso() });
+    await saveSemester.mutateAsync({ ...record, term: term.name, ...draft, updatedAt: nowIso() });
   };
 
+  const semester = isDated(record) ? record : undefined;
   const week = semester ? semesterWeek(today, semester) : undefined;
   const status = !semester
     ? 'Add the first and last day to number the teaching weeks. Until then, classes repeat every week.'
@@ -153,14 +177,14 @@ function SemesterSheet({ term, terms, onTermChange, semester, today, classCount 
         : 'This semester has ended.';
 
   return (
-    <Sheet title="Semester" aside={<span>{classCount} class{classCount === 1 ? '' : 'es'} a week</span>}>
+    <Sheet title="Semester" aside={<span>{termClassCount} class{termClassCount === 1 ? '' : 'es'} a week</span>}>
       <form onSubmit={(event) => void submit(event)} className="flex flex-wrap items-end gap-4">
         <Field label="Semester" className="w-44">
           {(props) => (
-            <Select {...props} value={term} onChange={(event) => onTermChange(event.target.value)}>
+            <Select {...props} value={term.name} onChange={(event) => onTermChange(event.target.value)}>
               {terms.map((entry) => (
-                <option key={entry} value={entry}>
-                  {entry}
+                <option key={entry.name} value={entry.name}>
+                  {entry.name}
                 </option>
               ))}
             </Select>
@@ -175,8 +199,23 @@ function SemesterSheet({ term, terms, onTermChange, semester, today, classCount 
         <Button type="submit" disabled={!changed} loading={saveSemester.isPending}>
           Save dates
         </Button>
-        <p className="basis-full text-sm text-ink-muted">{status}</p>
+        <Button type="button" variant="ghost" icon={<FolderPlus className="size-4" />} onClick={() => setAdding(true)}>
+          Add semester
+        </Button>
+        {!term.fromCatalog && (
+          <ConfirmDeleteButton
+            label="Remove semester"
+            question={`Remove ${term.name} with its ${contentsLabel(contents)}?`}
+            loading={removeSemester.isPending}
+            onConfirm={() => void removeSemester.mutateAsync({ term: term.name, ...contents }).then(() => onTermChange(''))}
+          />
+        )}
+        <p className="basis-full text-sm text-ink-muted">
+          {status}
+          {!hasSubjects && ' No materials for this semester yet: add classes and dates by name.'}
+        </p>
       </form>
+      {adding && <AddSemesterDialog terms={terms} onAdded={onTermChange} onClose={() => setAdding(false)} />}
     </Sheet>
   );
 }

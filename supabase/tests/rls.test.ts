@@ -47,13 +47,18 @@ const LEARNER_TABLES = [
 
 let db: PGlite;
 
+const MIGRATIONS = readdirSync(MIGRATIONS_DIR).filter((name) => name.endsWith('.sql')).sort();
+
+/** Applies the migrations in name order; `include` picks some of them (e.g. those before a given one). */
+async function applyMigrations(database: PGlite, include: (file: string) => boolean = () => true): Promise<void> {
+  for (const file of MIGRATIONS.filter(include)) await database.exec(readFileSync(`${MIGRATIONS_DIR}${file}`, 'utf8'));
+}
+
 /** A fresh database with the Supabase stand-ins, the given default privileges and every migration. */
 async function migratedDatabase(defaultPrivileges = ''): Promise<PGlite> {
   const database = await PGlite.create();
   await database.exec(SUPABASE_STANDINS + defaultPrivileges);
-  for (const file of readdirSync(MIGRATIONS_DIR).filter((name) => name.endsWith('.sql')).sort()) {
-    await database.exec(readFileSync(`${MIGRATIONS_DIR}${file}`, 'utf8'));
-  }
+  await applyMigrations(database);
   return database;
 }
 
@@ -260,4 +265,31 @@ describe('learners', () => {
     const left = await db.query<{ n: number }>(`select (select count(*) from public.learners where user_id = $1) + (select count(*) from public.important_dates where user_id = $1) as n`, [ALICE]);
     expect(Number(left.rows[0]?.n)).toBe(0);
   });
+});
+
+describe('class kinds', () => {
+  it('turns stored tutorials and "other" classes into lectures, and leaves labs alone', async () => {
+    const CLASS_KINDS_MIGRATION = '20261014020000_class_kinds.sql';
+    const database = await PGlite.create();
+    try {
+      await database.exec(SUPABASE_STANDINS);
+      await applyMigrations(database, (file) => file < CLASS_KINDS_MIGRATION);
+      await database.query(`insert into auth.users (id, email) values ($1, 'carol@example.com')`, [ALICE]);
+      const timetableClass = (id: string, kind: string) => JSON.stringify({ id, term: 'Sem 1 2026', title: id, kind, weekday: 1, start: '08:00', end: '10:00', createdAt: 'a', updatedAt: 'a' });
+      const stored: Array<[id: string, kind: string]> = [['t', 'tutorial'], ['o', 'other'], ['l', 'lab'], ['x', 'lecture']];
+      for (const [id, kind] of stored) {
+        await database.query(`insert into public.timetable_classes (user_id, id, record) values ($1, $2, $3)`, [ALICE, id, timetableClass(id, kind)]);
+      }
+      await applyMigrations(database, (file) => file >= CLASS_KINDS_MIGRATION);
+      const kinds = await database.query<{ id: string; kind: string }>(`select id, record ->> 'kind' as kind from public.timetable_classes order by id`);
+      expect(kinds.rows).toEqual([
+        { id: 'l', kind: 'lab' },
+        { id: 'o', kind: 'lecture' },
+        { id: 't', kind: 'lecture' },
+        { id: 'x', kind: 'lecture' },
+      ]);
+    } finally {
+      await database.close();
+    }
+  }, 60_000);
 });

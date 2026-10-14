@@ -1,6 +1,6 @@
 /** Every important date: upcoming ones with a countdown, past ones folded away. */
 import { EmptyState } from '@/components/ui/Feedback';
-import type { DayKey, ImportantDateRecord, SemesterRecord } from '@/data/records';
+import type { DatedSemester, DayKey, ImportantDateRecord } from '@/data/records';
 import { pastDates, semesterWeek, upcomingDates } from '@/domain/calendar/calendar';
 import { parseDayKey, relativeDay } from '@/lib/dates';
 import { DateItem } from './AgendaItems';
@@ -8,7 +8,8 @@ import { DateItem } from './AgendaItems';
 export interface DatesListProps {
   dates: ImportantDateRecord[];
   today: DayKey;
-  semester?: SemesterRecord;
+  /** The shown semester, when its dates are known. */
+  semester?: DatedSemester;
   onEditDate: (entry: ImportantDateRecord) => void;
 }
 

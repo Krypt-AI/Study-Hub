@@ -18,6 +18,7 @@ import type {
   TimetableClassRecord,
   TopicMasteryRecord,
 } from '../records';
+import { normalizeClassKind } from '../records';
 
 export interface SettingsRow {
   key: 'settings';
@@ -72,6 +73,15 @@ export function openStudyDatabase(name = 'study-hub'): StudyDatabase {
     importantDates: 'id, date',
   });
   database.version(3).stores({ examDrafts: 'id' });
+  // Tutorials and "other" classes became lectures when only Lecture and Lab remained.
+  database.version(4).upgrade((transaction) =>
+    transaction
+      .table<TimetableClassRecord>('timetableClasses')
+      .toCollection()
+      .modify((record) => {
+        record.kind = normalizeClassKind(record.kind);
+      }),
+  );
   return database;
 }
 

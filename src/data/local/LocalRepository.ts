@@ -1,6 +1,6 @@
 /** StudyRepository backed by the browser's IndexedDB: private to this browser profile, works offline. */
 import type { ActivityDayRecord, ActivityDelta, BackupFile, DayKey, ExamDraftRecord, Settings } from '../records';
-import { DEFAULT_SETTINGS } from '../records';
+import { DEFAULT_SETTINGS, normalizeTimetableClass } from '../records';
 import type { AttemptQuery, ImportMode, StudyRepository } from '../repository';
 import { openStudyDatabase, type StudyDatabase, TABLES } from './database';
 
@@ -76,8 +76,12 @@ export class LocalRepository implements StudyRepository {
     await this.db.semesters.put(record);
   }
 
-  listTimetableClasses() {
-    return this.db.timetableClasses.toArray();
+  async deleteSemester(term: string) {
+    await this.db.semesters.delete(term);
+  }
+
+  async listTimetableClasses() {
+    return (await this.db.timetableClasses.toArray()).map(normalizeTimetableClass);
   }
 
   async saveTimetableClass(record: Parameters<StudyRepository['saveTimetableClass']>[0]) {
@@ -244,7 +248,7 @@ export class LocalRepository implements StudyRepository {
         this.db.certificationProgress.toArray(),
         this.db.activityDays.toArray(),
         this.db.semesters.toArray(),
-        this.db.timetableClasses.toArray(),
+        this.listTimetableClasses(),
         this.db.importantDates.toArray(),
         this.db.examDrafts.toArray(),
         this.getSettings(),

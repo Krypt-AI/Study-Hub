@@ -4,7 +4,7 @@
  */
 import { CalendarPlus, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button, IconButton } from '@/components/ui/Button';
-import type { DayKey, ImportantDateRecord, SemesterRecord, TimetableClassRecord } from '@/data/records';
+import type { DatedSemester, DayKey, ImportantDateRecord, TimetableClassRecord } from '@/data/records';
 import { addMonths, classesOn, datesOn, monthGrid, WEEKDAYS } from '@/domain/calendar/calendar';
 import { parseDayKey } from '@/lib/dates';
 import { cn } from '@/lib/cn';
@@ -19,7 +19,8 @@ export interface MonthViewProps {
   today: DayKey;
   classes: TimetableClassRecord[];
   dates: ImportantDateRecord[];
-  semester?: SemesterRecord;
+  /** The shown semester, when its dates are known. */
+  semester?: DatedSemester;
   clashing: Set<string>;
   onEditClass: (entry: TimetableClassRecord) => void;
   onEditDate: (entry: ImportantDateRecord) => void;

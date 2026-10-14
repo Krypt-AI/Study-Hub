@@ -94,7 +94,7 @@ export function ClassDialog({ initial, subjects, onClose }: ClassDialogProps) {
           )}
         </Field>
         <Field label="Name" error={titleError} hint={subject && !draft.title ? `Leave empty to use "${subjectLabel(subject)}".` : undefined}>
-          {(props) => <Input {...props} value={draft.title} onChange={(event) => update({ title: event.target.value })} placeholder={subject ? subjectLabel(subject) : 'e.g. Statistics tutorial'} />}
+          {(props) => <Input {...props} value={draft.title} onChange={(event) => update({ title: event.target.value })} placeholder={subject ? subjectLabel(subject) : 'e.g. Statistics lab'} />}
         </Field>
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Type">

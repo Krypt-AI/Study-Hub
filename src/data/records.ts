@@ -220,15 +220,32 @@ export const DEFAULT_SETTINGS: Settings = {
 /** Clock time in 24-hour form, "HH:MM". */
 export type ClockTime = string;
 
-/** First and last day of a semester (a term from the University catalog, e.g. "Sem 1 2026"). */
+/**
+ * A semester the learner keeps a calendar for: a term from the University catalog (e.g. "Sem 1 2026"),
+ * whose dates they saved, or one they added themselves, with or without dates.
+ */
 export interface SemesterRecord {
   term: string;
-  startsOn: DayKey;
-  endsOn: DayKey;
+  /** First and last day; both set or both absent. */
+  startsOn?: DayKey;
+  endsOn?: DayKey;
+  /** Added by the learner rather than listed in the catalog; only these can be removed in the app. */
+  addedByLearner?: boolean;
+  createdAt?: Timestamp;
   updatedAt: Timestamp;
 }
 
-export type ClassKind = 'lecture' | 'lab' | 'tutorial' | 'other';
+/** A semester whose first and last day are known. */
+export type DatedSemester = SemesterRecord & { startsOn: DayKey; endsOn: DayKey };
+
+export type ClassKind = 'lecture' | 'lab';
+
+/** Classes saved when tutorials and "other" classes existed read as lectures. */
+export const normalizeClassKind = (kind: string): ClassKind => (kind === 'lab' ? 'lab' : 'lecture');
+
+/** The one place stored or imported timetable classes are brought up to the current kinds. */
+export const normalizeTimetableClass = (record: TimetableClassRecord): TimetableClassRecord =>
+  record.kind === normalizeClassKind(record.kind) ? record : { ...record, kind: normalizeClassKind(record.kind) };
 
 /** A class that repeats every week of a semester. */
 export interface TimetableClassRecord {
@@ -247,9 +264,9 @@ export interface TimetableClassRecord {
   updatedAt: Timestamp;
 }
 
-export type ImportantDateKind = 'quiz' | 'test' | 'midterm' | 'final' | 'assignment' | 'other';
+export type ImportantDateKind = 'quiz' | 'test' | 'midterm' | 'final' | 'assignment' | 'extra-class' | 'other';
 
-/** A one-off date worth preparing for: a quiz, test, exam or deadline. */
+/** A one-off date worth preparing for: a quiz, test, exam, deadline, or an extra or make-up class. */
 export interface ImportantDateRecord {
   id: string;
   term?: string;

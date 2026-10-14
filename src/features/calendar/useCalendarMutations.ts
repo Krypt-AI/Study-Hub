@@ -1,4 +1,4 @@
-/** Writes for the calendar: semester dates, timetable classes and important dates. */
+/** Writes for the calendar: semesters, timetable classes and important dates. */
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { learnerKeys } from '@/data/queries';
 import type { ImportantDateRecord, SemesterRecord, TimetableClassRecord } from '@/data/records';
@@ -30,5 +30,15 @@ export function useCalendarMutations() {
     onSuccess: refresh(learnerKeys.importantDates),
   });
 
-  return { saveSemester, saveClass, deleteClass, saveDate, deleteDate };
+  /** A semester the learner added, with the classes and dates that belong to it. */
+  const removeSemester = useMutation({
+    mutationFn: async ({ term, classes, dates }: { term: string; classes: TimetableClassRecord[]; dates: ImportantDateRecord[] }) => {
+      for (const entry of classes) await repository.deleteTimetableClass(entry.id);
+      for (const entry of dates) await repository.deleteImportantDate(entry.id);
+      await repository.deleteSemester(term);
+    },
+    onSettled: () => Promise.all([learnerKeys.semesters, learnerKeys.timetable, learnerKeys.importantDates].map((queryKey) => client.invalidateQueries({ queryKey }))),
+  });
+
+  return { saveSemester, removeSemester, saveClass, deleteClass, saveDate, deleteDate };
 }

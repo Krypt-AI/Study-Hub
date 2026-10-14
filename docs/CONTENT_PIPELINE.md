@@ -59,7 +59,7 @@ terms: [Sem 1 2026]        # newest first
 currentTerm: Sem 1 2026    # the semester the catalog opens on
 ```
 
-Each subject is a course with `category: university`, its course `code` and the `term` it belongs to (the build fails if the term is not listed). For a new semester, add it to the top of `terms` and update `currentTerm`.
+Each subject is a course with `category: university`, its course `code` and the `term` it belongs to (the build fails if the term is not listed). For a new semester, add it to the top of `terms` and update `currentTerm`. Learners can also add a semester in the app (Calendar or the catalog's University area) before any of its materials exist; when the same name is later added to `terms`, it becomes one semester, and the learner's timetable and dates stay with it.
 
 Notes written from your own course materials (lecture slides, lab sheets) go in **`content/private/courses/<id>/`**. They use the same format as authored courses (below), are git-ignored, and must not be published. A course-level `source` (e.g. `{ origin: user-material, title: CMPD2123 lecture slides }`) is inherited by its lessons, and a lesson-level `source` by that lesson's questions, so every item shows where it came from.
 
