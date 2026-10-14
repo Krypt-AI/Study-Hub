@@ -38,8 +38,13 @@ export function ChoiceInput({ question, selected, onChange, feedback, disabled =
     else onChange([id]);
   };
 
+  const lettered = question.labels === 'letters';
+  const labelOf = (position: number) => (lettered ? String.fromCharCode(65 + position) : String(position + 1));
+
   const onKeyDown = (event: KeyboardEvent) => {
-    const position = Number(event.key) - 1;
+    // 1-9 always; A, B, C ... as well on a paper that prints letters.
+    const letter = lettered && /^[a-z]$/iu.test(event.key) ? event.key.toUpperCase().charCodeAt(0) - 65 : -1;
+    const position = letter >= 0 ? letter : Number(event.key) - 1;
     const option = options[position];
     if (option && !event.ctrlKey && !event.metaKey && !event.altKey) {
       event.preventDefault();
@@ -82,7 +87,7 @@ export function ChoiceInput({ question, selected, onChange, feedback, disabled =
               disabled && 'cursor-default',
             )}
           >
-            {!imageOnly && <span className="display-numerals w-4 shrink-0 text-right text-sm text-print">{position + 1}</span>}
+            {!imageOnly && <span className="display-numerals w-4 shrink-0 text-right text-sm text-print">{labelOf(position)}</span>}
             <Bubble state={state} size="md" animate={Boolean(feedback) && chosen} />
             {imageOnly ? (
               <span className="display-numerals text-lg">{option.text}</span>

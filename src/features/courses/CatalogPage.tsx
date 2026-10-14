@@ -34,7 +34,7 @@ const isSchoolArea = (area: Area): area is SchoolArea => area === 'elementary' |
 const AREA_DESCRIPTIONS: Record<Area, string> = {
   elementary: 'Your primary school subjects, Standard 1 to 6, with your own year first.',
   secondary: 'Your secondary school subjects, Form 1 to 5, with your own year first.',
-  university: 'Your semester subjects, written from your own notes and slides, with past papers.',
+  university: 'Your UNITEN semester subjects, written from your own notes and slides, with past papers.',
   japanese: 'JLPT N5 to N1 practice tests and 新にほんご500問, from your own books.',
   chinese: 'HSK 1 to 6 vocabulary and workbook exercises, from your own books.',
 };

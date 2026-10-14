@@ -1,10 +1,11 @@
-/** A course's past papers, grouped by kind for the course page: midterms, then tests, then finals. */
+/** A course's past papers, grouped by kind for the course page: midterms, then tests, then finals and school UASA papers. */
 import type { Assessment, PastPaperKind } from './types';
 
 export const PAST_PAPER_GROUPS: Array<{ kind: PastPaperKind; title: string }> = [
   { kind: 'midterm', title: 'Midterms' },
   { kind: 'test', title: 'Tests' },
   { kind: 'final', title: 'Final exams' },
+  { kind: 'uasa', title: 'UASA (Ujian Akhir Sesi Akademik)' },
 ];
 
 export interface PastPaperGroup {

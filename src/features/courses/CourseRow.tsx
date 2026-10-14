@@ -7,9 +7,9 @@ import type { CourseSummary } from '@/domain/content/types';
 import { courseUrl } from '@/domain/content/urls';
 import type { LessonStatuses } from './useLessonStatuses';
 
-/** "12 lessons, 2 past papers" */
+/** "12 lessons, 2 past papers", or only "4 past papers" for a subject without lessons yet. */
 function contentsLine(course: CourseSummary): string {
-  const parts = [`${course.lessonCount} lesson${course.lessonCount === 1 ? '' : 's'}`];
+  const parts = course.lessonCount ? [`${course.lessonCount} lesson${course.lessonCount === 1 ? '' : 's'}`] : [];
   const papers = course.assessments.filter((assessment) => assessment.paper).length;
   const practice = course.assessments.length - papers;
   if (papers) parts.push(`${papers} past paper${papers === 1 ? '' : 's'}`);

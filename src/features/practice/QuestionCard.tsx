@@ -12,6 +12,7 @@ import { Tag } from '@/components/ui/Feedback';
 import type { Question } from '@/domain/content/types';
 import type { Feedback, Response } from '@/domain/evaluation/types';
 import { SKILL_LABELS } from '@/domain/learning/mastery';
+import type { ContentLang } from '@/domain/content/language';
 import { FeedbackPanel } from './FeedbackPanel';
 import { ChoiceInput } from './inputs/ChoiceInput';
 import { ClozeInput } from './inputs/ClozeInput';
@@ -26,7 +27,7 @@ import { QuestionReference } from './QuestionReference';
 export interface QuestionCardProps {
   session: PracticeSession;
   /** Language of the course content, for correct CJK glyphs in prompts. */
-  contentLang?: 'zh-CN' | 'ja';
+  contentLang?: ContentLang;
   /** Shown next to the counter, e.g. the lesson a review question comes from. */
   context?: ReactNode;
 }

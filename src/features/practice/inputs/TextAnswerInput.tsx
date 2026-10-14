@@ -2,7 +2,8 @@
 import type { LongQuestion, TranslationQuestion } from '@/domain/content/types';
 import { countWords } from '@/domain/evaluation/normalize';
 import { LANGUAGE_TAGS } from '@/domain/content/language';
-
+import { cn } from '@/lib/cn';
+import { paperWords } from '../paperWords';
 
 export interface TextAnswerInputProps {
   question: LongQuestion | TranslationQuestion;
@@ -14,9 +15,11 @@ export interface TextAnswerInputProps {
 
 export function TextAnswerInput({ question, value, onChange, onSubmit, disabled = false }: TextAnswerInputProps) {
   const isLong = question.type === 'long';
-  const minWords = question.type === 'long' ? question.minWords : undefined;
+  const limit = question.type === 'long' ? { min: question.minWords, max: question.maxWords } : {};
   const language = question.type === 'translation' ? question.to : question.language;
   const words = countWords(value);
+  const over = limit.max !== undefined && words > limit.max;
+  const text = paperWords(language);
   return (
     <div className="flex flex-col gap-1.5">
       <textarea
@@ -32,15 +35,15 @@ export function TextAnswerInput({ question, value, onChange, onSubmit, disabled 
         lang={language ? LANGUAGE_TAGS[language] : undefined}
         rows={isLong ? 7 : 3}
         aria-label="Your answer"
-        placeholder={isLong ? 'Explain in your own words…' : 'Your translation…'}
+        placeholder={isLong ? text.answerPlaceholder : 'Your translation…'}
         className="w-full resize-y rounded-md border border-rule-strong bg-sheet px-3.5 py-3 text-base leading-relaxed text-ink placeholder:text-ink-faint focus:border-print focus:outline-none disabled:opacity-100"
       />
       <p className="flex justify-between gap-3 text-sm text-ink-faint">
-        <span>{question.answerHint ?? 'Ctrl + Enter to check'}</span>
+        <span>{question.answerHint ?? text.submitHint}</span>
         {isLong && (
-          <span className="tabular" aria-live="polite">
-            {words}
-            {minWords ? ` / ${minWords}` : ''} words
+          <span className={cn('tabular', over && 'font-medium text-wrong')} aria-live="polite">
+            {text.wordCount(words, limit)}
+            {over && `: ${text.overLimit}`}
           </span>
         )}
       </p>

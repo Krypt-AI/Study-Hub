@@ -184,6 +184,7 @@ function checkIntegrity(courses: Course[], certificationIds: Set<string>): Set<s
   const questionIds = new Map<string, string>();
   for (const course of courses) {
     if (courseIds.has(course.id)) errors.push(`duplicate course id ${course.id}`);
+    if (!course.units.length && !course.assessments.length) errors.push(`${course.id}: a course needs at least one unit or one assessment`);
     courseIds.add(course.id);
     const topicIds = new Set(course.topics.map((topic) => topic.id));
     const questions = courseQuestions(course);

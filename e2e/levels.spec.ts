@@ -16,7 +16,7 @@ test('the extras chosen once decide the course areas, certifications and search'
   await chooseExtras(page, ['Japanese (JLPT)']);
 
   await page.goto('/courses');
-  await expect(areas(page).getByRole('link', { name: /University/u })).toBeVisible();
+  await expect(areas(page).getByRole('link', { name: /UNITEN/u })).toBeVisible();
   await expect(areas(page).getByRole('link', { name: /Japanese \(JLPT\)/u })).toBeVisible();
   await expect(areas(page).getByRole('link', { name: /Chinese \(HSK\)/u })).toHaveCount(0);
 

@@ -169,6 +169,40 @@ describe('evaluate', () => {
     expect(result.parts?.[1]).toMatchObject({ verdict: 'incorrect', expected: 'immutable' });
   });
 
+  it('cloze with distinct gaps does not count the same answer twice', () => {
+    const accepted = ['surat khabar', 'syampu', 'jem'];
+    const question = parse({ id: 'q', type: 'cloze', distinct: true, text: '[[1]] [[2]]', blanks: [{ id: '1', accepted }, { id: '2', accepted }] });
+    expect(evaluate(question as SyncQuestion, { type: 'cloze', blanks: { '1': 'syampu', '2': 'jem' } }).verdict).toBe('correct');
+    const repeated = evaluate(question as SyncQuestion, { type: 'cloze', blanks: { '1': 'syampu', '2': 'Syampu' } });
+    expect(repeated.parts?.map((part) => part.verdict)).toEqual(['correct', 'incorrect']);
+  });
+
+  it('long answers with a mark scheme carry it for marking, and warn over the word limit', () => {
+    const question = parse({
+      id: 'q',
+      type: 'long',
+      marks: 15,
+      maxWords: 5,
+      modelAnswer: 'Isi.',
+      marking: [
+        { title: 'Isi', bands: [{ min: 10, max: 10 }, { min: 0, max: 8 }] },
+        { title: 'Bahasa', bands: [{ name: 'Cemerlang', min: 4, max: 5 }] },
+      ],
+    });
+    const result = evaluate(question as SyncQuestion, { type: 'long', text: 'satu dua tiga empat lima enam' });
+    expect(result.verdict).toBe('self-review');
+    expect(result.marking?.map((part) => part.title)).toEqual(['Isi', 'Bahasa']);
+    expect(result.points.map((point) => point.message)).toEqual(['Your answer has about 6 words; the limit is 5.']);
+    expect(() => parse({ id: 'q', type: 'long', marks: 12, modelAnswer: 'x', marking: [{ title: 'Isi', bands: [{ min: 0, max: 10 }] }] })).toThrow();
+  });
+
+  it('words the feedback on a BM written answer in BM', () => {
+    const question = parse({ id: 'q', type: 'long', language: 'ms', marks: 3, maxWords: 2, modelAnswer: 'Isi.', marking: [{ title: 'Isi', bands: [{ min: 0, max: 3 }] }] });
+    const result = evaluate(question as SyncQuestion, { type: 'long', text: 'satu dua tiga' });
+    expect(result.headline).toBe('Tanda jawapan anda dengan panduan penskoran');
+    expect(result.points.map((point) => point.message)).toEqual(['Jawapan anda kira-kira 3 patah perkataan; hadnya 2.']);
+  });
+
   it('long answers are self-reviewed against the rubric', () => {
     const question = parse({
       id: 'q4',

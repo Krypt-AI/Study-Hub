@@ -1,11 +1,13 @@
-import type { AnswerLanguage, CourseCategory } from './types';
+import type { AnswerLanguage, CourseCategory, CourseLanguage } from './types';
 
 /** The `lang` attribute for text in a question's language: correct fonts, and the right IME. */
 export const LANGUAGE_TAGS: Record<AnswerLanguage, string> = { en: 'en', ms: 'ms', zh: 'zh-CN', ja: 'ja' };
 
-/** BCP 47 language of a course's content, for `lang` attributes (correct CJK glyphs and IME). */
-export function contentLanguage(course: { category: CourseCategory } | undefined): 'zh-CN' | 'ja' | undefined {
+/** The `lang` tag of a course's content: CJK for correct glyphs and IME, and a school course's BM or English. */
+export type ContentLang = 'zh-CN' | 'ja' | CourseLanguage;
+
+export function contentLanguage(course: { category: CourseCategory; language?: CourseLanguage } | undefined): ContentLang | undefined {
   if (course?.category === 'chinese') return 'zh-CN';
   if (course?.category === 'japanese') return 'ja';
-  return undefined;
+  return course?.language;
 }

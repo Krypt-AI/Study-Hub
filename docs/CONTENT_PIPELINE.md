@@ -51,7 +51,7 @@ OCR errors found by checking the page images go into `content/corrections/*.json
 
 ## University subjects
 
-The catalog's **University** area lists your subjects one semester at a time. Semesters are defined in `content/authored/university.yaml`:
+The catalog's **UNITEN** area (category `university`) lists your subjects one semester at a time. Semesters are defined in `content/authored/university.yaml`:
 
 ```yaml
 institution: Universiti Tenaga Nasional (UNITEN)
@@ -83,5 +83,15 @@ Question types: `choice`, `short`, `cloze`, `long` (rubric), `translation`, `cod
 A question that points at something in its lesson ("In Example 2...") can carry `reference: { heading: "Example 2", label: "See Example 2" }`. The build copies that lesson section into the question, and the learner opens it with the button under the prompt. `image` (an asset) can be given instead of or as well as `heading`; a heading that is not in the lesson fails the build.
 
 **School courses** (`category: elementary` for Standard 1–6, `secondary` for Form 1–5) name a `year` listed in `content/authored/school.yaml` and the `language` they are taught in (`ms` or `en`); a subject taught in both is two courses with the same `subject` and `year`. Every question in a school course is in its language: the build fills `language` in where a question leaves it out and fails where a question says otherwise, as it does for a missing or unlisted year. A multiple-choice question can have a `tier` (easy, medium or hard) for the learner's difficulty choice; without one it is offered at every tier.
+
+**Marked exam papers** (school UASA papers, or any paper with printed marks) are assessments with `paper: uasa` (or `midterm`, `test`, `final`). A school subject may have past papers and no lessons yet (`units: []`). On a paper:
+
+- `marks` on a question is what it carries ("[2 markah]"); the score is out of the paper's total.
+- `labels: letters` prints a multiple-choice question's options A, B, C, D instead of 1, 2, 3, 4.
+- `distinct: true` on a fill-in question stops one answer counting twice when several gaps share their accepted answers ("name two of the three spelling errors").
+- A written answer (`long`) can have a `marking` scheme instead of a keyword `rubric`: parts (content, language, ...) each with the bands the scheme prints (`name`, `min`, `max`, `description`); the parts' highest marks add up to the question's `marks`. The learner reads the scheme's points (`modelAnswer`) and gives one mark per part. `minWords` and `maxWords` show as a live word count.
+- `choose: 1` on a section means "answer one of these questions": the first one answered counts.
+
+Schemes shared by several questions can be written once as YAML anchors under a key the schema does not know (such as `x-schemes:`), which the build ignores. `content/private/courses/bm-f1/course.yaml` is the worked example.
 
 Certifications are in `content/authored/certifications.yaml`: every entry records `verifiedOn`, its official `verificationSources` and the facts that could not be verified. Re-check them before relying on prices or exam formats.

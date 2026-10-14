@@ -1,4 +1,4 @@
-import type { Question } from '@/domain/content/types';
+import type { LongQuestion, Question } from '@/domain/content/types';
 
 /**
  * correct     the answer matches
@@ -44,6 +44,8 @@ export interface Feedback {
   limitations?: string;
   parts?: FeedbackPart[];
   rubric?: RubricCheck[];
+  /** The mark scheme the learner marks a written answer with, band by band. */
+  marking?: LongQuestion['marking'];
 }
 
 export type Response =

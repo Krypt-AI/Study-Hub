@@ -17,6 +17,7 @@ import { courseUrl } from '@/domain/content/urls';
 import { FeedbackPanel } from '../FeedbackPanel';
 import { describeResponse } from '../session/responses';
 import { verdictBubble } from '../session/usePracticeSession';
+import { paperWords } from '../paperWords';
 import { countsAsCorrect, type GradedItem, type GradedSection, passed, scoreExam, scoreItems } from './gradeExam';
 
 export interface ExamResultsProps {
@@ -39,6 +40,7 @@ export function ExamResults({ course, assessment, graded, save, onConfirmSelfRev
   const anyMissed = graded.some((section) => section.items.some((item) => !countsAsCorrect(item)));
   const [filter, setFilter] = useState<'missed' | 'all'>(anyMissed ? 'missed' : 'all');
   const lang = contentLanguage(course);
+  const byMarks = assessment.sections.some((section) => section.questions.some((question) => question.marks !== undefined));
 
   return (
     <div className="mx-auto max-w-5xl">
@@ -89,7 +91,7 @@ export function ExamResults({ course, assessment, graded, save, onConfirmSelfRev
                         {section.title}
                       </th>
                       <td className="hidden py-2 pr-3 md:table-cell">
-                        <BubbleStrip states={items.map(itemBubble)} label={`${section.title}: marks`} />
+                        <BubbleStrip states={items.filter((item) => item.counted).map(itemBubble)} label={`${section.title}: marks`} />
                       </td>
                       <td className="tabular py-2 pr-3 text-right whitespace-nowrap">
                         {formatPoints(score.points)} / {score.max}
@@ -107,7 +109,11 @@ export function ExamResults({ course, assessment, graded, save, onConfirmSelfRev
                 {total.pending} answer{total.pending === 1 ? ' waits' : 's wait'} for your review below and {total.pending === 1 ? 'is' : 'are'} not counted yet.
               </p>
             )}
-            {assessment.kind === 'mock-exam' && <p>Raw score, one point per question. The official exam reports scaled scores with sectional pass marks, so treat this as a guide.</p>}
+            {byMarks ? (
+              <p>Scored by the marks printed on the paper. Written answers count once you have marked them with the scheme.</p>
+            ) : (
+              assessment.kind === 'mock-exam' && <p>Raw score, one point per question. The official exam reports scaled scores with sectional pass marks, so treat this as a guide.</p>
+            )}
             <p>Unanswered questions score zero and are not added to your reviews.</p>
           </div>
         </Sheet>
@@ -128,7 +134,10 @@ export function ExamResults({ course, assessment, graded, save, onConfirmSelfRev
         >
           <div className="flex flex-col gap-6">
             {graded.map((gradedSection, sectionIndex) => {
-              const visible = gradedSection.items.map((item, itemIndex) => ({ item, itemIndex })).filter(({ item }) => filter === 'all' || !countsAsCorrect(item));
+              // Questions left out of a "choose" section are not shown unless they were answered anyway.
+              const visible = gradedSection.items
+                .map((item, itemIndex) => ({ item, itemIndex }))
+                .filter(({ item }) => (item.counted || item.answered) && (filter === 'all' || !countsAsCorrect(item)));
               return (
                 <section key={gradedSection.section.id} className="flex flex-col">
                   <h3 className="border-b border-print-line pb-1 font-display font-semibold" lang={lang}>
@@ -191,7 +200,13 @@ function ResultRow({ item, number, lang, onConfirmSelfReview }: { item: GradedIt
             <span className="text-ink-muted">yours </span>
             {isCode ? 'code' : yours}
           </span>
-          {!countsAsCorrect(item) && expected && !isCode && (
+          {!item.counted && <span className="text-sm text-ink-muted" lang={lang}>{paperWords(lang).notChosen}</span>}
+          {item.counted && item.question.marks !== undefined && item.feedback.verdict !== 'self-review' && (
+            <span className="tabular shrink-0 text-sm text-ink-muted">
+              {formatPoints(item.feedback.score * item.question.marks)} / {item.question.marks}
+            </span>
+          )}
+          {!countsAsCorrect(item) && expected && !isCode && item.question.type !== 'long' && (
             <span className="max-w-[40%] truncate text-sm" lang={lang}>
               <span className="text-ink-muted">answer </span>
               <span className="font-medium">{expected}</span>

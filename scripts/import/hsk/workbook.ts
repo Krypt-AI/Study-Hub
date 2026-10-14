@@ -336,7 +336,7 @@ function workbookQuestion(input: WorkbookInput, key: LessonKey, range: KeyRange,
 }
 
 /** A workbook's lessons: one per textbook lesson with exercises, then its model test. */
-export type WorkbookLesson = CourseInput['units'][number]['lessons'][number];
+export type WorkbookLesson = NonNullable<CourseInput['units']>[number]['lessons'][number];
 
 export function buildWorkbookLessons(input: WorkbookInput): { lessons: WorkbookLesson[]; stats: WorkbookStats } {
   const stats: WorkbookStats = { questions: 0, unplaced: 0, rejected: input.keys.flatMap((key) => key.rejected) };

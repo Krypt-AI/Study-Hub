@@ -16,6 +16,8 @@ import type { Question } from '@/domain/content/types';
 import type { Feedback, FeedbackPoint } from '@/domain/evaluation/types';
 import { cn } from '@/lib/cn';
 import type { RunResponse } from '@/workers/protocol';
+import { paperWords } from './paperWords';
+import { SchemeMarking } from './SchemeMarking';
 import { verdictBubble } from './session/usePracticeSession';
 
 const POINT_ICON: Record<FeedbackPoint['tone'], typeof Info> = {
@@ -91,11 +93,19 @@ export function FeedbackPanel({ question, feedback, run, pendingSelfReview, onCo
 
       {run && <RunOutput run={run} />}
 
-      {pendingSelfReview && <SelfReview feedback={feedback} onConfirm={onConfirmSelfReview} />}
-
-      {!pendingSelfReview && feedback.expected.length > 0 && feedback.verdict !== 'correct' && !imageOnlyChoice && <ExpectedAnswer question={question} feedback={feedback} />}
-
-      {pendingSelfReview && <ExpectedAnswer question={question} feedback={feedback} />}
+      {pendingSelfReview && feedback.marking ? (
+        // Marking by a scheme: read its points first, then give the marks.
+        <>
+          <ExpectedAnswer question={question} feedback={feedback} />
+          <SchemeMarking marking={feedback.marking} language={question.type === 'long' ? question.language : undefined} onConfirm={onConfirmSelfReview} />
+        </>
+      ) : (
+        <>
+          {pendingSelfReview && <SelfReview feedback={feedback} onConfirm={onConfirmSelfReview} />}
+          {!pendingSelfReview && feedback.expected.length > 0 && feedback.verdict !== 'correct' && !imageOnlyChoice && <ExpectedAnswer question={question} feedback={feedback} />}
+          {pendingSelfReview && <ExpectedAnswer question={question} feedback={feedback} />}
+        </>
+      )}
 
       {onAcceptAsCorrect && (
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-md border border-dashed border-rule px-4 py-2.5">
@@ -136,7 +146,9 @@ function ExpectedAnswer({ question, feedback }: { question: Question; feedback: 
   }
   return (
     <div className="flex flex-col gap-1">
-      <p className="text-sm font-medium text-ink-muted">{isModel ? 'Model answer' : feedback.expected.length > 1 ? 'Accepted answers' : 'Answer'}</p>
+      <p className="text-sm font-medium text-ink-muted">
+        {feedback.marking ? paperWords(question.type === 'long' ? question.language : undefined).scheme : isModel ? 'Model answer' : feedback.expected.length > 1 ? 'Accepted answers' : 'Answer'}
+      </p>
       {isModel ? (
         <Markdown compact className="rounded-md border border-rule px-4 py-3">
           {feedback.expected[0] ?? ''}

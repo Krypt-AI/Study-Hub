@@ -2,7 +2,7 @@
 import type { CourseCategory } from './types';
 
 export const COURSE_CATEGORY_LABELS: Record<CourseCategory, string> = {
-  university: 'University',
+  university: 'UNITEN',
   elementary: 'Primary school',
   secondary: 'Secondary school',
   japanese: 'Japanese (JLPT)',

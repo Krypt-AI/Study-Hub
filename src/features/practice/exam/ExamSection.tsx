@@ -12,11 +12,13 @@ import { Markdown } from '@/components/Markdown';
 import { Bubble } from '@/components/ui/Bubble';
 import { Button } from '@/components/ui/Button';
 import { Dialog } from '@/components/ui/Dialog';
+import type { ContentLang } from '@/domain/content/language';
 import { isNumberedChoice } from '@/domain/content/questions';
 import type { AssessmentSection, ChoiceQuestion, Media, Question } from '@/domain/content/types';
 import type { Response } from '@/domain/evaluation/types';
 import { cn } from '@/lib/cn';
 import { QuestionInput } from '../QuestionCard';
+import { paperWords } from '../paperWords';
 import { emptyResponse, hasAnswer } from '../session/responses';
 
 export type FinishReason = 'finished' | 'time-up';
@@ -32,7 +34,7 @@ export interface ExamSectionProps {
   /** Absent when the sitting is untimed. */
   endsAt?: number;
   onFinish: (reason: FinishReason) => void;
-  contentLang?: 'zh-CN' | 'ja';
+  contentLang?: ContentLang;
 }
 
 type PageMedia = Extract<Media, { kind: 'page-image' }>;
@@ -42,7 +44,10 @@ export function ExamSection({ assessmentTitle, section, index, count, answers, o
   const player = useClipPlayer();
   const clock = useSectionClock(startedAt, endsAt, () => onFinish('time-up'));
   const answered = section.questions.filter((question) => hasAnswer(answers[question.id])).length;
-  const unanswered = section.questions.length - answered;
+  // In a "choose" section, only the questions to answer are expected.
+  const expected = section.choose ?? section.questions.length;
+  const unanswered = Math.max(0, expected - answered);
+  const words = paperWords(contentLang);
   const isLast = index + 1 === count;
   const pages = section.media.filter((media): media is PageMedia => media.kind === 'page-image');
   const sectionMedia = section.media.filter((media) => media.kind !== 'page-image');
@@ -52,14 +57,14 @@ export function ExamSection({ assessmentTitle, section, index, count, answers, o
       <div className="sticky top-0 z-10 flex flex-wrap items-center gap-x-6 gap-y-2 rounded-md border border-rule bg-sheet/95 px-4 py-2.5 backdrop-blur">
         <div className="min-w-0 flex-1">
           <p className="truncate text-xs text-ink-muted">
-            {assessmentTitle} · section {index + 1} of {count}
+            {count > 1 ? `${assessmentTitle}, section ${index + 1} of ${count}` : assessmentTitle}
           </p>
           <h1 className="truncate text-lg leading-tight font-semibold" lang={contentLang}>
             {section.title}
           </h1>
         </div>
         <span className="tabular text-sm text-ink-muted">
-          {answered} / {section.questions.length} marked
+          {answered} / {expected} marked
         </span>
         <SectionClock clock={clock} />
         <Button variant="primary" onClick={() => (unanswered > 0 ? setConfirming(true) : onFinish('finished'))}>
@@ -67,7 +72,16 @@ export function ExamSection({ assessmentTitle, section, index, count, answers, o
         </Button>
       </div>
 
-      {section.instructions && <p className="text-sm text-ink-muted">{section.instructions}</p>}
+      {section.instructions && (
+        <p className="text-sm text-ink-muted" lang={contentLang}>
+          {section.instructions}
+        </p>
+      )}
+      {section.choose && (
+        <p className="text-sm font-medium" lang={contentLang}>
+          {words.chooseQuestions(section.choose)}
+        </p>
+      )}
       {player.error && <p className="text-sm text-wrong">{player.error}</p>}
       <MediaList media={sectionMedia} />
 
@@ -186,10 +200,11 @@ interface AnswerSheetProps {
   onAnswer: (questionId: string, response: Response) => void;
   player: ClipPlayer;
   hasBooklet: boolean;
-  contentLang?: 'zh-CN' | 'ja';
+  contentLang?: ContentLang;
 }
 
 function AnswerSheet({ section, answers, onAnswer, player, hasBooklet, contentLang }: AnswerSheetProps) {
+  const words = paperWords(contentLang);
   return (
     <section aria-label="Answer sheet" className="flex flex-col gap-5 rounded-md border border-rule bg-sheet px-4 py-3">
       {groupForSheet(section.questions).map((group, groupIndex) => (
@@ -218,6 +233,11 @@ function AnswerSheet({ section, answers, onAnswer, player, hasBooklet, contentLa
                     <div lang={contentLang} className="min-w-0 flex-1">
                       <Markdown className="text-[1.0625rem]">{question.prompt}</Markdown>
                     </div>
+                    {question.marks !== undefined && (
+                      <span className="tabular shrink-0 text-sm text-ink-muted" lang={contentLang}>
+                        [{words.marks(question.marks)}]
+                      </span>
+                    )}
                   </div>
                   <MediaList media={hasBooklet ? question.media.filter((media) => media.kind !== 'page-image') : question.media} />
                   <QuestionInput question={question} draft={response} onChange={(draft) => onAnswer(question.id, draft)} onSubmit={() => undefined} locked={false} />

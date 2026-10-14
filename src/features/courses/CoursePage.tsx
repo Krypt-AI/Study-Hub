@@ -24,7 +24,8 @@ import { CourseVisibilityNotes } from '@/features/profile/CourseVisibilityNotes'
 import { CourseAbout } from './CourseAbout';
 import { ResetChapterButton } from './ResetChapterButton';
 import { ShowOnTodaySwitch } from './ShowOnTodaySwitch';
-import { groupAssessments } from '@/domain/content/pastPapers';
+import { groupAssessments, type PastPaperGroup } from '@/domain/content/pastPapers';
+import { paperWords } from '@/features/practice/paperWords';
 
 export default function CoursePage() {
   const { courseId = '' } = useParams();
@@ -44,6 +45,8 @@ export default function CoursePage() {
   const certifications = (catalog.data?.certifications ?? []).filter((certification) => data.certifications.includes(certification.id) || certification.relatedCourses.includes(data.id));
   const prerequisites = (catalog.data?.courses ?? []).filter((candidate) => data.prerequisites.includes(candidate.id));
   const { pastPapers, practice } = groupAssessments(data.assessments);
+  // A subject with past papers and no lessons yet: the papers are what there is to do.
+  const papersFirst = data.units.length === 0;
 
   return (
     <div className="mx-auto max-w-6xl">
@@ -68,9 +71,11 @@ export default function CoursePage() {
           {data.level && <Tag>{data.level}</Tag>}
           <Tag>{data.difficulty}</Tag>
           {data.estimatedHours && <Tag>~{data.estimatedHours} h</Tag>}
-          <Tag tone={completed === lessons.length && lessons.length > 0 ? 'correct' : 'neutral'}>
-            {completed} / {lessons.length} lessons
-          </Tag>
+          {lessons.length > 0 && (
+            <Tag tone={completed === lessons.length ? 'correct' : 'neutral'}>
+              {completed} / {lessons.length} lessons
+            </Tag>
+          )}
         </div>
         <ShowOnTodaySwitch courseId={data.id} className="mt-4 max-w-lg" />
         <div className="mt-4 flex flex-col items-start gap-3 empty:hidden">
@@ -81,6 +86,7 @@ export default function CoursePage() {
       <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
         <div className="flex min-w-0 flex-col gap-6">
           <CourseAbout description={data.description} notice={data.contentNotice} />
+          {papersFirst && <PastPapersSheet course={data} groups={pastPapers} />}
           {data.units.map((unit) => (
             <Sheet
               key={unit.id}
@@ -124,27 +130,12 @@ export default function CoursePage() {
         </div>
 
         <div className="flex min-w-0 flex-col gap-6">
-          {pastPapers.length > 0 && (
-            <Sheet title="Past papers">
-              <div className="flex flex-col gap-5">
-                {pastPapers.map((group) => (
-                  <section key={group.kind} aria-label={group.title} className="flex flex-col gap-3">
-                    <h3 className="text-sm font-semibold tracking-wide text-ink-muted uppercase">{group.title}</h3>
-                    <ul className="flex flex-col gap-3">
-                      {group.papers.map((assessment) => (
-                        <AssessmentItem key={assessment.id} courseId={data.id} assessment={assessment} action="Try this paper" />
-                      ))}
-                    </ul>
-                  </section>
-                ))}
-              </div>
-            </Sheet>
-          )}
+          {!papersFirst && <PastPapersSheet course={data} groups={pastPapers} />}
           {practice.length > 0 && (
             <Sheet title="Mock exams and quizzes">
               <ul className="flex flex-col gap-3">
                 {practice.map((assessment) => (
-                  <AssessmentItem key={assessment.id} courseId={data.id} assessment={assessment} action={assessment.kind === 'mock-exam' ? 'Take the mock exam' : 'Take the quiz'} />
+                  <AssessmentItem key={assessment.id} course={data} assessment={assessment} action={assessment.kind === 'mock-exam' ? 'Take the mock exam' : 'Take the quiz'} />
                 ))}
               </ul>
             </Sheet>
@@ -235,16 +226,53 @@ function MasterySheet({ course, mastery }: { course: Course; mastery: TopicMaste
   );
 }
 
-function AssessmentItem({ courseId, assessment, action }: { courseId: string; assessment: Assessment; action: string }) {
-  const questions = assessment.sections.reduce((sum, section) => sum + section.questions.length, 0);
+function PastPapersSheet({ course, groups }: { course: Course; groups: PastPaperGroup[] }) {
+  if (groups.length === 0) return null;
+  return (
+    <Sheet title="Past papers">
+      <div className="flex flex-col gap-5">
+        {groups.map((group) => (
+          <section key={group.kind} aria-label={group.title} className="flex flex-col gap-3">
+            <h3 className="text-sm font-semibold tracking-wide text-ink-muted uppercase">{group.title}</h3>
+            <ul className="flex flex-col gap-3">
+              {group.papers.map((assessment) => (
+                <AssessmentItem key={assessment.id} course={course} assessment={assessment} action="Try this paper" />
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
+    </Sheet>
+  );
+}
+
+/** "3 sections, 60 marks, 90 minutes": a marked paper gives its marks, others their question count. */
+function paperDetails(course: Course, assessment: Assessment): string {
+  const words = paperWords(contentLanguage(course));
+  const questions = assessment.sections.flatMap((section) => section.questions);
+  const marked = questions.some((question) => question.marks !== undefined);
+  // A "choose" section counts its chosen questions' marks once, as the paper prints its total.
+  const marks = assessment.sections.reduce((sum, section) => {
+    const each = section.questions.map((question) => question.marks ?? 1).sort((a, b) => b - a);
+    return sum + each.slice(0, section.choose ?? each.length).reduce((total, value) => total + value, 0);
+  }, 0);
+  return [
+    words.sections(assessment.sections.length),
+    marked ? words.marks(marks) : words.questions(questions.length),
+    assessment.timeLimitMinutes ? words.minutes(assessment.timeLimitMinutes) : undefined,
+  ]
+    .filter(Boolean)
+    .join(', ');
+}
+
+function AssessmentItem({ course, assessment, action }: { course: Course; assessment: Assessment; action: string }) {
   return (
     <li className="flex flex-col gap-2">
-      <p className="font-medium">{assessment.title}</p>
-      <p className="text-sm text-ink-muted">
-        {assessment.sections.length} section{assessment.sections.length === 1 ? '' : 's'} · {questions} questions
-        {assessment.timeLimitMinutes ? ` · ${assessment.timeLimitMinutes} min` : ''}
+      <p className="font-medium" lang={contentLanguage(course)}>
+        {assessment.title}
       </p>
-      <ButtonLink to={assessmentUrl(courseId, assessment.id)} icon={<ClipboardCheck className="size-4" />} className="self-start">
+      <p className="text-sm text-ink-muted">{paperDetails(course, assessment)}</p>
+      <ButtonLink to={assessmentUrl(course.id, assessment.id)} icon={<ClipboardCheck className="size-4" />} className="self-start">
         {action}
       </ButtonLink>
     </li>

@@ -122,6 +122,8 @@ const questionBase = {
     })
     .refine((reference) => reference.heading || reference.image, 'A reference names a lesson heading or an image.')
     .optional(),
+  /** Marks the question carries on a paper ("[2 markah]"); 1 when not given. */
+  marks: z.number().positive().optional(),
   /** Where the question sits on a printed answer sheet, e.g. group "文法 問題2", number "8". */
   sheet: z.object({ group: z.string(), number: z.string() }).optional(),
   tags: z.array(z.string()).default([]),
@@ -136,6 +138,8 @@ export const choiceQuestionSchema = z.object({
   correct: z.array(z.string()).min(1),
   multiple: z.boolean().default(false),
   shuffle: z.boolean().default(true),
+  /** How the options are labelled, as the paper prints them: 1, 2, 3 (JLPT) or A, B, C (UASA). */
+  labels: z.enum(['numbers', 'letters']).default('numbers'),
   /** Offered when the learner picks this tier for the subject; without one, at every tier. */
   tier: z.enum(['easy', 'medium', 'hard']).optional(),
 });
@@ -152,6 +156,8 @@ export const clozeQuestionSchema = z.object({
   type: z.literal('cloze'),
   /** Text with numbered gaps written as [[1]], [[2]], ... */
   text: markdown,
+  /** The same answer cannot count twice: for "name two of these" gaps that share their accepted answers. */
+  distinct: z.boolean().default(false),
   blanks: z
     .array(
       z.object({
@@ -171,13 +177,40 @@ export const rubricCriterionSchema = z.object({
   weight: z.number().positive().default(1),
 });
 
-export const longQuestionSchema = z.object({
-  ...questionBase,
-  type: z.literal('long'),
-  rubric: z.array(rubricCriterionSchema).min(1),
-  minWords: z.number().int().positive().optional(),
-  modelAnswer: markdown,
+/** One band of a marking scheme: "Cemerlang, 8 to 10 marks: ...". */
+export const markBandSchema = z
+  .object({
+    name: z.string().optional(),
+    min: z.number().nonnegative(),
+    max: z.number().nonnegative(),
+    description: markdown.optional(),
+  })
+  .refine((band) => band.min <= band.max, 'A band\'s min is at most its max.');
+
+/** Part of a mark scheme (content, language, ...): the learner gives one mark from one of its bands. */
+export const markingPartSchema = z.object({
+  title: z.string(),
+  /** Highest band first, as schemes print them. */
+  bands: z.array(markBandSchema).min(1),
 });
+
+export const longQuestionSchema = z
+  .object({
+    ...questionBase,
+    type: z.literal('long'),
+    /** Points to look for, detected in the answer and confirmed by the learner. */
+    rubric: z.array(rubricCriterionSchema).default([]),
+    /** A scheme marked by bands, part by part, as a teacher marks it; the parts' highest marks add up to `marks`. */
+    marking: z.array(markingPartSchema).default([]),
+    minWords: z.number().int().positive().optional(),
+    maxWords: z.number().int().positive().optional(),
+    modelAnswer: markdown,
+  })
+  .refine((question) => question.rubric.length > 0 || question.marking.length > 0, 'A long question has a rubric or a mark scheme.')
+  .refine(
+    (question) => question.marking.length === 0 || question.marks === question.marking.reduce((sum, part) => sum + Math.max(...part.bands.map((band) => band.max)), 0),
+    'The mark scheme\'s highest marks add up to the question\'s marks.',
+  );
 
 export const translationQuestionSchema = z.object({
   ...questionBase,
@@ -332,11 +365,13 @@ export const assessmentSectionSchema = z.object({
   instructions: markdown.optional(),
   timeLimitMinutes: z.number().positive().optional(),
   media: z.array(mediaSchema).default([]),
+  /** Answer only this many of the questions ("Pilih satu soalan"); every question counts when absent. */
+  choose: z.number().int().positive().optional(),
   questions: z.array(questionSchema).min(1),
 });
 
-/** The kind of a past paper, as its title names it. */
-export const pastPaperKindSchema = z.enum(['midterm', 'test', 'final']);
+/** The kind of a past paper, as its title names it; `uasa` is a school's end-of-session exam (Ujian Akhir Sesi Akademik). */
+export const pastPaperKindSchema = z.enum(['midterm', 'test', 'final', 'uasa']);
 
 export const assessmentSchema = z.object({
   id: contentId,
@@ -381,7 +416,8 @@ export const courseSchema = z.object({
   certifications: z.array(contentId).default([]),
   estimatedHours: z.number().positive().optional(),
   topics: z.array(z.object({ id: contentId, title: z.string() })).default([]),
-  units: z.array(unitSchema).min(1),
+  /** At least one unit, or at least one assessment (a subject with past papers only); the content build checks this. */
+  units: z.array(unitSchema).default([]),
   assessments: z.array(assessmentSchema).default([]),
   source: sourceRefSchema,
   /** Shown at the top of the course, e.g. OCR accuracy notes for imported material. */

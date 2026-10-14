@@ -35,13 +35,13 @@ test('unknown routes show the not-found page', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1, name: 'Page not found' })).toBeVisible();
 });
 
-test('courses open on their areas, and the University area on the current semester', async ({ page }) => {
+test('courses open on their areas, and the UNITEN area on the current semester', async ({ page }) => {
   await page.goto('/courses');
   const areas = page.getByRole('navigation', { name: 'Course areas' });
   await expect(areas.getByRole('link', { name: /Japanese \(JLPT\)/u })).toBeVisible();
   await expect(areas.getByRole('link', { name: /AI Engineering/u })).toBeVisible();
-  await areas.getByRole('link', { name: /^University/u }).click();
-  await expect(page.getByRole('heading', { level: 1, name: 'University' })).toBeVisible();
+  await areas.getByRole('link', { name: /^UNITEN/u }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'UNITEN' })).toBeVisible();
   const semester = page.getByRole('combobox', { name: 'Semester' });
   await expect(semester).toHaveValue('Sem 1 2026');
   await semester.selectOption('all');

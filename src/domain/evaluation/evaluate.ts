@@ -98,9 +98,16 @@ export function evaluateShort(question: ShortQuestion, text: string): Feedback {
 }
 
 export function evaluateCloze(question: ClozeQuestion, blanks: Record<string, string>): Feedback {
+  const counted = new Set<string>();
   const parts: FeedbackPart[] = question.blanks.map((blank, index) => {
     const response = blanks[blank.id] ?? '';
     const result = matchAnswer(response, blank.accepted, blank.match);
+    // "Name two of the errors": the same answer in a second gap is not a second error found.
+    const key = response.trim().toLocaleLowerCase();
+    if (question.distinct && result.verdict !== 'incorrect') {
+      if (counted.has(key)) return { label: `Gap ${index + 1}`, verdict: 'incorrect', response, expected: blank.accepted[0], message: 'This answer is already counted in an earlier gap.' };
+      counted.add(key);
+    }
     return {
       label: `Gap ${index + 1}`,
       verdict: result.verdict,
@@ -141,7 +148,22 @@ const RUBRIC_LIMITATION =
   'Open answers are checked against a rubric by looking for key ideas and terms. It can miss ideas you expressed in other words, ' +
   'so tick the criteria you covered before confirming.';
 
+/** What a written answer's feedback says, in the question's language (a BM question is answered and marked in BM). */
+const LONG_ANSWER_TEXT = {
+  en: {
+    headline: HEADLINES['self-review'],
+    tooShort: (words: number, min: number) => `Your answer has about ${words} words; aim for at least ${min}.`,
+    tooLong: (words: number, max: number) => `Your answer has about ${words} words; the limit is ${max}.`,
+  },
+  ms: {
+    headline: 'Tanda jawapan anda dengan panduan penskoran',
+    tooShort: (words: number, min: number) => `Jawapan anda kira-kira ${words} patah perkataan; tulis sekurang-kurangnya ${min}.`,
+    tooLong: (words: number, max: number) => `Jawapan anda kira-kira ${words} patah perkataan; hadnya ${max}.`,
+  },
+};
+
 export function evaluateLong(question: LongQuestion, text: string): Feedback {
+  const wording = LONG_ANSWER_TEXT[question.language === 'ms' ? 'ms' : 'en'];
   const rubric = question.rubric.map((criterion) => ({
     id: criterion.id,
     label: criterion.label,
@@ -149,20 +171,25 @@ export function evaluateLong(question: LongQuestion, text: string): Feedback {
     detected: meetsKeywordGroups(text, criterion.keywords),
   }));
   const total = rubric.reduce((sum, criterion) => sum + criterion.weight, 0);
-  const score = rubric.reduce((sum, criterion) => sum + (criterion.detected ? criterion.weight : 0), 0) / total;
+  const score = total ? rubric.reduce((sum, criterion) => sum + (criterion.detected ? criterion.weight : 0), 0) / total : 0;
   const points: FeedbackPoint[] = [];
   const words = countWords(text);
   if (question.minWords && words < question.minWords) {
-    points.push({ tone: 'warning', message: `Your answer has about ${words} words; aim for at least ${question.minWords}.` });
+    points.push({ tone: 'warning', message: wording.tooShort(words, question.minWords) });
+  }
+  if (question.maxWords && words > question.maxWords) {
+    points.push({ tone: 'warning', message: wording.tooLong(words, question.maxWords) });
   }
   return feedback({
     verdict: text.trim() ? 'self-review' : 'incorrect',
     score: text.trim() ? score : 0,
+    ...(text.trim() ? { headline: wording.headline } : {}),
     points,
     missing: rubric.filter((criterion) => !criterion.detected).map((criterion) => criterion.label),
     expected: [question.modelAnswer],
     rubric,
-    limitations: RUBRIC_LIMITATION,
+    marking: question.marking.length ? question.marking : undefined,
+    limitations: question.marking.length ? undefined : RUBRIC_LIMITATION,
   });
 }
 

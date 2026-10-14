@@ -22,7 +22,7 @@ import type { ProfileDraft } from './profileDraft';
 const LEVEL_HINTS: Record<SchoolLevel, string> = {
   elementary: 'Standard 1 to 6 (KSSR)',
   secondary: 'Form 1 to 5 (KSSM)',
-  university: 'Your university subjects',
+  university: 'Your UNITEN subjects',
 };
 
 export function ProfileFields({ draft, onChange }: { draft: ProfileDraft; onChange: (draft: ProfileDraft) => void }) {
