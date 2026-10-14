@@ -15,7 +15,7 @@ export interface ExamIntroProps {
   timed: boolean;
   onTimedChange: (timed: boolean) => void;
   onStart: () => void;
-  /** An unfinished sitting kept in this browser. */
+  /** An unfinished sitting saved with the learner's data. */
   resumable?: { section: number; answered: number; onResume: () => void; onDiscard: () => void };
 }
 

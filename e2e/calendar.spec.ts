@@ -1,5 +1,6 @@
 /** The optional calendar: a weekly class and an exam date are kept, and the exam shows on Today. */
 import { expect, test } from './fixtures';
+import { addImportantDate } from './calendarSteps';
 import { addDaysTo, todayKey } from './dates';
 
 test('a timetable class and an important date are saved and shown', async ({ page }) => {
@@ -19,14 +20,7 @@ test('a timetable class and an important date are saved and shown', async ({ pag
   await expect(page.getByRole('region', { name: /^Monday/u }).getByText('CMPD333 Cyber Security Essentials')).toBeVisible();
 
   // A midterm in three days.
-  const examDay = addDaysTo(todayKey(), 3);
-  await page.getByRole('button', { name: 'Add important date' }).click();
-  const dateDialog = page.getByRole('dialog', { name: 'Add an important date' });
-  await dateDialog.getByLabel('What').selectOption('Midterm');
-  await dateDialog.getByLabel('Subject').selectOption({ label: 'CMPD333 Cyber Security Essentials' });
-  await dateDialog.getByLabel('Day').fill(examDay);
-  await dateDialog.getByRole('button', { name: 'Add date' }).click();
-  await expect(dateDialog).toBeHidden();
+  await addImportantDate(page, { kind: 'Midterm', subject: 'CMPD333 Cyber Security Essentials', day: addDaysTo(todayKey(), 3) });
 
   await page.reload();
   await page.getByRole('tab', { name: /Important dates/u }).click();

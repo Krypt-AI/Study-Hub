@@ -29,6 +29,7 @@ const devServer = (port: number, env: Record<string, string>) => ({
 
 export default defineConfig({
   testDir: 'e2e',
+  globalSetup: './e2e/warmUp.ts',
   timeout: 60_000,
   // The first run of each code runtime compiles its worker in dev mode, which is slow under parallel load.
   expect: { timeout: 15_000 },

@@ -10,6 +10,7 @@ describe('backups', () => {
     await source.saveImportantDate({ id: 'd1', title: 'CMPD363 midterm', kind: 'midterm', date: '2026-11-18', createdAt: 'a', updatedAt: 'a' });
     await source.recordActivity('2026-10-11', { minutes: 3 });
     await source.saveSettings({ dailyGoalMinutes: 45, dailyGoalQuestions: 10, reviewSessionSize: 25, desiredRetention: 0.85 });
+    await source.saveExamDraft({ id: 'jlpt-n5/mock', courseId: 'jlpt-n5', assessmentId: 'mock', sectionIndex: 1, startedAt: 1, timesMs: [600], timed: true, answers: { q1: { type: 'choice', selected: ['a'] } }, updatedAt: 'a' });
 
     const backup = parseBackup(JSON.stringify(await source.exportAll()));
     const target = new LocalRepository('backup-target');
@@ -20,15 +21,26 @@ describe('backups', () => {
     expect((await target.listImportantDates()).map((entry) => entry.kind)).toEqual(['midterm']);
     expect((await target.listActivityDays()).map((day) => day.minutes)).toEqual([3]);
     expect((await target.getSettings()).dailyGoalMinutes).toBe(45);
+    expect((await target.getExamDraft('jlpt-n5/mock'))?.sectionIndex).toBe(1);
     source.close();
     target.close();
   });
 
-  it('imports version 1 backups, which have no calendar', () => {
-    const empty = { attempts: [], lessonProgress: [], reviewStates: [], topicMastery: [], noteFolders: [], notes: [{ id: 'n1' }], codeProjects: [], codeVersions: [], customExercises: [], submissions: [], bookmarks: [], certificationProgress: [], activityDays: [], settings: {} };
-    const backup = parseBackup(JSON.stringify({ format: 'study-hub-backup', version: 1, exportedAt: 'a', ...empty }));
-    expect(backup.version).toBe(2);
+  const empty = { attempts: [], lessonProgress: [], reviewStates: [], topicMastery: [], codeProjects: [], codeVersions: [], customExercises: [], submissions: [], bookmarks: [], certificationProgress: [], activityDays: [], settings: {} };
+
+  it('imports version 1 backups, which have no calendar and no exam sittings', () => {
+    const backup = parseBackup(JSON.stringify({ format: 'study-hub-backup', version: 1, exportedAt: 'a', ...empty, noteFolders: [], notes: [{ id: 'n1' }] }));
+    expect(backup.version).toBe(3);
     expect(backup.importantDates).toEqual([]);
+    expect(backup.examDrafts).toEqual([]);
+  });
+
+  it('imports version 2 backups, keeping their calendar', () => {
+    const date = { id: 'd1', title: 'Quiz', kind: 'quiz', date: '2026-11-02', createdAt: 'a', updatedAt: 'a' };
+    const backup = parseBackup(JSON.stringify({ format: 'study-hub-backup', version: 2, exportedAt: 'a', ...empty, semesters: [], timetableClasses: [], importantDates: [date] }));
+    expect(backup.version).toBe(3);
+    expect(backup.importantDates).toEqual([date]);
+    expect(backup.examDrafts).toEqual([]);
   });
 
   it('rejects files that are not Study Hub backups', () => {

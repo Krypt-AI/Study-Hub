@@ -5,7 +5,7 @@ By default Study Hub keeps your data in the browser. Connect Supabase to sign in
 ## Set up
 
 1. Create a project at [supabase.com](https://supabase.com).
-2. Apply the migrations in `supabase/migrations/`, oldest first (the second adds the calendar tables, the third profiles, the fourth the table privileges signed-in users need):
+2. Apply the migrations in `supabase/migrations/`, oldest first (the second adds the calendar tables, the third profiles, the fourth the table privileges signed-in users need, the fifth learners and unfinished exam sittings):
    - with the Supabase CLI: `supabase link --project-ref <ref>` then `supabase db push`, or
    - paste each SQL file into the dashboard's SQL editor and run it once, in name order.
 3. Turn on the sign-in providers: [DEPLOY.md, step 2](DEPLOY.md#2-sign-in-providers).
@@ -22,7 +22,7 @@ By default Study Hub keeps your data in the browser. Connect Supabase to sign in
 
 ## Moving your local data
 
-In local mode, **Settings → Backups → Export backup**. Then configure Supabase, sign in and use **Import backup** (Merge or Replace).
+After the first sign-in on a device that has progress, Study Hub offers once to bring every learner on the device into the account. To move data by hand: **Settings → Backups → Export backup** for each learner, then sign in, switch to the learner and use **Import backup** (Merge or Replace).
 
 ## How your data is protected
 
@@ -30,6 +30,7 @@ In local mode, **Settings → Backups → Export backup**. Then configure Supaba
 - The `anon` role (signed out) has no privileges on these tables.
 - Two functions (`record_activity`, `delete_note_folder`) run as the caller, so the same policies apply inside them.
 - `profiles` holds each user's email, name, picture and sign-in providers, copied from `auth.users` by a trigger. A user can read their own profile and change only its display name.
+- `learners` holds the account's learners. Every learner table's key is `(user_id, learner_id, id)`, with a foreign key to the learner: a row can only belong to one of the account's own learners and is deleted with it. The learner `main` is created with the account and cannot be removed.
 - `npm test` runs `supabase/tests/rls.test.ts`, which applies the migrations to a real Postgres (PGlite) and checks that another user's rows cannot be read, changed, deleted or written, that signed-out requests are refused, and that profiles stay private.
 
 ## Schema

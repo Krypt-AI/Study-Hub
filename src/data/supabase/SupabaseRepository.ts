@@ -1,7 +1,8 @@
 /**
  * StudyRepository backed by Supabase Postgres (schema: supabase/migrations). Each row holds
  * the app's record as JSONB; row level security limits every query to the signed-in
- * learner, and user_id is filled in by the database, so this class never sends one.
+ * account, and user_id is filled in by the database, so this class never sends one.
+ * One instance serves one of the account's learners: every query is filtered by learner_id.
  */
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type {
@@ -15,6 +16,7 @@ import type {
   CodeVersionRecord,
   CustomExerciseRecord,
   DayKey,
+  ExamDraftRecord,
   ImportantDateRecord,
   LegacyNote,
   LessonProgressRecord,
@@ -26,6 +28,7 @@ import type {
   TopicMasteryRecord,
 } from '../records';
 import { DEFAULT_SETTINGS } from '../records';
+import { MAIN_LEARNER_ID } from '../learners/learners';
 import type { AttemptQuery, ImportMode, StudyRepository } from '../repository';
 
 /** Table for each record type, with the record field that is its key. */
@@ -44,13 +47,16 @@ const TABLES = {
   semesters: 'term',
   timetable_classes: 'id',
   important_dates: 'id',
+  exam_drafts: 'id',
 } as const;
 
-/** Left by the removed notebook; read only to let the learner download their notes. */
+/** Left by the removed notebook: account-wide (they predate learners), read only to let the main learner download them. */
 const LEGACY_NOTE_TABLES = ['notes', 'note_folders'] as const;
 
-type Table = keyof typeof TABLES | 'settings' | (typeof LEGACY_NOTE_TABLES)[number];
-type Query = ReturnType<ReturnType<SupabaseClient['from']>['select']>;
+type Table = keyof typeof TABLES | 'settings';
+/** The records of one learner in a table. */
+const learnerRows = (client: SupabaseClient, table: string, learnerId: string) => client.from(table).select('record').eq('learner_id', learnerId);
+type Query = ReturnType<typeof learnerRows>;
 
 /** PostgREST returns at most 1000 rows per request; larger reads are paged. */
 const PAGE_SIZE = 1000;
@@ -60,7 +66,10 @@ const WRITE_BATCH = 500;
 export class SupabaseRepository implements StudyRepository {
   readonly backend = 'supabase' as const;
 
-  constructor(private readonly client: SupabaseClient) {}
+  constructor(
+    private readonly client: SupabaseClient,
+    private readonly learnerId: string,
+  ) {}
 
   // Generic access ---------------------------------------------------------------------
 
@@ -68,7 +77,7 @@ export class SupabaseRepository implements StudyRepository {
     const records: T[] = [];
     for (let from = 0; limit === undefined || from < limit; from += PAGE_SIZE) {
       const to = (limit === undefined ? from + PAGE_SIZE : Math.min(from + PAGE_SIZE, limit)) - 1;
-      const { data, error } = await refine(this.client.from(table).select('record')).range(from, to);
+      const { data, error } = await refine(learnerRows(this.client, table, this.learnerId)).range(from, to);
       if (error) throw failure(table, error);
       const rows = (data ?? []) as Array<{ record: T }>;
       records.push(...rows.map((row) => row.record));
@@ -78,7 +87,7 @@ export class SupabaseRepository implements StudyRepository {
   }
 
   private async get<T>(table: Table, id: string): Promise<T | undefined> {
-    const { data, error } = await this.client.from(table).select('record').eq('id', id).maybeSingle();
+    const { data, error } = await learnerRows(this.client, table, this.learnerId).eq('id', id).maybeSingle();
     if (error) throw failure(table, error);
     return (data as { record: T } | null)?.record;
   }
@@ -86,14 +95,14 @@ export class SupabaseRepository implements StudyRepository {
   private async put(table: keyof typeof TABLES, records: object[]): Promise<void> {
     const key = TABLES[table];
     for (let start = 0; start < records.length; start += WRITE_BATCH) {
-      const rows = records.slice(start, start + WRITE_BATCH).map((record) => ({ id: String((record as Record<string, unknown>)[key]), record }));
-      const { error } = await this.client.from(table).upsert(rows, { onConflict: 'user_id,id' });
+      const rows = records.slice(start, start + WRITE_BATCH).map((record) => ({ learner_id: this.learnerId, id: String((record as Record<string, unknown>)[key]), record }));
+      const { error } = await this.client.from(table).upsert(rows, { onConflict: 'user_id,learner_id,id' });
       if (error) throw failure(table, error);
     }
   }
 
   private async remove(table: Table, column: string, value: string): Promise<void> {
-    const { error } = await this.client.from(table).delete().eq(column, value);
+    const { error } = await this.client.from(table).delete().eq('learner_id', this.learnerId).eq(column, value);
     if (error) throw failure(table, error);
   }
 
@@ -191,11 +200,15 @@ export class SupabaseRepository implements StudyRepository {
   }
 
   async listLegacyNotes() {
-    const notes = await this.select<LegacyNote>('notes');
+    if (this.learnerId !== MAIN_LEARNER_ID) return [];
+    const { data, error } = await this.client.from('notes').select('record').order('id');
+    if (error) throw failure('notes', error);
+    const notes = ((data ?? []) as Array<{ record: LegacyNote }>).map((row) => row.record);
     return notes.map(({ id, title, body, updatedAt }) => ({ id, title, body, updatedAt })).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   }
 
   async deleteLegacyNotes() {
+    if (this.learnerId !== MAIN_LEARNER_ID) return;
     for (const table of LEGACY_NOTE_TABLES) {
       const { error } = await this.client.from(table).delete().neq('id', '');
       if (error) throw failure(table, error);
@@ -286,7 +299,7 @@ export class SupabaseRepository implements StudyRepository {
   }
 
   async recordActivity(day: DayKey, delta: ActivityDelta) {
-    await this.rpc('record_activity', { p_day: day, p_delta: delta });
+    await this.rpc('record_activity', { p_learner: this.learnerId, p_day: day, p_delta: delta });
   }
 
   async getSettings(): Promise<Settings> {
@@ -294,12 +307,33 @@ export class SupabaseRepository implements StudyRepository {
   }
 
   async saveSettings(settings: Settings) {
-    const { error } = await this.client.from('settings').upsert({ id: 'settings', record: settings }, { onConflict: 'user_id,id' });
+    const { error } = await this.client.from('settings').upsert({ learner_id: this.learnerId, id: 'settings', record: settings }, { onConflict: 'user_id,learner_id,id' });
     if (error) throw failure('settings', error);
   }
 
+  getExamDraft(id: string) {
+    return this.get<ExamDraftRecord>('exam_drafts', id);
+  }
+
+  async saveExamDraft(record: ExamDraftRecord) {
+    await this.put('exam_drafts', [record]);
+  }
+
+  async deleteExamDraft(id: string) {
+    await this.remove('exam_drafts', 'id', id);
+  }
+
+  async isEmpty() {
+    for (const table of Object.keys(TABLES) as Array<keyof typeof TABLES>) {
+      const { count, error } = await this.client.from(table).select('id', { count: 'exact', head: true }).eq('learner_id', this.learnerId);
+      if (error) throw failure(table, error);
+      if (count) return false;
+    }
+    return true;
+  }
+
   async exportAll(): Promise<BackupFile> {
-    const [attempts, lessonProgress, reviewStates, topicMastery, codeProjects, codeVersions, customExercises, submissions, bookmarks, certificationProgress, activityDays, semesters, timetableClasses, importantDates, settings] =
+    const [attempts, lessonProgress, reviewStates, topicMastery, codeProjects, codeVersions, customExercises, submissions, bookmarks, certificationProgress, activityDays, semesters, timetableClasses, importantDates, examDrafts, settings] =
       await Promise.all([
         this.listAttempts(),
         this.listLessonProgress(),
@@ -315,11 +349,12 @@ export class SupabaseRepository implements StudyRepository {
         this.listSemesters(),
         this.listTimetableClasses(),
         this.listImportantDates(),
+        this.select<ExamDraftRecord>('exam_drafts'),
         this.getSettings(),
       ]);
     return {
       format: 'study-hub-backup',
-      version: 2,
+      version: 3,
       exportedAt: new Date().toISOString(),
       attempts,
       lessonProgress,
@@ -335,6 +370,7 @@ export class SupabaseRepository implements StudyRepository {
       semesters,
       timetableClasses,
       importantDates,
+      examDrafts,
       settings,
     };
   }
@@ -343,8 +379,7 @@ export class SupabaseRepository implements StudyRepository {
   async importAll(backup: BackupFile, mode: ImportMode) {
     if (mode === 'replace') {
       for (const table of [...Object.keys(TABLES), 'settings'] as Table[]) {
-        // PostgREST refuses unfiltered deletes; this filter matches every row the learner owns.
-        const { error } = await this.client.from(table).delete().neq('id', '');
+        const { error } = await this.client.from(table).delete().eq('learner_id', this.learnerId);
         if (error) throw failure(table, error);
       }
     }
@@ -362,6 +397,7 @@ export class SupabaseRepository implements StudyRepository {
     await this.put('semesters', backup.semesters);
     await this.put('timetable_classes', backup.timetableClasses);
     await this.put('important_dates', backup.importantDates);
+    await this.put('exam_drafts', backup.examDrafts);
     await this.saveSettings({ ...DEFAULT_SETTINGS, ...backup.settings });
   }
 }

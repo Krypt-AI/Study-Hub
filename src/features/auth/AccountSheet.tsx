@@ -18,8 +18,8 @@ export function AccountSheet() {
     return (
       <Sheet title="Your account">
         <div className="flex flex-col gap-3 text-sm">
-          <p>You are browsing as a guest. Progress made now is kept only until you close or reload the page.</p>
-          <p className="text-ink-muted">Sign in with {providerNames()} to open every course and save your progress, reviews and code to your account.</p>
+          <p>You are studying as a guest. Your progress is saved on this device only, for each learner on it.</p>
+          <p className="text-ink-muted">Sign in with {providerNames()} to open every course and keep your progress, reviews and code in your account, on any device.</p>
           <ButtonLink to="/sign-in?next=%2Fsettings" variant="primary" icon={<LogIn className="size-4" />} className="self-start">
             Sign in
           </ButtonLink>

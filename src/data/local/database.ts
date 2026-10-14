@@ -7,6 +7,7 @@ import type {
   CodeProjectRecord,
   CodeVersionRecord,
   CustomExerciseRecord,
+  ExamDraftRecord,
   ImportantDateRecord,
   LegacyNote,
   LessonProgressRecord,
@@ -41,6 +42,7 @@ export type StudyDatabase = Dexie & {
   semesters: EntityTable<SemesterRecord, 'term'>;
   timetableClasses: EntityTable<TimetableClassRecord, 'id'>;
   importantDates: EntityTable<ImportantDateRecord, 'id'>;
+  examDrafts: EntityTable<ExamDraftRecord, 'id'>;
   settings: EntityTable<SettingsRow, 'key'>;
 };
 
@@ -69,6 +71,7 @@ export function openStudyDatabase(name = 'study-hub'): StudyDatabase {
     timetableClasses: 'id, term',
     importantDates: 'id, date',
   });
+  database.version(3).stores({ examDrafts: 'id' });
   return database;
 }
 
@@ -88,5 +91,6 @@ export const TABLES = [
   'semesters',
   'timetableClasses',
   'importantDates',
+  'examDrafts',
   'settings',
 ] as const;

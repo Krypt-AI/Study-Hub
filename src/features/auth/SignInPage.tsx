@@ -72,7 +72,7 @@ export default function SignInPage() {
             <Link to={next} className="text-print-strong hover:underline">
               Continue as a guest
             </Link>{' '}
-            to open the University courses. Progress made as a guest is not kept.
+            to open the University courses. A guest’s progress is saved on this device only.
           </p>
         </div>
       </div>

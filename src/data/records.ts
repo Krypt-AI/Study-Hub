@@ -265,10 +265,43 @@ export interface ImportantDateRecord {
   updatedAt: Timestamp;
 }
 
+// Learners and exam sittings ------------------------------------------------------------
+
+/**
+ * One person studying: a device or an account can hold several (siblings sharing a computer).
+ * Every other record belongs to exactly one learner.
+ */
+export interface LearnerRecord {
+  id: string;
+  /** First name or nickname, shown in greetings and the learner switcher. */
+  name: string;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+/** An unfinished mock-exam sitting, so it can be resumed after a reload or on another device. */
+export interface ExamDraftRecord {
+  /** `${courseId}/${assessmentId}`: one sitting per exam. */
+  id: string;
+  courseId: string;
+  assessmentId: string;
+  sectionIndex: number;
+  /** Section clock, in epoch milliseconds: it keeps running while you are away, as in the real test. */
+  startedAt: number;
+  endsAt?: number;
+  /** Time spent in each finished section. */
+  timesMs: number[];
+  timed: boolean;
+  answers: Record<string, Response>;
+  updatedAt: Timestamp;
+}
+
+export const examDraftId = (courseId: string, assessmentId: string) => `${courseId}/${assessmentId}`;
+
 /** Everything a learner owns, used for export/import and moving between backends. */
 export interface BackupFile {
   format: 'study-hub-backup';
-  version: 2;
+  version: 3;
   exportedAt: Timestamp;
   attempts: AttemptRecord[];
   lessonProgress: LessonProgressRecord[];
@@ -284,5 +317,6 @@ export interface BackupFile {
   semesters: SemesterRecord[];
   timetableClasses: TimetableClassRecord[];
   importantDates: ImportantDateRecord[];
+  examDrafts: ExamDraftRecord[];
   settings: Settings;
 }

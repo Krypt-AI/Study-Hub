@@ -15,7 +15,12 @@ workers/ sandboxed runtimes, spoken to through features/playground/execution/cod
 ```
 
 - **Content** (`domain/content`) is defined once with zod (`schema.ts`). `scripts/build-content.ts` validates every authored and generated file, fills defaults, checks cross-references and writes `public/content/{catalog.json, courses/*.json, search-index.json}`. The app loads these without re-validating, checking only the format version.
-- **Learner data** (`data/records.ts`) has one shape for both backends. Everything goes through the `StudyRepository` interface; pages never touch storage directly. Backups export and import the same records as one JSON file.
+- **Learner data** (`data/records.ts`) has one shape for both backends. Everything goes through the `StudyRepository` interface; pages never touch storage directly. Backups (format version 3; versions 1 and 2 still import) export and import one learner's records as one JSON file.
+- **Learners** (`data/learners/`): several people can share a device or an account (siblings on one computer). Each learner has their own progress, calendar, settings and unfinished exam sittings. There are two separate lists, never mixed:
+  - **device learners** (guests and local mode): kept in the IndexedDB database `study-hub-device`; each learner's data is its own IndexedDB database (`study-hub` for the first learner, so data saved before learners existed stays with them, `study-hub-learner-<id>` for the others). They belong to the device: signing in or out does not change them.
+  - **account learners** (signed in): the Supabase table `learners`; every other table carries `learner_id`, part of its key, with a foreign key that deletes a learner's rows with the learner.
+
+  `RepositoryProvider` opens the active learner (the one chosen last on this device, else the first) and remounts the app under that learner's repository, with an empty query cache, whenever the user or the learner changes. After the first sign-in, when the device has progress and the account has none, `BringDeviceProgress` offers once to copy every device learner into the account (a merge import per learner, safe to repeat).
 - **One write path for answers**: `domain/learning/recordAnswer.ts` stores the attempt, updates the review schedule, topic mastery, daily activity and lesson progress. Lessons, reviews, quizzes and mock exams all use it, and writes are serialised so concurrent answers cannot lose updates.
 
 ## Evaluation (`domain/evaluation`)
@@ -41,7 +46,7 @@ Each runtime is a dedicated module Web Worker: Pyodide (Python), a hardened `Asy
 ## Security and privacy
 
 - Personal data never leaves the browser in local mode. In Supabase mode, every table has row level security that limits rows to their owner; the anon role has no privileges; the browser only ever holds the public anon key. The policies are tested against a real Postgres (PGlite) in `supabase/tests/rls.test.ts`.
-- Accounts and access (hosted mode, [DEPLOY.md](DEPLOY.md)): `features/auth` tracks the Supabase session (Google by default; Discord, GitHub or email via `VITE_AUTH_PROVIDERS`) and mirrors the access token into a cookie. Guests get a scratch IndexedDB emptied on each load. The build writes `content/access.json` (open courses and material sources, from `domain/content/accessManifest.ts`), and the Netlify edge function `netlify/edge-functions/content-gate` applies `domain/content/accessRules.ts` to every request: the files of courses outside the University area need a valid, non-anonymous access token signed by the project.
+- Accounts and access (hosted mode, [DEPLOY.md](DEPLOY.md)): `features/auth` tracks the Supabase session (Google by default; Discord, GitHub or email via `VITE_AUTH_PROVIDERS`) and mirrors the access token into a cookie. Guests use the device learners (above): their progress survives reloads but never leaves the device. Signing out reloads the app, so nothing of the account stays in memory, and account data is never written to IndexedDB. The build writes `content/access.json` (open courses and material sources, from `domain/content/accessManifest.ts`), and the Netlify edge function `netlify/edge-functions/content-gate` applies `domain/content/accessRules.ts` to every request: the files of courses outside the University area need a valid, non-anonymous access token signed by the project.
 - Content from your books is generated locally, git-ignored and not published.
 - Markdown is rendered without raw HTML; external links open with `noopener`.
 

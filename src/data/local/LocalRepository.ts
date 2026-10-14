@@ -1,5 +1,5 @@
 /** StudyRepository backed by the browser's IndexedDB: private to this browser profile, works offline. */
-import type { ActivityDayRecord, ActivityDelta, BackupFile, DayKey, Settings } from '../records';
+import type { ActivityDayRecord, ActivityDelta, BackupFile, DayKey, ExamDraftRecord, Settings } from '../records';
 import { DEFAULT_SETTINGS } from '../records';
 import type { AttemptQuery, ImportMode, StudyRepository } from '../repository';
 import { openStudyDatabase, type StudyDatabase, TABLES } from './database';
@@ -212,8 +212,25 @@ export class LocalRepository implements StudyRepository {
     await this.db.settings.put({ key: 'settings', value: settings });
   }
 
+  getExamDraft(id: string) {
+    return this.db.examDrafts.get(id);
+  }
+
+  async saveExamDraft(record: ExamDraftRecord) {
+    await this.db.examDrafts.put(record);
+  }
+
+  async deleteExamDraft(id: string) {
+    await this.db.examDrafts.delete(id);
+  }
+
+  async isEmpty() {
+    const counts = await Promise.all(TABLES.filter((table) => table !== 'settings').map((table) => this.db.table(table).count()));
+    return counts.every((count) => count === 0);
+  }
+
   async exportAll(): Promise<BackupFile> {
-    const [attempts, lessonProgress, reviewStates, topicMastery, codeProjects, codeVersions, customExercises, submissions, bookmarks, certificationProgress, activityDays, semesters, timetableClasses, importantDates, settings] =
+    const [attempts, lessonProgress, reviewStates, topicMastery, codeProjects, codeVersions, customExercises, submissions, bookmarks, certificationProgress, activityDays, semesters, timetableClasses, importantDates, examDrafts, settings] =
       await Promise.all([
         this.db.attempts.toArray(),
         this.db.lessonProgress.toArray(),
@@ -229,11 +246,12 @@ export class LocalRepository implements StudyRepository {
         this.db.semesters.toArray(),
         this.db.timetableClasses.toArray(),
         this.db.importantDates.toArray(),
+        this.db.examDrafts.toArray(),
         this.getSettings(),
       ]);
     return {
       format: 'study-hub-backup',
-      version: 2,
+      version: 3,
       exportedAt: new Date().toISOString(),
       attempts,
       lessonProgress,
@@ -249,6 +267,7 @@ export class LocalRepository implements StudyRepository {
       semesters,
       timetableClasses,
       importantDates,
+      examDrafts,
       settings,
     };
   }
@@ -270,6 +289,7 @@ export class LocalRepository implements StudyRepository {
       await this.db.semesters.bulkPut(backup.semesters);
       await this.db.timetableClasses.bulkPut(backup.timetableClasses);
       await this.db.importantDates.bulkPut(backup.importantDates);
+      await this.db.examDrafts.bulkPut(backup.examDrafts);
       await this.db.settings.put({ key: 'settings', value: { ...DEFAULT_SETTINGS, ...backup.settings } });
     });
   }

@@ -14,6 +14,7 @@ import type {
   CodeVersionRecord,
   CustomExerciseRecord,
   DayKey,
+  ExamDraftRecord,
   ImportantDateRecord,
   LegacyNote,
   LessonProgressRecord,
@@ -102,6 +103,13 @@ export interface StudyRepository {
 
   getSettings(): Promise<Settings>;
   saveSettings(settings: Settings): Promise<void>;
+
+  getExamDraft(id: string): Promise<ExamDraftRecord | undefined>;
+  saveExamDraft(record: ExamDraftRecord): Promise<void>;
+  deleteExamDraft(id: string): Promise<void>;
+
+  /** True when the learner has no saved progress, calendar, code or saved items (settings do not count). */
+  isEmpty(): Promise<boolean>;
 
   exportAll(): Promise<BackupFile>;
   importAll(backup: BackupFile, mode: ImportMode): Promise<void>;

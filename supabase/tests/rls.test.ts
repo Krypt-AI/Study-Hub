@@ -1,7 +1,8 @@
 /**
  * Row level security, checked on a real Postgres (PGlite) with the migrations applied:
  * learners reach only their own rows, signed-out requests get nothing, the atomic
- * functions keep to the caller's rows, and profiles stay private to their owner.
+ * functions keep to the caller's rows, profiles stay private to their owner, and an account's
+ * learners keep their rows apart.
  */
 import { PGlite } from '@electric-sql/pglite';
 import { readdirSync, readFileSync } from 'node:fs';
@@ -41,7 +42,7 @@ const OLDER_PROJECT_DEFAULTS = 'alter default privileges in schema public grant 
 const LEARNER_TABLES = [
   'attempts', 'lesson_progress', 'review_states', 'topic_mastery', 'note_folders', 'notes', 'code_projects', 'code_versions',
   'custom_exercises', 'submissions', 'bookmarks', 'certification_progress', 'activity_days', 'settings',
-  'semesters', 'timetable_classes', 'important_dates',
+  'semesters', 'timetable_classes', 'important_dates', 'exam_drafts', 'learners',
 ];
 
 let db: PGlite;
@@ -116,7 +117,7 @@ describe('row level security', () => {
 
   it('gives signed-out requests no access', async () => {
     await expect(as(null, () => db.query(`select id from public.important_dates`))).rejects.toThrow(/permission denied/u);
-    await expect(as(null, () => db.query(`select public.record_activity('2026-10-11', '{"minutes": 1}')`))).rejects.toThrow(/permission denied/u);
+    await expect(as(null, () => db.query(`select public.record_activity('main', '2026-10-11', '{"minutes": 1}')`))).rejects.toThrow(/permission denied/u);
   });
 
   it('keeps the row key equal to the record id', async () => {
@@ -151,9 +152,9 @@ describe.each([
 
 describe('atomic functions', () => {
   it('adds activity to the caller’s own day', async () => {
-    await as(ALICE, () => db.query(`select public.record_activity('2026-10-11', '{"minutes": 1, "attempts": 2}')`));
-    await as(ALICE, () => db.query(`select public.record_activity('2026-10-11', '{"minutes": 1, "correct": 1}')`));
-    await as(BOB, () => db.query(`select public.record_activity('2026-10-11', '{"minutes": 5}')`));
+    await as(ALICE, () => db.query(`select public.record_activity('main', '2026-10-11', '{"minutes": 1, "attempts": 2}')`));
+    await as(ALICE, () => db.query(`select public.record_activity('main', '2026-10-11', '{"minutes": 1, "correct": 1}')`));
+    await as(BOB, () => db.query(`select public.record_activity('main', '2026-10-11', '{"minutes": 5}')`));
 
     const alice = await as(ALICE, () => db.query<{ record: Record<string, unknown> }>(`select record from public.activity_days`));
     expect(alice.rows).toHaveLength(1);
@@ -203,5 +204,60 @@ describe('accounts', () => {
     await db.query(`update auth.users set raw_app_meta_data = '{"providers": ["google", "github"]}' where id = $1`, [ALICE]);
     const alice = await as(ALICE, () => db.query(`select display_name, providers from public.profiles`));
     expect(alice.rows).toEqual([{ display_name: 'Ali', providers: ['google', 'github'] }]);
+  });
+});
+
+describe('learners', () => {
+  const learner = (id: string, name: string) => JSON.stringify({ id, name, createdAt: 'a', updatedAt: 'a' });
+  const draft = (id: string) => JSON.stringify({ id, courseId: 'jlpt-n5', assessmentId: 'mock', sectionIndex: 0, answers: {} });
+
+  it('gives every account a main learner named after the sign-in, private to the account', async () => {
+    const alice = await as(ALICE, () => db.query<{ id: string; name: string }>(`select id, record ->> 'name' as name from public.learners`));
+    expect(alice.rows).toEqual([{ id: 'main', name: 'Alice' }]);
+    const bob = await as(BOB, () => db.query<{ name: string }>(`select record ->> 'name' as name from public.learners`));
+    expect(bob.rows).toEqual([{ name: 'Learner 1' }]);
+    await expect(as(null, () => db.query(`select * from public.learners`))).rejects.toThrow(/permission denied/u);
+  });
+
+  it('keeps a row under one of the account’s own learners', async () => {
+    await as(ALICE, () => db.query(`insert into public.learners (id, record) values ('kid', $1)`, [learner('kid', 'Adik')]));
+    await as(ALICE, () => db.query(`insert into public.important_dates (learner_id, id, record) values ('kid', 'k1', $1)`, [importantDate('k1')]));
+    // The same id under another learner is a different row.
+    await as(ALICE, () => db.query(`insert into public.important_dates (learner_id, id, record) values ('main', 'k1', $1)`, [importantDate('k1')]));
+    const rows = await as(ALICE, () => db.query<{ learner_id: string }>(`select learner_id from public.important_dates where id = 'k1' order by learner_id`));
+    expect(rows.rows).toEqual([{ learner_id: 'kid' }, { learner_id: 'main' }]);
+    // Bob has no learner "kid": Alice's learner cannot be borrowed.
+    await expect(as(BOB, () => db.query(`insert into public.important_dates (learner_id, id, record) values ('kid', 'b1', $1)`, [importantDate('b1')]))).rejects.toThrow(/foreign key/u);
+  });
+
+  it('keeps activity per learner', async () => {
+    await as(ALICE, () => db.query(`select public.record_activity('kid', '2026-10-12', '{"minutes": 3}')`));
+    await as(ALICE, () => db.query(`select public.record_activity('main', '2026-10-12', '{"minutes": 7}')`));
+    const days = await as(ALICE, () => db.query<{ learner_id: string; minutes: string }>(`select learner_id, record ->> 'minutes' as minutes from public.activity_days where id = '2026-10-12' order by learner_id`));
+    expect(days.rows).toEqual([{ learner_id: 'kid', minutes: '3' }, { learner_id: 'main', minutes: '7' }]);
+  });
+
+  it('keeps unfinished exam sittings private to their owner', async () => {
+    await as(ALICE, () => db.query(`insert into public.exam_drafts (learner_id, id, record) values ('kid', 'jlpt-n5/mock', $1)`, [draft('jlpt-n5/mock')]));
+    expect((await as(BOB, () => db.query(`select id from public.exam_drafts`))).rows).toEqual([]);
+    await expect(as(null, () => db.query(`select id from public.exam_drafts`))).rejects.toThrow(/permission denied/u);
+  });
+
+  it('removes a learner with all of its rows, but never the main learner', async () => {
+    await as(ALICE, () => db.query(`delete from public.learners where id = 'kid'`));
+    const left = await as(ALICE, () => db.query<{ n: number }>(
+      `select (select count(*) from public.important_dates where learner_id = 'kid')
+            + (select count(*) from public.activity_days where learner_id = 'kid')
+            + (select count(*) from public.exam_drafts where learner_id = 'kid') as n`,
+    ));
+    expect(Number(left.rows[0]?.n)).toBe(0);
+    expect((await as(ALICE, () => db.query(`select id from public.important_dates where id = 'k1'`))).rows).toHaveLength(1);
+    await expect(as(ALICE, () => db.query(`delete from public.learners where id = 'main'`))).rejects.toThrow(/main learner cannot be removed/u);
+  });
+
+  it('deletes everything, the main learner included, when the account is deleted', async () => {
+    await db.query(`delete from auth.users where id = $1`, [ALICE]);
+    const left = await db.query<{ n: number }>(`select (select count(*) from public.learners where user_id = $1) + (select count(*) from public.important_dates where user_id = $1) as n`, [ALICE]);
+    expect(Number(left.rows[0]?.n)).toBe(0);
   });
 });

@@ -23,6 +23,7 @@ import type { Catalog, CourseSummary } from '@/domain/content/types';
 import { courseUrl, lessonUrl } from '@/domain/content/urls';
 import { SKILL_LABELS } from '@/domain/learning/mastery';
 import { ComingUpSheet } from '@/features/calendar/ComingUpSheet';
+import { LearnerSwitcher } from '@/features/learners/LearnerSwitcher';
 import { DueReviewsSheet } from '@/features/practice/DueReviewsSheet';
 import { addDays, dayKey, parseDayKey } from '@/lib/dates';
 import { computeTodayModel, type ResumeTarget, type TodayModel, type WeakTopic, type WeekDay } from './todayModel';
@@ -57,7 +58,10 @@ export default function TodayPage() {
     <div className="mx-auto max-w-6xl">
       <header className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-[2rem] leading-tight font-semibold">Today</h1>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <h1 className="text-[2rem] leading-tight font-semibold">Today</h1>
+            <LearnerSwitcher />
+          </div>
           <p className="mt-1 text-ink-muted">
             {today.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })}
             {model.streak.current > 0 && (

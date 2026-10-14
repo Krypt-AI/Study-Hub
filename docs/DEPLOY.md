@@ -4,7 +4,7 @@ The hosted site works like this:
 
 | Who | Can open | Progress |
 |---|---|---|
-| Anyone (guest) | University courses | kept only until the page is closed |
+| Anyone (guest) | University courses | saved on their device only, for each learner on it |
 | Signed in with Google | every course: each person picks what to study | saved to their account |
 
 Anyone who signs in gets full access: there is no list of approved accounts to keep. Share the link only with the people you study with.
@@ -71,6 +71,8 @@ Both run `npm run check:deploy` first. It stops the deploy if Supabase is not co
 
 Redeploy whenever content changes (new lessons, a new semester, imported books).
 
+**Database changes.** Apply new migrations before deploying the app version that needs them: `npx supabase link --project-ref <ref>` once, then `npx supabase db push --linked`. The learners migration (`20261014010000_learners.sql`) changes every table's key, so the app versions before and after it cannot use the same database: push the migration and run `npm run deploy` straight after.
+
 Netlify's own build from GitHub is switched off in `netlify.toml` (`ignore = "exit 0"`), because it cannot see your courses. Pushing to GitHub therefore does not change the live site; only `npm run deploy` does.
 
 ## 5. Who has signed in
@@ -82,6 +84,10 @@ Netlify's own build from GitHub is switched off in `netlify.toml` (`ignore = "ex
 1. In a private window: the catalog shows **Sign in** tags on the non-University courses, a University course opens, and an HSK course says *Sign in to open this course*.
 2. Opening a locked file directly, such as `https://<site>/content/courses/hsk-1.json`, answers **401**.
 3. Sign in with Google: every course opens, search finds HSK and JLPT words, and **Settings → Your account** shows your name, picture and provider.
+
+## If the Supabase project is paused
+
+Supabase pauses Free Plan projects that show low activity over a 7-day period, and emails the owner before it does. While paused, nobody can sign in or save progress; guests can still study (their progress stays on their device). To resume: **Supabase Dashboard → your organization → the paused project → Resume project**. Its data and settings come back. A paused project can only be restored for a limited time, so check [Project Pausing](https://supabase.com/docs/guides/platform/free-project-pausing) for the current window (on 2026-10-14 the page said both 90 days and up to a year), and export backups now and then. Paid plans are not paused.
 
 ## Running the hosted setup locally
 

@@ -20,6 +20,7 @@ import type { ImportMode } from '@/data/repository';
 import { useRepository } from '@/data/useRepository';
 import { useCatalog } from '@/domain/content/load';
 import { AccountSheet } from '@/features/auth/AccountSheet';
+import { LearnersSheet } from '@/features/learners/LearnersSheet';
 import { useAuth } from '@/features/auth/useAuth';
 import { dayKey, formatDate } from '@/lib/dates';
 import { downloadText } from '@/lib/download';
@@ -38,6 +39,7 @@ export default function SettingsPage() {
           <ShortcutsSheet />
         </div>
         <div className="flex min-w-0 flex-col gap-6">
+          <LearnersSheet />
           <StorageSheet />
           <BackupSheet />
           <LegacyNotesSheet />
@@ -169,8 +171,8 @@ function LocalStorage() {
     <Sheet title="Where your data lives">
       <div className="flex flex-col gap-3 text-sm">
         <p>
-          Your progress, calendar and code are stored <strong>in this browser only</strong> (IndexedDB). Nothing is sent to a server. Clearing this site&apos;s data, or using another
-          browser, starts from empty, so export a backup now and then.
+          Each learner&apos;s progress, calendar and code are stored <strong>in this browser only</strong> (IndexedDB). Nothing is sent to a server. Clearing this site&apos;s data, or using
+          another browser, starts from empty, so export a backup now and then.
         </p>
         <p className="text-ink-muted">
           {usage && <>Using {usage}. </>}
@@ -237,7 +239,7 @@ function BackupSheet() {
   return (
     <Sheet title="Backups">
       <div className="flex flex-col gap-3 text-sm">
-        <p className="text-ink-muted">A backup is one JSON file with all your answers, progress, calendar, code and settings. It also moves your data between browsers or to Supabase.</p>
+        <p className="text-ink-muted">A backup is one JSON file with the current learner’s answers, progress, calendar, code, unfinished exams and settings. It also moves a learner’s data between browsers or into an account.</p>
         <div className="flex flex-wrap gap-2">
           <Button icon={<Download className="size-4" />} onClick={() => void exportBackup()} loading={exporting}>
             Export backup

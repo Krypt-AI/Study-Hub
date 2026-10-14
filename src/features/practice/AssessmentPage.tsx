@@ -1,7 +1,7 @@
 /**
  * A mock exam or quiz sat like the real thing: cover page, timed sections one after another,
- * marking at the end, then results. An unfinished sitting is kept in this browser, so after a
- * reload or a detour it can be resumed from the cover page.
+ * marking at the end, then results. An unfinished sitting is saved with the learner's data, so
+ * after a reload, a detour or on another device it can be resumed from the cover page.
  */
 import { useEffect, useState } from 'react';
 import { useBlocker, useParams } from 'react-router';
@@ -10,6 +10,7 @@ import { Dialog } from '@/components/ui/Dialog';
 import { ErrorState, LoadingState } from '@/components/ui/Feedback';
 import { useToast } from '@/components/ui/useToast';
 import { PartialRecordError, useRecordAnswers } from '@/data/queries';
+import { examDraftId, type ExamDraftRecord } from '@/data/records';
 import { contentLanguage } from '@/domain/content/language';
 import { useCourse } from '@/domain/content/load';
 import { findAssessment } from '@/domain/content/navigation';
@@ -18,7 +19,7 @@ import { confirmSelfReview } from '@/domain/evaluation/evaluate';
 import type { Response } from '@/domain/evaluation/types';
 import type { AnswerContext } from '@/domain/learning/recordAnswer';
 import { ExamIntro } from './exam/ExamIntro';
-import { clearExamDraft, type ExamDraft, loadExamDraft, saveExamDraft } from './exam/examDraft';
+import { isResumable, useDeleteExamDraft, useExamDraft, useSaveExamDraft } from './exam/examDraft';
 import { ExamResults } from './exam/ExamResults';
 import { ExamSection, type FinishReason } from './exam/ExamSection';
 import { answerContexts, type GradedSection, gradeSection } from './exam/gradeExam';
@@ -32,7 +33,15 @@ export default function AssessmentPage() {
   if (!course.data) return <LoadingState />;
   const assessment = findAssessment(course.data, assessmentId);
   if (!assessment) return <ErrorState title="Exam not found" error={`No exam "${assessmentId}" in ${course.data.title}.`} />;
-  return <ExamView key={assessment.id} course={course.data} assessment={assessment} />;
+  return <ExamWithDraft key={assessment.id} course={course.data} assessment={assessment} />;
+}
+
+function ExamWithDraft({ course, assessment }: { course: Course; assessment: Assessment }) {
+  const draft = useExamDraft(course.id, assessment.id);
+  if (draft.error) return <ErrorState title="Your unfinished sitting could not be loaded" error={draft.error} onRetry={() => void draft.refetch()} />;
+  if (draft.data === undefined) return <LoadingState />;
+  const saved = draft.data ?? undefined;
+  return <ExamView course={course} assessment={assessment} savedDraft={isResumable(saved, assessment.sections.length) ? saved : undefined} />;
 }
 
 type Stage =
@@ -41,11 +50,14 @@ type Stage =
   | { kind: 'marking' }
   | { kind: 'results'; graded: GradedSection[] };
 
-function ExamView({ course, assessment }: { course: Course; assessment: Assessment }) {
+function ExamView({ course, assessment, savedDraft }: { course: Course; assessment: Assessment; savedDraft: ExamDraftRecord | undefined }) {
   const [stage, setStage] = useState<Stage>({ kind: 'intro' });
   const [timed, setTimed] = useState(true);
   const [answers, setAnswers] = useState<Record<string, Response>>({});
-  const [draft, setDraft] = useState(() => loadExamDraft(course.id, assessment.id, assessment.sections.length));
+  const [draft, setDraft] = useState(savedDraft);
+  const draftId = examDraftId(course.id, assessment.id);
+  const saveDraft = useSaveExamDraft(draftId).mutate;
+  const deleteDraft = useDeleteExamDraft(draftId).mutate;
   const [markingError, setMarkingError] = useState<string>();
   const record = useRecordAnswers();
   const toast = useToast();
@@ -55,17 +67,17 @@ function ExamView({ course, assessment }: { course: Course; assessment: Assessme
   useEffect(() => {
     if (stage.kind !== 'sitting') return;
     const { index, startedAt, endsAt, timesMs } = stage;
-    saveExamDraft(course.id, assessment.id, { version: 1, sectionIndex: index, startedAt, endsAt, timesMs, timed, answers });
-  }, [course.id, assessment.id, stage, timed, answers]);
+    saveDraft({ id: draftId, courseId: course.id, assessmentId: assessment.id, sectionIndex: index, startedAt, endsAt, timesMs, timed, answers, updatedAt: new Date().toISOString() });
+  }, [draftId, course.id, assessment.id, stage, timed, answers, saveDraft]);
 
-  const resume = (saved: ExamDraft) => {
+  const resume = (saved: ExamDraftRecord) => {
     setTimed(saved.timed);
     setAnswers(saved.answers);
     setStage({ kind: 'sitting', index: saved.sectionIndex, startedAt: saved.startedAt, endsAt: saved.endsAt, timesMs: saved.timesMs });
   };
 
   const discardDraft = () => {
-    clearExamDraft(course.id, assessment.id);
+    deleteDraft();
     setDraft(undefined);
   };
 
@@ -195,7 +207,7 @@ function ExamView({ course, assessment }: { course: Course; assessment: Assessme
         }
       >
         <p className="px-4 py-3 text-sm">
-          Your answers so far are kept in this browser: you can resume from the exam page. The section clock keeps running while you are away.
+          Your answers so far are saved: you can resume from the exam page. The section clock keeps running while you are away.
         </p>
       </Dialog>
     </>

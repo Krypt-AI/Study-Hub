@@ -26,6 +26,7 @@ export const learnerKeys = {
   versions: ['learner', 'versions'] as const,
   exercises: ['learner', 'exercises'] as const,
   submissions: ['learner', 'submissions'] as const,
+  examDraft: (id: string) => ['learner', 'exam-draft', id] as const,
 };
 
 export function useSettings() {

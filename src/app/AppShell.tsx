@@ -25,6 +25,7 @@ import { Kbd, LoadingState } from '@/components/ui/Feedback';
 import { useReviewStates } from '@/data/queries';
 import { isDue } from '@/domain/learning/due';
 import { AccountRailItem } from '@/features/auth/AccountRailItem';
+import { BringDeviceProgress } from '@/features/learners/BringDeviceProgress';
 import { cn } from '@/lib/cn';
 import { useStudyTimer } from '@/features/today/useStudyTimer';
 import { useTheme } from './useTheme';
@@ -174,6 +175,7 @@ export function AppShell() {
       )}
 
       <main id="main" className="min-w-0 px-4 py-6 sm:px-6 lg:px-10 lg:py-8 print:p-0">
+        <BringDeviceProgress />
         <Suspense fallback={<LoadingState />}>
           <Outlet />
         </Suspense>
