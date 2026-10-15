@@ -1,7 +1,7 @@
 /**
  * Today: the session's answer sheet. What is due, where you stopped, how much of the
  * goal is filled, which topics need practice, and today's classes from the calendar. Resume is
- * always the latest lesson; due reviews and weak topics cover only the subjects whose study plan
+ * always the single latest lesson, with the bookmarked courses beneath it; due reviews and weak topics cover only the subjects whose study plan
  * includes them (domain/learning/studyPlan.ts), so a subject used only as material adds nothing here.
  */
 import { ArrowRight, Play } from 'lucide-react';
@@ -13,6 +13,7 @@ import { ErrorState, LoadingState } from '@/components/ui/Feedback';
 import { Sheet } from '@/components/ui/Sheet';
 import {
   useActivityDays,
+  useBookmarks,
   useLessonProgress,
   useSettings,
   useTopicMastery,
@@ -20,11 +21,11 @@ import {
 import type { LessonProgressRecord } from '@/data/records';
 import { useCourse } from '@/domain/content/load';
 import { findLesson } from '@/domain/content/navigation';
-import type { Catalog, CourseSummary } from '@/domain/content/types';
+import type { CourseSummary } from '@/domain/content/types';
 import { courseUrl, lessonUrl } from '@/domain/content/urls';
 import { learnerYearFirst } from '@/domain/content/visibility';
 import { SKILL_LABELS } from '@/domain/learning/mastery';
-import { plannedCourseIds, withMasteryTracked } from '@/domain/learning/studyPlan';
+import { withMasteryTracked } from '@/domain/learning/studyPlan';
 import { ComingUpSheet } from '@/features/calendar/ComingUpSheet';
 import { LearnerSwitcher } from '@/features/learners/LearnerSwitcher';
 import { DueReviewsSheet } from '@/features/practice/DueReviewsSheet';
@@ -41,8 +42,12 @@ export default function TodayPage() {
   const reviews = usePlannedReviewStates();
   const mastery = useTopicMastery();
   const activity = useActivityDays(addDays(dayKey(), -400));
+  const bookmarks = useBookmarks();
 
-  const planned = useMemo(() => (settings.data ? plannedCourseIds(settings.data.studyPlans) : undefined), [settings.data]);
+  const bookmarkedCourseIds = useMemo(
+    () => (bookmarks.data ?? []).filter((bookmark) => bookmark.type === 'course').map((bookmark) => bookmark.id),
+    [bookmarks.data],
+  );
   const model = useMemo(() => {
     if (!catalog.data || !settings.data || !progress.data || !reviews.data || !mastery.data || !activity.data) return undefined;
     return computeTodayModel({
@@ -57,7 +62,7 @@ export default function TodayPage() {
   }, [catalog.data, settings.data, progress.data, reviews.data, mastery.data, activity.data]);
 
   if (catalog.error) return <ErrorState title="Course content is not built yet" error={catalog.error} onRetry={() => void catalog.refetch()} />;
-  if (!model || !catalog.data || !planned) return <LoadingState />;
+  if (!model || !catalog.data) return <LoadingState />;
 
   const today = new Date();
   return (
@@ -84,8 +89,14 @@ export default function TodayPage() {
 
       <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
         <div className="flex min-w-0 flex-col gap-6">
-          {model.resume ? <ResumeSheet resume={model.resume} /> : <StartHere catalog={catalog.data} planned={planned} />}
-          <CourseProgressSheet catalog={catalog.data} progress={progress.data ?? []} plannedCount={planned.length} />
+          {model.resume ? (
+            <>
+              <ResumeSheet resume={model.resume} />
+              {bookmarkedCourseIds.length > 0 && <StartHere catalog={catalog.data} bookmarked={bookmarkedCourseIds} title="Bookmarked courses" />}
+            </>
+          ) : (
+            <StartHere catalog={catalog.data} bookmarked={bookmarkedCourseIds} title="Start here" intro />
+          )}
         </div>
         <div className="flex min-w-0 flex-col gap-6">
           <ComingUpSheet />
@@ -160,21 +171,24 @@ function ResumeSheet({ resume }: { resume: ResumeTarget }) {
 const STARTING_POINTS = ['hsk-1', 'jlpt-n5', 'shin500-n4n5', 'ai-01-python', 'it-sql'];
 const START_COUNT = 5;
 
-/** The subjects with a study plan, else their own level's courses (their year first), then the starting points they see. */
-function startingCourses(catalog: VisibleCatalog, planned: string[]): CourseSummary[] {
+/** The bookmarked courses, else their own level's courses (their year first), then the starting points they see. */
+function startingCourses(catalog: VisibleCatalog, bookmarked: string[]): CourseSummary[] {
   const byId = (ids: string[]) => ids.map((id) => catalog.courses.find((course) => course.id === id)).filter((course): course is CourseSummary => Boolean(course));
-  if (planned.length) return byId(planned);
+  const bookmarkedCourses = byId(bookmarked);
+  if (bookmarkedCourses.length) return bookmarkedCourses;
   const level = learnerYearFirst(catalog.courses.filter((course) => course.category === catalog.visibility.profile?.level), catalog.visibility.profile);
   return [...level, ...byId(STARTING_POINTS)].slice(0, START_COUNT);
 }
 
-function StartHere({ catalog, planned }: { catalog: VisibleCatalog; planned: string[] }) {
-  const starts = startingCourses(catalog, planned);
+function StartHere({ catalog, bookmarked, title, intro = false }: { catalog: VisibleCatalog; bookmarked: string[]; title: string; intro?: boolean }) {
+  const starts = startingCourses(catalog, bookmarked);
   return (
-    <Sheet title="Start here">
-      <p className="mb-4 max-w-[60ch] text-ink-muted">
-        Pick a first lesson. Every answer you give is marked and saved; give a subject a study plan to bring its weak topics and reviews here.
-      </p>
+    <Sheet title={title} aside={<Link to="/settings#study-plans" className="hover:text-ink">Study plans</Link>}>
+      {intro && (
+        <p className="mb-4 max-w-[60ch] text-ink-muted">
+          Pick a first lesson. Every answer you give is marked and saved; bookmark a course to keep it here, and give a subject a study plan to bring its weak topics and reviews here.
+        </p>
+      )}
       <ol className="divide-y divide-rule">
         {starts.map((course, index) => (
           <li key={course.id} className="flex items-center gap-3 py-2.5">
@@ -191,48 +205,6 @@ function StartHere({ catalog, planned }: { catalog: VisibleCatalog; planned: str
           </li>
         ))}
       </ol>
-    </Sheet>
-  );
-}
-
-/** Every started subject, latest first, so any of them can be picked up again whatever its study plan. */
-function CourseProgressSheet({ catalog, progress, plannedCount }: { catalog: Catalog; progress: LessonProgressRecord[]; plannedCount: number }) {
-  const started = useMemo(() => {
-    const byCourse = new Map<string, LessonProgressRecord[]>();
-    for (const record of progress) byCourse.set(record.courseId, [...(byCourse.get(record.courseId) ?? []), record]);
-    return catalog.courses
-      .filter((course) => byCourse.has(course.id))
-      .map((course) => {
-        const records = new Map((byCourse.get(course.id) ?? []).map((record) => [record.lessonId, record]));
-        const states: BubbleState[] = course.lessons.map((lesson) => {
-          const record = records.get(lesson.id);
-          return record?.status === 'completed' ? 'filled' : record ? 'learning' : 'empty';
-        });
-        const latest = [...records.values()].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))[0];
-        return { course, states, completed: states.filter((state) => state === 'filled').length, latest };
-      })
-      .sort((a, b) => (b.latest?.updatedAt ?? '').localeCompare(a.latest?.updatedAt ?? ''));
-  }, [catalog, progress]);
-
-  return (
-    <Sheet title="Your courses" aside={<Link to="/settings#study-plans" className="hover:text-ink">{plannedCount ? `${plannedCount} with a study plan` : 'Study plans'}</Link>}>
-      {started.length === 0 ? (
-        <p className="text-sm text-ink-muted">Courses you start appear here. Give the subjects you are taking a study plan, and only they bring weak topics and reviews to Today.</p>
-      ) : (
-        <ul className="flex flex-col divide-y divide-rule">
-          {started.map(({ course, states, completed }) => (
-            <li key={course.id} className="flex flex-col gap-2 py-3 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:gap-4">
-              <Link to={courseUrl(course.id)} className="min-w-0 sm:w-48 sm:shrink-0">
-                <span className="block truncate font-medium hover:text-print-strong">{course.title}</span>
-                <span className="tabular block text-xs text-ink-faint">
-                  {completed} / {states.length} lessons
-                </span>
-              </Link>
-              <BubbleStrip states={states} label={`${course.title} lessons`} />
-            </li>
-          ))}
-        </ul>
-      )}
     </Sheet>
   );
 }

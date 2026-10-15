@@ -8,20 +8,21 @@ test('a subject with a study plan shows on Today, and Settings lists its plan', 
   await plan.getByRole('radio', { name: /Practise and review/u }).check();
   await expect(plan.getByRole('radio', { name: /Practise and review/u })).toBeChecked();
 
+  await page.getByRole('button', { name: 'Bookmark course' }).click();
+
   await page.goto('/');
+  // Start here lists bookmarked courses, so the bookmarked subject shows and others do not.
   const startHere = page.getByRole('region', { name: 'Start here' });
   await expect(startHere.getByText('Object-Oriented Programming')).toBeVisible();
   await expect(startHere.getByText('HSK 1')).toHaveCount(0);
-  await expect(page.getByRole('region', { name: 'Your courses' }).getByRole('link', { name: '1 with a study plan' })).toBeVisible();
 
   await page.goto('/settings');
   const listed = page.getByRole('combobox', { name: 'Study plan for Object-Oriented Programming' });
   await expect(listed).toHaveValue('review');
   await listed.selectOption({ label: 'Use the material' });
   await expect(listed).toHaveValue('material');
-  // With no subject planned, Start here offers the learner's own level again (their university subjects here).
   await page.goto('/');
-  await expect(page.getByRole('region', { name: 'Start here' }).getByRole('listitem')).toHaveCount(5);
+  await expect(page.getByRole('region', { name: 'Start here' }).getByText('Object-Oriented Programming')).toBeVisible();
 });
 
 test('Practice lists only subjects with a study plan that includes practice', async ({ page }) => {
