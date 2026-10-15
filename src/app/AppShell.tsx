@@ -160,6 +160,11 @@ function AppFrame() {
   const [searchOpen, setSearchOpen] = useState(false);
   useStudyTimer();
 
+  // A page opened by a link starts at its top, as in a new page (a link to a section, "#id", keeps its place).
+  useEffect(() => {
+    if (!location.hash) window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  }, [location.pathname, location.hash]);
+
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
