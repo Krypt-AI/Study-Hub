@@ -201,7 +201,7 @@ function LocalStorage() {
     <Sheet title="Where your data lives">
       <div className="flex flex-col gap-3 text-sm">
         <p>
-          Each learner&apos;s progress, calendar and code are stored <strong>in this browser only</strong> (IndexedDB). Nothing is sent to a server. Clearing this site&apos;s data, or using
+          Each profile&apos;s progress, calendar and code are stored <strong>in this browser only</strong> (IndexedDB). Nothing is sent to a server. Clearing this site&apos;s data, or using
           another browser, starts from empty, so export a backup now and then.
         </p>
         <p className="text-ink-muted">
@@ -269,7 +269,7 @@ function BackupSheet() {
   return (
     <Sheet title="Backups">
       <div className="flex flex-col gap-3 text-sm">
-        <p className="text-ink-muted">A backup is one JSON file with the current learner’s answers, progress, calendar, code, unfinished exams and settings. It also moves a learner’s data between browsers or into an account.</p>
+        <p className="text-ink-muted">A backup is one JSON file with the current profile’s answers, progress, calendar, code, unfinished exams and settings. It also moves a profile’s data between browsers or into an account.</p>
         <div className="flex flex-wrap gap-2">
           <Button icon={<Download className="size-4" />} onClick={() => void exportBackup()} loading={exporting}>
             Export backup
@@ -389,12 +389,12 @@ function ContentNotes() {
     <div className="flex flex-col gap-2 text-ink-muted">
       {catalog.data && (
         <p>
-          {catalog.data.courses.length} courses ({fromBooks} from your own books) and {catalog.data.certifications.length} certifications, built {formatDate(catalog.data.generatedAt)}.
+          {catalog.data.courses.length} courses ({fromBooks} from Kimi’s own books) and {catalog.data.certifications.length} certifications, built {formatDate(catalog.data.generatedAt)}.
         </p>
       )}
       <p>
-        Lessons from your HSK and JLPT books are generated on this computer from your own files, for your personal study. They are kept out of the source repository and must not be
-        published.
+        Lessons from Kimi’s HSK and JLPT books are generated on Kimi’s computer from the creator’s own files, for personal study. They are kept out of the source repository and must not
+        be published.
       </p>
     </div>
   );

@@ -82,7 +82,7 @@ export function ClassDialog({ initial, subjects, onClose }: ClassDialogProps) {
     <Dialog open onClose={onClose} title={existing ? 'Edit class' : 'Add a class'}>
       <form onSubmit={(event) => void submit(event)} className="flex flex-col gap-4 p-4">
         <p className="text-sm text-ink-muted">Repeats every week of {initial.term}.</p>
-        <Field label="Subject" hint="Optional: link the class to the course you study for it. Today then links to it.">
+        <Field label="Subject" hint="Optional: link the class to the course you study for it. The Dashboard then links to it.">
           {(props) => <SubjectSelect {...props} subjects={subjects} value={draft.courseId} onChange={(event) => update({ courseId: event.target.value })} />}
         </Field>
         <Field label="Name" error={titleError} hint={subject && !draft.title ? `Leave empty to use "${subjectLabel(subject)}".` : undefined}>

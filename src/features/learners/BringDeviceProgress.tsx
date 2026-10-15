@@ -54,7 +54,7 @@ function Offer({ accountId, onAnswered }: { accountId: string; onAnswered: () =>
       const count = await bringDeviceProgress(deviceLearnerSide(), accountLearnerSide(accountId));
       await learners.refresh();
       await client.invalidateQueries({ queryKey: learnerKeys.all });
-      toast.show(count === 1 ? 'This device’s progress is now in your account.' : `${count} learners’ progress is now in your account.`);
+      toast.show(count === 1 ? 'This device’s progress is now in your account.' : `${count} profiles’ progress is now in your account.`);
       answer();
     } catch (failure) {
       setError(`Copying stopped: ${failure instanceof Error ? failure.message : String(failure)}. Try again: nothing is copied twice.`);
@@ -67,7 +67,7 @@ function Offer({ accountId, onAnswered }: { accountId: string; onAnswered: () =>
     <Sheet title="Bring this device’s progress into your account" className="mx-auto mb-6 max-w-6xl">
       <div className="flex flex-col gap-3 text-sm">
         <p>
-          This device has progress saved before you signed in. Copy it into your account, so it is kept for you on every device. Every learner on this device comes along, each with their own progress. Nothing already in
+          This device has progress saved before you signed in. Copy it into your account, so it is kept for you on every device. Every profile on this device comes along, each with their own progress. Nothing already in
           your account is replaced.
         </p>
         {error && (

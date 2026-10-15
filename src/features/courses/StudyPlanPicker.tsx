@@ -21,7 +21,7 @@ export function StudyPlanPicker({ courseId, className }: { courseId: string; cla
   return (
     <fieldset className={cn('flex flex-col gap-2', className)} disabled={disabled}>
       <legend className="mb-2 text-sm font-medium text-ink">
-        Study plan <span className="font-normal text-ink-muted">· only subjects you practise or review appear on Today</span>
+        Study plan <span className="font-normal text-ink-muted">· only subjects you practise or review appear on the Dashboard</span>
       </legend>
       <div className="grid gap-2 sm:grid-cols-3">
         {STUDY_PLAN_LEVELS.map((option) => {

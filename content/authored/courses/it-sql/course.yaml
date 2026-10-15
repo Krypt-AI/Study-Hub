@@ -1,11 +1,11 @@
 id: it-sql
 title: Databases and SQL
-subtitle: IT · Databases
+subtitle: Roadmaps · Databases
 description: >-
   Relational databases and SQL, practised on a real SQLite database in your browser: querying, filtering,
   joining, aggregating and designing tables. Every exercise runs your query and compares its result with the
   reference query's result.
-category: it
+category: ai-engineering
 subject: databases
 level: Fundamentals
 difficulty: beginner

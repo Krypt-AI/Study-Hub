@@ -70,7 +70,7 @@ export default function TodayPage() {
       <header className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-            <h1 className="text-[2rem] leading-tight font-semibold">Today</h1>
+            <h1 className="text-[2rem] leading-tight font-semibold">Dashboard</h1>
             <LearnerSwitcher />
           </div>
           <p className="mt-1 text-ink-muted">

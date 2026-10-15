@@ -1,5 +1,5 @@
-/** Settings: the learners on this device (or in this account), to rename or remove. */
-import { Pencil, Trash2 } from 'lucide-react';
+/** Settings: the profiles on this device (or in this account), to switch between, rename or remove. */
+import { Pencil, Trash2, UserCheck } from 'lucide-react';
 import { type FormEvent, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Tag } from '@/components/ui/Feedback';
@@ -12,13 +12,13 @@ import type { LearnerRecord } from '@/data/records';
 export function LearnersSheet() {
   const learners = useLearners();
   return (
-    <Sheet title="Learners">
+    <Sheet title="Profiles">
       <div className="flex flex-col gap-3 text-sm">
         <p className="text-ink-muted">
           {learners.kind === 'device'
-            ? 'Everyone who studies on this device. Each learner’s progress, calendar and settings are kept apart, on this device only. Signing in does not change this list.'
-            : 'Everyone who studies with this account. Each learner’s progress, calendar and settings are kept apart, in the account.'}{' '}
-          Switch learner from the Today page.
+            ? 'Everyone who studies on this device. Each profile’s progress, calendar and settings are kept apart, on this device only. Signing in does not change this list.'
+            : 'Everyone who studies with this account. Each profile’s progress, calendar and settings are kept apart, in the account.'}{' '}
+          Switch profile here, or from the Dashboard.
         </p>
         <ul className="flex flex-col divide-y divide-rule">
           {learners.list.map((learner) => (
@@ -80,7 +80,7 @@ function LearnerRow({ learner }: { learner: LearnerRecord }) {
       </span>
       {mode === 'remove' ? (
         <span className="flex flex-wrap items-center gap-2">
-          <span className="text-ink-muted">Remove {learner.name} and everything they saved? This cannot be undone.</span>
+          <span className="text-ink-muted">Remove the profile {learner.name} and everything saved in it? This cannot be undone.</span>
           <Button size="sm" variant="danger" loading={busy} onClick={() => void run(() => learners.remove(learner.id))}>
             Remove
           </Button>
@@ -95,6 +95,11 @@ function LearnerRow({ learner }: { learner: LearnerRecord }) {
         </span>
       ) : (
         <span className="flex gap-1">
+          {learner.id !== learners.active.id && (
+            <Button size="sm" variant="ghost" icon={<UserCheck className="size-4" />} onClick={() => learners.switchTo(learner.id)}>
+              Use profile
+            </Button>
+          )}
           <Button size="sm" variant="ghost" icon={<Pencil className="size-4" />} onClick={() => setMode('rename')}>
             Rename
           </Button>

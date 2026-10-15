@@ -11,13 +11,13 @@ test('learners on one device keep their data apart', async ({ page }) => {
 
   // A sibling adds themselves and becomes the learner studying now.
   await page.goto('/');
-  await page.getByRole('button', { name: /Switch learner/u }).click();
-  await page.getByLabel('New learner’s name').fill('Adam');
-  await page.getByRole('button', { name: 'Add learner' }).click();
+  await page.getByRole('button', { name: /Switch profile/u }).click();
+  await page.getByLabel('New profile’s name').fill('Adam');
+  await page.getByRole('button', { name: 'Add profile' }).click();
   // A new learner answers the Welcome questions for themselves.
   await answerWelcome(page, { age: '20' });
   await chooseExtras(page, []);
-  await expect(page.getByRole('button', { name: 'Adam · Switch learner' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Adam · Switch profile' })).toBeVisible();
 
   await openImportantDates(page);
   await expect(page.getByRole('button', { name: /CMPD363 Quiz/u })).toHaveCount(0);
@@ -25,20 +25,20 @@ test('learners on one device keep their data apart', async ({ page }) => {
   // The chosen learner stays open after a reload.
   await page.reload();
   await page.goto('/');
-  await expect(page.getByRole('button', { name: 'Adam · Switch learner' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Adam · Switch profile' })).toBeVisible();
 
   // Back to the first learner: their quiz is still there.
-  await page.getByRole('button', { name: /Switch learner/u }).click();
+  await page.getByRole('button', { name: /Switch profile/u }).click();
   await page.getByRole('dialog', { name: 'Who is studying?' }).getByRole('button', { name: 'Learner 1' }).click();
-  await expect(page.getByRole('button', { name: 'Learner 1 · Switch learner' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Learner 1 · Switch profile' })).toBeVisible();
   await openImportantDates(page);
   await expect(page.getByRole('button', { name: /CMPD363 Quiz/u })).toBeVisible();
 });
 
 test('a duplicate learner name is refused with a message', async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('button', { name: /Switch learner/u }).click();
-  await page.getByLabel('New learner’s name').fill('  learner 1 ');
-  await page.getByRole('button', { name: 'Add learner' }).click();
-  await expect(page.getByRole('alert')).toHaveText('There is already a learner called learner 1.');
+  await page.getByRole('button', { name: /Switch profile/u }).click();
+  await page.getByLabel('New profile’s name').fill('  learner 1 ');
+  await page.getByRole('button', { name: 'Add profile' }).click();
+  await expect(page.getByRole('alert')).toHaveText('There is already a profile called learner 1.');
 });

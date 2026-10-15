@@ -18,7 +18,7 @@ describe('learner names', () => {
   it('rejects an empty, too long or already used name', () => {
     expect(checkLearnerName('   ', learners)).toEqual({ error: 'Type a name.' });
     expect(checkLearnerName('x'.repeat(31), learners)).toHaveProperty('error');
-    expect(checkLearnerName('adam', learners)).toEqual({ error: 'There is already a learner called adam.' });
+    expect(checkLearnerName('adam', learners)).toEqual({ error: 'There is already a profile called adam.' });
   });
 
   it('lets a learner keep their own name when renaming', () => {

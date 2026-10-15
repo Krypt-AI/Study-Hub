@@ -19,11 +19,11 @@ test('a first visit asks the Welcome questions, suggesting the year from the age
   await page.getByLabel('What should we call you? (you can skip this)').fill('Aina');
   await page.getByRole('button', { name: 'Start' }).click();
   await chooseExtras(page, []);
-  await expect(page.getByRole('heading', { level: 1, name: 'Today' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: 'Dashboard' })).toBeVisible();
   await expect(page.getByRole('button', { name: /Aina/u })).toBeVisible();
 
   await page.reload();
-  await expect(page.getByRole('heading', { level: 1, name: 'Today' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: 'Dashboard' })).toBeVisible();
 });
 
 test('a link opened first shows its page once the Welcome questions are answered', async ({ page }) => {
@@ -54,12 +54,12 @@ test('a learner added by mistake can switch back from the Welcome page', async (
   await page.goto('/');
   await answerWelcome(page, { age: '20' });
   await chooseExtras(page, []);
-  await page.getByRole('button', { name: /Switch learner/u }).click();
-  await page.getByLabel('New learner’s name').fill('Adam');
-  await page.getByRole('button', { name: 'Add learner' }).click();
+  await page.getByRole('button', { name: /Switch profile/u }).click();
+  await page.getByLabel('New profile’s name').fill('Adam');
+  await page.getByRole('button', { name: 'Add profile' }).click();
 
   await expect(page.getByRole('heading', { level: 1, name: 'Welcome to Study Hub' })).toBeVisible();
-  await page.getByRole('button', { name: 'Adam · Switch learner' }).click();
+  await page.getByRole('button', { name: 'Adam · Switch profile' }).click();
   await page.getByRole('dialog', { name: 'Who is studying?' }).getByRole('button', { name: 'Learner 1' }).click();
-  await expect(page.getByRole('heading', { level: 1, name: 'Today' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: 'Dashboard' })).toBeVisible();
 });

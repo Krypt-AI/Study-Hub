@@ -23,7 +23,7 @@ export default async function warmUp(config: FullConfig): Promise<void> {
         await answerWelcome(page, { age: '20' }, { timeout: 120_000 });
         // Local mode chooses extras as a signed-in learner does; a guest (the signed-in project) is not asked.
         if (project.name === 'local') await chooseExtras(page, EXTRAS, { timeout: 120_000 });
-        await page.getByRole('heading', { level: 1, name: 'Today' }).waitFor({ timeout: 120_000 });
+        await page.getByRole('heading', { level: 1, name: 'Dashboard' }).waitFor({ timeout: 120_000 });
         for (const path of ['/calendar', '/settings']) {
           await page.goto(path, { waitUntil: 'commit', timeout: 120_000 });
           await page.getByRole('heading', { level: 1 }).first().waitFor({ timeout: 120_000 });

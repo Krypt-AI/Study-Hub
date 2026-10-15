@@ -1,5 +1,5 @@
 /**
- * "Who is studying?": shows the open learner and lets someone else on this device (or account)
+ * "Who is studying?": shows the open profile and lets someone else on this device (or account)
  * take over, or add themselves. Switching opens only that learner's progress.
  */
 import { Check, UserPlus, Users } from 'lucide-react';
@@ -16,11 +16,11 @@ export function LearnerSwitcher() {
   return (
     <>
       <Button size="sm" variant="ghost" icon={<Users className="size-4" />} onClick={() => setOpen(true)}>
-        {learners.active.name} · Switch learner
+        {learners.active.name} · Switch profile
       </Button>
       <Dialog open={open} onClose={() => setOpen(false)} title="Who is studying?">
         <div className="flex flex-col gap-4 p-4">
-          <ul className="flex flex-col gap-2" aria-label="Learners">
+          <ul className="flex flex-col gap-2" aria-label="Profiles">
             {learners.list.map((learner) => {
               const current = learner.id === learners.active.id;
               return (
@@ -47,8 +47,8 @@ export function LearnerSwitcher() {
           <AddLearnerForm onAdded={() => setOpen(false)} />
           <p className="text-xs text-ink-faint">
             {learners.kind === 'device'
-              ? 'Each learner has their own progress, calendar and settings, saved on this device only.'
-              : 'Each learner has their own progress, calendar and settings, saved in this account.'}
+              ? 'Each profile has its own progress, calendar and settings, saved on this device only.'
+              : 'Each profile has its own progress, calendar and settings, saved in this account.'}
           </p>
         </div>
       </Dialog>
@@ -77,7 +77,7 @@ function AddLearnerForm({ onAdded }: { onAdded: () => void }) {
 
   return (
     <form onSubmit={(event) => void submit(event)} className="flex flex-col gap-2 border-t border-rule pt-4">
-      <Field label="New learner’s name" hint="A first name or a nickname." error={error}>
+      <Field label="New profile’s name" hint="A first name or a nickname." error={error}>
         {(props) => (
           <Input
             {...props}
@@ -92,7 +92,7 @@ function AddLearnerForm({ onAdded }: { onAdded: () => void }) {
         )}
       </Field>
       <Button type="submit" icon={<UserPlus className="size-4" />} loading={busy} className="self-start">
-        Add learner
+        Add profile
       </Button>
     </form>
   );

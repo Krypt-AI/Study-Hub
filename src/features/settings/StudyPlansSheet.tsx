@@ -25,7 +25,7 @@ export function StudyPlansSheet() {
       <div className="flex flex-col gap-3 text-sm">
         <p className="text-ink-muted">
           Choose what Study Hub does with each subject: just use its material, also practise its weak topics, or also review answered questions when they are due. Only subjects you practise or review appear on
-          Today. You can also choose on each course page.
+          the Dashboard. You can also choose on each course page.
         </p>
         {courses.length === 0 ? (
           <EmptyState title="No subjects started yet">

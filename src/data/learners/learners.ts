@@ -30,7 +30,7 @@ export function checkLearnerName(name: string, learners: LearnerRecord[], renami
   if (!trimmed) return { error: 'Type a name.' };
   if (trimmed.length > MAX_LEARNER_NAME_LENGTH) return { error: `Use ${MAX_LEARNER_NAME_LENGTH} letters or fewer.` };
   const taken = learners.some((learner) => learner.id !== renaming && learner.name.toLocaleLowerCase() === trimmed.toLocaleLowerCase());
-  if (taken) return { error: `There is already a learner called ${trimmed}.` };
+  if (taken) return { error: `There is already a profile called ${trimmed}.` };
   return { name: trimmed };
 }
 

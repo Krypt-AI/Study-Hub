@@ -2,7 +2,7 @@ import { addSemester } from './calendarSteps';
 import { expect, test } from './fixtures';
 
 const PAGES: Array<[path: string, heading: string | RegExp]> = [
-  ['/', 'Today'],
+  ['/', 'Dashboard'],
   ['/courses', 'Courses'],
   ['/courses/ai-01-python', 'Python and Programming Fundamentals'],
   ['/courses/it-sql', 'Databases and SQL'],
@@ -65,15 +65,15 @@ test('certifications open on their areas, with JLPT and HSK among them', async (
   await page.getByRole('link', { name: /Japanese-Language Proficiency Test N5/u }).click();
   await expect(page.getByRole('heading', { level: 1, name: 'Japanese-Language Proficiency Test N5' })).toBeVisible();
 
-  await page.goto('/certifications');
-  await page.getByRole('navigation', { name: 'Certification areas' }).getByRole('link', { name: /IT courses/u }).click();
+  // The SQL course is a stage of the Full-Stack roadmap.
+  await page.goto('/roadmaps/fullstack-developer');
   await expect(page.getByRole('link', { name: 'Databases and SQL' })).toBeVisible();
 });
 
 test('the playground joins the rail once a coding subject is chosen', async ({ page }) => {
   await page.goto('/');
   const rail = page.getByRole('navigation', { name: 'Main' }).first();
-  await expect(rail.getByRole('link', { name: 'Today' })).toBeVisible();
+  await expect(rail.getByRole('link', { name: 'Dashboard' })).toBeVisible();
   await expect(rail.getByRole('link', { name: 'Playground' })).toHaveCount(0);
 
   await page.goto('/courses/ai-01-python');

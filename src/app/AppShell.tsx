@@ -47,7 +47,7 @@ interface NavItem {
 }
 
 const NAV: NavItem[] = [
-  { to: '/', label: 'Today', icon: <LayoutList className="size-4" />, end: true },
+  { to: '/', label: 'Dashboard', icon: <LayoutList className="size-4" />, end: true },
   { to: '/courses', label: 'Courses', icon: <BookOpen className="size-4" /> },
   { to: '/roadmaps', label: 'Roadmaps', icon: <Route className="size-4" /> },
   { to: '/practice', label: 'Practice', icon: <Target className="size-4" /> },
