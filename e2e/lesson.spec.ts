@@ -95,10 +95,10 @@ test('a question that refers to an example shows it on request', async ({ page }
 test('the next lesson opens from its top', async ({ page }) => {
   await page.goto('/courses/ai-01-python/lessons/ai-01-python.l01');
   await expect(page.getByRole('heading', { level: 1, name: 'Values, types and variables' })).toBeVisible();
-  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-  expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+  await page.evaluate('window.scrollTo(0, document.body.scrollHeight)');
+  expect(await page.evaluate<number>('window.scrollY')).toBeGreaterThan(0);
 
   await page.locator('footer a[href$="/lessons/ai-01-python.l02"]').click();
   await expect(page).toHaveURL(/ai-01-python\.l02$/u);
-  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
+  await expect.poll(() => page.evaluate<number>('window.scrollY')).toBe(0);
 });
