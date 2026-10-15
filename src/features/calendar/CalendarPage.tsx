@@ -70,7 +70,7 @@ export default function CalendarPage() {
     <div className="mx-auto max-w-6xl">
       <PageHeader
         title="Calendar"
-        lead="Optional: add your weekly timetable and the dates of quizzes, tests and exams. The next important dates also show on Today."
+        lead="Optional: add your weekly timetable and the dates of quizzes, tests and exams. The next important dates also show on Dashboard."
         actions={
           <>
             {shownTerm && (
