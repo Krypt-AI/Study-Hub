@@ -66,7 +66,7 @@ describe('timetable', () => {
   it('repeats every week when the semester has no dates', () => {
     expect(classesOn('2026-09-28', classes, []).map((entry) => entry.id)).toEqual(['early', 'late']);
     // A semester the learner added without dates does not bound its classes.
-    expect(classesOn('2026-09-28', classes, [{ term: 'Sem 1 2026', addedByLearner: true, updatedAt: '' }]).map((entry) => entry.id)).toEqual(['early', 'late']);
+    expect(classesOn('2026-09-28', classes, [{ term: 'Sem 1 2026', updatedAt: '' }]).map((entry) => entry.id)).toEqual(['early', 'late']);
   });
 
   it('finds overlapping classes in the same term and weekday only', () => {

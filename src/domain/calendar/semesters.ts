@@ -1,16 +1,14 @@
 /**
- * Semesters as the learner sees them: the terms of the University catalog (university.yaml) plus any
- * the learner added themselves (for a semester whose materials are not in Study Hub yet). A name in
- * both is one semester. Only learner-added semesters can be removed in the app.
+ * Semesters as the learner sees them: only the ones they added (no semester is preset), each with its
+ * dates and the subjects they chose for it. A term that only classes or dates refer to (kept from before
+ * semesters were listed) is still a semester, so nothing the learner saved disappears.
  */
 import type { ImportantDateRecord, SemesterRecord, TimetableClassRecord } from '@/data/records';
 import { isDated } from './calendar';
 
 export interface Term {
   name: string;
-  /** Listed in university.yaml; cannot be removed in the app. */
-  fromCatalog: boolean;
-  /** The learner's saved record (dates, or the semester itself when they added it). */
+  /** The learner's saved record: its dates and chosen subjects. Absent for a term only classes or dates refer to. */
   semester?: SemesterRecord;
 }
 
@@ -20,18 +18,20 @@ export const MAX_SEMESTER_NAME_LENGTH = 40;
 const nameKey = (name: string) => name.trim().replace(/\s+/gu, ' ').toLocaleLowerCase();
 
 /**
- * Every semester, newest first: those the learner added (most recently added first), then the
- * catalog's terms in their authored order (newest first).
+ * Every semester, newest added first, then the terms that only classes or dates name (`referenced`).
  */
-export function mergeTerms(catalogTerms: string[], semesters: SemesterRecord[]): Term[] {
-  const recordOf = new Map(semesters.map((semester) => [nameKey(semester.term), semester]));
-  const catalogKeys = new Set(catalogTerms.map(nameKey));
-  const added = semesters
-    .filter((semester) => semester.addedByLearner && !catalogKeys.has(nameKey(semester.term)))
+export function mergeTerms(semesters: SemesterRecord[], referenced: string[] = []): Term[] {
+  const saved = [...semesters]
     .sort((a, b) => (b.createdAt ?? b.updatedAt).localeCompare(a.createdAt ?? a.updatedAt))
-    .map((semester): Term => ({ name: semester.term, fromCatalog: false, semester }));
-  const catalog = catalogTerms.map((name): Term => ({ name, fromCatalog: true, semester: recordOf.get(nameKey(name)) }));
-  return [...added, ...catalog];
+    .map((semester): Term => ({ name: semester.term, semester }));
+  const known = new Set(saved.map((term) => nameKey(term.name)));
+  const unsaved: Term[] = [];
+  for (const name of referenced) {
+    if (known.has(nameKey(name))) continue;
+    known.add(nameKey(name));
+    unsaved.push({ name });
+  }
+  return [...saved, ...unsaved];
 }
 
 /** The trimmed name of a new semester, or why it cannot be added. */
@@ -44,15 +44,20 @@ export function checkSemesterName(name: string, terms: Term[]): { name: string }
   return { name: trimmed };
 }
 
-/**
- * The semester to show first: the one whose dates contain today; else the catalog's current term
- * (the semester the catalog is set to); else the newest.
- */
-export function defaultTerm(terms: Term[], currentTerm: string | undefined, today: string): string | undefined {
+/** The semester to show first: the one whose dates contain today, else the newest. */
+export function defaultTerm(terms: Term[], today: string): string | undefined {
   const running = terms.find((term) => isDated(term.semester) && term.semester.startsOn <= today && today <= term.semester.endsOn);
-  if (running) return running.name;
-  if (currentTerm && terms.some((term) => term.name === currentTerm)) return currentTerm;
-  return terms[0]?.name;
+  return running?.name ?? terms[0]?.name;
+}
+
+/**
+ * The University subjects of a semester: the ones the learner linked a class to in the timetable, then
+ * the ones they picked on the Courses page. `linked` is the first part, which the timetable decides.
+ */
+export function semesterCourseIds(term: string, record: SemesterRecord | undefined, classes: TimetableClassRecord[]): { linked: string[]; chosen: string[]; all: string[] } {
+  const linked = [...new Set(classes.filter((entry) => entry.term === term && entry.courseId).map((entry) => entry.courseId as string))];
+  const chosen = (record?.courseIds ?? []).filter((id) => !linked.includes(id));
+  return { linked, chosen, all: [...linked, ...chosen] };
 }
 
 /** The classes and dates that belong to a semester, which go with it when it is removed. */

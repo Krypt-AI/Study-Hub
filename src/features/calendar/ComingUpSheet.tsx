@@ -26,7 +26,7 @@ export function ComingUpSheet() {
   const catalog = useCatalog();
   if (terms.isLoading || !classes.data || !dates.data) return null;
 
-  const term = defaultTerm(terms.terms, terms.currentTerm, today);
+  const term = defaultTerm(terms.terms, today);
   const semesters = terms.terms.flatMap((entry) => (entry.semester ? [entry.semester] : []));
   const todaysClasses = classesOn(today, classes.data.filter((entry) => entry.term === term), semesters);
   const todaysDates = datesOn(today, dates.data);

@@ -1,10 +1,11 @@
 /** Class types, extra classes and semesters the learner adds. */
-import { addClass, addImportantDate, todayWeekday, weekColumn } from './calendarSteps';
+import { addClass, addImportantDate, ensureSemester, todayWeekday, weekColumn } from './calendarSteps';
 import { addDaysTo, todayKey } from './dates';
 import { expect, test } from './fixtures';
 
 test('a weekly lab is shown as a lab', async ({ page }) => {
   await page.goto('/calendar');
+  await ensureSemester(page);
   await addClass(page, { name: 'Networks lab', type: 'Lab', weekday: todayWeekday() });
   await expect(weekColumn(page, todayWeekday()).getByText(/· Lab$/u)).toBeVisible();
   await expect(weekColumn(page, todayWeekday()).getByText('Networks lab')).toBeVisible();
@@ -12,6 +13,7 @@ test('a weekly lab is shown as a lab', async ({ page }) => {
 
 test('an extra class appears on its day only, and on Today', async ({ page }) => {
   await page.goto('/calendar');
+  await ensureSemester(page);
   await addImportantDate(page, { kind: 'Extra or make-up class', subject: 'CMPD363 Object-Oriented Programming', day: todayKey() });
   await expect(page.getByRole('region').filter({ hasText: 'CMPD363 Extra class' })).toHaveCount(1);
   await expect(weekColumn(page, todayWeekday()).getByText('CMPD363 Extra class')).toBeVisible();
@@ -26,6 +28,7 @@ test('an extra class appears on its day only, and on Today', async ({ page }) =>
 
 test('a class linked to a JLPT course shows on Today with a link to it', async ({ page }) => {
   await page.goto('/calendar');
+  await ensureSemester(page);
   await page.getByRole('button', { name: 'Add class' }).click();
   const dialog = page.getByRole('dialog', { name: 'Add a class' });
   await dialog.getByLabel('Subject').selectOption({ label: 'JLPT N4' });
@@ -39,8 +42,12 @@ test('a class linked to a JLPT course shows on Today with a link to it', async (
   await expect(today.getByRole('link', { name: 'Open JLPT N4' })).toBeVisible();
 });
 
-test('a semester without materials keeps its own classes, and can be removed with them', async ({ page }) => {
+test('a new learner has no semester; added semesters keep their own classes and can be removed with them', async ({ page }) => {
   await page.goto('/calendar');
+  await expect(page.getByText('Add your semester first')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Add class' })).toHaveCount(0);
+
+  await ensureSemester(page, 'Sem 1 2026');
   await page.getByRole('button', { name: 'Add semester' }).click();
   const dialog = page.getByRole('dialog', { name: 'Add a semester' });
   await dialog.getByLabel('Name').fill('  Sem 1 2026 ');
@@ -51,7 +58,7 @@ test('a semester without materials keeps its own classes, and can be removed wit
   await expect(dialog).toBeHidden();
 
   await expect(page.getByRole('combobox', { name: 'Semester' })).toHaveValue('Sem 3 2030');
-  await expect(page.getByText('No materials for this semester yet', { exact: false })).toBeVisible();
+  await expect(page.getByText('No subjects chosen yet', { exact: false })).toBeVisible();
   await addClass(page, { name: 'Robotics lecture', type: 'Lecture', weekday: todayWeekday() });
   await expect(weekColumn(page, todayWeekday()).getByText('Robotics lecture')).toBeVisible();
 
@@ -59,8 +66,6 @@ test('a semester without materials keeps its own classes, and can be removed wit
   await page.getByRole('combobox', { name: 'Semester' }).selectOption('Sem 1 2026');
   await expect(page.getByText('Robotics lecture')).toHaveCount(0);
 
-  // Semesters from the catalog cannot be removed; one the learner added can.
-  await expect(page.getByRole('button', { name: 'Remove semester' })).toHaveCount(0);
   await page.getByRole('combobox', { name: 'Semester' }).selectOption('Sem 3 2030');
   await page.getByRole('button', { name: 'Remove semester' }).click();
   await expect(page.getByText('Remove Sem 3 2030 with its 1 class and 0 dates?')).toBeVisible();
@@ -74,6 +79,7 @@ test('a semester without materials keeps its own classes, and can be removed wit
 
 test('a holiday week shows on each of its days, before the other dates of that day', async ({ page }) => {
   await page.goto('/calendar');
+  await ensureSemester(page);
   await addImportantDate(page, { kind: 'Holiday or break', day: todayKey(), lastDay: addDaysTo(todayKey(), 4) });
   await addImportantDate(page, { kind: 'Quiz', subject: 'CMPD103 Statistics for Computer Science', day: todayKey() });
 

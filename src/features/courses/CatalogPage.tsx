@@ -12,15 +12,17 @@ import { Button } from '@/components/ui/Button';
 import { EmptyState, ErrorState, LoadingState } from '@/components/ui/Feedback';
 import { Select } from '@/components/ui/Field';
 import { PageHeader, Sheet } from '@/components/ui/Sheet';
-import { defaultTerm, type Term } from '@/domain/calendar/semesters';
+import { useTimetableClasses } from '@/data/queries';
+import { defaultTerm, semesterCourseIds, type Term } from '@/domain/calendar/semesters';
 import { COURSE_CATEGORY_LABELS } from '@/domain/content/categories';
 import type { CourseCategory, CourseSummary } from '@/domain/content/types';
 import { isCategoryVisible } from '@/domain/content/visibility';
 import { type LearnerProfile, yearLabel, YEARS_IN_LEVEL } from '@/domain/profile/profile';
 import { useVisibleCatalog, type VisibleCatalog } from '@/features/profile/useVisibility';
+import { useCalendarMutations } from '@/features/calendar/useCalendarMutations';
 import { AddSemesterDialog } from '@/features/semesters/AddSemesterDialog';
 import { useTerms } from '@/features/semesters/useTerms';
-import { dayKey } from '@/lib/dates';
+import { dayKey, nowIso } from '@/lib/dates';
 import { CourseRow } from './CourseRow';
 import { type LessonStatuses, useLessonStatuses } from './useLessonStatuses';
 
@@ -38,8 +40,6 @@ const AREA_DESCRIPTIONS: Record<Area, string> = {
   japanese: 'JLPT N5 to N1 practice tests and 新にほんご500問, from your own books.',
   chinese: 'HSK 1 to 6 vocabulary and workbook exercises, from your own books.',
 };
-
-const ALL_TERMS = 'all';
 
 type Statuses = Map<string, LessonStatuses>;
 
@@ -177,48 +177,114 @@ function SchoolCourses({ area, courses, profile, statuses }: { area: SchoolArea;
   );
 }
 
-/** University subjects one semester at a time (the one in effect first); semesters can be added here. */
+/**
+ * University subjects one semester at a time: the subjects of the learner's semester, then every
+ * subject to choose from. A subject the learner linked a class to in the timetable is already chosen.
+ */
 function UniversityCourses({ courses, statuses }: { courses: CourseSummary[]; statuses: Statuses }) {
   const terms = useTerms();
+  const classes = useTimetableClasses();
+  const { saveSemester } = useCalendarMutations();
   const [chosen, setChosen] = useState<string>();
   const [adding, setAdding] = useState(false);
-  const term = chosen ?? defaultTerm(terms.terms, terms.currentTerm, dayKey()) ?? ALL_TERMS;
-  const shown = courses.filter((course) => term === ALL_TERMS || course.term === term);
+
+  if (terms.error ?? classes.error) return <ErrorState title="Your semesters could not be loaded" error={terms.error ?? classes.error} />;
+  if (terms.isLoading || !classes.data) return <LoadingState />;
+
+  const term = terms.terms.find((candidate) => candidate.name === chosen) ?? terms.terms.find((candidate) => candidate.name === defaultTerm(terms.terms, dayKey()));
+  const addDialog = adding && <AddSemesterDialog terms={terms.terms} onAdded={setChosen} onClose={() => setAdding(false)} />;
+
+  if (!term) {
+    return (
+      <Sheet padded aria-label="Subjects">
+        <EmptyState
+          title="Add your semester first"
+          action={
+            <Button variant="primary" icon={<FolderPlus className="size-4" />} onClick={() => setAdding(true)}>
+              Add semester
+            </Button>
+          }
+        >
+          Name the semester you are in, for example "Sem 1 2026". Then choose the subjects you take in it.
+        </EmptyState>
+        {addDialog}
+      </Sheet>
+    );
+  }
+
+  const { linked, all } = semesterCourseIds(term.name, term.semester, classes.data);
+  const mine = courses.filter((course) => all.includes(course.id));
+  const toggle = (course: CourseSummary) => {
+    const at = nowIso();
+    const picked = term.semester?.courseIds ?? [];
+    const courseIds = picked.includes(course.id) ? picked.filter((id) => id !== course.id) : [...picked, course.id];
+    void saveSemester.mutateAsync({ createdAt: at, ...term.semester, term: term.name, courseIds, updatedAt: at });
+  };
 
   return (
-    <Sheet
-      padded={shown.length === 0}
-      title="Subjects"
-      aside={
-        <>
-          <SemesterSelect terms={terms.terms} currentTerm={terms.currentTerm} value={term} onChange={setChosen} />
-          <Button size="sm" variant="ghost" icon={<FolderPlus className="size-4" />} onClick={() => setAdding(true)}>
-            Add semester
-          </Button>
-          {adding && <AddSemesterDialog terms={terms.terms} onAdded={setChosen} onClose={() => setAdding(false)} />}
-        </>
-      }
-    >
-      {shown.length === 0 ? (
-        <EmptyState title={term === ALL_TERMS ? 'No subjects yet' : 'No materials for this semester yet'}>
-          Each subject becomes a course built from your own lecture notes, slides and past papers. You can already keep this semester’s timetable and dates in the Calendar.
-        </EmptyState>
-      ) : (
-        <CourseRows courses={shown} statuses={statuses} />
-      )}
-    </Sheet>
+    <div className="flex flex-col gap-6">
+      <Sheet
+        padded={mine.length === 0}
+        title="Subjects"
+        aside={
+          <>
+            <SemesterSelect terms={terms.terms} value={term.name} onChange={setChosen} />
+            <Button size="sm" variant="ghost" icon={<FolderPlus className="size-4" />} onClick={() => setAdding(true)}>
+              Add semester
+            </Button>
+            {addDialog}
+          </>
+        }
+      >
+        {mine.length === 0 ? (
+          <EmptyState title={`No subjects chosen for ${term.name} yet`}>Tick the subjects you take below, or link a class to its subject in the Calendar.</EmptyState>
+        ) : (
+          <CourseRows courses={mine} statuses={statuses} />
+        )}
+      </Sheet>
+      <Sheet title={`Choose your subjects for ${term.name}`} padded={false}>
+        {courses.length === 0 ? (
+          <EmptyState title="No subjects yet" className="m-5">
+            Each subject becomes a course built from your own lecture notes, slides and past papers.
+          </EmptyState>
+        ) : (
+          <ul className="divide-y divide-rule">
+            {courses.map((course) => {
+              const fromTimetable = linked.includes(course.id);
+              return (
+                <li key={course.id}>
+                  <label className="flex cursor-pointer items-center gap-3 px-5 py-3">
+                    <input
+                      type="checkbox"
+                      className="size-4 accent-print"
+                      checked={all.includes(course.id)}
+                      disabled={fromTimetable || saveSemester.isPending}
+                      onChange={() => toggle(course)}
+                    />
+                    <span className="min-w-0 flex-1">
+                      <span className="font-medium text-ink">{course.title}</span>
+                      {course.code && <span className="ml-2 text-sm text-ink-faint">{course.code}</span>}
+                    </span>
+                    {fromTimetable && <span className="text-xs text-ink-faint">In your timetable</span>}
+                  </label>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </Sheet>
+    </div>
   );
 }
 
-function SemesterSelect({ terms, currentTerm, value, onChange }: { terms: Term[]; currentTerm?: string; value: string; onChange: (term: string) => void }) {
+function SemesterSelect({ terms, value, onChange }: { terms: Term[]; value: string; onChange: (term: string) => void }) {
   return (
     <Select value={value} onChange={(event) => onChange(event.target.value)} aria-label="Semester" className="h-8 w-auto py-0 text-sm">
       {terms.map((candidate) => (
         <option key={candidate.name} value={candidate.name}>
-          {candidate.name === currentTerm ? `${candidate.name} (current)` : candidate.name}
+          {candidate.name}
         </option>
       ))}
-      <option value={ALL_TERMS}>All semesters</option>
     </Select>
   );
 }

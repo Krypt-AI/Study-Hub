@@ -51,15 +51,15 @@ OCR errors found by checking the page images go into `content/corrections/*.json
 
 ## University subjects
 
-The catalog's **UNITEN** area (category `university`) lists your subjects one semester at a time. Semesters are defined in `content/authored/university.yaml`:
+The catalog's **UNITEN** area (category `university`) lists your subjects one semester at a time. A learner adds their own semester and chooses its subjects from all the University courses; no semester is preset from the catalog. `content/authored/university.yaml` still records the institution and the terms a course's `term` may name:
 
 ```yaml
 institution: Universiti Tenaga Nasional (UNITEN)
 terms: [Sem 1 2026]        # newest first
-currentTerm: Sem 1 2026    # the semester the catalog opens on
+currentTerm: Sem 1 2026    # not shown to learners
 ```
 
-Each subject is a course with `category: university`, its course `code` and the `term` it belongs to (the build fails if the term is not listed). For a new semester, add it to the top of `terms` and update `currentTerm`. Learners can also add a semester in the app (Calendar or the catalog's University area) before any of its materials exist; when the same name is later added to `terms`, it becomes one semester, and the learner's timetable and dates stay with it.
+Each subject is a course with `category: university`, its course `code` and the `term` it belongs to (the build fails if the term is not listed). Learners add their semesters in the app (Calendar or the catalog's University area) and pick which subjects belong to each there, so a new semester needs no change here.
 
 Notes written from your own course materials (lecture slides, lab sheets) go in **`content/private/courses/<id>/`**. They use the same format as authored courses (below), are git-ignored, and must not be published. A course-level `source` (e.g. `{ origin: user-material, title: CMPD2123 lecture slides }`) is inherited by its lessons, and a lesson-level `source` by that lesson's questions, so every item shows where it came from.
 

@@ -1,6 +1,6 @@
 /**
- * The courses a class or date can be linked to: any course (a Japanese class can link to a JLPT
- * course), University subjects with the semester they belong to.
+ * The courses a class or date can be linked to: any course the learner sees (a Japanese class can
+ * link to a JLPT course, a University class to its subject).
  */
 import { useMemo } from 'react';
 import { useCatalog } from '@/domain/content/load';
@@ -12,7 +12,6 @@ export interface Subject {
   category: CourseCategory;
   code?: string;
   title: string;
-  term?: string;
 }
 
 export const subjectLabel = (subject: Pick<Subject, 'code' | 'title'>) => (subject.code ? `${subject.code} ${subject.title}` : subject.title);
@@ -20,10 +19,7 @@ export const subjectLabel = (subject: Pick<Subject, 'code' | 'title'>) => (subje
 /** The short name a date's default title starts with: the subject code, else its title. */
 export const subjectShortName = (subject: Pick<Subject, 'code' | 'title'>) => subject.code ?? subject.title;
 
-/** University subjects of `term` and every course outside the University area. */
-export const subjectsFor = (subjects: Subject[], term: string) => subjects.filter((subject) => subject.category !== 'university' || !subject.term || subject.term === term);
-
-const toSubject = (course: CourseSummary): Subject => ({ courseId: course.id, category: course.category, code: course.code, title: course.title, term: course.term });
+const toSubject = (course: CourseSummary): Subject => ({ courseId: course.id, category: course.category, code: course.code, title: course.title });
 
 /** `subjects` to choose from are the courses the learner sees; `subjectById` still names a class linked to one now hidden. */
 export function useSubjects() {

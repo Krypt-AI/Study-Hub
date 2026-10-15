@@ -1,26 +1,18 @@
-/** The semesters to choose from: the catalog's terms plus those the learner added (domain/calendar/semesters.ts). */
+/** The learner's semesters, newest added first (domain/calendar/semesters.ts). There is none until they add one. */
 import { useMemo } from 'react';
-import { useSemesters } from '@/data/queries';
-import type { SemesterRecord } from '@/data/records';
-import { mergeTerms, type Term } from '@/domain/calendar/semesters';
-import { useCatalog } from '@/domain/content/load';
-
-/** Used when there is no University area and no semester added: the calendar still works for one semester. */
-const FALLBACK_TERM = 'This semester';
-
-const fallbackTerm = (semesters: SemesterRecord[]): Term => ({ name: FALLBACK_TERM, fromCatalog: true, semester: semesters.find((semester) => semester.term === FALLBACK_TERM) });
+import { useImportantDates, useSemesters, useTimetableClasses } from '@/data/queries';
+import { mergeTerms } from '@/domain/calendar/semesters';
 
 export function useTerms() {
-  const catalog = useCatalog();
   const semesters = useSemesters();
+  const classes = useTimetableClasses();
+  const dates = useImportantDates();
   return useMemo(() => {
-    const university = catalog.data?.university;
-    const terms = mergeTerms(university?.terms ?? [], semesters.data ?? []);
+    const referenced = [...(classes.data ?? []).map((entry) => entry.term), ...(dates.data ?? []).flatMap((entry) => (entry.term ? [entry.term] : []))];
     return {
-      isLoading: catalog.isLoading || semesters.isLoading,
-      error: catalog.error ?? semesters.error,
-      terms: terms.length ? terms : [fallbackTerm(semesters.data ?? [])],
-      currentTerm: university?.currentTerm,
+      isLoading: semesters.isLoading || classes.isLoading || dates.isLoading,
+      error: semesters.error ?? classes.error ?? dates.error,
+      terms: mergeTerms(semesters.data ?? [], referenced),
     };
-  }, [catalog.data, catalog.isLoading, catalog.error, semesters.data, semesters.isLoading, semesters.error]);
+  }, [semesters.data, semesters.isLoading, semesters.error, classes.data, classes.isLoading, classes.error, dates.data, dates.isLoading, dates.error]);
 }

@@ -240,16 +240,16 @@ export const DEFAULT_SETTINGS: Settings = {
 export type ClockTime = string;
 
 /**
- * A semester the learner keeps a calendar for: a term from the University catalog (e.g. "Sem 1 2026"),
- * whose dates they saved, or one they added themselves, with or without dates.
+ * A semester the learner added (e.g. "Sem 1 2026"), with or without dates, and the University subjects
+ * they chose for it. Subjects they linked a class to in the timetable count too and are not stored here.
  */
 export interface SemesterRecord {
   term: string;
   /** First and last day; both set or both absent. */
   startsOn?: DayKey;
   endsOn?: DayKey;
-  /** Added by the learner rather than listed in the catalog; only these can be removed in the app. */
-  addedByLearner?: boolean;
+  /** University subjects (course ids) the learner picked for this semester on the Courses page. */
+  courseIds?: string[];
   createdAt?: Timestamp;
   updatedAt: Timestamp;
 }

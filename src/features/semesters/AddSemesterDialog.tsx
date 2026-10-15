@@ -1,4 +1,4 @@
-/** Add a semester that is not in the catalog yet, by name, with its first and last day if known. */
+/** Add a semester by name, with its first and last day if known. */
 import { type FormEvent, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Dialog } from '@/components/ui/Dialog';
@@ -24,7 +24,7 @@ export function AddSemesterDialog({ terms, onAdded, onClose }: { terms: Term[]; 
     setSubmitted(true);
     if ('error' in checked || datesError) return;
     const at = nowIso();
-    await saveSemester.mutateAsync({ term: checked.name, ...(datesGiven ? { startsOn, endsOn } : {}), addedByLearner: true, createdAt: at, updatedAt: at });
+    await saveSemester.mutateAsync({ term: checked.name, ...(datesGiven ? { startsOn, endsOn } : {}), createdAt: at, updatedAt: at });
     onAdded(checked.name);
     onClose();
   };
@@ -32,7 +32,7 @@ export function AddSemesterDialog({ terms, onAdded, onClose }: { terms: Term[]; 
   return (
     <Dialog open onClose={onClose} title="Add a semester">
       <form onSubmit={(event) => void submit(event)} className="flex flex-col gap-4 p-4">
-        <p className="text-sm text-ink-muted">For a semester whose subjects are not in Study Hub yet: you can still keep its timetable and important dates.</p>
+        <p className="text-sm text-ink-muted">Name the semester you are studying in. You can then choose its subjects on the Courses page and keep its timetable and important dates in the Calendar.</p>
         <Field label="Name" error={submitted && 'error' in checked ? checked.error : undefined}>
           {(props) => <Input {...props} value={name} maxLength={MAX_SEMESTER_NAME_LENGTH + 10} autoComplete="off" placeholder="e.g. Sem 2 2026" onChange={(event) => setName(event.target.value)} />}
         </Field>

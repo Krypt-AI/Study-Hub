@@ -1,11 +1,11 @@
 /** The optional calendar: a weekly class and an exam date are kept, and the exam shows on Today. */
 import { expect, test } from './fixtures';
-import { addImportantDate } from './calendarSteps';
+import { addImportantDate, ensureSemester } from './calendarSteps';
 import { addDaysTo, todayKey } from './dates';
 
 test('a timetable class and an important date are saved and shown', async ({ page }) => {
   await page.goto('/calendar');
-  await expect(page.getByRole('heading', { level: 1, name: 'Calendar' })).toBeVisible();
+  await ensureSemester(page);
 
   // A weekly class, linked to a University subject.
   await page.getByRole('button', { name: 'Add class' }).click();

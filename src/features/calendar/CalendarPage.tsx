@@ -1,20 +1,20 @@
 /**
  * Calendar (optional): the learner's weekly timetable for a semester and the important
  * dates to prepare for. Nothing here is required; upcoming dates also show on Today.
- * Semesters come from the catalog, and the learner can add their own (domain/calendar/semesters.ts).
+ * The semesters are the learner's own (domain/calendar/semesters.ts).
  */
 import { CalendarPlus, FolderPlus, Plus } from 'lucide-react';
 import { type FormEvent, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router';
 import { Button } from '@/components/ui/Button';
-import { ErrorState, LoadingState } from '@/components/ui/Feedback';
+import { EmptyState, ErrorState, LoadingState } from '@/components/ui/Feedback';
 import { Field, Input, Select } from '@/components/ui/Field';
 import { PageHeader, Sheet } from '@/components/ui/Sheet';
 import { Tabs } from '@/components/ui/Tabs';
 import { useImportantDates, useTimetableClasses } from '@/data/queries';
 import type { DayKey, ImportantDateRecord, TimetableClassRecord } from '@/data/records';
 import { clashingClassIds, isDated, isValidSemester, semesterWeek, semesterWeekCount, upcomingDates } from '@/domain/calendar/calendar';
-import { contentsLabel, defaultTerm, semesterContents, type Term } from '@/domain/calendar/semesters';
+import { contentsLabel, defaultTerm, semesterContents, semesterCourseIds, type Term } from '@/domain/calendar/semesters';
 import { AddSemesterDialog } from '@/features/semesters/AddSemesterDialog';
 import { useTerms } from '@/features/semesters/useTerms';
 import { dayKey, nowIso, relativeDay } from '@/lib/dates';
@@ -24,7 +24,7 @@ import { ConfirmDeleteButton } from './ConfirmDeleteButton';
 import { DatesList } from './DatesList';
 import { MonthView } from './MonthView';
 import { useCalendarMutations } from './useCalendarMutations';
-import { subjectsFor, useSubjects } from './useSubjects';
+import { useSubjects } from './useSubjects';
 import { WeekView } from './WeekView';
 
 type View = 'week' | 'month' | 'dates';
@@ -40,11 +40,12 @@ export default function CalendarPage() {
   const { subjects, isLoading } = useSubjects();
   const terms = useTerms();
   const [term, setTerm] = useState<string>();
-  const activeTerm = (term && terms.terms.some((entry) => entry.name === term) ? term : undefined) ?? defaultTerm(terms.terms, terms.currentTerm, today) ?? '';
+  const activeTerm = (term && terms.terms.some((entry) => entry.name === term) ? term : undefined) ?? defaultTerm(terms.terms, today) ?? '';
   const [weekAnchor, setWeekAnchor] = useState(today);
   const [month, setMonth] = useState(today.slice(0, 7));
   const [selectedDay, setSelectedDay] = useState(today);
   const [editing, setEditing] = useState<Editing>();
+  const [adding, setAdding] = useState(false);
 
   const classes = useTimetableClasses();
   const dates = useImportantDates();
@@ -56,10 +57,29 @@ export default function CalendarPage() {
 
   const error = terms.error ?? classes.error ?? dates.error;
   if (error) return <ErrorState title="Your calendar could not be loaded" error={error} />;
-  if (isLoading || terms.isLoading || !shownTerm || !classes.data || !dates.data) return <LoadingState />;
+  if (isLoading || terms.isLoading || !classes.data || !dates.data) return <LoadingState />;
+  if (!shownTerm) {
+    return (
+      <div className="mx-auto max-w-6xl">
+        <PageHeader title="Calendar" lead="Optional: add your weekly timetable and the dates of quizzes, tests and exams. The next important dates also show on Today." />
+        <Sheet padded>
+          <EmptyState
+            title="Add your semester first"
+            action={
+              <Button variant="primary" icon={<FolderPlus className="size-4" />} onClick={() => setAdding(true)}>
+                Add semester
+              </Button>
+            }
+          >
+            Name the semester you are in, for example "Sem 1 2026". Its timetable and important dates are kept under it.
+          </EmptyState>
+        </Sheet>
+        {adding && <AddSemesterDialog terms={terms.terms} onAdded={setTerm} onClose={() => setAdding(false)} />}
+      </div>
+    );
+  }
 
   const allDates = dates.data;
-  const termSubjects = subjectsFor(subjects, activeTerm);
   const editClass = (entry: TimetableClassRecord) => setEditing({ kind: 'class', initial: entry });
   const editDate = (entry: ImportantDateRecord) => setEditing({ kind: 'date', initial: entry });
   const addDate = (day: DayKey) => setEditing({ kind: 'date', initial: { term: activeTerm, date: day } });
@@ -91,7 +111,7 @@ export default function CalendarPage() {
           today={today}
           classes={classes.data}
           dates={allDates}
-          hasSubjects={termSubjects.some((subject) => subject.category === 'university')}
+          hasSubjects={semesterCourseIds(activeTerm, shownTerm.semester, classes.data).all.length > 0}
         />
 
         <div className="flex flex-col gap-4">
@@ -128,8 +148,8 @@ export default function CalendarPage() {
         </div>
       </div>
 
-      {editing?.kind === 'class' && <ClassDialog initial={editing.initial} subjects={termSubjects} onClose={() => setEditing(undefined)} />}
-      {editing?.kind === 'date' && <DateDialog initial={editing.initial} subjects={termSubjects} onClose={() => setEditing(undefined)} />}
+      {editing?.kind === 'class' && <ClassDialog initial={editing.initial} subjects={subjects} onClose={() => setEditing(undefined)} />}
+      {editing?.kind === 'date' && <DateDialog initial={editing.initial} subjects={subjects} onClose={() => setEditing(undefined)} />}
     </div>
   );
 }
@@ -202,17 +222,15 @@ function SemesterSheet({ term, terms, onTermChange, today, classes, dates, hasSu
         <Button type="button" variant="ghost" icon={<FolderPlus className="size-4" />} onClick={() => setAdding(true)}>
           Add semester
         </Button>
-        {!term.fromCatalog && (
-          <ConfirmDeleteButton
-            label="Remove semester"
-            question={`Remove ${term.name} with its ${contentsLabel(contents)}?`}
-            loading={removeSemester.isPending}
-            onConfirm={() => void removeSemester.mutateAsync({ term: term.name, ...contents }).then(() => onTermChange(''))}
-          />
-        )}
+        <ConfirmDeleteButton
+          label="Remove semester"
+          question={`Remove ${term.name} with its ${contentsLabel(contents)}?`}
+          loading={removeSemester.isPending}
+          onConfirm={() => void removeSemester.mutateAsync({ term: term.name, ...contents }).then(() => onTermChange(''))}
+        />
         <p className="basis-full text-sm text-ink-muted">
           {status}
-          {!hasSubjects && ' No materials for this semester yet: add classes and dates by name.'}
+          {!hasSubjects && ' No subjects chosen yet: choose them on the Courses page, or add classes and dates by name.'}
         </p>
       </form>
       {adding && <AddSemesterDialog terms={terms} onAdded={onTermChange} onClose={() => setAdding(false)} />}

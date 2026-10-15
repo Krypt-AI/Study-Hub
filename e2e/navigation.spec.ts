@@ -1,3 +1,4 @@
+import { addSemester } from './calendarSteps';
 import { expect, test } from './fixtures';
 
 const PAGES: Array<[path: string, heading: string | RegExp]> = [
@@ -35,17 +36,21 @@ test('unknown routes show the not-found page', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1, name: 'Page not found' })).toBeVisible();
 });
 
-test('courses open on their areas, and the UNITEN area on the current semester', async ({ page }) => {
+test('courses open on their areas, and the UNITEN area asks for a semester, then its subjects', async ({ page }) => {
   await page.goto('/courses');
   const areas = page.getByRole('navigation', { name: 'Course areas' });
   await expect(areas.getByRole('link', { name: /Japanese \(JLPT\)/u })).toBeVisible();
   await expect(areas.getByRole('link', { name: /AI Engineering/u })).toBeVisible();
   await areas.getByRole('link', { name: /^UNITEN/u }).click();
   await expect(page.getByRole('heading', { level: 1, name: 'UNITEN' })).toBeVisible();
-  const semester = page.getByRole('combobox', { name: 'Semester' });
-  await expect(semester).toHaveValue('Sem 1 2026');
-  await semester.selectOption('all');
-  await expect(semester).toHaveValue('all');
+
+  // No semester is preset: the learner adds their own, then chooses its subjects.
+  await expect(page.getByText('Add your semester first')).toBeVisible();
+  await addSemester(page, 'Sem 1 2026');
+  await expect(page.getByRole('combobox', { name: 'Semester' })).toHaveValue('Sem 1 2026');
+  await expect(page.getByText('No subjects chosen for Sem 1 2026 yet')).toBeVisible();
+  await page.getByRole('checkbox', { name: /Cyber Security Essentials/u }).click();
+  await expect(page.getByRole('region', { name: 'Subjects' }).getByRole('link', { name: 'Cyber Security Essentials' })).toBeVisible();
 });
 
 test('certifications open on their areas, with JLPT and HSK among them', async ({ page }) => {

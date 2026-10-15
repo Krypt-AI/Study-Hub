@@ -13,9 +13,26 @@ export async function addImportantDate(page: Page, { kind, subject, day, lastDay
   await expect(dialog).toBeHidden();
 }
 
+/** Adds a semester from the dialog opened by an "Add semester" button on the current page. */
+export async function addSemester(page: Page, name: string): Promise<void> {
+  await page.getByRole('button', { name: 'Add semester' }).first().click();
+  const dialog = page.getByRole('dialog', { name: 'Add a semester' });
+  await dialog.getByLabel('Name').fill(name);
+  await dialog.getByRole('button', { name: 'Add semester' }).click();
+  await expect(dialog).toBeHidden();
+}
+
+/** On the calendar page: adds "Sem 1 2026" when the learner has no semester yet (a new learner has none). */
+export async function ensureSemester(page: Page, name = 'Sem 1 2026'): Promise<void> {
+  await expect(page.getByRole('heading', { level: 1, name: 'Calendar' })).toBeVisible();
+  if (await page.getByText('Add your semester first').isVisible()) await addSemester(page, name);
+  await expect(page.getByRole('combobox', { name: 'Semester' })).toBeVisible();
+}
+
 /** Opens the calendar's list of important dates. */
 export async function openImportantDates(page: Page): Promise<void> {
   await page.goto('/calendar');
+  await ensureSemester(page);
   await page.getByRole('tab', { name: /Important dates/u }).click();
 }
 
