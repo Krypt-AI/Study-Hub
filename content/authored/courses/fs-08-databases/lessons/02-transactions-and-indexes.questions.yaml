@@ -1,0 +1,151 @@
+[
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "A transfer debits one account and credits another. Why use a transaction?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It makes the statements faster"
+      },
+      {
+        "id": "b",
+        "text": "So both updates happen or neither does"
+      },
+      {
+        "id": "c",
+        "text": "It removes the need for constraints"
+      },
+      {
+        "id": "d",
+        "text": "It indexes the tables"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-08-databases.transactions-and-indexes.q1",
+    "topics": [
+      "fs-08-databases.transactions-and-indexes"
+    ]
+  },
+  {
+    "type": "short",
+    "skill": "recall",
+    "prompt": "What does the 'A' in ACID stand for?",
+    "accepted": [
+      "atomicity",
+      "atomic",
+      "Atomicity"
+    ],
+    "id": "fs-08-databases.transactions-and-indexes.q2",
+    "topics": [
+      "fs-08-databases.transactions-and-indexes"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which query benefits from an index on `orders(customer_id)`?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`SELECT * FROM orders WHERE customer_id = 7`"
+      },
+      {
+        "id": "b",
+        "text": "`SELECT COUNT(*) FROM orders`"
+      },
+      {
+        "id": "c",
+        "text": "`SELECT * FROM orders WHERE total > 0 AND status = 'x'`"
+      },
+      {
+        "id": "d",
+        "text": "`SELECT 1`"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "id": "fs-08-databases.transactions-and-indexes.q3",
+    "topics": [
+      "fs-08-databases.transactions-and-indexes"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What is a downside of adding many indexes?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Reads become slower"
+      },
+      {
+        "id": "b",
+        "text": "Writes become slower and storage grows"
+      },
+      {
+        "id": "c",
+        "text": "Queries return wrong results"
+      },
+      {
+        "id": "d",
+        "text": "Foreign keys stop working"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-08-databases.transactions-and-indexes.q4",
+    "topics": [
+      "fs-08-databases.transactions-and-indexes"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What is the N+1 query problem?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Running N+1 migrations"
+      },
+      {
+        "id": "b",
+        "text": "One query for a list followed by one extra query per row"
+      },
+      {
+        "id": "c",
+        "text": "A table with N+1 columns"
+      },
+      {
+        "id": "d",
+        "text": "An index with N+1 keys"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-08-databases.transactions-and-indexes.q5",
+    "topics": [
+      "fs-08-databases.transactions-and-indexes"
+    ]
+  },
+  {
+    "type": "sql",
+    "skill": "apply",
+    "prompt": "For each customer who has orders, return `name` and `spent`, the sum of their `paid` orders' totals (customers with no paid orders must not appear). Sort by `spent` descending.",
+    "schema": "CREATE TABLE customers (id INTEGER PRIMARY KEY, name TEXT NOT NULL, city TEXT);\nCREATE TABLE orders (id INTEGER PRIMARY KEY, customer_id INTEGER NOT NULL REFERENCES customers(id), total REAL NOT NULL, status TEXT NOT NULL);\nINSERT INTO customers VALUES (1,'Aisha','Kuala Lumpur'),(2,'Ben','Penang'),(3,'Chen',NULL);\nINSERT INTO orders VALUES (1,1,120.0,'paid'),(2,1,80.5,'paid'),(3,2,45.0,'pending'),(4,2,300.0,'paid');\n",
+    "solution": "SELECT c.name, SUM(o.total) AS spent FROM customers c JOIN orders o ON o.customer_id = c.id WHERE o.status = 'paid' GROUP BY c.id, c.name ORDER BY spent DESC;",
+    "orderMatters": true,
+    "hints": [
+      "`WHERE` first, then `GROUP BY`, and alias the sum as `spent`."
+    ],
+    "id": "fs-08-databases.transactions-and-indexes.q6",
+    "topics": [
+      "fs-08-databases.transactions-and-indexes"
+    ]
+  }
+]

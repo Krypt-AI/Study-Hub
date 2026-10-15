@@ -1,0 +1,48 @@
+{
+  "id": "fs-03-javascript",
+  "title": "JavaScript",
+  "subtitle": "Full-Stack · Stage 3",
+  "description": "The language every other stage depends on: values, functions and data, working with the DOM and events, and asynchronous code with fetch. Exercises run in the browser sandbox.",
+  "category": "ai-engineering",
+  "subject": "full-stack-development",
+  "level": "Stage 3",
+  "difficulty": "beginner",
+  "tags": [
+    "javascript",
+    "dom",
+    "async",
+    "fetch"
+  ],
+  "estimatedHours": 8,
+  "topics": [
+    {
+      "id": "fs-03-javascript.language-core",
+      "title": "The language core"
+    },
+    {
+      "id": "fs-03-javascript.dom-and-events",
+      "title": "The DOM and events"
+    },
+    {
+      "id": "fs-03-javascript.async-and-fetch",
+      "title": "Asynchronous JavaScript and fetch"
+    }
+  ],
+  "units": [
+    {
+      "id": "fs-03-javascript.u1",
+      "title": "The language",
+      "lessons": [
+        "01-language-core"
+      ]
+    },
+    {
+      "id": "fs-03-javascript.u2",
+      "title": "In the browser",
+      "lessons": [
+        "02-dom-and-events",
+        "03-async-and-fetch"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,201 @@
+[
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which request should create a new note?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`GET /api/createNote`"
+      },
+      {
+        "id": "b",
+        "text": "`POST /api/notes`"
+      },
+      {
+        "id": "c",
+        "text": "`PUT /api/notes/new`"
+      },
+      {
+        "id": "d",
+        "text": "`DELETE /api/notes`"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-07-node-api.rest-api-design.q1",
+    "topics": [
+      "fs-07-node-api.rest-api-design"
+    ]
+  },
+  {
+    "type": "short",
+    "skill": "recall",
+    "prompt": "Which status code does a successful `DELETE` with no body normally return?",
+    "accepted": [
+      "204",
+      "204 No Content"
+    ],
+    "id": "fs-07-node-api.rest-api-design.q2",
+    "topics": [
+      "fs-07-node-api.rest-api-design"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "A client sends a valid token but is not allowed to see a resource. Which status code?",
+    "options": [
+      {
+        "id": "a",
+        "text": "401"
+      },
+      {
+        "id": "b",
+        "text": "403"
+      },
+      {
+        "id": "c",
+        "text": "404"
+      },
+      {
+        "id": "d",
+        "text": "500"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "401 means not authenticated; 403 means authenticated but not permitted.",
+    "id": "fs-07-node-api.rest-api-design.q3",
+    "topics": [
+      "fs-07-node-api.rest-api-design"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which methods are idempotent?",
+    "options": [
+      {
+        "id": "a",
+        "text": "POST"
+      },
+      {
+        "id": "b",
+        "text": "PUT"
+      },
+      {
+        "id": "c",
+        "text": "DELETE"
+      },
+      {
+        "id": "d",
+        "text": "GET"
+      }
+    ],
+    "correct": [
+      "b",
+      "c",
+      "d"
+    ],
+    "multiple": true,
+    "id": "fs-07-node-api.rest-api-design.q4",
+    "topics": [
+      "fs-07-node-api.rest-api-design"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Why paginate list endpoints?",
+    "options": [
+      {
+        "id": "a",
+        "text": "REST requires it"
+      },
+      {
+        "id": "b",
+        "text": "Unbounded lists get slower and larger as data grows"
+      },
+      {
+        "id": "c",
+        "text": "Clients cannot sort otherwise"
+      },
+      {
+        "id": "d",
+        "text": "It improves SEO"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-07-node-api.rest-api-design.q5",
+    "topics": [
+      "fs-07-node-api.rest-api-design"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which belongs in an error response sent to the client?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The SQL query and stack trace"
+      },
+      {
+        "id": "b",
+        "text": "A stable error code and a human-readable message"
+      },
+      {
+        "id": "c",
+        "text": "The database password"
+      },
+      {
+        "id": "d",
+        "text": "The server's file paths"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-07-node-api.rest-api-design.q6",
+    "topics": [
+      "fs-07-node-api.rest-api-design"
+    ]
+  },
+  {
+    "type": "code",
+    "skill": "apply",
+    "language": "javascript",
+    "prompt": "Write `paginate(items, page, pageSize)` returning `{ items, total, totalPages }` where `items` is the slice for that 1-based page.",
+    "starterCode": "function paginate(items, page, pageSize) {\n\n}\n",
+    "tests": [
+      {
+        "kind": "assert",
+        "name": "first page",
+        "code": "assertEqual(paginate([1, 2, 3, 4, 5], 1, 2), { items: [1, 2], total: 5, totalPages: 3 });"
+      },
+      {
+        "kind": "assert",
+        "name": "last partial page",
+        "code": "assertEqual(paginate([1, 2, 3, 4, 5], 3, 2), { items: [5], total: 5, totalPages: 3 });"
+      },
+      {
+        "kind": "assert",
+        "name": "empty",
+        "code": "assertEqual(paginate([], 1, 10), { items: [], total: 0, totalPages: 0 });"
+      }
+    ],
+    "solution": "function paginate(items, page, pageSize) {\n  const start = (page - 1) * pageSize;\n  return {\n    items: items.slice(start, start + pageSize),\n    total: items.length,\n    totalPages: Math.ceil(items.length / pageSize),\n  };\n}\n",
+    "hints": [
+      "`slice(start, start + pageSize)` and `Math.ceil` for the page count."
+    ],
+    "id": "fs-07-node-api.rest-api-design.q7",
+    "topics": [
+      "fs-07-node-api.rest-api-design"
+    ]
+  }
+]

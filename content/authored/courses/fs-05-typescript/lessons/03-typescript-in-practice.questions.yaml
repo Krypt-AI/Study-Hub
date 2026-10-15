@@ -1,0 +1,135 @@
+[
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What does a type annotation on `response.json()` guarantee at run time?",
+    "options": [
+      {
+        "id": "a",
+        "text": "That the data matches the type"
+      },
+      {
+        "id": "b",
+        "text": "Nothing: types are erased"
+      },
+      {
+        "id": "c",
+        "text": "That extra fields are removed"
+      },
+      {
+        "id": "d",
+        "text": "That missing fields are filled"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-05-typescript.typescript-in-practice.q1",
+    "topics": [
+      "fs-05-typescript.typescript-in-practice"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Why derive a type from a Zod schema with `z.infer`?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It makes the code faster"
+      },
+      {
+        "id": "b",
+        "text": "The run-time check and the compile-time type cannot drift apart"
+      },
+      {
+        "id": "c",
+        "text": "It removes the need for tsconfig"
+      },
+      {
+        "id": "d",
+        "text": "It generates CSS"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-05-typescript.typescript-in-practice.q2",
+    "topics": [
+      "fs-05-typescript.typescript-in-practice"
+    ]
+  },
+  {
+    "type": "short",
+    "skill": "recall",
+    "prompt": "Which command type-checks a project without producing output files?",
+    "accepted": [
+      "tsc --noEmit",
+      "npx tsc --noEmit"
+    ],
+    "id": "fs-05-typescript.typescript-in-practice.q3",
+    "topics": [
+      "fs-05-typescript.typescript-in-practice"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What does `strictNullChecks` (part of `strict`) prevent?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Using `null` anywhere"
+      },
+      {
+        "id": "b",
+        "text": "Accidentally using a value that may be null or undefined as if it were present"
+      },
+      {
+        "id": "c",
+        "text": "Importing modules"
+      },
+      {
+        "id": "d",
+        "text": "Using generics"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-05-typescript.typescript-in-practice.q4",
+    "topics": [
+      "fs-05-typescript.typescript-in-practice"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which is preferable to `@ts-ignore`?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`@ts-nocheck`"
+      },
+      {
+        "id": "b",
+        "text": "`@ts-expect-error` with a reason"
+      },
+      {
+        "id": "c",
+        "text": "`any` everywhere"
+      },
+      {
+        "id": "d",
+        "text": "Deleting the file"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-05-typescript.typescript-in-practice.q5",
+    "topics": [
+      "fs-05-typescript.typescript-in-practice"
+    ]
+  }
+]

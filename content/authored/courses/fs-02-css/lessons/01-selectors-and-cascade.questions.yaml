@@ -1,0 +1,173 @@
+[
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which rule wins for a paragraph with `class=\"note\"` given `p { color: red }` and `.note { color: blue }`?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The type rule: red"
+      },
+      {
+        "id": "b",
+        "text": "The class rule: blue"
+      },
+      {
+        "id": "c",
+        "text": "Whichever is written last, always"
+      },
+      {
+        "id": "d",
+        "text": "Neither; the browser picks at random"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "A class selector is more specific than a type selector, so order does not matter here.",
+    "id": "fs-02-css.selectors-and-cascade.q1",
+    "topics": [
+      "fs-02-css.selectors-and-cascade"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Two rules have equal specificity. Which wins?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The one that appears earlier"
+      },
+      {
+        "id": "b",
+        "text": "The one that appears later"
+      },
+      {
+        "id": "c",
+        "text": "The shorter one"
+      },
+      {
+        "id": "d",
+        "text": "The one with more properties"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-02-css.selectors-and-cascade.q2",
+    "topics": [
+      "fs-02-css.selectors-and-cascade"
+    ]
+  },
+  {
+    "type": "short",
+    "skill": "recall",
+    "prompt": "Which `box-sizing` value makes `width` include padding and border?",
+    "accepted": [
+      "border-box"
+    ],
+    "match": {
+      "mode": "exact",
+      "caseSensitive": true
+    },
+    "id": "fs-02-css.selectors-and-cascade.q3",
+    "topics": [
+      "fs-02-css.selectors-and-cascade"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which selector matches only the direct `li` children of a `ul`?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`ul li`"
+      },
+      {
+        "id": "b",
+        "text": "`ul > li`"
+      },
+      {
+        "id": "c",
+        "text": "`ul + li`"
+      },
+      {
+        "id": "d",
+        "text": "`ul ~ li`"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "`>` is the child combinator; `ul li` also matches deeper descendants.",
+    "id": "fs-02-css.selectors-and-cascade.q4",
+    "topics": [
+      "fs-02-css.selectors-and-cascade"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which properties are normally inherited by child elements?",
+    "options": [
+      {
+        "id": "a",
+        "text": "margin"
+      },
+      {
+        "id": "b",
+        "text": "color"
+      },
+      {
+        "id": "c",
+        "text": "border"
+      },
+      {
+        "id": "d",
+        "text": "font-family"
+      }
+    ],
+    "correct": [
+      "b",
+      "d"
+    ],
+    "multiple": true,
+    "id": "fs-02-css.selectors-and-cascade.q5",
+    "topics": [
+      "fs-02-css.selectors-and-cascade"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "A `div` has `width: 200px; padding: 20px; border: 5px solid` with the default `content-box`. How wide is the visible box?",
+    "options": [
+      {
+        "id": "a",
+        "text": "200px"
+      },
+      {
+        "id": "b",
+        "text": "225px"
+      },
+      {
+        "id": "c",
+        "text": "250px"
+      },
+      {
+        "id": "d",
+        "text": "240px"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "200 + 2×20 padding + 2×5 border = 250px.",
+    "id": "fs-02-css.selectors-and-cascade.q6",
+    "topics": [
+      "fs-02-css.selectors-and-cascade"
+    ]
+  }
+]

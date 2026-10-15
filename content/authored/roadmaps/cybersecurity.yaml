@@ -1,0 +1,50 @@
+id: cybersecurity
+title: Cybersecurity Roadmap
+description: >-
+  A path from IT and networking fundamentals to defensive and offensive security practice: systems and
+  networks first, then security principles, cryptography, web and application security, and finally
+  detection, response and the certifications that recognise the skills. Practice stays legal and defensive:
+  exercises use your own machines, sandboxes and intentionally vulnerable training targets. The courses for
+  these stages are being prepared; the certification links are available now.
+stages:
+  - id: stage-01
+    title: IT fundamentals and operating systems
+    summary: How computers, files, processes and users work, on Windows and Linux.
+    courseIds: [sec-01-it-fundamentals]
+    certificationIds: [comptia-a-plus]
+  - id: stage-02
+    title: Networking
+    summary: The TCP/IP stack, addressing, DNS, routing, switching and the protocols you will inspect.
+    courseIds: [sec-02-networking]
+    certificationIds: [comptia-network-plus, cisco-ccna]
+  - id: stage-03
+    title: Linux and the command line
+    summary: The shell, permissions, services, logs and scripting for administration and analysis.
+    courseIds: [sec-03-linux]
+    certificationIds: [lf-lfcs, comptia-linux-plus]
+  - id: stage-04
+    title: Security principles and risk
+    summary: The CIA triad, threats and vulnerabilities, access control, risk management and frameworks.
+    courseIds: [sec-04-principles]
+    certificationIds: [isc2-certified-in-cybersecurity]
+  - id: stage-05
+    title: Cryptography and identity
+    summary: Hashing, symmetric and public-key encryption, TLS, certificates, authentication and passwords.
+    courseIds: [sec-05-cryptography]
+  - id: stage-06
+    title: Web application security
+    summary: Injection, XSS, CSRF, broken access control and the OWASP Top 10, with safe test targets.
+    courseIds: [sec-06-web-security]
+  - id: stage-07
+    title: Network and system defence
+    summary: Firewalls, hardening, segmentation, patching, logging and monitoring with a SIEM.
+    courseIds: [sec-07-defence]
+    certificationIds: [comptia-security-plus]
+  - id: stage-08
+    title: Incident response and threat analysis
+    summary: Detection, triage, containment, forensics basics, malware analysis concepts and reporting.
+    courseIds: [sec-08-incident-response]
+  - id: stage-09
+    title: Ethical hacking and capstone
+    summary: Reconnaissance, scanning and exploitation methods on authorised targets, and a written assessment.
+    courseIds: [sec-09-ethical-hacking]

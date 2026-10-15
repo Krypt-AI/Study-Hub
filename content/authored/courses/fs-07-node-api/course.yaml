@@ -1,0 +1,48 @@
+{
+  "id": "fs-07-node-api",
+  "title": "Node.js and REST APIs",
+  "subtitle": "Full-Stack · Stage 7",
+  "description": "The server side: a Node.js runtime, Express servers and middleware, REST API design, validation, errors and a backend structure that stays testable.",
+  "category": "ai-engineering",
+  "subject": "full-stack-development",
+  "level": "Stage 7",
+  "difficulty": "intermediate",
+  "tags": [
+    "node",
+    "express",
+    "rest",
+    "api"
+  ],
+  "estimatedHours": 6,
+  "topics": [
+    {
+      "id": "fs-07-node-api.node-and-express",
+      "title": "Node.js and Express"
+    },
+    {
+      "id": "fs-07-node-api.rest-api-design",
+      "title": "Designing REST APIs"
+    },
+    {
+      "id": "fs-07-node-api.middleware-and-structure",
+      "title": "Configuration, errors and structure"
+    }
+  ],
+  "units": [
+    {
+      "id": "fs-07-node-api.u1",
+      "title": "Servers",
+      "lessons": [
+        "01-node-and-express"
+      ]
+    },
+    {
+      "id": "fs-07-node-api.u2",
+      "title": "APIs",
+      "lessons": [
+        "02-rest-api-design",
+        "03-middleware-and-structure"
+      ]
+    }
+  ]
+}

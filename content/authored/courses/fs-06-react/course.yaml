@@ -1,0 +1,48 @@
+{
+  "id": "fs-06-react",
+  "title": "React with TypeScript",
+  "subtitle": "Full-Stack · Stage 6",
+  "description": "Build interactive interfaces from components: JSX and props, state and effects, and the patterns used in production applications.",
+  "category": "ai-engineering",
+  "subject": "full-stack-development",
+  "level": "Stage 6",
+  "difficulty": "intermediate",
+  "tags": [
+    "react",
+    "typescript",
+    "hooks",
+    "state"
+  ],
+  "estimatedHours": 8,
+  "topics": [
+    {
+      "id": "fs-06-react.components-and-props",
+      "title": "Components, JSX and props"
+    },
+    {
+      "id": "fs-06-react.state-and-effects",
+      "title": "State, events and effects"
+    },
+    {
+      "id": "fs-06-react.patterns-and-performance",
+      "title": "Hooks, forms and patterns that scale"
+    }
+  ],
+  "units": [
+    {
+      "id": "fs-06-react.u1",
+      "title": "Core ideas",
+      "lessons": [
+        "01-components-and-props",
+        "02-state-and-effects"
+      ]
+    },
+    {
+      "id": "fs-06-react.u2",
+      "title": "Patterns",
+      "lessons": [
+        "03-patterns-and-performance"
+      ]
+    }
+  ]
+}

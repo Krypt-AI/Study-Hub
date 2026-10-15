@@ -20,7 +20,7 @@ export async function answerWelcome(page: Page, answers: WelcomeAnswers, options
 }
 
 /** The extras' names on "What do you want to study?" and in Settings. */
-export const EXTRAS = ['Chinese (HSK)', 'Japanese (JLPT)', 'AI engineering', 'IT and certifications'] as const;
+export const EXTRAS = ['Chinese (HSK)', 'Japanese (JLPT)', 'Roadmaps', 'Certifications'] as const;
 
 /** Answers "What do you want to study?", ticking exactly the given extras. */
 export async function chooseExtras(page: Page, extras: readonly (typeof EXTRAS)[number][], options: { timeout?: number } = {}): Promise<void> {

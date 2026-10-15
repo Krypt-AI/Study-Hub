@@ -1,0 +1,51 @@
+id: fullstack-developer
+title: Full-Stack Developer Roadmap
+description: >-
+  A path from your first web page to a deployed full-stack application: the browser side (HTML, CSS,
+  JavaScript, TypeScript and React), the server side (Node.js, REST APIs and authentication) and the data
+  behind it (SQL and document databases). Each stage is a course with typed questions and exercises that
+  run in the browser sandbox; every tool used is free.
+stages:
+  - id: stage-01
+    title: How the web works and HTML
+    summary: Browsers, servers, HTTP and URLs, then structured, accessible HTML documents and forms.
+    courseIds: [fs-01-web-foundations]
+  - id: stage-02
+    title: CSS and responsive layout
+    summary: The cascade, the box model, Flexbox, Grid, custom properties and mobile-first design.
+    courseIds: [fs-02-css]
+  - id: stage-03
+    title: JavaScript
+    summary: The language core, the DOM and events, then asynchronous code with promises and fetch.
+    courseIds: [fs-03-javascript]
+  - id: stage-04
+    title: Git, the command line and tooling
+    summary: Commits, branches and pull requests, the terminal, package managers and a repeatable workflow.
+    courseIds: [fs-04-git-and-tooling]
+    certificationIds: [lf-lfcs]
+  - id: stage-05
+    title: TypeScript
+    summary: Static types, interfaces and unions, generics and narrowing, so mistakes surface before runtime.
+    courseIds: [fs-05-typescript]
+  - id: stage-06
+    title: React
+    summary: Components, props and state, effects, forms and the patterns that keep an interface maintainable.
+    courseIds: [fs-06-react]
+  - id: stage-07
+    title: Node.js and REST APIs
+    summary: The runtime, HTTP servers with Express, resource design, validation and error handling.
+    courseIds: [fs-07-node-api]
+  - id: stage-08
+    title: Databases
+    summary: Relational design and SQL, then document stores, ORMs, transactions and indexes.
+    courseIds: [it-sql, fs-08-databases]
+  - id: stage-09
+    title: Authentication, security and testing
+    summary: Sessions and tokens, the web's common vulnerabilities, and unit and integration tests.
+    courseIds: [fs-09-auth-security-testing]
+    certificationIds: [comptia-security-plus]
+  - id: stage-10
+    title: Deployment and capstone project
+    summary: Environments, containers and CI/CD, then a complete application that combines every stage.
+    courseIds: [fs-10-deploy-capstone]
+    certificationIds: [aws-cloud-practitioner, ms-azure-fundamentals]

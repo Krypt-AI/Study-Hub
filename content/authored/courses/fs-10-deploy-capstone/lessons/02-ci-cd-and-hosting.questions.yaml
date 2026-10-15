@@ -1,0 +1,136 @@
+[
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What should a pull-request CI pipeline normally run?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Only the build"
+      },
+      {
+        "id": "b",
+        "text": "Install, lint, type check, tests and build"
+      },
+      {
+        "id": "c",
+        "text": "Only deployment"
+      },
+      {
+        "id": "d",
+        "text": "Nothing; humans review"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-10-deploy-capstone.ci-cd-and-hosting.q1",
+    "topics": [
+      "fs-10-deploy-capstone.ci-cd-and-hosting"
+    ]
+  },
+  {
+    "type": "short",
+    "skill": "recall",
+    "prompt": "What is the term for deploying a change that is switched off until you enable it? (two words)",
+    "accepted": [
+      "feature flag",
+      "feature flags",
+      "feature toggle"
+    ],
+    "id": "fs-10-deploy-capstone.ci-cd-and-hosting.q2",
+    "topics": [
+      "fs-10-deploy-capstone.ci-cd-and-hosting"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Why must database migrations be backwards-compatible during a rolling release?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Tools require it"
+      },
+      {
+        "id": "b",
+        "text": "Old and new versions of the code run against the same database at the same time"
+      },
+      {
+        "id": "c",
+        "text": "To save time"
+      },
+      {
+        "id": "d",
+        "text": "To avoid backups"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-10-deploy-capstone.ci-cd-and-hosting.q3",
+    "topics": [
+      "fs-10-deploy-capstone.ci-cd-and-hosting"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which hosting option needs the least operations work for a static frontend?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A self-managed VM"
+      },
+      {
+        "id": "b",
+        "text": "Static/edge hosting"
+      },
+      {
+        "id": "c",
+        "text": "Bare metal"
+      },
+      {
+        "id": "d",
+        "text": "Kubernetes"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-10-deploy-capstone.ci-cd-and-hosting.q4",
+    "topics": [
+      "fs-10-deploy-capstone.ci-cd-and-hosting"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "A backup is only trustworthy when…",
+    "options": [
+      {
+        "id": "a",
+        "text": "It is encrypted"
+      },
+      {
+        "id": "b",
+        "text": "You have tested restoring it"
+      },
+      {
+        "id": "c",
+        "text": "It is large"
+      },
+      {
+        "id": "d",
+        "text": "It is daily"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-10-deploy-capstone.ci-cd-and-hosting.q5",
+    "topics": [
+      "fs-10-deploy-capstone.ci-cd-and-hosting"
+    ]
+  }
+]

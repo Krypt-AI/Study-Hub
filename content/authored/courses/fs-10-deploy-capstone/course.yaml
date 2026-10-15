@@ -1,0 +1,48 @@
+{
+  "id": "fs-10-deploy-capstone",
+  "title": "Deployment and Capstone Project",
+  "subtitle": "Full-Stack · Stage 10",
+  "description": "Take an application from your machine to production: environments, containers, CI/CD, hosting and monitoring, then a capstone brief and launch checklist that combine every stage.",
+  "category": "ai-engineering",
+  "subject": "full-stack-development",
+  "level": "Stage 10",
+  "difficulty": "intermediate",
+  "tags": [
+    "deployment",
+    "docker",
+    "ci-cd",
+    "capstone"
+  ],
+  "estimatedHours": 8,
+  "topics": [
+    {
+      "id": "fs-10-deploy-capstone.environments-and-containers",
+      "title": "Environments, builds and containers"
+    },
+    {
+      "id": "fs-10-deploy-capstone.ci-cd-and-hosting",
+      "title": "CI/CD, hosting and monitoring"
+    },
+    {
+      "id": "fs-10-deploy-capstone.capstone-project",
+      "title": "Capstone: ship a full-stack application"
+    }
+  ],
+  "units": [
+    {
+      "id": "fs-10-deploy-capstone.u1",
+      "title": "Shipping",
+      "lessons": [
+        "01-environments-and-containers",
+        "02-ci-cd-and-hosting"
+      ]
+    },
+    {
+      "id": "fs-10-deploy-capstone.u2",
+      "title": "Capstone",
+      "lessons": [
+        "03-capstone-project"
+      ]
+    }
+  ]
+}

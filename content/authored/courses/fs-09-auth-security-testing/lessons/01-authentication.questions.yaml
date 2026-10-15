@@ -1,0 +1,160 @@
+[
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which is the right way to store passwords?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Encrypted with AES so they can be shown back"
+      },
+      {
+        "id": "b",
+        "text": "Hashed with SHA-256"
+      },
+      {
+        "id": "c",
+        "text": "Hashed with a slow, salted algorithm such as Argon2id or bcrypt"
+      },
+      {
+        "id": "d",
+        "text": "In plain text in a protected table"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "id": "fs-09-auth-security-testing.authentication.q1",
+    "topics": [
+      "fs-09-auth-security-testing.authentication"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What is the difference between authentication and authorisation?",
+    "options": [
+      {
+        "id": "a",
+        "text": "They are the same"
+      },
+      {
+        "id": "b",
+        "text": "Authentication proves identity; authorisation decides permissions"
+      },
+      {
+        "id": "c",
+        "text": "Authorisation proves identity; authentication decides permissions"
+      },
+      {
+        "id": "d",
+        "text": "Authentication is only for APIs"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-09-auth-security-testing.authentication.q2",
+    "topics": [
+      "fs-09-auth-security-testing.authentication"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which can a JWT safely contain?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The user's password"
+      },
+      {
+        "id": "b",
+        "text": "The user id and an expiry"
+      },
+      {
+        "id": "c",
+        "text": "A credit card number"
+      },
+      {
+        "id": "d",
+        "text": "The signing key"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "A JWT is signed, not encrypted: anyone can read its payload.",
+    "id": "fs-09-auth-security-testing.authentication.q3",
+    "topics": [
+      "fs-09-auth-security-testing.authentication"
+    ]
+  },
+  {
+    "type": "short",
+    "skill": "recall",
+    "prompt": "Which cookie attribute stops JavaScript from reading the cookie?",
+    "accepted": [
+      "HttpOnly",
+      "httponly"
+    ],
+    "id": "fs-09-auth-security-testing.authentication.q4",
+    "topics": [
+      "fs-09-auth-security-testing.authentication"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Why should a sign-in form give the same error for an unknown email and a wrong password?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It is shorter"
+      },
+      {
+        "id": "b",
+        "text": "It does not reveal which emails have accounts"
+      },
+      {
+        "id": "c",
+        "text": "It is required by HTTP"
+      },
+      {
+        "id": "d",
+        "text": "It prevents CSRF"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-09-auth-security-testing.authentication.q5",
+    "topics": [
+      "fs-09-auth-security-testing.authentication"
+    ]
+  },
+  {
+    "type": "cloze",
+    "skill": "recall",
+    "prompt": "Fill in the gaps.",
+    "text": "A session cookie should set [[1]] so it travels only over HTTPS and [[2]] to limit cross-site requests.",
+    "blanks": [
+      {
+        "id": "1",
+        "accepted": [
+          "Secure"
+        ]
+      },
+      {
+        "id": "2",
+        "accepted": [
+          "SameSite"
+        ]
+      }
+    ],
+    "id": "fs-09-auth-security-testing.authentication.q6",
+    "topics": [
+      "fs-09-auth-security-testing.authentication"
+    ]
+  }
+]

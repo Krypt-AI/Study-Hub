@@ -1,0 +1,137 @@
+[
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Why build the artifact once and promote it through environments?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It saves disk space"
+      },
+      {
+        "id": "b",
+        "text": "What you tested is exactly what runs in production"
+      },
+      {
+        "id": "c",
+        "text": "Docker requires it"
+      },
+      {
+        "id": "d",
+        "text": "It avoids using Git"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-10-deploy-capstone.environments-and-containers.q1",
+    "topics": [
+      "fs-10-deploy-capstone.environments-and-containers"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Why copy `package*.json` and run `npm ci` before copying the source in a Dockerfile?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It is required syntax"
+      },
+      {
+        "id": "b",
+        "text": "The dependency layer stays cached until dependencies change"
+      },
+      {
+        "id": "c",
+        "text": "It hides the source"
+      },
+      {
+        "id": "d",
+        "text": "It makes the image smaller than any other way"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-10-deploy-capstone.environments-and-containers.q2",
+    "topics": [
+      "fs-10-deploy-capstone.environments-and-containers"
+    ]
+  },
+  {
+    "type": "short",
+    "skill": "recall",
+    "prompt": "Which Dockerfile technique leaves build tools out of the final image? (two words)",
+    "accepted": [
+      "multi-stage build",
+      "multi stage build",
+      "multi-stage",
+      "multistage"
+    ],
+    "id": "fs-10-deploy-capstone.environments-and-containers.q3",
+    "topics": [
+      "fs-10-deploy-capstone.environments-and-containers"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Where do production secrets belong?",
+    "options": [
+      {
+        "id": "a",
+        "text": "In the Dockerfile"
+      },
+      {
+        "id": "b",
+        "text": "In the image's environment, baked at build time"
+      },
+      {
+        "id": "c",
+        "text": "Injected at run time from the host's secret store"
+      },
+      {
+        "id": "d",
+        "text": "In the repository's README"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "id": "fs-10-deploy-capstone.environments-and-containers.q4",
+    "topics": [
+      "fs-10-deploy-capstone.environments-and-containers"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What is the difference between an image and a container?",
+    "options": [
+      {
+        "id": "a",
+        "text": "None"
+      },
+      {
+        "id": "b",
+        "text": "An image is the packaged template; a container is a running instance of it"
+      },
+      {
+        "id": "c",
+        "text": "A container is the file on disk"
+      },
+      {
+        "id": "d",
+        "text": "An image runs processes"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-10-deploy-capstone.environments-and-containers.q5",
+    "topics": [
+      "fs-10-deploy-capstone.environments-and-containers"
+    ]
+  }
+]

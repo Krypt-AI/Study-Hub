@@ -1,0 +1,198 @@
+[
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which line correctly adds an item to an array held in state?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`todos.push(item)`"
+      },
+      {
+        "id": "b",
+        "text": "`setTodos([...todos, item])`"
+      },
+      {
+        "id": "c",
+        "text": "`todos = [...todos, item]`"
+      },
+      {
+        "id": "d",
+        "text": "`setTodos(todos.push(item))`"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-06-react.state-and-effects.q1",
+    "topics": [
+      "fs-06-react.state-and-effects"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "When should the next state be computed with an updater function (`setCount(c => c + 1)`)?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Never"
+      },
+      {
+        "id": "b",
+        "text": "When it depends on the previous value"
+      },
+      {
+        "id": "c",
+        "text": "Only inside effects"
+      },
+      {
+        "id": "d",
+        "text": "Only for numbers"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-06-react.state-and-effects.q2",
+    "topics": [
+      "fs-06-react.state-and-effects"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Two sibling components must show the same filter value. Where should the state live?",
+    "options": [
+      {
+        "id": "a",
+        "text": "In each sibling"
+      },
+      {
+        "id": "b",
+        "text": "In their common parent, passed down as props"
+      },
+      {
+        "id": "c",
+        "text": "In a global variable"
+      },
+      {
+        "id": "d",
+        "text": "In `localStorage` only"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-06-react.state-and-effects.q3",
+    "topics": [
+      "fs-06-react.state-and-effects"
+    ]
+  },
+  {
+    "type": "short",
+    "skill": "recall",
+    "prompt": "Which array do you pass to `useEffect` to run it only once after the first render?",
+    "accepted": [
+      "[]",
+      "empty array",
+      "an empty array"
+    ],
+    "id": "fs-06-react.state-and-effects.q4",
+    "topics": [
+      "fs-06-react.state-and-effects"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which of these is a good use of `useEffect`?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Computing the number of completed todos from `todos`"
+      },
+      {
+        "id": "b",
+        "text": "Subscribing to a WebSocket and unsubscribing on cleanup"
+      },
+      {
+        "id": "c",
+        "text": "Handling a button click"
+      },
+      {
+        "id": "d",
+        "text": "Filtering a list for display"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-06-react.state-and-effects.q5",
+    "topics": [
+      "fs-06-react.state-and-effects"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Why does `<input value={name} />` without an `onChange` become read-only?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It is a bug in React"
+      },
+      {
+        "id": "b",
+        "text": "The input is controlled by state, and nothing updates it"
+      },
+      {
+        "id": "c",
+        "text": "`value` is a reserved word"
+      },
+      {
+        "id": "d",
+        "text": "Inputs need `defaultValue`"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-06-react.state-and-effects.q6",
+    "topics": [
+      "fs-06-react.state-and-effects"
+    ]
+  },
+  {
+    "type": "code",
+    "skill": "apply",
+    "language": "javascript",
+    "prompt": "Write the pure function `toggleTodo(todos, id)` used by a React state update: return a **new** array where the todo with that id has its `done` flag flipped, leaving the original array and objects untouched.",
+    "starterCode": "function toggleTodo(todos, id) {\n\n}\n",
+    "tests": [
+      {
+        "kind": "assert",
+        "name": "flips the matching todo",
+        "code": "assertEqual(toggleTodo([{ id: 1, done: false }, { id: 2, done: true }], 1), [{ id: 1, done: true }, { id: 2, done: true }]);"
+      },
+      {
+        "kind": "assert",
+        "name": "does not mutate",
+        "code": "const original = [{ id: 1, done: false }]; toggleTodo(original, 1); assertEqual(original, [{ id: 1, done: false }]);"
+      },
+      {
+        "kind": "assert",
+        "name": "returns a new array",
+        "code": "const original = [{ id: 1, done: false }]; assert(toggleTodo(original, 1) !== original, 'must return a new array');"
+      }
+    ],
+    "solution": "function toggleTodo(todos, id) {\n  return todos.map((todo) => (todo.id === id ? { ...todo, done: !todo.done } : todo));\n}\n",
+    "hints": [
+      "`map` returns a new array; spread the todo you change."
+    ],
+    "id": "fs-06-react.state-and-effects.q7",
+    "topics": [
+      "fs-06-react.state-and-effects"
+    ]
+  }
+]

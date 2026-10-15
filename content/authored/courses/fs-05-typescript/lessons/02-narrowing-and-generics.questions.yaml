@@ -1,0 +1,167 @@
+[
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What type is `value` inside `if (typeof value === \"string\") { ... }` when it was `string | number`?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`string | number`"
+      },
+      {
+        "id": "b",
+        "text": "`string`"
+      },
+      {
+        "id": "c",
+        "text": "`number`"
+      },
+      {
+        "id": "d",
+        "text": "`unknown`"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-05-typescript.narrowing-and-generics.q1",
+    "topics": [
+      "fs-05-typescript.narrowing-and-generics"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What is a discriminated union?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A union of classes only"
+      },
+      {
+        "id": "b",
+        "text": "A union whose variants share a literal field that tells them apart"
+      },
+      {
+        "id": "c",
+        "text": "A union with `any`"
+      },
+      {
+        "id": "d",
+        "text": "A type with a generic default"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-05-typescript.narrowing-and-generics.q2",
+    "topics": [
+      "fs-05-typescript.narrowing-and-generics"
+    ]
+  },
+  {
+    "type": "short",
+    "skill": "recall",
+    "prompt": "Which utility type makes every property of a type optional?",
+    "accepted": [
+      "Partial",
+      "Partial<T>"
+    ],
+    "id": "fs-05-typescript.narrowing-and-generics.q3",
+    "topics": [
+      "fs-05-typescript.narrowing-and-generics"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What does `Omit<User, \"email\">` produce?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A type with only `email`"
+      },
+      {
+        "id": "b",
+        "text": "User without the `email` property"
+      },
+      {
+        "id": "c",
+        "text": "User where `email` is optional"
+      },
+      {
+        "id": "d",
+        "text": "A union"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-05-typescript.narrowing-and-generics.q4",
+    "topics": [
+      "fs-05-typescript.narrowing-and-generics"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Why is `value as Course` risky?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It is a syntax error"
+      },
+      {
+        "id": "b",
+        "text": "It tells the compiler to trust you; nothing checks it at run time"
+      },
+      {
+        "id": "c",
+        "text": "It changes the value"
+      },
+      {
+        "id": "d",
+        "text": "It only works for classes"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-05-typescript.narrowing-and-generics.q5",
+    "topics": [
+      "fs-05-typescript.narrowing-and-generics"
+    ]
+  },
+  {
+    "type": "code",
+    "skill": "apply",
+    "language": "typescript",
+    "prompt": "Write a generic `last<T>(items: T[])` that returns the last item, or `undefined` for an empty array.",
+    "starterCode": "function last<T>(items: T[]): T | undefined {\n  \n}\n",
+    "tests": [
+      {
+        "kind": "assert",
+        "name": "numbers",
+        "code": "assertEqual(last([1, 2, 3]), 3);"
+      },
+      {
+        "kind": "assert",
+        "name": "strings",
+        "code": "assertEqual(last(['a']), 'a');"
+      },
+      {
+        "kind": "assert",
+        "name": "empty",
+        "code": "assertEqual(last([]), undefined);"
+      }
+    ],
+    "solution": "function last<T>(items: T[]): T | undefined {\n  return items[items.length - 1];\n}\n",
+    "hints": [
+      "`items[items.length - 1]` is `undefined` for an empty array."
+    ],
+    "id": "fs-05-typescript.narrowing-and-generics.q6",
+    "topics": [
+      "fs-05-typescript.narrowing-and-generics"
+    ]
+  }
+]

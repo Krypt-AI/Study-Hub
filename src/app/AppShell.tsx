@@ -11,6 +11,7 @@ import {
   LayoutList,
   Menu,
   Moon,
+  Route,
   Search,
   Settings,
   Sun,
@@ -20,9 +21,9 @@ import {
 import { lazy, type ReactNode, Suspense, useEffect, useState } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router';
 import { IconButton } from '@/components/ui/Button';
-import { Kbd, LoadingState } from '@/components/ui/Feedback';
+import { LoadingState } from '@/components/ui/Feedback';
 import { useSettings } from '@/data/queries';
-import { showsCertifications } from '@/domain/content/visibility';
+import { showsCertifications, showsRoadmaps } from '@/domain/content/visibility';
 import { isDue } from '@/domain/learning/due';
 import { AccountRailItem } from '@/features/auth/AccountRailItem';
 import { canOpenLockedContent, useAuth } from '@/features/auth/useAuth';
@@ -48,6 +49,7 @@ interface NavItem {
 const NAV: NavItem[] = [
   { to: '/', label: 'Today', icon: <LayoutList className="size-4" />, end: true },
   { to: '/courses', label: 'Courses', icon: <BookOpen className="size-4" /> },
+  { to: '/roadmaps', label: 'Roadmaps', icon: <Route className="size-4" /> },
   { to: '/practice', label: 'Practice', icon: <Target className="size-4" /> },
   { to: '/calendar', label: 'Calendar', icon: <CalendarDays className="size-4" /> },
   { to: '/playground', label: 'Playground', icon: <Code2 className="size-4" /> },
@@ -55,6 +57,7 @@ const NAV: NavItem[] = [
 ];
 const PLAYGROUND = '/playground';
 const CERTIFICATIONS = '/certifications';
+const ROADMAPS = '/roadmaps';
 
 function DueCount() {
   // Only subjects whose study plan schedules reviews count: other subjects never add pressure.
@@ -100,6 +103,7 @@ function Rail({ onNavigate, onSearch }: { onNavigate?: () => void; onSearch: () 
   // Shown while open, so following a link there never leaves the rail without the current page.
   const shown = (item: NavItem) => {
     if (item.to === PLAYGROUND) return showPlayground || pathname.startsWith(PLAYGROUND);
+    if (item.to === ROADMAPS) return (visibility !== undefined && showsRoadmaps(visibility)) || pathname.startsWith(ROADMAPS);
     if (item.to === CERTIFICATIONS) return (visibility !== undefined && showsCertifications(visibility)) || pathname.startsWith(CERTIFICATIONS);
     return true;
   };
@@ -115,9 +119,6 @@ function Rail({ onNavigate, onSearch }: { onNavigate?: () => void; onSearch: () 
       >
         <Search className="size-4" aria-hidden />
         Search
-        <span className="ml-auto">
-          <Kbd>Ctrl K</Kbd>
-        </span>
       </button>
       {NAV.filter(shown).map((item) => (
         <RailLink key={item.to} item={item} onNavigate={onNavigate} />

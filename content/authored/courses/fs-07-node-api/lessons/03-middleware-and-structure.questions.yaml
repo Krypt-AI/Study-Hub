@@ -1,0 +1,137 @@
+[
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What is the advantage of validating environment variables at start-up?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The app starts faster"
+      },
+      {
+        "id": "b",
+        "text": "A missing or invalid setting stops the app immediately instead of failing later in production"
+      },
+      {
+        "id": "c",
+        "text": "It hides secrets"
+      },
+      {
+        "id": "d",
+        "text": "It makes logs shorter"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-07-node-api.middleware-and-structure.q1",
+    "topics": [
+      "fs-07-node-api.middleware-and-structure"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Where should database passwords be stored?",
+    "options": [
+      {
+        "id": "a",
+        "text": "In `config.js` in the repository"
+      },
+      {
+        "id": "b",
+        "text": "In environment variables or a secrets manager"
+      },
+      {
+        "id": "c",
+        "text": "In the client bundle"
+      },
+      {
+        "id": "d",
+        "text": "In a README"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-07-node-api.middleware-and-structure.q2",
+    "topics": [
+      "fs-07-node-api.middleware-and-structure"
+    ]
+  },
+  {
+    "type": "short",
+    "skill": "recall",
+    "prompt": "What is the name of the pattern: one middleware at the end that converts thrown errors to responses?",
+    "accepted": [
+      "error handler",
+      "error handling middleware",
+      "central error handling",
+      "error middleware"
+    ],
+    "id": "fs-07-node-api.middleware-and-structure.q3",
+    "topics": [
+      "fs-07-node-api.middleware-and-structure"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What should a 500 response body contain?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The stack trace"
+      },
+      {
+        "id": "b",
+        "text": "A generic message, with details only in server logs"
+      },
+      {
+        "id": "c",
+        "text": "The SQL error"
+      },
+      {
+        "id": "d",
+        "text": "The environment variables"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-07-node-api.middleware-and-structure.q4",
+    "topics": [
+      "fs-07-node-api.middleware-and-structure"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which dependency direction is correct in a layered backend?",
+    "options": [
+      {
+        "id": "a",
+        "text": "services import route handlers"
+      },
+      {
+        "id": "b",
+        "text": "routes call services; services call data access"
+      },
+      {
+        "id": "c",
+        "text": "data access imports routes"
+      },
+      {
+        "id": "d",
+        "text": "No direction is preferred"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-07-node-api.middleware-and-structure.q5",
+    "topics": [
+      "fs-07-node-api.middleware-and-structure"
+    ]
+  }
+]

@@ -1,0 +1,167 @@
+[
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "In a mobile-first stylesheet, media queries normally use…",
+    "options": [
+      {
+        "id": "a",
+        "text": "`max-width` to remove features"
+      },
+      {
+        "id": "b",
+        "text": "`min-width` to add layout as the screen grows"
+      },
+      {
+        "id": "c",
+        "text": "`orientation` only"
+      },
+      {
+        "id": "d",
+        "text": "`print` only"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-02-css.responsive-design.q1",
+    "topics": [
+      "fs-02-css.responsive-design"
+    ]
+  },
+  {
+    "type": "short",
+    "skill": "recall",
+    "prompt": "Which function picks a value between a minimum and a maximum based on a preferred size?",
+    "accepted": [
+      "clamp",
+      "clamp()"
+    ],
+    "explanation": "`clamp(min, preferred, max)`.",
+    "id": "fs-02-css.responsive-design.q2",
+    "topics": [
+      "fs-02-css.responsive-design"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "How do you read a custom property named `--brand`?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`$brand`"
+      },
+      {
+        "id": "b",
+        "text": "`var(--brand)`"
+      },
+      {
+        "id": "c",
+        "text": "`get(--brand)`"
+      },
+      {
+        "id": "d",
+        "text": "`--brand()`"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-02-css.responsive-design.q3",
+    "topics": [
+      "fs-02-css.responsive-design"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Why use `rem` for font sizes?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It is always smaller than px"
+      },
+      {
+        "id": "b",
+        "text": "It scales with the user's root font-size setting"
+      },
+      {
+        "id": "c",
+        "text": "It is required by media queries"
+      },
+      {
+        "id": "d",
+        "text": "It prevents inheritance"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-02-css.responsive-design.q4",
+    "topics": [
+      "fs-02-css.responsive-design"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which class name is better for maintainability?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`.red-big-box`"
+      },
+      {
+        "id": "b",
+        "text": "`.alert--error`"
+      },
+      {
+        "id": "c",
+        "text": "`.div3`"
+      },
+      {
+        "id": "d",
+        "text": "`.left-30px`"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "A name describing purpose survives a redesign; one describing appearance does not.",
+    "id": "fs-02-css.responsive-design.q5",
+    "topics": [
+      "fs-02-css.responsive-design"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What does `max-width: 100%; height: auto;` do to an image?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Stretches it beyond its container"
+      },
+      {
+        "id": "b",
+        "text": "Keeps it inside its container while preserving its aspect ratio"
+      },
+      {
+        "id": "c",
+        "text": "Crops it"
+      },
+      {
+        "id": "d",
+        "text": "Hides it on mobile"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-02-css.responsive-design.q6",
+    "topics": [
+      "fs-02-css.responsive-design"
+    ]
+  }
+]

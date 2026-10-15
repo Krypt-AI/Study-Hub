@@ -1,0 +1,168 @@
+[
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which defence stops SQL injection at its root?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Hiding error messages"
+      },
+      {
+        "id": "b",
+        "text": "Parameterised queries"
+      },
+      {
+        "id": "c",
+        "text": "A long password"
+      },
+      {
+        "id": "d",
+        "text": "HTTPS"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-09-auth-security-testing.web-vulnerabilities.q1",
+    "topics": [
+      "fs-09-auth-security-testing.web-vulnerabilities"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "A user changes `/invoices/17` to `/invoices/18` and sees another customer's invoice. What is this?",
+    "options": [
+      {
+        "id": "a",
+        "text": "XSS"
+      },
+      {
+        "id": "b",
+        "text": "Broken access control (IDOR)"
+      },
+      {
+        "id": "c",
+        "text": "CSRF"
+      },
+      {
+        "id": "d",
+        "text": "A DNS problem"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-09-auth-security-testing.web-vulnerabilities.q2",
+    "topics": [
+      "fs-09-auth-security-testing.web-vulnerabilities"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which API in a React component is a common XSS risk?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`useState`"
+      },
+      {
+        "id": "b",
+        "text": "`dangerouslySetInnerHTML`"
+      },
+      {
+        "id": "c",
+        "text": "`useEffect`"
+      },
+      {
+        "id": "d",
+        "text": "`key`"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-09-auth-security-testing.web-vulnerabilities.q3",
+    "topics": [
+      "fs-09-auth-security-testing.web-vulnerabilities"
+    ]
+  },
+  {
+    "type": "short",
+    "skill": "recall",
+    "prompt": "What is the name of the attack where another site causes a logged-in user's browser to send an unwanted request? (abbreviation)",
+    "accepted": [
+      "CSRF",
+      "cross-site request forgery"
+    ],
+    "id": "fs-09-auth-security-testing.web-vulnerabilities.q4",
+    "topics": [
+      "fs-09-auth-security-testing.web-vulnerabilities"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which is a mass-assignment defence?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Accept only an explicit allow-list of fields from the request body"
+      },
+      {
+        "id": "b",
+        "text": "Use longer ids"
+      },
+      {
+        "id": "c",
+        "text": "Disable cookies"
+      },
+      {
+        "id": "d",
+        "text": "Compress the response"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "id": "fs-09-auth-security-testing.web-vulnerabilities.q5",
+    "topics": [
+      "fs-09-auth-security-testing.web-vulnerabilities"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which of these are security response headers?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Content-Security-Policy"
+      },
+      {
+        "id": "b",
+        "text": "Strict-Transport-Security"
+      },
+      {
+        "id": "c",
+        "text": "Accept-Language"
+      },
+      {
+        "id": "d",
+        "text": "X-Content-Type-Options"
+      }
+    ],
+    "correct": [
+      "a",
+      "b",
+      "d"
+    ],
+    "multiple": true,
+    "id": "fs-09-auth-security-testing.web-vulnerabilities.q6",
+    "topics": [
+      "fs-09-auth-security-testing.web-vulnerabilities"
+    ]
+  }
+]

@@ -1,0 +1,167 @@
+[
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What does a custom hook share between components?",
+    "options": [
+      {
+        "id": "a",
+        "text": "State values"
+      },
+      {
+        "id": "b",
+        "text": "Stateful logic; each caller gets its own state"
+      },
+      {
+        "id": "c",
+        "text": "The DOM"
+      },
+      {
+        "id": "d",
+        "text": "Props"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-06-react.patterns-and-performance.q1",
+    "topics": [
+      "fs-06-react.patterns-and-performance"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "A reducer function must be…",
+    "options": [
+      {
+        "id": "a",
+        "text": "Asynchronous"
+      },
+      {
+        "id": "b",
+        "text": "Pure: the same state and action give the same result, with no side effects"
+      },
+      {
+        "id": "c",
+        "text": "A class method"
+      },
+      {
+        "id": "d",
+        "text": "Defined inside the component"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-06-react.patterns-and-performance.q2",
+    "topics": [
+      "fs-06-react.patterns-and-performance"
+    ]
+  },
+  {
+    "type": "short",
+    "skill": "recall",
+    "prompt": "Which React feature passes a value through the tree without prop drilling?",
+    "accepted": [
+      "Context",
+      "context",
+      "useContext",
+      "React context"
+    ],
+    "id": "fs-06-react.patterns-and-performance.q3",
+    "topics": [
+      "fs-06-react.patterns-and-performance"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What is wrong with declaring `function Row() {...}` inside another component's body?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Nothing"
+      },
+      {
+        "id": "b",
+        "text": "A new component type is created every render, so its state is lost"
+      },
+      {
+        "id": "c",
+        "text": "It cannot receive props"
+      },
+      {
+        "id": "d",
+        "text": "It must be async"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-06-react.patterns-and-performance.q4",
+    "topics": [
+      "fs-06-react.patterns-and-performance"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "When should you reach for `useMemo` or `memo`?",
+    "options": [
+      {
+        "id": "a",
+        "text": "On every component, to be safe"
+      },
+      {
+        "id": "b",
+        "text": "After measuring a real performance problem"
+      },
+      {
+        "id": "c",
+        "text": "Never; they do not work"
+      },
+      {
+        "id": "d",
+        "text": "Only with context"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-06-react.patterns-and-performance.q5",
+    "topics": [
+      "fs-06-react.patterns-and-performance"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Why keep the selected filter in the URL?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It is faster"
+      },
+      {
+        "id": "b",
+        "text": "Refresh, back button and shared links restore the same view"
+      },
+      {
+        "id": "c",
+        "text": "React requires it"
+      },
+      {
+        "id": "d",
+        "text": "It prevents rendering"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-06-react.patterns-and-performance.q6",
+    "topics": [
+      "fs-06-react.patterns-and-performance"
+    ]
+  }
+]

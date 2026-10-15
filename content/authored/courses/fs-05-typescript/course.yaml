@@ -1,0 +1,47 @@
+{
+  "id": "fs-05-typescript",
+  "title": "TypeScript",
+  "subtitle": "Full-Stack · Stage 5",
+  "description": "Static types for JavaScript: annotations, interfaces and unions, narrowing, generics and utility types, and how to keep untrusted data honest at run time.",
+  "category": "ai-engineering",
+  "subject": "full-stack-development",
+  "level": "Stage 5",
+  "difficulty": "intermediate",
+  "tags": [
+    "typescript",
+    "types",
+    "generics"
+  ],
+  "estimatedHours": 6,
+  "topics": [
+    {
+      "id": "fs-05-typescript.types-basics",
+      "title": "Types, interfaces and unions"
+    },
+    {
+      "id": "fs-05-typescript.narrowing-and-generics",
+      "title": "Narrowing, generics and utility types"
+    },
+    {
+      "id": "fs-05-typescript.typescript-in-practice",
+      "title": "TypeScript in a real project"
+    }
+  ],
+  "units": [
+    {
+      "id": "fs-05-typescript.u1",
+      "title": "The type system",
+      "lessons": [
+        "01-types-basics",
+        "02-narrowing-and-generics"
+      ]
+    },
+    {
+      "id": "fs-05-typescript.u2",
+      "title": "Using it well",
+      "lessons": [
+        "03-typescript-in-practice"
+      ]
+    }
+  ]
+}

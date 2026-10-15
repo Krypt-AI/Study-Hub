@@ -1,0 +1,164 @@
+[
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which part of `https://shop.example.com/cart?item=7#total` is never sent to the server?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The path `/cart`"
+      },
+      {
+        "id": "b",
+        "text": "The query `?item=7`"
+      },
+      {
+        "id": "c",
+        "text": "The fragment `#total`"
+      },
+      {
+        "id": "d",
+        "text": "The host `shop.example.com`"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "The fragment is handled by the browser only, to scroll to a place in the page.",
+    "id": "fs-01-web-foundations.how-the-web-works.q1",
+    "topics": [
+      "fs-01-web-foundations.how-the-web-works"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What does DNS do?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Encrypts the connection"
+      },
+      {
+        "id": "b",
+        "text": "Turns a host name into an IP address"
+      },
+      {
+        "id": "c",
+        "text": "Stores cookies for the site"
+      },
+      {
+        "id": "d",
+        "text": "Compresses the response"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-01-web-foundations.how-the-web-works.q2",
+    "topics": [
+      "fs-01-web-foundations.how-the-web-works"
+    ]
+  },
+  {
+    "type": "short",
+    "skill": "recall",
+    "prompt": "Which HTTP status code means the resource was not found?",
+    "accepted": [
+      "404",
+      "404 Not Found"
+    ],
+    "explanation": "404 is the client error for a resource that does not exist.",
+    "id": "fs-01-web-foundations.how-the-web-works.q3",
+    "topics": [
+      "fs-01-web-foundations.how-the-web-works"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "A server replies `503`. Whose problem is it?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The client's: the URL is wrong"
+      },
+      {
+        "id": "b",
+        "text": "The server's: it is unavailable or failing"
+      },
+      {
+        "id": "c",
+        "text": "The user's: they are not logged in"
+      },
+      {
+        "id": "d",
+        "text": "Nobody's: 5xx codes are only warnings"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Codes in the 5xx range mean the server could not fulfil a valid request.",
+    "id": "fs-01-web-foundations.how-the-web-works.q4",
+    "topics": [
+      "fs-01-web-foundations.how-the-web-works"
+    ]
+  },
+  {
+    "type": "cloze",
+    "skill": "recall",
+    "prompt": "Fill in the gaps.",
+    "text": "A browser sends a [[1]] and the server returns a [[2]] that carries a status code.",
+    "blanks": [
+      {
+        "id": "1",
+        "accepted": [
+          "request",
+          "HTTP request"
+        ]
+      },
+      {
+        "id": "2",
+        "accepted": [
+          "response",
+          "HTTP response"
+        ]
+      }
+    ],
+    "id": "fs-01-web-foundations.how-the-web-works.q5",
+    "topics": [
+      "fs-01-web-foundations.how-the-web-works"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which pair correctly matches the three languages of a web page?",
+    "options": [
+      {
+        "id": "a",
+        "text": "HTML = behaviour, CSS = structure, JavaScript = style"
+      },
+      {
+        "id": "b",
+        "text": "HTML = structure, CSS = presentation, JavaScript = behaviour"
+      },
+      {
+        "id": "c",
+        "text": "HTML = presentation, CSS = behaviour, JavaScript = structure"
+      },
+      {
+        "id": "d",
+        "text": "HTML = data, CSS = logic, JavaScript = layout"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-01-web-foundations.how-the-web-works.q6",
+    "topics": [
+      "fs-01-web-foundations.how-the-web-works"
+    ]
+  }
+]

@@ -1,0 +1,197 @@
+[
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What is the purpose of `<!doctype html>`?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It links the stylesheet"
+      },
+      {
+        "id": "b",
+        "text": "It tells the browser to use standards mode for HTML5"
+      },
+      {
+        "id": "c",
+        "text": "It sets the page title"
+      },
+      {
+        "id": "d",
+        "text": "It declares the character encoding"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-01-web-foundations.html-documents.q1",
+    "topics": [
+      "fs-01-web-foundations.html-documents"
+    ]
+  },
+  {
+    "type": "short",
+    "skill": "recall",
+    "prompt": "Which attribute provides alternative text for an image?",
+    "accepted": [
+      "alt"
+    ],
+    "match": {
+      "mode": "exact",
+      "caseSensitive": true
+    },
+    "explanation": "The `alt` attribute is read by screen readers and displayed if the image cannot load.",
+    "id": "fs-01-web-foundations.html-documents.q2",
+    "topics": [
+      "fs-01-web-foundations.html-documents"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which element should wrap the primary navigation links of a page?",
+    "options": [
+      {
+        "id": "a",
+        "text": "<div class=\"menu\">"
+      },
+      {
+        "id": "b",
+        "text": "<nav>"
+      },
+      {
+        "id": "c",
+        "text": "<section>"
+      },
+      {
+        "id": "d",
+        "text": "<aside>"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-01-web-foundations.html-documents.q3",
+    "topics": [
+      "fs-01-web-foundations.html-documents"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which of these are void elements (no closing tag)?",
+    "options": [
+      {
+        "id": "a",
+        "text": "<img>"
+      },
+      {
+        "id": "b",
+        "text": "<p>"
+      },
+      {
+        "id": "c",
+        "text": "<br>"
+      },
+      {
+        "id": "d",
+        "text": "<li>"
+      }
+    ],
+    "correct": [
+      "a",
+      "c"
+    ],
+    "multiple": true,
+    "id": "fs-01-web-foundations.html-documents.q4",
+    "topics": [
+      "fs-01-web-foundations.html-documents"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "A page has three `<h1>` elements and uses `<h4>` right after `<h1>`. What is the main problem?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It will not render"
+      },
+      {
+        "id": "b",
+        "text": "It breaks the heading outline that screen readers and search engines rely on"
+      },
+      {
+        "id": "c",
+        "text": "Browsers ignore headings after the first"
+      },
+      {
+        "id": "d",
+        "text": "Headings must be inside `<section>`"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-01-web-foundations.html-documents.q5",
+    "topics": [
+      "fs-01-web-foundations.html-documents"
+    ]
+  },
+  {
+    "type": "cloze",
+    "skill": "recall",
+    "prompt": "Fill in the gaps.",
+    "text": "Use `<ul>` for an [[1]] list and `<ol>` for an [[2]] list.",
+    "blanks": [
+      {
+        "id": "1",
+        "accepted": [
+          "unordered",
+          "bulleted"
+        ]
+      },
+      {
+        "id": "2",
+        "accepted": [
+          "ordered",
+          "numbered"
+        ]
+      }
+    ],
+    "id": "fs-01-web-foundations.html-documents.q6",
+    "topics": [
+      "fs-01-web-foundations.html-documents"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "When is `<table>` the right element?",
+    "options": [
+      {
+        "id": "a",
+        "text": "To position the sidebar and main content side by side"
+      },
+      {
+        "id": "b",
+        "text": "To show data in rows and columns"
+      },
+      {
+        "id": "c",
+        "text": "To add spacing between paragraphs"
+      },
+      {
+        "id": "d",
+        "text": "To build a navigation menu"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-01-web-foundations.html-documents.q7",
+    "topics": [
+      "fs-01-web-foundations.html-documents"
+    ]
+  }
+]

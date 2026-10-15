@@ -1,0 +1,170 @@
+[
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Why does a form field need a `name` attribute?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It sets the label text"
+      },
+      {
+        "id": "b",
+        "text": "It is the key under which the value is submitted"
+      },
+      {
+        "id": "c",
+        "text": "It makes the field required"
+      },
+      {
+        "id": "d",
+        "text": "It sets the CSS class"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-01-web-foundations.forms-and-accessibility.q1",
+    "topics": [
+      "fs-01-web-foundations.forms-and-accessibility"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "A login form sends a password. Which method is appropriate?",
+    "options": [
+      {
+        "id": "a",
+        "text": "GET, so it can be bookmarked"
+      },
+      {
+        "id": "b",
+        "text": "POST, so the value is in the request body not the URL"
+      },
+      {
+        "id": "c",
+        "text": "Either, they are identical"
+      },
+      {
+        "id": "d",
+        "text": "PUT, because it is secure"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-01-web-foundations.forms-and-accessibility.q2",
+    "topics": [
+      "fs-01-web-foundations.forms-and-accessibility"
+    ]
+  },
+  {
+    "type": "short",
+    "skill": "recall",
+    "prompt": "Which attribute links a `<label>` to the input with a given id?",
+    "accepted": [
+      "for"
+    ],
+    "match": {
+      "mode": "exact",
+      "caseSensitive": true
+    },
+    "explanation": "`<label for=\"email\">` points to `<input id=\"email\">`.",
+    "id": "fs-01-web-foundations.forms-and-accessibility.q3",
+    "topics": [
+      "fs-01-web-foundations.forms-and-accessibility"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Why must the server validate input even when the form has `required` and `pattern`?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Browsers ignore these attributes"
+      },
+      {
+        "id": "b",
+        "text": "Requests can be sent without the form, so client checks can be bypassed"
+      },
+      {
+        "id": "c",
+        "text": "Required fields are not sent otherwise"
+      },
+      {
+        "id": "d",
+        "text": "Validation attributes slow the page"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-01-web-foundations.forms-and-accessibility.q4",
+    "topics": [
+      "fs-01-web-foundations.forms-and-accessibility"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which is the best way to make a clickable control?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`<div onclick=\"...\">`"
+      },
+      {
+        "id": "b",
+        "text": "`<span role=\"link\">`"
+      },
+      {
+        "id": "c",
+        "text": "`<button type=\"button\">`"
+      },
+      {
+        "id": "d",
+        "text": "`<a>` with no href"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "A native button is focusable, keyboard-operable and announced correctly without extra work.",
+    "id": "fs-01-web-foundations.forms-and-accessibility.q5",
+    "topics": [
+      "fs-01-web-foundations.forms-and-accessibility"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What is the minimum contrast ratio WCAG AA asks for normal-size text?",
+    "options": [
+      {
+        "id": "a",
+        "text": "2 : 1"
+      },
+      {
+        "id": "b",
+        "text": "3 : 1"
+      },
+      {
+        "id": "c",
+        "text": "4.5 : 1"
+      },
+      {
+        "id": "d",
+        "text": "21 : 1"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "id": "fs-01-web-foundations.forms-and-accessibility.q6",
+    "topics": [
+      "fs-01-web-foundations.forms-and-accessibility"
+    ]
+  }
+]

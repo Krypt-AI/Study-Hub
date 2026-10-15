@@ -1,0 +1,165 @@
+[
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which file pins the exact installed versions of every dependency?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`package.json`"
+      },
+      {
+        "id": "b",
+        "text": "`package-lock.json`"
+      },
+      {
+        "id": "c",
+        "text": "`node_modules`"
+      },
+      {
+        "id": "d",
+        "text": "`.env`"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-04-git-and-tooling.terminal-and-npm.q1",
+    "topics": [
+      "fs-04-git-and-tooling.terminal-and-npm"
+    ]
+  },
+  {
+    "type": "short",
+    "skill": "recall",
+    "prompt": "Which npm command installs exactly what the lock file says, for a clean CI build?",
+    "accepted": [
+      "npm ci",
+      "ci"
+    ],
+    "id": "fs-04-git-and-tooling.terminal-and-npm.q2",
+    "topics": [
+      "fs-04-git-and-tooling.terminal-and-npm"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What does `^2.3.4` in package.json allow?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Only 2.3.4"
+      },
+      {
+        "id": "b",
+        "text": "2.x.x versions at or above 2.3.4"
+      },
+      {
+        "id": "c",
+        "text": "Any version"
+      },
+      {
+        "id": "d",
+        "text": "3.x.x versions"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-04-git-and-tooling.terminal-and-npm.q3",
+    "topics": [
+      "fs-04-git-and-tooling.terminal-and-npm"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Where should an API key live?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Hard-coded in a source file"
+      },
+      {
+        "id": "b",
+        "text": "In a committed `config.json`"
+      },
+      {
+        "id": "c",
+        "text": "In an environment variable loaded from an uncommitted `.env`"
+      },
+      {
+        "id": "d",
+        "text": "In the HTML"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "id": "fs-04-git-and-tooling.terminal-and-npm.q4",
+    "topics": [
+      "fs-04-git-and-tooling.terminal-and-npm"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which belongs in `devDependencies`?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A UI library imported by the app"
+      },
+      {
+        "id": "b",
+        "text": "A test runner"
+      },
+      {
+        "id": "c",
+        "text": "The database driver used at run time"
+      },
+      {
+        "id": "d",
+        "text": "A runtime web framework"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-04-git-and-tooling.terminal-and-npm.q5",
+    "topics": [
+      "fs-04-git-and-tooling.terminal-and-npm"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What does `npm run build` do?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Always compiles TypeScript"
+      },
+      {
+        "id": "b",
+        "text": "Runs the script named `build` in package.json"
+      },
+      {
+        "id": "c",
+        "text": "Installs dependencies"
+      },
+      {
+        "id": "d",
+        "text": "Publishes the package"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-04-git-and-tooling.terminal-and-npm.q6",
+    "topics": [
+      "fs-04-git-and-tooling.terminal-and-npm"
+    ]
+  }
+]

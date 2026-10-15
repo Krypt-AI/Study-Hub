@@ -1,0 +1,160 @@
+[
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which property aligns flex items along the main axis?",
+    "options": [
+      {
+        "id": "a",
+        "text": "align-items"
+      },
+      {
+        "id": "b",
+        "text": "justify-content"
+      },
+      {
+        "id": "c",
+        "text": "place-items"
+      },
+      {
+        "id": "d",
+        "text": "flex-wrap"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-02-css.flexbox-and-grid.q1",
+    "topics": [
+      "fs-02-css.flexbox-and-grid"
+    ]
+  },
+  {
+    "type": "short",
+    "skill": "recall",
+    "prompt": "Which CSS value turns an element into a grid container?",
+    "accepted": [
+      "display: grid",
+      "grid"
+    ],
+    "explanation": "`display: grid` creates the grid formatting context.",
+    "id": "fs-02-css.flexbox-and-grid.q2",
+    "topics": [
+      "fs-02-css.flexbox-and-grid"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What does `grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr))` create?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Exactly 12 columns"
+      },
+      {
+        "id": "b",
+        "text": "As many columns of at least 12rem as fit, sharing the remaining space"
+      },
+      {
+        "id": "c",
+        "text": "A single column 12rem wide"
+      },
+      {
+        "id": "d",
+        "text": "A flex row"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-02-css.flexbox-and-grid.q3",
+    "topics": [
+      "fs-02-css.flexbox-and-grid"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "A navigation bar with a logo on the left and links on the right is best built with…",
+    "options": [
+      {
+        "id": "a",
+        "text": "Grid with named areas"
+      },
+      {
+        "id": "b",
+        "text": "Flexbox and `justify-content: space-between`"
+      },
+      {
+        "id": "c",
+        "text": "A table"
+      },
+      {
+        "id": "d",
+        "text": "Floats"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-02-css.flexbox-and-grid.q4",
+    "topics": [
+      "fs-02-css.flexbox-and-grid"
+    ]
+  },
+  {
+    "type": "cloze",
+    "skill": "recall",
+    "prompt": "Fill in the gaps.",
+    "text": "`flex-direction` sets the [[1]] axis; `align-items` aligns items on the [[2]] axis.",
+    "blanks": [
+      {
+        "id": "1",
+        "accepted": [
+          "main"
+        ]
+      },
+      {
+        "id": "2",
+        "accepted": [
+          "cross"
+        ]
+      }
+    ],
+    "id": "fs-02-css.flexbox-and-grid.q5",
+    "topics": [
+      "fs-02-css.flexbox-and-grid"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What does `fr` mean in Grid?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A fixed fraction of the viewport"
+      },
+      {
+        "id": "b",
+        "text": "A share of the available free space in the grid"
+      },
+      {
+        "id": "c",
+        "text": "A font-relative unit"
+      },
+      {
+        "id": "d",
+        "text": "A pixel ratio"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-02-css.flexbox-and-grid.q6",
+    "topics": [
+      "fs-02-css.flexbox-and-grid"
+    ]
+  }
+]

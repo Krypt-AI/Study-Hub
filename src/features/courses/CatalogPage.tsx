@@ -1,8 +1,8 @@
 /**
  * Courses, in two steps: first the learner's areas (their school level or University, the languages
- * they chose, and the roadmaps), then, once one is chosen, only that area's courses. With one area
- * there is nothing to choose, so it opens directly. AI engineering lives under its roadmap and the IT
- * courses under Certifications.
+ * they chose), then, once one is chosen, only that area's courses. With one area
+ * there is nothing to choose, so it opens directly. The AI and full-stack courses live under
+ * Roadmaps and the IT courses under Certifications.
  */
 import { FolderPlus } from 'lucide-react';
 import { useState } from 'react';
@@ -26,7 +26,7 @@ import { dayKey, nowIso } from '@/lib/dates';
 import { CourseRow } from './CourseRow';
 import { type LessonStatuses, useLessonStatuses } from './useLessonStatuses';
 
-/** The areas browsed here; AI engineering and IT are reached through the roadmap and Certifications. */
+/** The areas browsed here; roadmap courses and IT courses are reached through Roadmaps and Certifications. */
 const AREAS = ['elementary', 'secondary', 'university', 'japanese', 'chinese'] as const satisfies readonly CourseCategory[];
 type Area = (typeof AREAS)[number];
 type SchoolArea = Extract<Area, 'elementary' | 'secondary'>;
@@ -53,7 +53,7 @@ export default function CatalogPage() {
   const visible = catalog.data;
   if (!visible) return <LoadingState />;
   const areas = AREAS.filter((candidate) => isCategoryVisible(candidate, visible.visibility));
-  const onlyArea = areas.length === 1 && visible.roadmaps.length === 0 ? areas[0] : undefined;
+  const onlyArea = areas.length === 1 ? areas[0] : undefined;
   if (onlyArea) return <AreaCourses area={onlyArea} catalog={visible} statuses={statuses} />;
   if (isArea(area) && areas.includes(area)) return <AreaCourses area={area} catalog={visible} statuses={statuses} back />;
   return <AreaChoice areas={areas} catalog={visible} statuses={statuses} />;
@@ -67,7 +67,7 @@ function SignInNote({ catalog }: { catalog: VisibleCatalog }) {
       <Link to="/sign-in?next=%2Fcourses" className="text-print-strong hover:underline">
         Sign in
       </Link>{' '}
-      to add Chinese, Japanese, AI and IT courses.
+      to add Chinese, Japanese, roadmaps and certifications.
     </p>
   );
 }
@@ -90,16 +90,6 @@ function AreaChoice({ areas, catalog, statuses }: { areas: Area[]; catalog: Visi
       to: `/courses?area=${area}`,
     };
   });
-  for (const roadmap of catalog.roadmaps) {
-    entries.push({
-      id: `roadmap-${roadmap.id}`,
-      title: roadmap.title.replace(/ Roadmap$/u, ''),
-      description: `A roadmap of ${roadmap.stages.length} stages, from first steps to certification.`,
-      count: 'Roadmap',
-      note: startedNote(inArea('ai-engineering')),
-      to: `/roadmaps/${roadmap.id}`,
-    });
-  }
 
   return (
     <div className="mx-auto max-w-4xl">

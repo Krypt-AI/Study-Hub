@@ -58,8 +58,8 @@ function RoadmapView({ roadmap, catalog, completed, started, tracking }: Roadmap
   return (
     <div className="mx-auto max-w-5xl">
       <nav aria-label="Breadcrumb" className="mb-2 text-sm text-ink-muted">
-        <Link to="/certifications" className="hover:text-ink">
-          Certifications
+        <Link to="/roadmaps" className="hover:text-ink">
+          Roadmaps
         </Link>
       </nav>
       <PageHeader title={roadmap.title} lead={`${finished} of ${stages.length} stages complete`}>

@@ -1,0 +1,171 @@
+[
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What is logged by `console.log(1); setTimeout(() => console.log(2), 0); console.log(3);`?",
+    "options": [
+      {
+        "id": "a",
+        "text": "1, 2, 3"
+      },
+      {
+        "id": "b",
+        "text": "1, 3, 2"
+      },
+      {
+        "id": "c",
+        "text": "2, 1, 3"
+      },
+      {
+        "id": "d",
+        "text": "3, 2, 1"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-03-javascript.async-and-fetch.q1",
+    "topics": [
+      "fs-03-javascript.async-and-fetch"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "A `fetch` request returns status 404. What happens?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The promise rejects"
+      },
+      {
+        "id": "b",
+        "text": "The promise resolves and `response.ok` is false"
+      },
+      {
+        "id": "c",
+        "text": "An exception is thrown automatically"
+      },
+      {
+        "id": "d",
+        "text": "It retries"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-03-javascript.async-and-fetch.q2",
+    "topics": [
+      "fs-03-javascript.async-and-fetch"
+    ]
+  },
+  {
+    "type": "short",
+    "skill": "recall",
+    "prompt": "Which keyword pauses an async function until a promise settles?",
+    "accepted": [
+      "await"
+    ],
+    "match": {
+      "mode": "exact",
+      "caseSensitive": true
+    },
+    "id": "fs-03-javascript.async-and-fetch.q3",
+    "topics": [
+      "fs-03-javascript.async-and-fetch"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which runs two independent requests concurrently?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`await a(); await b();`"
+      },
+      {
+        "id": "b",
+        "text": "`await Promise.all([a(), b()])`"
+      },
+      {
+        "id": "c",
+        "text": "`a().then(b)`"
+      },
+      {
+        "id": "d",
+        "text": "`setTimeout(a, b)`"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-03-javascript.async-and-fetch.q4",
+    "topics": [
+      "fs-03-javascript.async-and-fetch"
+    ]
+  },
+  {
+    "type": "cloze",
+    "skill": "recall",
+    "prompt": "Fill in the gaps.",
+    "text": "A promise is [[1]] while it works, then either [[2]] with a value or [[3]] with an error.",
+    "blanks": [
+      {
+        "id": "1",
+        "accepted": [
+          "pending"
+        ]
+      },
+      {
+        "id": "2",
+        "accepted": [
+          "fulfilled",
+          "resolved"
+        ]
+      },
+      {
+        "id": "3",
+        "accepted": [
+          "rejected"
+        ]
+      }
+    ],
+    "id": "fs-03-javascript.async-and-fetch.q5",
+    "topics": [
+      "fs-03-javascript.async-and-fetch"
+    ]
+  },
+  {
+    "type": "code",
+    "skill": "apply",
+    "language": "javascript",
+    "prompt": "Write `retry(task, attempts)` that calls `task()` and returns its result; if it throws, call it again until `attempts` calls have been made, then rethrow the last error. (The same loop works with `await task()` for promises.)",
+    "starterCode": "function retry(task, attempts) {\n\n}\n",
+    "tests": [
+      {
+        "kind": "assert",
+        "name": "returns first success",
+        "code": "let n = 0; const r = retry(() => { n++; return 'ok'; }, 3); assertEqual([r, n], ['ok', 1]);"
+      },
+      {
+        "kind": "assert",
+        "name": "retries until success",
+        "code": "let n = 0; const r = retry(() => { n++; if (n < 3) throw new Error('x'); return 'done'; }, 5); assertEqual([r, n], ['done', 3]);"
+      },
+      {
+        "kind": "assert",
+        "name": "gives up",
+        "code": "let n = 0; let msg = ''; try { retry(() => { n++; throw new Error('boom'); }, 2); } catch (e) { msg = e.message; } assertEqual([n, msg], [2, 'boom']);"
+      }
+    ],
+    "solution": "function retry(task, attempts) {\n  let lastError;\n  for (let i = 0; i < attempts; i++) {\n    try {\n      return task();\n    } catch (error) {\n      lastError = error;\n    }\n  }\n  throw lastError;\n}\n",
+    "hints": [
+      "Loop up to `attempts` times with try/catch around `task()` and keep the last error."
+    ],
+    "id": "fs-03-javascript.async-and-fetch.q6",
+    "topics": [
+      "fs-03-javascript.async-and-fetch"
+    ]
+  }
+]

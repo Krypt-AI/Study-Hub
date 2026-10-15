@@ -1,0 +1,137 @@
+[
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Why build a vertical slice first?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It is the quickest way to hide bugs"
+      },
+      {
+        "id": "b",
+        "text": "It proves every layer works together early, before the project grows"
+      },
+      {
+        "id": "c",
+        "text": "It avoids testing"
+      },
+      {
+        "id": "d",
+        "text": "It removes the need for a design"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-10-deploy-capstone.capstone-project.q1",
+    "topics": [
+      "fs-10-deploy-capstone.capstone-project"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which requirement from the brief is most directly an authorisation rule?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Passwords are hashed"
+      },
+      {
+        "id": "b",
+        "text": "A user can only see and change their own tasks"
+      },
+      {
+        "id": "c",
+        "text": "The UI is responsive"
+      },
+      {
+        "id": "d",
+        "text": "Tasks are paginated"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-10-deploy-capstone.capstone-project.q2",
+    "topics": [
+      "fs-10-deploy-capstone.capstone-project"
+    ]
+  },
+  {
+    "type": "short",
+    "skill": "recall",
+    "prompt": "What file should document the environment variables a new developer must set, without containing real secrets? (e.g. `.env.____`)",
+    "accepted": [
+      ".env.example",
+      "env.example",
+      ".env.sample",
+      "example"
+    ],
+    "id": "fs-10-deploy-capstone.capstone-project.q3",
+    "topics": [
+      "fs-10-deploy-capstone.capstone-project"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which belongs in the launch checklist?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A restored backup and error tracking"
+      },
+      {
+        "id": "b",
+        "text": "A new logo"
+      },
+      {
+        "id": "c",
+        "text": "More dependencies"
+      },
+      {
+        "id": "d",
+        "text": "Disabling CI to save time"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "id": "fs-10-deploy-capstone.capstone-project.q4",
+    "topics": [
+      "fs-10-deploy-capstone.capstone-project"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Where should you validate task input?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Only in the form"
+      },
+      {
+        "id": "b",
+        "text": "On the server, always (client validation is a convenience)"
+      },
+      {
+        "id": "c",
+        "text": "Only in the database"
+      },
+      {
+        "id": "d",
+        "text": "Nowhere; TypeScript is enough"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-10-deploy-capstone.capstone-project.q5",
+    "topics": [
+      "fs-10-deploy-capstone.capstone-project"
+    ]
+  }
+]

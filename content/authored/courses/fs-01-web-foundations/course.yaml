@@ -1,0 +1,42 @@
+{
+  "id": "fs-01-web-foundations",
+  "title": "Web Foundations: HTTP and HTML",
+  "subtitle": "Full-Stack · Stage 1",
+  "description": "How the web works end to end, then the HTML you need to build structured, accessible pages and forms. Typed questions check each idea; no tools beyond a browser are required.",
+  "category": "ai-engineering",
+  "subject": "full-stack-development",
+  "level": "Stage 1",
+  "difficulty": "beginner",
+  "tags": [
+    "html",
+    "http",
+    "accessibility",
+    "forms"
+  ],
+  "estimatedHours": 5,
+  "topics": [
+    {
+      "id": "fs-01-web-foundations.how-the-web-works",
+      "title": "How the web works"
+    },
+    {
+      "id": "fs-01-web-foundations.html-documents",
+      "title": "HTML documents and semantic elements"
+    },
+    {
+      "id": "fs-01-web-foundations.forms-and-accessibility",
+      "title": "Forms, validation and accessibility"
+    }
+  ],
+  "units": [
+    {
+      "id": "fs-01-web-foundations.u1",
+      "title": "The web and HTML",
+      "lessons": [
+        "01-how-the-web-works",
+        "02-html-documents",
+        "03-forms-and-accessibility"
+      ]
+    }
+  ]
+}

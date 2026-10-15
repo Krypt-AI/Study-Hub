@@ -1,0 +1,48 @@
+{
+  "id": "fs-09-auth-security-testing",
+  "title": "Authentication, Security and Testing",
+  "subtitle": "Full-Stack · Stage 9",
+  "description": "What separates a demo from a dependable application: sign-in done safely, the vulnerabilities behind most breaches and how to defend against them, and a testing strategy you can trust.",
+  "category": "ai-engineering",
+  "subject": "full-stack-development",
+  "level": "Stage 9",
+  "difficulty": "intermediate",
+  "tags": [
+    "security",
+    "authentication",
+    "owasp",
+    "testing"
+  ],
+  "estimatedHours": 6,
+  "topics": [
+    {
+      "id": "fs-09-auth-security-testing.authentication",
+      "title": "Authentication and sessions"
+    },
+    {
+      "id": "fs-09-auth-security-testing.web-vulnerabilities",
+      "title": "Common web vulnerabilities"
+    },
+    {
+      "id": "fs-09-auth-security-testing.testing",
+      "title": "Testing strategy"
+    }
+  ],
+  "units": [
+    {
+      "id": "fs-09-auth-security-testing.u1",
+      "title": "Security",
+      "lessons": [
+        "01-authentication",
+        "02-web-vulnerabilities"
+      ]
+    },
+    {
+      "id": "fs-09-auth-security-testing.u2",
+      "title": "Quality",
+      "lessons": [
+        "03-testing"
+      ]
+    }
+  ]
+}

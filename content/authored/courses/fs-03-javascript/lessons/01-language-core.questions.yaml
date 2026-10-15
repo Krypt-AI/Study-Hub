@@ -1,0 +1,197 @@
+[
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which declaration cannot be reassigned?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`let x = 1`"
+      },
+      {
+        "id": "b",
+        "text": "`const x = 1`"
+      },
+      {
+        "id": "c",
+        "text": "`var x = 1`"
+      },
+      {
+        "id": "d",
+        "text": "All can"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-03-javascript.language-core.q1",
+    "topics": [
+      "fs-03-javascript.language-core"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What does `Boolean([])` return?",
+    "options": [
+      {
+        "id": "a",
+        "text": "false"
+      },
+      {
+        "id": "b",
+        "text": "true"
+      },
+      {
+        "id": "c",
+        "text": "undefined"
+      },
+      {
+        "id": "d",
+        "text": "It throws"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "Arrays are objects, and every object is truthy, even an empty one.",
+    "id": "fs-03-javascript.language-core.q2",
+    "topics": [
+      "fs-03-javascript.language-core"
+    ]
+  },
+  {
+    "type": "short",
+    "skill": "recall",
+    "prompt": "Which operator should you prefer over `==` because it does not convert types?",
+    "accepted": [
+      "===",
+      "strict equality",
+      "triple equals"
+    ],
+    "id": "fs-03-javascript.language-core.q3",
+    "topics": [
+      "fs-03-javascript.language-core"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What does `[1,2,3].map((n) => n * 2)` return?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`6`"
+      },
+      {
+        "id": "b",
+        "text": "`[2, 4, 6]`"
+      },
+      {
+        "id": "c",
+        "text": "`[1, 2, 3]` modified in place"
+      },
+      {
+        "id": "d",
+        "text": "`undefined`"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-03-javascript.language-core.q4",
+    "topics": [
+      "fs-03-javascript.language-core"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which expression makes a shallow copy of `user` with `age` set to 30?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`user.age = 30`"
+      },
+      {
+        "id": "b",
+        "text": "`{ ...user, age: 30 }`"
+      },
+      {
+        "id": "c",
+        "text": "`Object.age(user, 30)`"
+      },
+      {
+        "id": "d",
+        "text": "`user + { age: 30 }`"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-03-javascript.language-core.q5",
+    "topics": [
+      "fs-03-javascript.language-core"
+    ]
+  },
+  {
+    "type": "code",
+    "skill": "apply",
+    "language": "javascript",
+    "prompt": "Write `average(numbers)` that returns the mean of an array of numbers, or `0` for an empty array.",
+    "starterCode": "function average(numbers) {\n\n}\n",
+    "tests": [
+      {
+        "kind": "assert",
+        "name": "mean of three",
+        "code": "assertEqual(average([2, 4, 6]), 4);"
+      },
+      {
+        "kind": "assert",
+        "name": "single value",
+        "code": "assertEqual(average([5]), 5);"
+      },
+      {
+        "kind": "assert",
+        "name": "empty array",
+        "code": "assertEqual(average([]), 0);"
+      }
+    ],
+    "solution": "function average(numbers) {\n  if (numbers.length === 0) return 0;\n  return numbers.reduce((sum, n) => sum + n, 0) / numbers.length;\n}\n",
+    "hints": [
+      "Guard the empty array first, so you never divide by zero.",
+      "`reduce((sum, n) => sum + n, 0)` adds the numbers."
+    ],
+    "id": "fs-03-javascript.language-core.q6",
+    "topics": [
+      "fs-03-javascript.language-core"
+    ]
+  },
+  {
+    "type": "code",
+    "skill": "apply",
+    "language": "javascript",
+    "prompt": "Write `countBy(words)` returning an object that maps each word to how many times it appears.",
+    "starterCode": "function countBy(words) {\n\n}\n",
+    "tests": [
+      {
+        "kind": "assert",
+        "name": "counts",
+        "code": "assertEqual(countBy(['a', 'b', 'a']), { a: 2, b: 1 });"
+      },
+      {
+        "kind": "assert",
+        "name": "empty",
+        "code": "assertEqual(countBy([]), {});"
+      }
+    ],
+    "solution": "function countBy(words) {\n  const counts = {};\n  for (const word of words) counts[word] = (counts[word] ?? 0) + 1;\n  return counts;\n}\n",
+    "hints": [
+      "Use `counts[word] ?? 0` as the starting value."
+    ],
+    "id": "fs-03-javascript.language-core.q7",
+    "topics": [
+      "fs-03-javascript.language-core"
+    ]
+  }
+]

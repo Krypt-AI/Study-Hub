@@ -1,0 +1,150 @@
+[
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "A student can enrol in many courses and a course has many students. How do you model it?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A `course_id` column on `students`"
+      },
+      {
+        "id": "b",
+        "text": "A join table with a foreign key to each, keyed together"
+      },
+      {
+        "id": "c",
+        "text": "A comma-separated list in a text column"
+      },
+      {
+        "id": "d",
+        "text": "Two unrelated tables"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-08-databases.modelling-and-relations.q1",
+    "topics": [
+      "fs-08-databases.modelling-and-relations"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which constraint stops two users registering the same email?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`NOT NULL`"
+      },
+      {
+        "id": "b",
+        "text": "`UNIQUE`"
+      },
+      {
+        "id": "c",
+        "text": "`CHECK`"
+      },
+      {
+        "id": "d",
+        "text": "`DEFAULT`"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-08-databases.modelling-and-relations.q2",
+    "topics": [
+      "fs-08-databases.modelling-and-relations"
+    ]
+  },
+  {
+    "type": "short",
+    "skill": "recall",
+    "prompt": "What is the name of a column that refers to the primary key of another table?",
+    "accepted": [
+      "foreign key",
+      "a foreign key"
+    ],
+    "id": "fs-08-databases.modelling-and-relations.q3",
+    "topics": [
+      "fs-08-databases.modelling-and-relations"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Why store money as integer cents or `DECIMAL` rather than a float?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It uses less space"
+      },
+      {
+        "id": "b",
+        "text": "Floating point cannot represent many decimal values exactly"
+      },
+      {
+        "id": "c",
+        "text": "SQL has no float"
+      },
+      {
+        "id": "d",
+        "text": "It sorts faster"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-08-databases.modelling-and-relations.q4",
+    "topics": [
+      "fs-08-databases.modelling-and-relations"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What is a database migration?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Moving data between servers by hand"
+      },
+      {
+        "id": "b",
+        "text": "A versioned, ordered script that changes the schema reproducibly"
+      },
+      {
+        "id": "c",
+        "text": "A backup"
+      },
+      {
+        "id": "d",
+        "text": "A type of join"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-08-databases.modelling-and-relations.q5",
+    "topics": [
+      "fs-08-databases.modelling-and-relations"
+    ]
+  },
+  {
+    "type": "sql",
+    "skill": "apply",
+    "prompt": "Return the names of customers who have at least one `paid` order, each name once, in alphabetical order.",
+    "schema": "CREATE TABLE customers (id INTEGER PRIMARY KEY, name TEXT NOT NULL, city TEXT);\nCREATE TABLE orders (id INTEGER PRIMARY KEY, customer_id INTEGER NOT NULL REFERENCES customers(id), total REAL NOT NULL, status TEXT NOT NULL);\nINSERT INTO customers VALUES (1,'Aisha','Kuala Lumpur'),(2,'Ben','Penang'),(3,'Chen',NULL);\nINSERT INTO orders VALUES (1,1,120.0,'paid'),(2,1,80.5,'paid'),(3,2,45.0,'pending'),(4,2,300.0,'paid');\n",
+    "solution": "SELECT DISTINCT c.name FROM customers c JOIN orders o ON o.customer_id = c.id WHERE o.status = 'paid' ORDER BY c.name;",
+    "orderMatters": true,
+    "hints": [
+      "Join `orders` to `customers`, filter on status, then `DISTINCT`."
+    ],
+    "id": "fs-08-databases.modelling-and-relations.q6",
+    "topics": [
+      "fs-08-databases.modelling-and-relations"
+    ]
+  }
+]

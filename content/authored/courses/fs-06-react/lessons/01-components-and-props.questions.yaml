@@ -1,0 +1,165 @@
+[
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What are props?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Mutable variables owned by the child"
+      },
+      {
+        "id": "b",
+        "text": "Read-only inputs passed from a parent to a child"
+      },
+      {
+        "id": "c",
+        "text": "Global variables"
+      },
+      {
+        "id": "d",
+        "text": "CSS properties"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-06-react.components-and-props.q1",
+    "topics": [
+      "fs-06-react.components-and-props"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which `key` is best for items from a database?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The array index"
+      },
+      {
+        "id": "b",
+        "text": "A random number each render"
+      },
+      {
+        "id": "c",
+        "text": "The record's id"
+      },
+      {
+        "id": "d",
+        "text": "The item's title text"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "explanation": "Keys must be stable across renders and unique among siblings.",
+    "id": "fs-06-react.components-and-props.q2",
+    "topics": [
+      "fs-06-react.components-and-props"
+    ]
+  },
+  {
+    "type": "short",
+    "skill": "recall",
+    "prompt": "Which JSX attribute replaces the HTML `class` attribute?",
+    "accepted": [
+      "className"
+    ],
+    "match": {
+      "mode": "exact",
+      "caseSensitive": true
+    },
+    "id": "fs-06-react.components-and-props.q3",
+    "topics": [
+      "fs-06-react.components-and-props"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Why must a component name start with a capital letter?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It is only a convention with no effect"
+      },
+      {
+        "id": "b",
+        "text": "JSX treats lowercase names as HTML elements and capitalised names as components"
+      },
+      {
+        "id": "c",
+        "text": "Capital letters are faster"
+      },
+      {
+        "id": "d",
+        "text": "TypeScript requires it"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-06-react.components-and-props.q4",
+    "topics": [
+      "fs-06-react.components-and-props"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What does `{items.length > 0 && <List />}` render when `items` is empty?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`<List />`"
+      },
+      {
+        "id": "b",
+        "text": "Nothing"
+      },
+      {
+        "id": "c",
+        "text": "The text `false`"
+      },
+      {
+        "id": "d",
+        "text": "An error"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-06-react.components-and-props.q5",
+    "topics": [
+      "fs-06-react.components-and-props"
+    ]
+  },
+  {
+    "type": "cloze",
+    "skill": "recall",
+    "prompt": "Fill in the gaps.",
+    "text": "Props flow [[1]] from parent to child; a child asks for changes by calling a [[2]] passed as a prop.",
+    "blanks": [
+      {
+        "id": "1",
+        "accepted": [
+          "down",
+          "downward"
+        ]
+      },
+      {
+        "id": "2",
+        "accepted": [
+          "function",
+          "callback"
+        ]
+      }
+    ],
+    "id": "fs-06-react.components-and-props.q6",
+    "topics": [
+      "fs-06-react.components-and-props"
+    ]
+  }
+]

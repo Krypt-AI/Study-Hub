@@ -1,0 +1,137 @@
+[
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which kind of test is the slowest and should be used for only the most important user journeys?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Unit"
+      },
+      {
+        "id": "b",
+        "text": "Integration"
+      },
+      {
+        "id": "c",
+        "text": "End-to-end"
+      },
+      {
+        "id": "d",
+        "text": "Lint"
+      }
+    ],
+    "correct": [
+      "c"
+    ],
+    "id": "fs-09-auth-security-testing.testing.q1",
+    "topics": [
+      "fs-09-auth-security-testing.testing"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What does \"test behaviour, not implementation\" mean?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Skip tests for private code"
+      },
+      {
+        "id": "b",
+        "text": "Assert on observable results so refactoring does not break tests"
+      },
+      {
+        "id": "c",
+        "text": "Test only the UI"
+      },
+      {
+        "id": "d",
+        "text": "Mock everything"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-09-auth-security-testing.testing.q2",
+    "topics": [
+      "fs-09-auth-security-testing.testing"
+    ]
+  },
+  {
+    "type": "short",
+    "skill": "recall",
+    "prompt": "What is the three-step structure of a clear test? (three words, e.g. arrange, ...)",
+    "accepted": [
+      "arrange act assert",
+      "arrange, act, assert",
+      "arrange-act-assert",
+      "AAA"
+    ],
+    "id": "fs-09-auth-security-testing.testing.q3",
+    "topics": [
+      "fs-09-auth-security-testing.testing"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "You fix a bug. What should you do first?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Fix it and move on"
+      },
+      {
+        "id": "b",
+        "text": "Write a test that reproduces it and fails, then fix it"
+      },
+      {
+        "id": "c",
+        "text": "Increase coverage elsewhere"
+      },
+      {
+        "id": "d",
+        "text": "Add logging only"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-09-auth-security-testing.testing.q4",
+    "topics": [
+      "fs-09-auth-security-testing.testing"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What does 100% code coverage guarantee?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The code is correct"
+      },
+      {
+        "id": "b",
+        "text": "Every line ran during tests, not that assertions were meaningful"
+      },
+      {
+        "id": "c",
+        "text": "No bugs remain"
+      },
+      {
+        "id": "d",
+        "text": "The UI is accessible"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-09-auth-security-testing.testing.q5",
+    "topics": [
+      "fs-09-auth-security-testing.testing"
+    ]
+  }
+]

@@ -1,0 +1,42 @@
+{
+  "id": "fs-02-css",
+  "title": "CSS and Responsive Layout",
+  "subtitle": "Full-Stack · Stage 2",
+  "description": "Style the web: selectors and the cascade, the box model, Flexbox and Grid, and mobile-first responsive design with custom properties.",
+  "category": "ai-engineering",
+  "subject": "full-stack-development",
+  "level": "Stage 2",
+  "difficulty": "beginner",
+  "tags": [
+    "css",
+    "flexbox",
+    "grid",
+    "responsive"
+  ],
+  "estimatedHours": 5,
+  "topics": [
+    {
+      "id": "fs-02-css.selectors-and-cascade",
+      "title": "Selectors, the cascade and the box model"
+    },
+    {
+      "id": "fs-02-css.flexbox-and-grid",
+      "title": "Layout with Flexbox and Grid"
+    },
+    {
+      "id": "fs-02-css.responsive-design",
+      "title": "Responsive design, custom properties and good habits"
+    }
+  ],
+  "units": [
+    {
+      "id": "fs-02-css.u1",
+      "title": "Styling",
+      "lessons": [
+        "01-selectors-and-cascade",
+        "02-flexbox-and-grid",
+        "03-responsive-design"
+      ]
+    }
+  ]
+}

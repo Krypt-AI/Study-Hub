@@ -14,6 +14,8 @@ const PAGES: Array<[path: string, heading: string | RegExp]> = [
   ['/certifications', 'Certifications'],
   ['/certifications/comptia-security-plus', 'CompTIA Security+'],
   ['/roadmaps/ai-engineering', 'AI Engineering Roadmap'],
+  ['/roadmaps/fullstack-developer', 'Full-Stack Developer Roadmap'],
+  ['/roadmaps/cybersecurity', 'Cybersecurity Roadmap'],
   ['/settings', 'Settings'],
 ];
 
@@ -40,7 +42,9 @@ test('courses open on their areas, and the UNITEN area asks for a semester, then
   await page.goto('/courses');
   const areas = page.getByRole('navigation', { name: 'Course areas' });
   await expect(areas.getByRole('link', { name: /Japanese \(JLPT\)/u })).toBeVisible();
-  await expect(areas.getByRole('link', { name: /AI Engineering/u })).toBeVisible();
+  // Roadmaps are not a course area: they have their own item in the rail.
+  await expect(areas.getByRole('link', { name: /Roadmap/u })).toHaveCount(0);
+  await expect(page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Roadmaps' })).toBeVisible();
   await areas.getByRole('link', { name: /^UNITEN/u }).click();
   await expect(page.getByRole('heading', { level: 1, name: 'UNITEN' })).toBeVisible();
 

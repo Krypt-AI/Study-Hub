@@ -1,0 +1,136 @@
+[
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What is the main benefit of an automatic formatter?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Faster code at run time"
+      },
+      {
+        "id": "b",
+        "text": "Reviews focus on logic instead of style"
+      },
+      {
+        "id": "c",
+        "text": "It finds logic bugs"
+      },
+      {
+        "id": "d",
+        "text": "It type-checks"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-04-git-and-tooling.workflow-and-quality.q1",
+    "topics": [
+      "fs-04-git-and-tooling.workflow-and-quality"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which tool finds likely bugs such as unused variables?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A formatter"
+      },
+      {
+        "id": "b",
+        "text": "A linter"
+      },
+      {
+        "id": "c",
+        "text": "A bundler"
+      },
+      {
+        "id": "d",
+        "text": "A package manager"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-04-git-and-tooling.workflow-and-quality.q2",
+    "topics": [
+      "fs-04-git-and-tooling.workflow-and-quality"
+    ]
+  },
+  {
+    "type": "short",
+    "skill": "recall",
+    "prompt": "Which browser DevTools panel shows request status codes and payloads?",
+    "accepted": [
+      "Network",
+      "network tab",
+      "Network panel"
+    ],
+    "id": "fs-04-git-and-tooling.workflow-and-quality.q3",
+    "topics": [
+      "fs-04-git-and-tooling.workflow-and-quality"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What is the right order for debugging?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Fix, hope, reproduce"
+      },
+      {
+        "id": "b",
+        "text": "Reproduce, read the error, isolate, hypothesise, fix, add a test"
+      },
+      {
+        "id": "c",
+        "text": "Rewrite the module"
+      },
+      {
+        "id": "d",
+        "text": "Add logs everywhere, then refactor"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-04-git-and-tooling.workflow-and-quality.q4",
+    "topics": [
+      "fs-04-git-and-tooling.workflow-and-quality"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Why keep pull requests small?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Git limits their size"
+      },
+      {
+        "id": "b",
+        "text": "They are reviewed faster and more carefully and are easier to revert"
+      },
+      {
+        "id": "c",
+        "text": "CI runs only on small changes"
+      },
+      {
+        "id": "d",
+        "text": "They cannot conflict"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-04-git-and-tooling.workflow-and-quality.q5",
+    "topics": [
+      "fs-04-git-and-tooling.workflow-and-quality"
+    ]
+  }
+]

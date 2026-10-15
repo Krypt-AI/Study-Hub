@@ -1,0 +1,48 @@
+{
+  "id": "fs-08-databases",
+  "title": "Databases for Applications",
+  "subtitle": "Full-Stack · Stage 8",
+  "description": "How applications use data: relational modelling and migrations, transactions and indexes, safe access through drivers and ORMs, and choosing between relational and document databases. Pair it with the SQL course.",
+  "category": "ai-engineering",
+  "subject": "full-stack-development",
+  "level": "Stage 8",
+  "difficulty": "intermediate",
+  "tags": [
+    "databases",
+    "sql",
+    "orm",
+    "transactions"
+  ],
+  "estimatedHours": 5,
+  "topics": [
+    {
+      "id": "fs-08-databases.modelling-and-relations",
+      "title": "Modelling data and relations"
+    },
+    {
+      "id": "fs-08-databases.transactions-and-indexes",
+      "title": "Transactions, indexes and query performance"
+    },
+    {
+      "id": "fs-08-databases.orms-and-documents",
+      "title": "ORMs, query builders and document databases"
+    }
+  ],
+  "units": [
+    {
+      "id": "fs-08-databases.u1",
+      "title": "Relational data",
+      "lessons": [
+        "01-modelling-and-relations",
+        "02-transactions-and-indexes"
+      ]
+    },
+    {
+      "id": "fs-08-databases.u2",
+      "title": "From code",
+      "lessons": [
+        "03-orms-and-documents"
+      ]
+    }
+  ]
+}

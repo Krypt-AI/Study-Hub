@@ -14,6 +14,7 @@ export const PlaygroundPage = lazy(() => import('@/features/playground/Playgroun
 export const ExercisePage = lazy(() => import('@/features/playground/ExercisePage'));
 export const CertificationsPage = lazy(() => import('@/features/certifications/CertificationsPage'));
 export const CertificationDetailPage = lazy(() => import('@/features/certifications/CertificationDetailPage'));
+export const RoadmapsPage = lazy(() => import('@/features/certifications/RoadmapsPage'));
 export const RoadmapPage = lazy(() => import('@/features/certifications/RoadmapPage'));
 export const SettingsPage = lazy(() => import('@/features/settings/SettingsPage'));
 export const SignInPage = lazy(() => import('@/features/auth/SignInPage'));

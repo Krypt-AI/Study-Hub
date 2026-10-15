@@ -1,0 +1,42 @@
+{
+  "id": "fs-04-git-and-tooling",
+  "title": "Git and Developer Tooling",
+  "subtitle": "Full-Stack · Stage 4",
+  "description": "The working habits of a professional developer: version control with Git, the terminal, npm and a quality-checked workflow.",
+  "category": "ai-engineering",
+  "subject": "full-stack-development",
+  "level": "Stage 4",
+  "difficulty": "beginner",
+  "tags": [
+    "git",
+    "npm",
+    "terminal",
+    "workflow"
+  ],
+  "estimatedHours": 4,
+  "topics": [
+    {
+      "id": "fs-04-git-and-tooling.git-basics",
+      "title": "Git: commits, branches and merging"
+    },
+    {
+      "id": "fs-04-git-and-tooling.terminal-and-npm",
+      "title": "The terminal, Node and npm"
+    },
+    {
+      "id": "fs-04-git-and-tooling.workflow-and-quality",
+      "title": "A professional workflow"
+    }
+  ],
+  "units": [
+    {
+      "id": "fs-04-git-and-tooling.u1",
+      "title": "Tools of the trade",
+      "lessons": [
+        "01-git-basics",
+        "02-terminal-and-npm",
+        "03-workflow-and-quality"
+      ]
+    }
+  ]
+}

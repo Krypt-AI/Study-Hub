@@ -1,0 +1,137 @@
+[
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Why are parameterised queries safe against SQL injection?",
+    "options": [
+      {
+        "id": "a",
+        "text": "They are faster"
+      },
+      {
+        "id": "b",
+        "text": "Values are sent separately from the SQL text, so they cannot change the query's structure"
+      },
+      {
+        "id": "c",
+        "text": "They encrypt the data"
+      },
+      {
+        "id": "d",
+        "text": "They validate types"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-08-databases.orms-and-documents.q1",
+    "topics": [
+      "fs-08-databases.orms-and-documents"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What is a typical downside of an ORM?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It cannot read data"
+      },
+      {
+        "id": "b",
+        "text": "It can hide inefficient queries such as N+1"
+      },
+      {
+        "id": "c",
+        "text": "It cannot run migrations"
+      },
+      {
+        "id": "d",
+        "text": "It requires NoSQL"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-08-databases.orms-and-documents.q2",
+    "topics": [
+      "fs-08-databases.orms-and-documents"
+    ]
+  },
+  {
+    "type": "short",
+    "skill": "recall",
+    "prompt": "Which kind of database stores JSON-like documents in collections? (one word)",
+    "accepted": [
+      "document",
+      "document database",
+      "document store",
+      "NoSQL"
+    ],
+    "id": "fs-08-databases.orms-and-documents.q3",
+    "topics": [
+      "fs-08-databases.orms-and-documents"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which is a good default database for a typical web application with connected data?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A document store, always"
+      },
+      {
+        "id": "b",
+        "text": "A relational database such as PostgreSQL"
+      },
+      {
+        "id": "c",
+        "text": "A flat file"
+      },
+      {
+        "id": "d",
+        "text": "In-memory only"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-08-databases.orms-and-documents.q4",
+    "topics": [
+      "fs-08-databases.orms-and-documents"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which data is better embedded in one document?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A rarely read audit log of millions of rows"
+      },
+      {
+        "id": "b",
+        "text": "An order and its line items, always read together"
+      },
+      {
+        "id": "c",
+        "text": "A user shared by thousands of orders"
+      },
+      {
+        "id": "d",
+        "text": "A video file"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-08-databases.orms-and-documents.q5",
+    "topics": [
+      "fs-08-databases.orms-and-documents"
+    ]
+  }
+]

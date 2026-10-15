@@ -1,0 +1,161 @@
+[
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What does Node.js provide that the browser does not?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The DOM"
+      },
+      {
+        "id": "b",
+        "text": "File system and network server access"
+      },
+      {
+        "id": "c",
+        "text": "CSS rendering"
+      },
+      {
+        "id": "d",
+        "text": "`window`"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-07-node-api.node-and-express.q1",
+    "topics": [
+      "fs-07-node-api.node-and-express"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "In `app.get('/api/courses/:id', ...)`, how do you read `id`?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`req.body.id`"
+      },
+      {
+        "id": "b",
+        "text": "`req.params.id`"
+      },
+      {
+        "id": "c",
+        "text": "`req.query.id`"
+      },
+      {
+        "id": "d",
+        "text": "`res.id`"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-07-node-api.node-and-express.q2",
+    "topics": [
+      "fs-07-node-api.node-and-express"
+    ]
+  },
+  {
+    "type": "short",
+    "skill": "recall",
+    "prompt": "Which Express middleware parses JSON request bodies?",
+    "accepted": [
+      "express.json",
+      "express.json()"
+    ],
+    "id": "fs-07-node-api.node-and-express.q3",
+    "topics": [
+      "fs-07-node-api.node-and-express"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What does a middleware call to pass control to the next handler?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`res.next()`"
+      },
+      {
+        "id": "b",
+        "text": "`next()`"
+      },
+      {
+        "id": "c",
+        "text": "`return`"
+      },
+      {
+        "id": "d",
+        "text": "`app.continue()`"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-07-node-api.node-and-express.q4",
+    "topics": [
+      "fs-07-node-api.node-and-express"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "A handler sends two responses for one request. What happens?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Both are delivered"
+      },
+      {
+        "id": "b",
+        "text": "An error: headers cannot be sent twice"
+      },
+      {
+        "id": "c",
+        "text": "The second replaces the first"
+      },
+      {
+        "id": "d",
+        "text": "Nothing"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-07-node-api.node-and-express.q5",
+    "topics": [
+      "fs-07-node-api.node-and-express"
+    ]
+  },
+  {
+    "type": "cloze",
+    "skill": "recall",
+    "prompt": "Fill in the gaps.",
+    "text": "Express error middleware has [[1]] parameters and must be registered [[2]].",
+    "blanks": [
+      {
+        "id": "1",
+        "accepted": [
+          "four",
+          "4"
+        ]
+      },
+      {
+        "id": "2",
+        "accepted": [
+          "last",
+          "after the routes"
+        ]
+      }
+    ],
+    "id": "fs-07-node-api.node-and-express.q6",
+    "topics": [
+      "fs-07-node-api.node-and-express"
+    ]
+  }
+]

@@ -1,0 +1,164 @@
+[
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What happens to TypeScript types when the code is compiled?",
+    "options": [
+      {
+        "id": "a",
+        "text": "They are enforced at run time"
+      },
+      {
+        "id": "b",
+        "text": "They are erased: the output is plain JavaScript"
+      },
+      {
+        "id": "c",
+        "text": "They become comments in HTML"
+      },
+      {
+        "id": "d",
+        "text": "They are converted to classes"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-05-typescript.types-basics.q1",
+    "topics": [
+      "fs-05-typescript.types-basics"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What does `subtitle?: string` mean in an interface?",
+    "options": [
+      {
+        "id": "a",
+        "text": "subtitle is required"
+      },
+      {
+        "id": "b",
+        "text": "subtitle is optional and may be undefined"
+      },
+      {
+        "id": "c",
+        "text": "subtitle is a method"
+      },
+      {
+        "id": "d",
+        "text": "subtitle is read-only"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-05-typescript.types-basics.q2",
+    "topics": [
+      "fs-05-typescript.types-basics"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which type is safest for a value whose shape you have not checked yet?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`any`"
+      },
+      {
+        "id": "b",
+        "text": "`unknown`"
+      },
+      {
+        "id": "c",
+        "text": "`object`"
+      },
+      {
+        "id": "d",
+        "text": "`Function`"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "`unknown` forces you to narrow the value before using it; `any` silently disables checks.",
+    "id": "fs-05-typescript.types-basics.q3",
+    "topics": [
+      "fs-05-typescript.types-basics"
+    ]
+  },
+  {
+    "type": "short",
+    "skill": "recall",
+    "prompt": "Which tsconfig option turns on the full set of strict checks?",
+    "accepted": [
+      "strict",
+      "\"strict\": true",
+      "strict: true"
+    ],
+    "id": "fs-05-typescript.types-basics.q4",
+    "topics": [
+      "fs-05-typescript.types-basics"
+    ]
+  },
+  {
+    "type": "cloze",
+    "skill": "recall",
+    "prompt": "Fill in the gaps.",
+    "text": "`type Dir = \"up\" | \"down\"` is a [[1]] of two [[2]] types.",
+    "blanks": [
+      {
+        "id": "1",
+        "accepted": [
+          "union"
+        ]
+      },
+      {
+        "id": "2",
+        "accepted": [
+          "literal",
+          "string literal"
+        ]
+      }
+    ],
+    "id": "fs-05-typescript.types-basics.q5",
+    "topics": [
+      "fs-05-typescript.types-basics"
+    ]
+  },
+  {
+    "type": "code",
+    "skill": "apply",
+    "language": "typescript",
+    "prompt": "Write `describe(status)` using these statuses: return `\"Waiting\"` for `\"idle\"`, `\"Working\"` for `\"loading\"`, `\"Done\"` for `\"done\"` and `\"Failed\"` for `\"error\"`.",
+    "starterCode": "type Status = \"idle\" | \"loading\" | \"error\" | \"done\";\n\nfunction describe(status: Status): string {\n  \n}\n",
+    "tests": [
+      {
+        "kind": "assert",
+        "name": "idle",
+        "code": "assertEqual(describe('idle'), 'Waiting');"
+      },
+      {
+        "kind": "assert",
+        "name": "loading",
+        "code": "assertEqual(describe('loading'), 'Working');"
+      },
+      {
+        "kind": "assert",
+        "name": "done and error",
+        "code": "assertEqual([describe('done'), describe('error')], ['Done', 'Failed']);"
+      }
+    ],
+    "solution": "type Status = \"idle\" | \"loading\" | \"error\" | \"done\";\n\nfunction describe(status: Status): string {\n  switch (status) {\n    case \"idle\": return \"Waiting\";\n    case \"loading\": return \"Working\";\n    case \"done\": return \"Done\";\n    case \"error\": return \"Failed\";\n  }\n}\n",
+    "hints": [
+      "A `switch` over a union with every case covered needs no default."
+    ],
+    "id": "fs-05-typescript.types-basics.q6",
+    "topics": [
+      "fs-05-typescript.types-basics"
+    ]
+  }
+]

@@ -1,0 +1,162 @@
+[
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which is safest to show text a user typed?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`el.innerHTML = text`"
+      },
+      {
+        "id": "b",
+        "text": "`el.textContent = text`"
+      },
+      {
+        "id": "c",
+        "text": "`document.write(text)`"
+      },
+      {
+        "id": "d",
+        "text": "`eval(text)`"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "explanation": "`textContent` inserts text, never markup, so scripts cannot be injected.",
+    "id": "fs-03-javascript.dom-and-events.q1",
+    "topics": [
+      "fs-03-javascript.dom-and-events"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What is event delegation?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Attaching one listener to a parent to handle events from many children"
+      },
+      {
+        "id": "b",
+        "text": "Cancelling an event"
+      },
+      {
+        "id": "c",
+        "text": "Running an event twice"
+      },
+      {
+        "id": "d",
+        "text": "Moving a listener to the window"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "id": "fs-03-javascript.dom-and-events.q2",
+    "topics": [
+      "fs-03-javascript.dom-and-events"
+    ]
+  },
+  {
+    "type": "short",
+    "skill": "recall",
+    "prompt": "Which event method stops a form from submitting or a link from navigating?",
+    "accepted": [
+      "preventDefault",
+      "preventDefault()",
+      "event.preventDefault()"
+    ],
+    "id": "fs-03-javascript.dom-and-events.q3",
+    "topics": [
+      "fs-03-javascript.dom-and-events"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which method finds the first element matching a CSS selector?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`getElement()`"
+      },
+      {
+        "id": "b",
+        "text": "`querySelector()`"
+      },
+      {
+        "id": "c",
+        "text": "`findAll()`"
+      },
+      {
+        "id": "d",
+        "text": "`selectFirst()`"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-03-javascript.dom-and-events.q4",
+    "topics": [
+      "fs-03-javascript.dom-and-events"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What does it mean that events bubble?",
+    "options": [
+      {
+        "id": "a",
+        "text": "They repeat until handled"
+      },
+      {
+        "id": "b",
+        "text": "They travel from the target up through its ancestors"
+      },
+      {
+        "id": "c",
+        "text": "They are delayed"
+      },
+      {
+        "id": "d",
+        "text": "They fire only once"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-03-javascript.dom-and-events.q5",
+    "topics": [
+      "fs-03-javascript.dom-and-events"
+    ]
+  },
+  {
+    "type": "cloze",
+    "skill": "recall",
+    "prompt": "Fill in the gaps.",
+    "text": "Use `[[1]]` to attach an event handler and `[[2]]` to read the element that triggered the event.",
+    "blanks": [
+      {
+        "id": "1",
+        "accepted": [
+          "addEventListener"
+        ]
+      },
+      {
+        "id": "2",
+        "accepted": [
+          "event.target",
+          "target"
+        ]
+      }
+    ],
+    "id": "fs-03-javascript.dom-and-events.q6",
+    "topics": [
+      "fs-03-javascript.dom-and-events"
+    ]
+  }
+]

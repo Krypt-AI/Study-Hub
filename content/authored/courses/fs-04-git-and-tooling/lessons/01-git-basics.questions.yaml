@@ -1,0 +1,161 @@
+[
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Which command stages the file `a.txt` for the next commit?",
+    "options": [
+      {
+        "id": "a",
+        "text": "`git commit a.txt`"
+      },
+      {
+        "id": "b",
+        "text": "`git add a.txt`"
+      },
+      {
+        "id": "c",
+        "text": "`git push a.txt`"
+      },
+      {
+        "id": "d",
+        "text": "`git stage --commit a.txt`"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-04-git-and-tooling.git-basics.q1",
+    "topics": [
+      "fs-04-git-and-tooling.git-basics"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "What does `git fetch` do?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Downloads remote changes without merging them"
+      },
+      {
+        "id": "b",
+        "text": "Downloads and merges"
+      },
+      {
+        "id": "c",
+        "text": "Uploads your commits"
+      },
+      {
+        "id": "d",
+        "text": "Deletes the remote branch"
+      }
+    ],
+    "correct": [
+      "a"
+    ],
+    "id": "fs-04-git-and-tooling.git-basics.q2",
+    "topics": [
+      "fs-04-git-and-tooling.git-basics"
+    ]
+  },
+  {
+    "type": "short",
+    "skill": "recall",
+    "prompt": "Which command safely undoes a commit that has already been pushed by adding a new commit?",
+    "accepted": [
+      "git revert",
+      "revert"
+    ],
+    "explanation": "`git revert` creates an opposite commit instead of rewriting shared history.",
+    "id": "fs-04-git-and-tooling.git-basics.q3",
+    "topics": [
+      "fs-04-git-and-tooling.git-basics"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "A merge shows `<<<<<<<` markers in a file. What is this?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A corrupted file"
+      },
+      {
+        "id": "b",
+        "text": "A conflict you must resolve by editing"
+      },
+      {
+        "id": "c",
+        "text": "A staged change"
+      },
+      {
+        "id": "d",
+        "text": "A new branch"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-04-git-and-tooling.git-basics.q4",
+    "topics": [
+      "fs-04-git-and-tooling.git-basics"
+    ]
+  },
+  {
+    "type": "choice",
+    "skill": "recognize",
+    "prompt": "Why should you not commit a password to the repository, even if you delete it in the next commit?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Git forbids it"
+      },
+      {
+        "id": "b",
+        "text": "It stays in the history and can be recovered by anyone with access"
+      },
+      {
+        "id": "c",
+        "text": "It makes the repository larger than 1 GB"
+      },
+      {
+        "id": "d",
+        "text": "Deleted files are re-added on merge"
+      }
+    ],
+    "correct": [
+      "b"
+    ],
+    "id": "fs-04-git-and-tooling.git-basics.q5",
+    "topics": [
+      "fs-04-git-and-tooling.git-basics"
+    ]
+  },
+  {
+    "type": "cloze",
+    "skill": "recall",
+    "prompt": "Fill in the gaps.",
+    "text": "`git [[1]] -c feature` creates and switches to a new branch, and `git [[2]]` shows what is staged and changed.",
+    "blanks": [
+      {
+        "id": "1",
+        "accepted": [
+          "switch",
+          "checkout"
+        ]
+      },
+      {
+        "id": "2",
+        "accepted": [
+          "status"
+        ]
+      }
+    ],
+    "id": "fs-04-git-and-tooling.git-basics.q6",
+    "topics": [
+      "fs-04-git-and-tooling.git-basics"
+    ]
+  }
+]
