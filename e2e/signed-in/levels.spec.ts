@@ -1,6 +1,6 @@
 /** Guests see their own level only, with a note on where the other courses are; the calendar works at every level. */
 import type { Page } from '@playwright/test';
-import { addClass, todayWeekday, weekColumn } from '../calendarSteps';
+import { addClass, ensureSemester, todayWeekday, weekColumn } from '../calendarSteps';
 import { expect, test } from '../fixtures';
 import { answerWelcome } from '../welcomeSteps';
 import { asGuest, asSignedIn, type StubAccount } from './supabaseStub';
@@ -26,6 +26,7 @@ for (const { age, year } of [
     await expect(page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Certifications' })).toHaveCount(0);
 
     await page.goto('/calendar');
+    await ensureSemester(page);
     await addClass(page, { name: 'Sains', type: 'Lecture', weekday: todayWeekday() });
     await expect(weekColumn(page, todayWeekday()).getByText('Sains')).toBeVisible();
   });

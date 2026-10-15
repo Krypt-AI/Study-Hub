@@ -4,6 +4,7 @@
  */
 import type { CodeLanguage, CodeTest, CourseLanguage, QuestionType, Skill } from '@/domain/content/types';
 import type { ExtraCategory } from '@/domain/content/visibility';
+import type { StudyPlans } from '@/domain/learning/studyPlan';
 import type { QuestionTier } from '@/domain/learning/tiers';
 import type { Response, Verdict } from '@/domain/evaluation/types';
 import type { LearnerProfile } from '@/domain/profile/profile';
@@ -209,8 +210,8 @@ export interface Settings {
   reviewSessionSize: number;
   /** Target probability of recalling an item when it comes due (FSRS). */
   desiredRetention: number;
-  /** Subjects switched to "Show on Today": Today and due reviews show only these (all subjects when empty). */
-  todayCourseIds: string[];
+  /** Each subject's study plan (domain/learning/studyPlan.ts): only planned subjects bring work to Today. */
+  studyPlans: StudyPlans;
   /** Age and school level from the Welcome page; absent until it is answered. */
   profile?: LearnerProfile;
   /** Extras the learner shows in their lists (signed in or local mode; guests see none). */
@@ -228,11 +229,21 @@ export const DEFAULT_SETTINGS: Settings = {
   dailyGoalQuestions: 20,
   reviewSessionSize: 30,
   desiredRetention: 0.9,
-  todayCourseIds: [],
+  studyPlans: {},
   visibleCategories: [],
   languageBySubject: {},
   questionTiers: {},
 };
+
+/**
+ * Stored settings with the defaults filled in. Subjects switched to the former "Show on Today"
+ * (`todayCourseIds`) had their reviews and weak topics on Today, so they become "review" plans.
+ */
+export function normalizeSettings(stored: (Partial<Settings> & { todayCourseIds?: string[] }) | undefined): Settings {
+  const { todayCourseIds, ...settings } = stored ?? {};
+  const studyPlans = settings.studyPlans ?? Object.fromEntries((todayCourseIds ?? []).map((courseId) => [courseId, 'review' as const]));
+  return { ...DEFAULT_SETTINGS, ...settings, studyPlans };
+}
 
 // Calendar ------------------------------------------------------------------------------
 

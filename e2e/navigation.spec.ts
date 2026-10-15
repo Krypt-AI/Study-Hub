@@ -73,6 +73,6 @@ test('the playground joins the rail once a coding subject is chosen', async ({ p
   await expect(rail.getByRole('link', { name: 'Playground' })).toHaveCount(0);
 
   await page.goto('/courses/ai-01-python');
-  await page.getByRole('switch', { name: 'Show on Today' }).click();
+  await page.getByRole('group', { name: /Study plan/u }).getByRole('radio', { name: /Practise weak topics/u }).check();
   await expect(rail.getByRole('link', { name: 'Playground' })).toBeVisible();
 });

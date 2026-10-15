@@ -62,7 +62,17 @@ export function useUpdateSettings() {
   const client = useQueryClient();
   return useMutation({
     mutationFn: async (update: (settings: Settings) => Settings) => repository.saveSettings(update(await repository.getSettings())),
-    onSuccess: () => client.invalidateQueries({ queryKey: learnerKeys.settings }),
+    // Shown at once, so a choice (a study plan, a switch) does not flick back while it is saved.
+    onMutate: async (update) => {
+      await client.cancelQueries({ queryKey: learnerKeys.settings });
+      const previous = client.getQueryData<Settings>(learnerKeys.settings);
+      if (previous) client.setQueryData(learnerKeys.settings, update(previous));
+      return { previous };
+    },
+    onError: (_error, _update, context) => {
+      if (context?.previous) client.setQueryData(learnerKeys.settings, context.previous);
+    },
+    onSettled: () => client.invalidateQueries({ queryKey: learnerKeys.settings }),
   });
 }
 

@@ -44,10 +44,3 @@ export function subjectPractice(courseId: string, records: PracticeRecords, now 
     levels: levelCountsBySkill(mastery),
   };
 }
-
-/** The subjects with anything to practise, or started: those listed on the Practice page. */
-export function practisedCourseIds(records: PracticeRecords, startedCourseIds: Iterable<string>): Set<string> {
-  const ids = new Set<string>(startedCourseIds);
-  for (const entry of [...records.reviews, ...records.mastery, ...records.attempts, ...records.bookmarks]) if (entry.courseId) ids.add(entry.courseId);
-  return ids;
-}

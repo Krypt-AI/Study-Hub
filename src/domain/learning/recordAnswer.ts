@@ -1,7 +1,8 @@
 /**
  * Records one answered question: the attempt itself, the review schedule, topic mastery,
  * daily activity and lesson progress. This is the single write path for answers, so
- * lessons, reviews, quizzes and mock exams all update progress the same way.
+ * lessons, reviews, quizzes and mock exams all update progress the same way. The subject's
+ * study plan decides whether the answer is scheduled for review and counts towards mastery.
  */
 import type { AttemptRecord, PracticeMode, ReviewStateRecord, TopicMasteryRecord } from '@/data/records';
 import type { StudyRepository } from '@/data/repository';
@@ -11,6 +12,7 @@ import { dayKey } from '@/lib/dates';
 import { newId } from '@/lib/ids';
 import { masteryKey, updateMastery } from './mastery';
 import { ratingFor, scheduleReview } from './srs';
+import { schedulesReviews, tracksMastery } from './studyPlan';
 
 export interface AnswerContext {
   question: Question;
@@ -117,9 +119,9 @@ async function applyAnswer(repository: StudyRepository, baseline: AnswerBaseline
   const passing = countsAsCorrect(attempt);
   await (replacing ? repository.replaceAttempt(attempt) : repository.addAttempt(attempt));
 
+  const settings = await repository.getSettings();
   let review: ReviewStateRecord | undefined;
-  if (context.firstAttemptInSession) {
-    const settings = await repository.getSettings();
+  if (context.firstAttemptInSession && schedulesReviews(settings.studyPlans, context.courseId)) {
     const rating = ratingFor(context.feedback, { hintsUsed: context.hintsUsed, revealed: context.revealed });
     review = scheduleReview(
       baseline.review,
@@ -131,7 +133,7 @@ async function applyAnswer(repository: StudyRepository, baseline: AnswerBaseline
     await repository.saveReviewState(review);
   }
 
-  if (context.topics.length) {
+  if (context.topics.length && tracksMastery(settings.studyPlans, context.courseId)) {
     const updates = context.topics.map((topicId) =>
       updateMastery(baseline.mastery.get(masteryKey(topicId, context.question.skill)), {
         topicId,

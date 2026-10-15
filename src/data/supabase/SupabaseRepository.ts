@@ -27,7 +27,7 @@ import type {
   TimetableClassRecord,
   TopicMasteryRecord,
 } from '../records';
-import { DEFAULT_SETTINGS, normalizeTimetableClass } from '../records';
+import { normalizeSettings, normalizeTimetableClass } from '../records';
 import { MAIN_LEARNER_ID } from '../learners/learners';
 import type { AttemptQuery, ImportMode, StudyRepository } from '../repository';
 
@@ -319,7 +319,7 @@ export class SupabaseRepository implements StudyRepository {
   }
 
   async getSettings(): Promise<Settings> {
-    return { ...DEFAULT_SETTINGS, ...(await this.get<Partial<Settings>>('settings', 'settings')) };
+    return normalizeSettings(await this.get<Partial<Settings>>('settings', 'settings'));
   }
 
   async saveSettings(settings: Settings) {
@@ -414,7 +414,7 @@ export class SupabaseRepository implements StudyRepository {
     await this.put('timetable_classes', backup.timetableClasses);
     await this.put('important_dates', backup.importantDates);
     await this.put('exam_drafts', backup.examDrafts);
-    await this.saveSettings({ ...DEFAULT_SETTINGS, ...backup.settings });
+    await this.saveSettings(normalizeSettings(backup.settings));
   }
 }
 

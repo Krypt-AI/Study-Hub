@@ -32,7 +32,7 @@ import { useStudyTimer } from '@/features/today/useStudyTimer';
 import { usePlaygroundInRail } from '@/features/playground/usePlaygroundInRail';
 import { ExtrasChoicePage } from '@/features/profile/ExtrasChoicePage';
 import { WelcomePage } from '@/features/profile/WelcomePage';
-import { useFocusReviewStates, useVisibility } from '@/features/profile/useVisibility';
+import { usePlannedReviewStates, useVisibility } from '@/features/profile/useVisibility';
 import { useTheme } from './useTheme';
 
 // Search loads its index library only when first opened.
@@ -57,8 +57,8 @@ const PLAYGROUND = '/playground';
 const CERTIFICATIONS = '/certifications';
 
 function DueCount() {
-  // Only the subjects on Today count (all when none is chosen): other subjects never add pressure.
-  const { data: states = [] } = useFocusReviewStates();
+  // Only subjects whose study plan schedules reviews count: other subjects never add pressure.
+  const { data: states = [] } = usePlannedReviewStates();
   const due = states.filter((state) => isDue(state)).length;
   if (!due) return null;
   return (

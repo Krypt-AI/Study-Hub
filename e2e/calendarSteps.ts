@@ -29,10 +29,9 @@ export async function ensureSemester(page: Page, name = 'Sem 1 2026'): Promise<v
   await expect(page.getByRole('combobox', { name: 'Semester' })).toBeVisible();
 }
 
-/** Opens the calendar's list of important dates. */
+/** Opens the calendar's list of important dates (they need no semester). */
 export async function openImportantDates(page: Page): Promise<void> {
   await page.goto('/calendar');
-  await ensureSemester(page);
   await page.getByRole('tab', { name: /Important dates/u }).click();
 }
 

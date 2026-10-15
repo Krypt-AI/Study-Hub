@@ -9,7 +9,7 @@ import type { Settings } from '@/data/records';
 import { useCatalog } from '@/domain/content/load';
 import type { Catalog, CourseSummary } from '@/domain/content/types';
 import { showsCertifications, showsRoadmaps, type Visibility, visibleCertifications, visibleCourses } from '@/domain/content/visibility';
-import { inFocus } from '@/domain/learning/focus';
+import { withReviewsScheduled } from '@/domain/learning/studyPlan';
 import { type AuthState, canOpenLockedContent, useAuth } from '@/features/auth/useAuth';
 
 export function visibilityOf(settings: Settings, auth: AuthState): Visibility {
@@ -61,16 +61,16 @@ export function useVisibleCourseIds(): ReadonlySet<string> | undefined {
 }
 
 /**
- * Review states that count for Today, the due count and the due-review session: the subjects on Today
- * (all when none is chosen), among the courses the learner sees. Hidden courses add no pressure.
+ * Review states that count for Today, the due count and review sessions: the subjects whose study plan
+ * schedules reviews, among the courses the learner sees. Other subjects add no pressure.
  */
-export function useFocusReviewStates() {
+export function usePlannedReviewStates() {
   const reviews = useReviewStates();
   const settings = useSettings();
   const visible = useVisibleCourseIds();
   const data = useMemo(() => {
     if (!reviews.data || !settings.data || !visible) return undefined;
-    return inFocus(reviews.data, settings.data.todayCourseIds).filter((review) => !review.courseId || visible.has(review.courseId));
+    return withReviewsScheduled(reviews.data, settings.data.studyPlans).filter((review) => !review.courseId || visible.has(review.courseId));
   }, [reviews.data, settings.data, visible]);
   return { data, error: reviews.error ?? settings.error };
 }

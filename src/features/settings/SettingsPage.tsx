@@ -23,7 +23,7 @@ import { AccountSheet } from '@/features/auth/AccountSheet';
 import { LearnersSheet } from '@/features/learners/LearnersSheet';
 import { AboutYouSheet } from '@/features/profile/AboutYouSheet';
 import { CoursesToSeeSheet } from '@/features/profile/CoursesToSeeSheet';
-import { TodaySubjectsSheet } from './TodaySubjectsSheet';
+import { StudyPlansSheet } from './StudyPlansSheet';
 import { useAuth } from '@/features/auth/useAuth';
 import { dayKey, formatDate } from '@/lib/dates';
 import { downloadText } from '@/lib/download';
@@ -39,7 +39,7 @@ export default function SettingsPage() {
         <div className="flex min-w-0 flex-col gap-6">
           <AboutYouSheet key={JSON.stringify(settings.data.profile)} settings={settings.data} />
           <CoursesToSeeSheet />
-          <TodaySubjectsSheet />
+          <StudyPlansSheet />
           <AppearanceSheet />
         </div>
         <div className="flex min-w-0 flex-col gap-6">

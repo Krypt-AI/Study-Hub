@@ -58,31 +58,12 @@ export default function CalendarPage() {
   const error = terms.error ?? classes.error ?? dates.error;
   if (error) return <ErrorState title="Your calendar could not be loaded" error={error} />;
   if (isLoading || terms.isLoading || !classes.data || !dates.data) return <LoadingState />;
-  if (!shownTerm) {
-    return (
-      <div className="mx-auto max-w-6xl">
-        <PageHeader title="Calendar" lead="Optional: add your weekly timetable and the dates of quizzes, tests and exams. The next important dates also show on Today." />
-        <Sheet padded>
-          <EmptyState
-            title="Add your semester first"
-            action={
-              <Button variant="primary" icon={<FolderPlus className="size-4" />} onClick={() => setAdding(true)}>
-                Add semester
-              </Button>
-            }
-          >
-            Name the semester you are in, for example "Sem 1 2026". Its timetable and important dates are kept under it.
-          </EmptyState>
-        </Sheet>
-        {adding && <AddSemesterDialog terms={terms.terms} onAdded={setTerm} onClose={() => setAdding(false)} />}
-      </div>
-    );
-  }
 
   const allDates = dates.data;
   const editClass = (entry: TimetableClassRecord) => setEditing({ kind: 'class', initial: entry });
   const editDate = (entry: ImportantDateRecord) => setEditing({ kind: 'date', initial: entry });
-  const addDate = (day: DayKey) => setEditing({ kind: 'date', initial: { term: activeTerm, date: day } });
+  // Without a semester, a date belongs to none.
+  const addDate = (day: DayKey) => setEditing({ kind: 'date', initial: shownTerm ? { term: activeTerm, date: day } : { date: day } });
   const setView = (next: View) => setSearchParams(next === 'week' ? {} : { view: next }, { replace: true });
 
   return (
@@ -92,9 +73,11 @@ export default function CalendarPage() {
         lead="Optional: add your weekly timetable and the dates of quizzes, tests and exams. The next important dates also show on Today."
         actions={
           <>
-            <Button icon={<Plus className="size-4" />} onClick={() => setEditing({ kind: 'class', initial: { term: activeTerm } })}>
-              Add class
-            </Button>
+            {shownTerm && (
+              <Button icon={<Plus className="size-4" />} onClick={() => setEditing({ kind: 'class', initial: { term: activeTerm } })}>
+                Add class
+              </Button>
+            )}
             <Button variant="primary" icon={<CalendarPlus className="size-4" />} onClick={() => addDate(today)}>
               Add important date
             </Button>
@@ -103,16 +86,32 @@ export default function CalendarPage() {
       />
 
       <div className="flex flex-col gap-6">
-        <SemesterSheet
-          key={activeTerm}
-          term={shownTerm}
-          terms={terms.terms}
-          onTermChange={setTerm}
-          today={today}
-          classes={classes.data}
-          dates={allDates}
-          hasSubjects={semesterCourseIds(activeTerm, shownTerm.semester, classes.data).all.length > 0}
-        />
+        {shownTerm ? (
+          <SemesterSheet
+            key={activeTerm}
+            term={shownTerm}
+            terms={terms.terms}
+            onTermChange={setTerm}
+            today={today}
+            classes={classes.data}
+            dates={allDates}
+            hasSubjects={semesterCourseIds(activeTerm, shownTerm.semester, classes.data).all.length > 0}
+          />
+        ) : (
+          <Sheet title="Semester">
+            <EmptyState
+              title="Add your semester first"
+              action={
+                <Button variant="primary" icon={<FolderPlus className="size-4" />} onClick={() => setAdding(true)}>
+                  Add semester
+                </Button>
+              }
+            >
+              Name the semester you are in, for example "Sem 1 2026". Your weekly timetable is kept under it; important dates can be added without one.
+            </EmptyState>
+            {adding && <AddSemesterDialog terms={terms.terms} onAdded={setTerm} onClose={() => setAdding(false)} />}
+          </Sheet>
+        )}
 
         <div className="flex flex-col gap-4">
           <Tabs

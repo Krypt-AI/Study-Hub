@@ -12,6 +12,7 @@ import { masteryLevel, updateMastery } from './mastery';
 import { correctLatestAnswer, isLatestAnswer, recordAnswer } from './recordAnswer';
 import { isDue } from './due';
 import { ratingFor, scheduleReview } from './srs';
+import { setStudyPlan, type StudyPlanLevel } from './studyPlan';
 
 const question = questionSchema.parse({
   id: 'hsk1.l06.q1',
@@ -98,9 +99,12 @@ describe('streaks and goals', () => {
 describe('recordAnswer', () => {
   let repository: LocalRepository;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     repository = new LocalRepository(`test-${crypto.randomUUID()}`);
+    await repository.saveSettings({ ...DEFAULT_SETTINGS, studyPlans: { 'hsk-1': 'review' } });
   });
+
+  const planHsk = async (level: StudyPlanLevel) => repository.saveSettings({ ...DEFAULT_SETTINGS, studyPlans: setStudyPlan({}, 'hsk-1', level) });
 
   afterEach(() => repository.close());
 
@@ -128,6 +132,23 @@ describe('recordAnswer', () => {
     expect((await repository.listTopicMastery())[0]).toMatchObject({ topicId: 'hsk1.vocab', attempts: 1, correct: 1 });
     expect((await repository.listActivityDays())[0]).toMatchObject({ attempts: 1, correct: 1 });
     expect(await repository.getLessonProgress('hsk-1.l06')).toMatchObject({ answeredQuestionIds: [question.id], correctQuestionIds: [question.id] });
+  });
+
+  it('only records the attempt and lesson progress for a subject used as material', async () => {
+    await planHsk('material');
+    const { review } = await answer('computer', true);
+    expect(review).toBeUndefined();
+    expect(await repository.getReviewState(question.id)).toBeUndefined();
+    expect(await repository.listTopicMastery()).toEqual([]);
+    expect(await repository.listAttempts()).toHaveLength(1);
+    expect(await repository.getLessonProgress('hsk-1.l06')).toMatchObject({ answeredQuestionIds: [question.id] });
+  });
+
+  it('tracks mastery but schedules no review for a subject on "practice"', async () => {
+    await planHsk('practice');
+    const { review } = await answer('computer', true);
+    expect(review).toBeUndefined();
+    expect((await repository.listTopicMastery())[0]).toMatchObject({ topicId: 'hsk1.vocab', attempts: 1 });
   });
 
   it('lets a retry in the same session add practice without moving the schedule', async () => {

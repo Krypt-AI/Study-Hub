@@ -1,5 +1,5 @@
 /** Guests keep their data on the device; signing out or switching accounts leaves nothing of the previous account. */
-import { addClass, addImportantDate, openImportantDates, todayWeekday, weekColumn } from '../calendarSteps';
+import { addClass, addImportantDate, ensureSemester, openImportantDates, todayWeekday, weekColumn } from '../calendarSteps';
 import { addDaysTo, todayKey } from '../dates';
 import { expect, test } from '../fixtures';
 import { asGuest, asSignedIn, localStorageKeys, signInAs, type StubAccount } from './supabaseStub';
@@ -12,6 +12,7 @@ const BOB: StubAccount = { id: '00000000-0000-4000-8000-0000000000b0', name: 'Bo
 test('a guest’s class and important date survive a reload', async ({ page }) => {
   await asGuest(page);
   await page.goto('/calendar');
+  await ensureSemester(page);
   await addClass(page, { name: 'Web lab', type: 'Lab', weekday: todayWeekday() });
   await addImportantDate(page, { kind: 'Quiz', subject: 'CMPD203 Web Programming', day: addDaysTo(todayKey(), 4) });
   await page.reload();

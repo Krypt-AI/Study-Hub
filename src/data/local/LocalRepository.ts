@@ -1,6 +1,6 @@
 /** StudyRepository backed by the browser's IndexedDB: private to this browser profile, works offline. */
 import type { ActivityDayRecord, ActivityDelta, BackupFile, DayKey, ExamDraftRecord, Settings } from '../records';
-import { DEFAULT_SETTINGS, normalizeTimetableClass } from '../records';
+import { normalizeSettings, normalizeTimetableClass } from '../records';
 import type { AttemptQuery, ImportMode, StudyRepository } from '../repository';
 import { openStudyDatabase, type StudyDatabase, TABLES } from './database';
 
@@ -217,7 +217,7 @@ export class LocalRepository implements StudyRepository {
 
   async getSettings(): Promise<Settings> {
     const row = await this.db.settings.get('settings');
-    return { ...DEFAULT_SETTINGS, ...row?.value };
+    return normalizeSettings(row?.value);
   }
 
   async saveSettings(settings: Settings) {
@@ -302,7 +302,7 @@ export class LocalRepository implements StudyRepository {
       await this.db.timetableClasses.bulkPut(backup.timetableClasses);
       await this.db.importantDates.bulkPut(backup.importantDates);
       await this.db.examDrafts.bulkPut(backup.examDrafts);
-      await this.db.settings.put({ key: 'settings', value: { ...DEFAULT_SETTINGS, ...backup.settings } });
+      await this.db.settings.put({ key: 'settings', value: normalizeSettings(backup.settings) });
     });
   }
 

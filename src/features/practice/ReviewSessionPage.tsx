@@ -10,7 +10,7 @@ import { BubbleStrip } from '@/components/ui/Bubble';
 import { Button, ButtonLink } from '@/components/ui/Button';
 import { EmptyState, ErrorState, LoadingState } from '@/components/ui/Feedback';
 import { PageHeader, Sheet } from '@/components/ui/Sheet';
-import { useAttempts, useBookmarks, useLessonProgress, useReviewStates, useSettings, useTopicMastery } from '@/data/queries';
+import { useAttempts, useBookmarks, useLessonProgress, useSettings, useTopicMastery } from '@/data/queries';
 import { contentLanguage } from '@/domain/content/language';
 import { useCourses } from '@/domain/content/load';
 import { findLesson, topicTitle } from '@/domain/content/navigation';
@@ -22,7 +22,8 @@ import { QuestionCard } from './QuestionCard';
 import { buildItems, courseIdsOf, type LearnerRecords, planSession, type SessionPlan } from './session/practicePlan';
 import { type PracticeSession, type SessionItem, usePracticeSession } from './session/usePracticeSession';
 import { CourseLoadError } from '@/features/auth/LockedContent';
-import { useFocusReviewStates, useVisibleCatalog } from '@/features/profile/useVisibility';
+import { withMasteryTracked } from '@/domain/learning/studyPlan';
+import { usePlannedReviewStates, useVisibleCatalog } from '@/features/profile/useVisibility';
 
 export default function ReviewSessionPage() {
   const { mode } = useParams();
@@ -42,10 +43,8 @@ interface SessionProps {
 function PracticeLoader({ mode, params, onRestart }: SessionProps) {
   const catalog = useVisibleCatalog();
   const settings = useSettings();
-  // A session for one chosen subject covers it whether or not it is on Today.
-  const allReviews = useReviewStates();
-  const focusReviews = useFocusReviewStates();
-  const reviews = params.get('course') ? allReviews : focusReviews;
+  // Only subjects whose study plan includes reviews or weak topics bring those into a session.
+  const reviews = usePlannedReviewStates();
   const mastery = useTopicMastery();
   const attempts = useAttempts(RECENT_ATTEMPTS);
   const bookmarks = useBookmarks();
@@ -57,7 +56,7 @@ function PracticeLoader({ mode, params, onRestart }: SessionProps) {
 
   const learner: LearnerRecords = {
     reviews: reviews.data,
-    mastery: mastery.data,
+    mastery: withMasteryTracked(mastery.data, settings.data.studyPlans),
     attempts: attempts.data,
     bookmarks: bookmarks.data,
     progress: progress.data,

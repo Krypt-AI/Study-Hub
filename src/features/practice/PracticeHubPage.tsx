@@ -1,6 +1,7 @@
 /**
  * Practice in two steps: first the subject, then everything waiting in it: due reviews, weak spots,
  * recent mistakes, saved questions and a quiz, and how its knowledge splits across the four skills.
+ * Only subjects whose study plan includes practice are listed, and reviews only where it includes them.
  */
 import { ChevronRight } from 'lucide-react';
 import { useMemo } from 'react';
@@ -10,33 +11,36 @@ import { Bubble } from '@/components/ui/Bubble';
 import { ButtonLink } from '@/components/ui/Button';
 import { EmptyState, ErrorState, LoadingState, Tag } from '@/components/ui/Feedback';
 import { PageHeader, Sheet } from '@/components/ui/Sheet';
-import { useAttempts, useBookmarks, useLessonProgress, useReviewStates, useTopicMastery } from '@/data/queries';
+import { useAttempts, useBookmarks, useSettings, useTopicMastery } from '@/data/queries';
 import type { CourseSummary } from '@/domain/content/types';
 import { type MasteryLevel, masteryLevel, SKILL_LABELS, SKILLS } from '@/domain/learning/mastery';
-import { useVisibleCatalog } from '@/features/profile/useVisibility';
+import { plannedCourseIds, planOf, type StudyPlanLevel, withMasteryTracked } from '@/domain/learning/studyPlan';
+import { StudyPlanPicker } from '@/features/courses/StudyPlanPicker';
+import { usePlannedReviewStates, useVisibleCatalog } from '@/features/profile/useVisibility';
 import { relativeTime } from '@/lib/dates';
 import { PRACTICE_MODES, type PracticeModeId, practiceUrl, RECENT_ATTEMPTS } from './practiceModes';
 import type { WeakSpot } from './session/selectPractice';
 import { TierSwitch } from './TierSwitch';
-import { type PracticeRecords, practisedCourseIds, type SubjectPractice, subjectPractice } from './subjectPractice';
+import { type PracticeRecords, type SubjectPractice, subjectPractice } from './subjectPractice';
 
 export default function PracticeHubPage() {
   const catalog = useVisibleCatalog();
-  const reviews = useReviewStates();
+  const settings = useSettings();
+  const reviews = usePlannedReviewStates();
   const mastery = useTopicMastery();
   const attempts = useAttempts(RECENT_ATTEMPTS);
   const bookmarks = useBookmarks();
-  const progress = useLessonProgress();
   const [params] = useSearchParams();
 
-  const error = [catalog, reviews, mastery, attempts, bookmarks, progress].find((query) => query.error)?.error;
+  const error = [catalog, settings, reviews, mastery, attempts, bookmarks].find((query) => query.error)?.error;
   if (error) return <ErrorState title="Practice could not be loaded" error={error} />;
-  if (!catalog.data || !reviews.data || !mastery.data || !attempts.data || !bookmarks.data || !progress.data) return <LoadingState />;
-  const records: PracticeRecords = { reviews: reviews.data, mastery: mastery.data, attempts: attempts.data, bookmarks: bookmarks.data };
+  if (!catalog.data || !settings.data || !reviews.data || !mastery.data || !attempts.data || !bookmarks.data) return <LoadingState />;
+  const plans = settings.data.studyPlans;
+  const records: PracticeRecords = { reviews: reviews.data, mastery: withMasteryTracked(mastery.data, plans), attempts: attempts.data, bookmarks: bookmarks.data };
   const course = catalog.data.courses.find((candidate) => candidate.id === params.get('course'));
-  if (course) return <SubjectPage course={course} records={records} />;
-  const practised = practisedCourseIds(records, progress.data.map((record) => record.courseId));
-  return <SubjectChoice courses={catalog.data.courses.filter((candidate) => practised.has(candidate.id))} records={records} />;
+  if (course) return <SubjectPage course={course} records={records} level={planOf(plans, course.id)} />;
+  const planned = new Set(plannedCourseIds(plans));
+  return <SubjectChoice courses={catalog.data.courses.filter((candidate) => planned.has(candidate.id))} records={records} />;
 }
 
 /** "12 due, 3 weak spots", or what to do next. */
@@ -64,8 +68,8 @@ function SubjectChoice({ courses, records }: { courses: CourseSummary[]; records
     <div className="mx-auto max-w-4xl">
       <PageHeader title="Practice" lead="Choose a subject to see what is waiting in it." />
       {entries.length === 0 ? (
-        <EmptyState title="Nothing to practise yet" action={<ButtonLink to="/courses">Choose a course</ButtonLink>}>
-          Answer a few questions in a lesson first: they come back here to review, and the topics you miss become weak spots.
+        <EmptyState title="No subject to practise yet" action={<ButtonLink to="/courses">Choose a course</ButtonLink>}>
+          On a course page, set the study plan to "Practise weak topics" or "Practise and review". The topics you miss then become weak spots here, and reviews come back when they are due.
         </EmptyState>
       ) : (
         <AreaIndex label="Subjects" entries={entries} />
@@ -74,17 +78,24 @@ function SubjectChoice({ courses, records }: { courses: CourseSummary[]; records
   );
 }
 
-function SubjectPage({ course, records }: { course: CourseSummary; records: PracticeRecords }) {
+function SubjectPage({ course, records, level }: { course: CourseSummary; records: PracticeRecords; level: StudyPlanLevel }) {
   const practice = useMemo(() => subjectPractice(course.id, records), [course.id, records]);
+  const header = (
+    <>
+      <AreaBack to="/practice" label="All subjects" />
+      <PageHeader title={course.title} lead={LEADS[level]}>
+        {course.hasTiers && level !== 'material' && <TierSwitch courseId={course.id} />}
+        <StudyPlanPicker courseId={course.id} className="mt-4 max-w-3xl" />
+      </PageHeader>
+    </>
+  );
+  if (level === 'material') return <div className="mx-auto max-w-6xl">{header}</div>;
   return (
     <div className="mx-auto max-w-6xl">
-      <AreaBack to="/practice" label="All subjects" />
-      <PageHeader title={course.title} lead="Every answer updates your review schedule and topic mastery.">
-        {course.hasTiers && <TierSwitch courseId={course.id} />}
-      </PageHeader>
+      {header}
       <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]">
         <div className="flex min-w-0 flex-col gap-6">
-          <SessionsSheet courseId={course.id} practice={practice} />
+          <SessionsSheet courseId={course.id} practice={practice} reviews={level === 'review'} />
           <WeakSpotsSheet spots={practice.spots} course={course} />
         </div>
         <SkillsSheet levels={practice.levels} />
@@ -93,15 +104,21 @@ function SubjectPage({ course, records }: { course: CourseSummary; records: Prac
   );
 }
 
+const LEADS: Record<StudyPlanLevel, string> = {
+  material: 'You use this subject as material only, so nothing is tracked for practice. Choose a study plan to practise it here.',
+  practice: 'Every answer updates your topic mastery, so your weak spots are listed here.',
+  review: 'Every answer updates your review schedule and topic mastery.',
+};
+
 const SESSIONS: PracticeModeId[] = ['review', 'weak', 'mistakes', 'saved', 'quiz'];
 
 /** The subject's sessions with how many questions each holds; empty ones say so instead of starting. */
-function SessionsSheet({ courseId, practice }: { courseId: string; practice: SubjectPractice }) {
+function SessionsSheet({ courseId, practice, reviews }: { courseId: string; practice: SubjectPractice; reviews: boolean }) {
   const count: Partial<Record<PracticeModeId, number>> = { review: practice.due, weak: practice.counts.weak, mistakes: practice.counts.mistakes, saved: practice.counts.saved };
   return (
     <Sheet title="Sessions" padded={false}>
       <ul className="divide-y divide-rule">
-        {SESSIONS.map((mode) => {
+        {SESSIONS.filter((mode) => reviews || mode !== 'review').map((mode) => {
           const info = PRACTICE_MODES[mode];
           const value = count[mode];
           const empty = value === 0;

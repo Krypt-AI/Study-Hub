@@ -4,7 +4,7 @@ A personal learning platform for university subjects, IT, AI engineering, profes
 
 - **Courses**: HSK 1–2 and JLPT N5–N4 built from your own books (OCR, checked against the page images), Python fundamentals (AI engineering stage 1) and Databases & SQL.
 - **Practice**: typed answers (pinyin with tone marks or numbers, kana/romaji, text, cloze, translation, explanations with a rubric), due reviews (FSRS), "practise my weaknesses", recent mistakes, saved questions, mixed quizzes, and timed JLPT mock exams with a booklet and an answer sheet.
-- **Subjects on Today**: switch on the subjects you are taking now, and Today and due reviews show only those; Today also lists the day's classes from your calendar, each linked to its course.
+- **Study plans**: for each subject choose to just use its material, also practise its weak topics, or also review answered questions when due; only planned subjects bring weak topics and reviews to Today. Today also lists the day's classes from your calendar, each linked to its course.
 - **Welcome**: a new learner gives their age and where they study (primary school, secondary school or university), and an optional nickname; the age suggests their school year.
 - **School exam papers**: UASA papers with their printed marks, lettered options, "choose one" sections and marking by the scheme's bands, in BM.
 - **Your courses only**: each learner sees their own level, and, once signed in, the extras they choose (Chinese, Japanese, AI engineering, IT). School subjects taught in both BM and English are offered in the language the learner picks.

@@ -23,7 +23,7 @@ import { CourseLoadError } from '@/features/auth/LockedContent';
 import { CourseVisibilityNotes } from '@/features/profile/CourseVisibilityNotes';
 import { CourseAbout } from './CourseAbout';
 import { ResetChapterButton } from './ResetChapterButton';
-import { ShowOnTodaySwitch } from './ShowOnTodaySwitch';
+import { StudyPlanPicker } from './StudyPlanPicker';
 import { groupAssessments, type PastPaperGroup } from '@/domain/content/pastPapers';
 import { paperWords } from '@/features/practice/paperWords';
 
@@ -77,7 +77,7 @@ export default function CoursePage() {
             </Tag>
           )}
         </div>
-        <ShowOnTodaySwitch courseId={data.id} className="mt-4 max-w-lg" />
+        <StudyPlanPicker courseId={data.id} className="mt-4 max-w-3xl" />
         <div className="mt-4 flex flex-col items-start gap-3 empty:hidden">
           <CourseVisibilityNotes course={data} />
         </div>

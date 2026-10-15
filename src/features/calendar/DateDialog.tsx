@@ -14,7 +14,7 @@ import { type Subject, subjectShortName } from './useSubjects';
 
 export interface DateDialogProps {
   /** The date to edit, or the fields to start a new one with. */
-  initial: ImportantDateRecord | { term: string; date: DayKey };
+  initial: ImportantDateRecord | { term?: string; date: DayKey };
   subjects: Subject[];
   onClose: () => void;
 }
@@ -68,7 +68,7 @@ export function DateDialog({ initial, subjects, onClose }: DateDialogProps) {
     const at = nowIso();
     await saveDate.mutateAsync({
       id: existing?.id ?? newId(),
-      term: existing?.term ?? ('term' in initial ? initial.term : undefined),
+      term: existing?.term ?? initial.term,
       courseId: draft.courseId || undefined,
       title,
       kind: draft.kind,
