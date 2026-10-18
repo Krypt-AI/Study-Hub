@@ -7,7 +7,8 @@
  * differ) and deletes whatever this build did not produce: files older than the build that public/ no longer has,
  * such as last build's hashed assets. The result matches a clean build.
  */
-import { copyFileSync, existsSync, mkdirSync, readdirSync, rmdirSync, statSync, unlinkSync, utimesSync } from 'node:fs';
+import { existsSync, readdirSync, rmdirSync } from 'node:fs';
+import { copyFile, mkdir, stat, unlink, utimes } from 'node:fs/promises';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import type { Plugin, ResolvedConfig } from 'vite';
 
@@ -39,34 +40,49 @@ function pruneEmptyDirectories(dir: string): boolean {
   return empty;
 }
 
+/** Filesystems store modification times at different precisions; differences under this many ms are the same file. */
+const MTIME_TOLERANCE_MS = 2;
+/** Stat and copy this many files at once: sequential stat calls dominate the step on Windows. */
+const CONCURRENCY = 64;
+
+async function mapInChunks<T>(items: readonly T[], work: (item: T) => Promise<void>): Promise<void> {
+  for (let start = 0; start < items.length; start += CONCURRENCY) {
+    await Promise.all(items.slice(start, start + CONCURRENCY).map(work));
+  }
+}
+
+async function syncFile(source: string, target: string): Promise<boolean> {
+  const from = await stat(source);
+  const to = await stat(target).catch(() => undefined);
+  if (to && to.size === from.size && Math.abs(to.mtimeMs - from.mtimeMs) < MTIME_TOLERANCE_MS) return false;
+  await mkdir(dirname(target), { recursive: true });
+  await copyFile(source, target);
+  await utimes(target, from.atime, from.mtime);
+  return true;
+}
+
 /**
  * Mirrors `publicDir` into `outDir`, then deletes files in `outDir` last modified before `buildStartedAt` that
  * `publicDir` does not have. Copies keep the source's modification time, which is how unchanged files are recognised.
  */
-export function syncPublicDir(publicDir: string, outDir: string, buildStartedAt: number): SyncResult {
-  const publicFiles = new Set(listFiles(publicDir));
-  let copied = 0;
-  for (const file of publicFiles) {
-    const source = join(publicDir, file);
-    const target = join(outDir, file);
-    const from = statSync(source);
-    const to = existsSync(target) ? statSync(target) : undefined;
-    if (to && to.size === from.size && Math.trunc(to.mtimeMs) === Math.trunc(from.mtimeMs)) continue;
-    mkdirSync(dirname(target), { recursive: true });
-    copyFileSync(source, target);
-    utimesSync(target, from.atime, from.mtime);
-    copied++;
-  }
+export async function syncPublicDir(publicDir: string, outDir: string, buildStartedAt: number): Promise<SyncResult> {
+  const publicFiles = listFiles(publicDir);
+  const copies = new Array<boolean>(publicFiles.length);
+  await mapInChunks(publicFiles.map((file, index) => ({ file, index })), async ({ file, index }) => {
+    copies[index] = await syncFile(join(publicDir, file), join(outDir, file));
+  });
+  const copied = copies.filter(Boolean).length;
 
+  const publicSet = new Set(publicFiles);
+  const stale = listFiles(outDir).filter((file) => !publicSet.has(file));
   let removed = 0;
-  for (const file of listFiles(outDir)) {
-    if (publicFiles.has(file)) continue;
+  await mapInChunks(stale, async (file) => {
     const path = join(outDir, file);
-    if (statSync(path).mtimeMs < buildStartedAt) {
-      unlinkSync(path);
+    if ((await stat(path)).mtimeMs < buildStartedAt) {
+      await unlink(path);
       removed++;
     }
-  }
+  });
   if (existsSync(outDir)) pruneEmptyDirectories(outDir);
   return { copied, removed };
 }
@@ -86,10 +102,10 @@ export function syncPublicDirPlugin(): Plugin {
       // A second earlier than now, so coarse filesystem timestamps of files written by this build still count as new.
       buildStartedAt = Date.now() - 1000;
     },
-    closeBundle() {
+    async closeBundle() {
       const outDir = resolve(config.root, config.build.outDir);
       if (!outDir.startsWith(resolve(config.root) + sep)) throw new Error(`sync-public-dir: out dir ${outDir} is outside the project`);
-      const { copied, removed } = syncPublicDir(config.publicDir, outDir, buildStartedAt);
+      const { copied, removed } = await syncPublicDir(config.publicDir, outDir, buildStartedAt);
       config.logger.info(`public/ synced: ${copied} file(s) copied, ${removed} stale file(s) removed`);
     },
   };
