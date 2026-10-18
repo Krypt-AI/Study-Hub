@@ -7,7 +7,7 @@ import { asGuest, asSignedIn, type StubAccount } from './supabaseStub';
 
 test.use({ storageState: { cookies: [], origins: [] } });
 
-const signInNote = (page: Page) => page.getByRole('main').getByText('to add Chinese, Japanese, AI and IT courses.');
+const signInNote = (page: Page) => page.getByRole('main').getByText('to add Chinese, Japanese, roadmaps and certifications.');
 
 for (const { age, year } of [
   { age: '9', year: 'Standard 3' },
