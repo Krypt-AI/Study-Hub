@@ -3,9 +3,11 @@ import { fileURLToPath, URL } from 'node:url';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
+import { syncPublicDirPlugin } from './scripts/vite/syncPublicDir.ts';
 
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  // public/ is large (page images, audio): it is synced into dist incrementally instead of emptied and recopied.
+  plugins: [react(), tailwindcss(), syncPublicDirPlugin()],
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },
