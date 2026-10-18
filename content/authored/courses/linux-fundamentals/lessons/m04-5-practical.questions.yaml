@@ -1,0 +1,42 @@
+- id: linux.m04.l5.build
+  type: long
+  skill: apply
+  topics: [linux.m04]
+  prompt: List the commands you used to build the specification (users, groups, folders, ACL, sudoers, password expiry).
+  minWords: 50
+  rubric:
+    - { id: users, label: "Users created with home directories and placed in groups with `usermod -aG` / `useradd -G`", keywords: [["useradd", "adduser"], ["-aG", "-G"]] }
+    - { id: dirs, label: "Folders with group ownership and mode 2770", keywords: [["chgrp", "chown"], ["2770"]] }
+    - { id: acl, label: "ACL and default ACL for mei (`setfacl -m u:mei:rx` and `d:u:mei:rx`)", keywords: [["setfacl"], ["d:u:mei", "-d", "default"]] }
+    - { id: sudo, label: "Sudoers file for ravi via `visudo -f` with full command paths", keywords: [["visudo"], ["/usr/bin/systemctl"]] }
+    - { id: expire, label: "Password change forced at first login (`passwd -e` or `chage -d 0`)", keywords: [["passwd -e", "chage -d 0", "chage -d0"]] }
+  modelAnswer: |-
+    ```bash
+    sudo groupadd accounts; sudo groupadd sales
+    for u in aina farid mei ravi; do sudo useradd -m -s /bin/bash "$u"; sudo passwd "$u"; sudo passwd -e "$u"; done
+    sudo usermod -aG accounts aina; sudo usermod -aG accounts farid; sudo usermod -aG sales mei
+    sudo mkdir -p /srv/kira/{accounts,sales}
+    sudo chgrp accounts /srv/kira/accounts; sudo chgrp sales /srv/kira/sales
+    sudo chmod 2770 /srv/kira/accounts /srv/kira/sales
+    sudo setfacl -m u:mei:rx /srv/kira/accounts
+    sudo setfacl -m d:u:mei:rx /srv/kira/accounts
+    sudo visudo -f /etc/sudoers.d/it-support
+    #   ravi ALL=(root) /usr/bin/systemctl restart ssh, /usr/bin/systemctl status ssh
+    ```
+
+- id: linux.m04.l5.tests
+  type: long
+  skill: explain
+  topics: [linux.m04]
+  prompt: Report the result of each test and explain any that did not behave as expected, with how you fixed it.
+  minWords: 40
+  rubric:
+    - { id: group, label: "New file in accounts has group `accounts` (setgid works)", keywords: [["group"], ["accounts"]] }
+    - { id: mei, label: "mei can read but not create in accounts", keywords: [["mei"], ["read", "cat"], ["denied", "fail", "cannot"]] }
+    - { id: ravi, label: "ravi cannot list the folders; `sudo -l -U ravi` shows only the ssh commands", keywords: [["ravi"], ["sudo -l", "ssh"]] }
+    - { id: fix, label: "Explains any deviation and its fix (or states all passed)", keywords: [["fix", "because", "all passed", "as expected", "worked"]] }
+  modelAnswer: >-
+    `ledger.txt` was created with group `accounts`. mei could `cat` it, and `touch x.txt` failed with Permission denied.
+    `sudo -u ravi ls /srv/kira/accounts` was denied, and `sudo -l -U ravi` listed only `systemctl restart ssh` and
+    `systemctl status ssh`. `getfacl` showed `user:mei:r-x` and `default:user:mei:r-x`. One deviation: mei could not
+    read files created before the ACL existed; I applied `setfacl -R -m u:mei:rX /srv/kira/accounts` to existing files.

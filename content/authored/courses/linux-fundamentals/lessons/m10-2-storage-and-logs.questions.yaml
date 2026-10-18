@@ -1,0 +1,73 @@
+- id: linux.m10.l2.await
+  type: choice
+  skill: apply
+  topics: [linux.m10]
+  prompt: "`iostat -x` shows `w_await` at 250 ms for the database disk during slow periods. What does it indicate?"
+  options:
+    - { id: a, text: "Each write takes a quarter of a second on average: the storage is a bottleneck.", explanation: "Correct. Healthy SSDs answer in a few ms." }
+    - { id: b, text: The network is slow., explanation: "These are local disk statistics." }
+    - { id: c, text: Nothing unusual., explanation: "250 ms per write is very slow." }
+  correct: [a]
+
+- id: linux.m10.l2.iotop
+  type: choice
+  skill: recognize
+  topics: [linux.m10]
+  prompt: Which tool shows which **processes** are doing the most disk I/O?
+  options:
+    - { id: a, text: "`iotop`", explanation: "Correct (`-o` shows only active ones)." }
+    - { id: b, text: "`iostat`", explanation: "Shows per-device statistics." }
+    - { id: c, text: "`df`", explanation: "Shows space, not I/O." }
+  correct: [a]
+
+- id: linux.m10.l2.rotate
+  type: choice
+  skill: explain
+  topics: [linux.m10]
+  prompt: "In a logrotate file, what does `rotate 14` with `daily` mean?"
+  options:
+    - { id: a, text: "Rotate every day and keep 14 old log files; older ones are deleted.", explanation: "Correct." }
+    - { id: b, text: Rotate every 14 days., explanation: "`daily` sets the frequency." }
+    - { id: c, text: Rotate logs larger than 14 MB., explanation: "That would be `size 14M`." }
+  correct: [a]
+
+- id: linux.m10.l2.copytruncate
+  type: choice
+  skill: explain
+  topics: [linux.m10]
+  prompt: When do you use `copytruncate` in a logrotate rule?
+  options:
+    - { id: a, text: "When the program cannot be told to reopen its log file, so the live file is copied and then emptied in place.", explanation: "Correct. A few lines may be lost in between." }
+    - { id: b, text: To encrypt logs., explanation: "No encryption is involved." }
+    - { id: c, text: To keep logs forever., explanation: "Retention is `rotate`." }
+  correct: [a]
+
+- id: linux.m10.l2.logrotate-debug
+  type: short
+  skill: recall
+  topics: [linux.m10]
+  prompt: Which command tests the logrotate configuration `/etc/logrotate.d/kira` without changing anything?
+  accepted: ["sudo logrotate -d /etc/logrotate.d/kira", "logrotate -d /etc/logrotate.d/kira", "sudo logrotate --debug /etc/logrotate.d/kira"]
+  match: { mode: exact }
+
+- id: linux.m10.l2.zgrep
+  type: choice
+  skill: apply
+  topics: [linux.m10]
+  prompt: "You need to search `error.log`, `error.log.1` and `error.log.2.gz` together. Which command?"
+  options:
+    - { id: a, text: "`zgrep 'timeout' /var/log/nginx/error.log*`", explanation: "Correct. zgrep reads compressed and plain files." }
+    - { id: b, text: "`grep 'timeout' /var/log/nginx/error.log*`", explanation: "Cannot read inside the .gz file." }
+    - { id: c, text: "`cat /var/log/nginx/error.log.2.gz | grep timeout`", explanation: "The data is still compressed." }
+  correct: [a]
+
+- id: linux.m10.l2.ro-remount
+  type: choice
+  skill: apply
+  topics: [linux.m10]
+  prompt: "The kernel log shows `EXT4-fs error ... remounting filesystem read-only`. What comes first?"
+  options:
+    - { id: a, text: "Protect the data: confirm recent backups, then investigate the disk and filesystem (fsck when unmounted).", explanation: "Correct." }
+    - { id: b, text: Remount read-write and carry on., explanation: "The filesystem went read-only to prevent further damage." }
+    - { id: c, text: Delete logs to free space., explanation: "Space is not the issue." }
+  correct: [a]

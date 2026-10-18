@@ -1,0 +1,85 @@
+id: linux-fundamentals.m03-quiz
+title: "Module 3 quiz: text processing and Bash"
+kind: quiz
+passMark: 0.7
+description: Eight questions on redirection, pipes, variables, text tools and scripts.
+sections:
+  - id: linux-fundamentals.m03-quiz.s1
+    title: Module 3
+    questions:
+      - id: linux.m03.quiz.redirect-err
+        type: choice
+        skill: recognize
+        topics: [linux.m03]
+        prompt: "What does `2>` redirect?"
+        options:
+          - { id: a, text: Standard input, explanation: "That is `<` (descriptor 0)." }
+          - { id: b, text: Standard output, explanation: "That is `>` or `1>`." }
+          - { id: c, text: Standard error, explanation: "Correct. Descriptor 2." }
+        correct: [c]
+      - id: linux.m03.quiz.count-users
+        type: short
+        skill: apply
+        topics: [linux.m03]
+        prompt: "Write a pipeline that counts the accounts in `/etc/passwd` whose shell is `/bin/bash`."
+        accepted: ["grep -c '/bin/bash$' /etc/passwd", "grep '/bin/bash$' /etc/passwd | wc -l", "grep -c /bin/bash /etc/passwd", "grep /bin/bash /etc/passwd | wc -l", "grep -c 'bash$' /etc/passwd"]
+        match: { mode: exact }
+        explanation: "`grep -c` counts matching lines directly; piping to `wc -l` gives the same number."
+      - id: linux.m03.quiz.or
+        type: choice
+        skill: apply
+        topics: [linux.m03]
+        prompt: "When does `echo` run in `systemctl is-active --quiet nginx || echo \"nginx is down\"`?"
+        options:
+          - { id: a, text: When nginx is running, explanation: "`||` runs the right side only on failure." }
+          - { id: b, text: When nginx is not active (the check exits non-zero), explanation: "Correct." }
+          - { id: c, text: Always, explanation: "That would be `;`." }
+        correct: [b]
+      - id: linux.m03.quiz.double-quotes
+        type: choice
+        skill: explain
+        topics: [linux.m03]
+        prompt: "`dir=\"My Files\"; mkdir $dir` creates what?"
+        options:
+          - { id: a, text: "One directory `My Files`", explanation: "Only with `\"$dir\"`." }
+          - { id: b, text: "Two directories, `My` and `Files`", explanation: "Correct. Unquoted, the value is split at the space." }
+          - { id: c, text: An error, explanation: "`mkdir` happily creates two directories." }
+        correct: [b]
+      - id: linux.m03.quiz.sed
+        type: short
+        skill: apply
+        topics: [linux.m03]
+        prompt: "Write the `sed` command that replaces **every** `http://` with `https://` in `links.txt` and prints the result (without changing the file)."
+        accepted: ["sed 's|http://|https://|g' links.txt", "sed 's#http://#https://#g' links.txt", "sed 's/http:\\/\\//https:\\/\\//g' links.txt", "sed 's,http://,https://,g' links.txt"]
+        match: { mode: exact }
+        explanation: "Using another delimiter such as `|` avoids escaping the slashes; `g` replaces every match on a line."
+      - id: linux.m03.quiz.while-read
+        type: choice
+        skill: recognize
+        topics: [linux.m03]
+        prompt: Which construct processes `hosts.txt` one line at a time?
+        options:
+          - { id: a, text: "`while read -r host; do ...; done < hosts.txt`", explanation: "Correct." }
+          - { id: b, text: "`for host in hosts.txt; do ...; done`", explanation: "This loops once, over the literal word `hosts.txt`." }
+          - { id: c, text: "`if read hosts.txt; then ...; fi`", explanation: "`read` takes variable names, not files." }
+        correct: [a]
+      - id: linux.m03.quiz.numeric
+        type: choice
+        skill: recognize
+        topics: [linux.m03]
+        prompt: Inside `[[ ]]`, which operator compares **numbers** for "greater than"?
+        options:
+          - { id: a, text: "`-gt`", explanation: "Correct. Inside `(( ))` you would write `>`." }
+          - { id: b, text: "`>`", explanation: "Inside `[[ ]]`, `>` compares strings alphabetically." }
+          - { id: c, text: "`-ge`", explanation: "That is greater than or equal." }
+        correct: [a]
+      - id: linux.m03.quiz.tee
+        type: choice
+        skill: apply
+        topics: [linux.m03]
+        prompt: You want to see a command's output on screen **and** keep a copy in `run.log`. Which tool?
+        options:
+          - { id: a, text: "`tee run.log`", explanation: "Correct: `command | tee run.log`." }
+          - { id: b, text: "`cat > run.log`", explanation: "Writes to the file only." }
+          - { id: c, text: "`grep run.log`", explanation: "Searches; it does not save." }
+        correct: [a]

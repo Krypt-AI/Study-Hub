@@ -1,0 +1,67 @@
+- id: linux.m00.l3.ssh-command
+  type: short
+  skill: recall
+  topics: [linux.m00]
+  prompt: Write the command that connects as user `student` to the server at `192.168.56.101` over SSH.
+  accepted: ["ssh student@192.168.56.101"]
+  match: { mode: exact }
+  explanation: "`ssh user@host` is the basic form. Without `user@`, SSH uses your local username."
+
+- id: linux.m00.l3.private-key
+  type: choice
+  skill: recognize
+  topics: [linux.m00]
+  prompt: Which file must you **never** copy to a server or share?
+  options:
+    - { id: a, text: "`~/.ssh/id_ed25519.pub`", explanation: "The public key is meant to be copied to servers." }
+    - { id: b, text: "`~/.ssh/id_ed25519`", explanation: "Correct. Anyone with the private key (and its passphrase) can log in as you." }
+    - { id: c, text: "`~/.ssh/known_hosts`", explanation: "This lists servers you trust; it is not secret, though it does reveal which hosts you use." }
+    - { id: d, text: "`~/.ssh/config`", explanation: "Client settings, not a secret key." }
+  correct: [b]
+
+- id: linux.m00.l3.authorized-keys
+  type: cloze
+  skill: recall
+  topics: [linux.m00]
+  prompt: Fill in the gaps.
+  text: "On the server, the public keys allowed to log in as a user are listed in `~/.ssh/[[1]]`. On your laptop, the host keys of servers you have accepted are in `~/.ssh/[[2]]`."
+  blanks:
+    - { id: "1", accepted: [authorized_keys], match: { mode: exact } }
+    - { id: "2", accepted: [known_hosts], match: { mode: exact } }
+
+- id: linux.m00.l3.host-key-changed
+  type: choice
+  skill: apply
+  topics: [linux.m00]
+  prompt: >-
+    At work, SSH to a production server you use every day suddenly prints
+    `WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!`. Nobody told you the server was rebuilt. What should you do?
+  options:
+    - { id: a, text: "Delete the entry with `ssh-keygen -R` and connect again.", explanation: "That is fine in your own lab after a reinstall, but here it would ignore a possible attack." }
+    - { id: b, text: "Stop, do not type your password, and report it to the senior administrator or security team.", explanation: "Correct. An unexplained host-key change can mean the connection is being intercepted." }
+    - { id: c, text: Connect with a different username., explanation: "The warning is about the server's identity, not your account." }
+    - { id: d, text: Turn off host-key checking in your SSH config., explanation: "That removes the protection completely." }
+  correct: [b]
+
+- id: linux.m00.l3.sudo-not-root
+  type: choice
+  skill: explain
+  topics: [linux.m00]
+  prompt: Why is it better to log in as yourself and use `sudo` than to log in as `root`?
+  options:
+    - { id: a, text: "`sudo` makes commands run faster.", explanation: "Speed is the same." }
+    - { id: b, text: "Each privileged command is deliberate and is logged under your name; ordinary work runs without privileges.", explanation: "Correct. That is accountability plus least privilege." }
+    - { id: c, text: Root cannot run commands over SSH., explanation: "Root can, unless it is disabled; it is a bad idea, not impossible." }
+    - { id: d, text: "`sudo` does not need a password.", explanation: "It asks for your own password by default." }
+  correct: [b]
+
+- id: linux.m00.l3.authorisation
+  type: choice
+  skill: recognize
+  topics: [linux.m00]
+  prompt: A friend asks you to practise SSH password guessing against their workplace server "just to test it". What is the right response?
+  options:
+    - { id: a, text: Do it from your lab VM so it cannot be traced., explanation: "Hiding the source does not make unauthorised access legal." }
+    - { id: b, text: "Refuse: only test systems you own or have written authorisation from the system owner to test.", explanation: "Correct. Your friend is not the owner, and unauthorised access is an offence under Malaysia's Computer Crimes Act 1997." }
+    - { id: c, text: It is fine if you do not change anything., explanation: "Attempting access without authorisation is itself the offence." }
+  correct: [b]

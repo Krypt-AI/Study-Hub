@@ -428,6 +428,42 @@ export const courseSchema = z.object({
 // Certifications and roadmaps
 // ---------------------------------------------------------------------------
 
+const dayKey = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
+
+/**
+ * How much a certification or a roadmap stage relies on a foundation course (Linux Fundamentals, say):
+ *  - essential: the intended technical tasks, or the exam's own scope, need it directly
+ *  - strongly-recommended: it materially improves preparation or work, but is not universally required
+ *  - optional: useful in some roles or specialisations only
+ * This is Study Hub's recommendation; what the provider itself requires is `officialRequirement`.
+ */
+export const foundationRelevanceSchema = z.enum(['essential', 'strongly-recommended', 'optional']);
+
+/** A foundation course a roadmap stage builds on, optionally only some of its units (modules). */
+export const stageFoundationSchema = z.object({
+  courseId: contentId,
+  relevance: foundationRelevanceSchema,
+  /** The units that matter here, in study order; empty means the whole course. */
+  unitIds: z.array(contentId).default([]),
+  note: z.string().optional(),
+});
+
+/** A foundation course a certification builds on: why, which modules, what lies beyond it, and the sources. */
+export const certificationFoundationSchema = stageFoundationSchema.extend({
+  /** Why it matters for this certification (the exam scope or the work it leads to). */
+  reason: markdown,
+  /** What the provider itself requires or recommends, kept apart from Study Hub's recommendation. */
+  officialRequirement: z.string(),
+  concepts: z.array(z.string()).default([]),
+  /** Skills the certification needs beyond the foundation course. */
+  beyond: z.array(z.string()).default([]),
+  /** When to complete the foundation material. */
+  timing: z.string(),
+  /** The next recommended learning step after it. */
+  next: z.string(),
+  sources: z.array(z.object({ title: z.string(), url: z.url(), checkedOn: dayKey })).min(1),
+});
+
 export const certificationSchema = z.object({
   id: contentId,
   name: z.string(),
@@ -464,8 +500,10 @@ export const certificationSchema = z.object({
     .array(z.object({ title: z.string(), url: z.url(), free: z.boolean(), official: z.boolean() }))
     .default([]),
   relatedCourses: z.array(contentId).default([]),
+  /** Foundation courses to take first (Linux Fundamentals for most IT exams), with how much they matter. */
+  foundations: z.array(certificationFoundationSchema).default([]),
   /** Date the facts above were last checked against the official sources (YYYY-MM-DD). */
-  verifiedOn: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  verifiedOn: dayKey,
   verificationSources: z.array(z.url()).min(1),
   /** Facts that could not be verified from official sources. */
   unverified: z.array(z.string()).default([]),
@@ -482,6 +520,10 @@ export const roadmapSchema = z.object({
       summary: z.string(),
       courseIds: z.array(contentId).default([]),
       certificationIds: z.array(contentId).default([]),
+      /** Courses to have done before this stage, with how much they matter. */
+      foundations: z.array(stageFoundationSchema).default([]),
+      /** The topics a stage whose course is still in preparation will cover. */
+      outline: z.array(z.string()).default([]),
     }),
   ),
 });
@@ -519,6 +561,7 @@ export const courseSummarySchema = courseSchema
     hasCode: z.boolean().default(false),
     /** Some multiple-choice questions have a difficulty, so the learner can pick easy, medium or hard. */
     hasTiers: z.boolean().default(false),
+    units: z.array(z.object({ id: contentId, title: z.string() })).default([]),
     lessons: z.array(z.object({ id: contentId, title: z.string(), unitId: contentId })),
     assessments: z.array(z.object({ id: contentId, title: z.string(), kind: z.enum(['quiz', 'mock-exam']), paper: pastPaperKindSchema.optional() })).default([]),
   });

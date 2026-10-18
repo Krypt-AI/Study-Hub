@@ -1,0 +1,72 @@
+- id: linux.m02.l1.etc
+  type: choice
+  skill: recognize
+  topics: [linux.m02]
+  prompt: Where does system-wide configuration live?
+  options:
+    - { id: a, text: "`/etc`", explanation: "Correct. For example `/etc/ssh/sshd_config` and `/etc/fstab`." }
+    - { id: b, text: "`/var`", explanation: "Variable data such as logs and caches." }
+    - { id: c, text: "`/usr`", explanation: "Installed programs and read-only data." }
+    - { id: d, text: "`/opt`", explanation: "Self-contained third-party applications." }
+  correct: [a]
+
+- id: linux.m02.l1.logs
+  type: short
+  skill: recall
+  topics: [linux.m02]
+  prompt: Give the directory where traditional log files such as `syslog` and `auth.log` are kept.
+  accepted: ["/var/log", "/var/log/"]
+  match: { mode: exact }
+
+- id: linux.m02.l1.proc
+  type: choice
+  skill: explain
+  topics: [linux.m02]
+  prompt: What is special about files under `/proc`?
+  options:
+    - { id: a, text: They are compressed logs., explanation: "Logs are under `/var/log` and the journal." }
+    - { id: b, text: "The kernel generates them on demand to describe the running system; they take no disk space.", explanation: "Correct. `/proc/meminfo` is created each time you read it." }
+    - { id: c, text: They are backups of `/etc`., explanation: "There is no automatic backup there." }
+  correct: [b]
+
+- id: linux.m02.l1.tmp
+  type: choice
+  skill: apply
+  topics: [linux.m02]
+  prompt: A colleague stores the only copy of a monthly report in `/tmp`. What is the risk?
+  options:
+    - { id: a, text: None; `/tmp` is backed up automatically., explanation: "It is not." }
+    - { id: b, text: "`/tmp` is cleared at boot (and old files can be cleaned regularly), so the report can disappear.", explanation: "Correct. Keep data in a home directory or `/srv`." }
+    - { id: c, text: Only root can read `/tmp`., explanation: "Everyone can write there." }
+  correct: [b]
+
+- id: linux.m02.l1.vendor
+  type: choice
+  skill: apply
+  topics: [linux.m02]
+  prompt: A vendor's monitoring agent arrives as a self-contained bundle (its own binaries and libraries). Where does the FHS suggest installing it?
+  options:
+    - { id: a, text: "`/opt`", explanation: "Correct. `/opt/<vendor>` keeps add-on packages together." }
+    - { id: b, text: "`/etc`", explanation: "Only its configuration would go there." }
+    - { id: c, text: "`/tmp`", explanation: "Temporary." }
+    - { id: d, text: "`/home/student`", explanation: "Personal files, not system software." }
+  correct: [a]
+
+- id: linux.m02.l1.devnull
+  type: short
+  skill: recall
+  topics: [linux.m02]
+  prompt: Which device file discards everything written to it?
+  accepted: ["/dev/null"]
+  match: { mode: exact }
+
+- id: linux.m02.l1.rhel-auth
+  type: choice
+  skill: recognize
+  topics: [linux.m02]
+  prompt: Ubuntu writes authentication messages to `/var/log/auth.log`. Where does RHEL write them?
+  options:
+    - { id: a, text: "`/var/log/secure`", explanation: "Correct. Both are also in the systemd journal (`journalctl`)." }
+    - { id: b, text: "`/var/log/auth`", explanation: "Not a standard file." }
+    - { id: c, text: "`/etc/secure`", explanation: "`/etc` holds configuration, not logs." }
+  correct: [a]

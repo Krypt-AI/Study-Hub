@@ -1,0 +1,120 @@
+id: linux-fundamentals
+title: Linux Fundamentals
+subtitle: Ubuntu Server LTS · from your first command to a documented server
+description: >-
+  A beginner's Linux course for IT diploma students. You build your own Ubuntu Server lab in a virtual machine
+  and learn, one module at a time, what an entry-level support or junior administration role expects: the
+  command line, files, Bash, users and permissions, packages, processes, services, storage, networking,
+  monitoring, security, backups and routine automation. Each module explains the ideas, shows the commands with
+  the output to expect, walks you through a guided lab, leaves you independent exercises, checks your
+  understanding with questions that explain every answer, and ends with a practical assessment and a module
+  quiz. Ubuntu Server is the main environment; where Red Hat Enterprise Linux and its relatives (Rocky Linux,
+  AlmaLinux, Fedora) differ, the lesson says how. The capstone asks you to configure and document a server for a
+  small organisation. This course is the foundation for Linux+, LFCS, RHCSA and LPIC-1, and for the cloud,
+  DevOps and security certifications that rely on Linux: it does not on its own prepare you for those exams.
+category: it
+subject: linux
+level: Beginner
+difficulty: beginner
+tags: [linux, ubuntu, command-line, bash, system-administration]
+estimatedHours: 75
+contentNotice: >-
+  Every command runs in **your own lab virtual machine**, not in the browser: Study Hub has no Linux sandbox, so
+  Bash code here is for reading and copying. Examples were written for **Ubuntu Server 26.04 LTS**; every lab also
+  works on 24.04 LTS. Version numbers, dates, addresses and sizes in the sample output will differ on your machine.
+  Ubuntu 26.04 uses Rust rewrites of `sudo` (sudo-rs) and of the core utilities (uutils): commands and options are
+  the same for everything taught here, but a few error messages are worded differently. Practical assessments are
+  marked by you against the listed points; keep the evidence they ask for, because the capstone reuses it.
+topics:
+  - { id: linux.m00, title: "Module 0: Linux and your lab" }
+  - { id: linux.m01, title: "Module 1: Command-line fundamentals" }
+  - { id: linux.m02, title: "Module 2: Filesystem and file management" }
+  - { id: linux.m03, title: "Module 3: Text processing and Bash" }
+  - { id: linux.m04, title: "Module 4: Users, groups and permissions" }
+  - { id: linux.m05, title: "Module 5: Package management" }
+  - { id: linux.m06, title: "Module 6: Processes and jobs" }
+  - { id: linux.m07, title: "Module 7: Services and boot" }
+  - { id: linux.m08, title: "Module 8: Storage and filesystems" }
+  - { id: linux.m09, title: "Module 9: Networking" }
+  - { id: linux.m10, title: "Module 10: Monitoring and troubleshooting" }
+  - { id: linux.m11, title: "Module 11: Security fundamentals" }
+  - { id: linux.m12, title: "Module 12: Backup and recovery" }
+  - { id: linux.m13, title: "Module 13: Workplace administration and automation" }
+  - { id: linux.m14, title: "Module 14: Beginner capstone" }
+units:
+  - id: linux-fundamentals.m00
+    title: "Module 0 — Linux introduction and lab setup"
+    summary: The Linux ecosystem, building an Ubuntu Server virtual machine, snapshots, networking, SSH and safe lab habits.
+    lessons: [m00-1-linux-ecosystem, m00-2-lab-setup, m00-3-ssh-and-safe-practice, m00-4-practical]
+  - id: linux-fundamentals.m01
+    title: "Module 1 — Command-line fundamentals"
+    summary: Commands, options and arguments, paths and navigation, help and exit codes.
+    lessons: [m01-1-command-anatomy, m01-2-paths-and-navigation, m01-3-help-and-exit-codes, m01-4-practical]
+  - id: linux-fundamentals.m02
+    title: "Module 2 — Filesystem and file management"
+    summary: The directory hierarchy, creating, copying, moving and removing files, links, wildcards, searching and viewing text.
+    lessons: [m02-1-filesystem-hierarchy, m02-2-managing-files, m02-3-finding-and-viewing, m02-4-practical]
+  - id: linux-fundamentals.m03
+    title: "Module 3 — Text processing and Bash"
+    summary: Redirection and pipes, variables and the environment, chaining, text tools and Bash scripts.
+    lessons: [m03-1-redirection-and-pipes, m03-2-variables-and-chaining, m03-3-text-processing, m03-4-bash-scripts, m03-5-practical]
+  - id: linux-fundamentals.m04
+    title: "Module 4 — Users, groups and permissions"
+    summary: Accounts and groups, sudo and least privilege, ownership and modes, special bits and ACLs.
+    lessons: [m04-1-users-and-groups, m04-2-sudo-and-least-privilege, m04-3-permissions-and-ownership, m04-4-special-bits-and-acls, m04-5-practical]
+  - id: linux-fundamentals.m05
+    title: "Module 5 — Package management"
+    summary: APT, repositories and dependencies, dpkg and updates, and an introduction to RPM and DNF.
+    lessons: [m05-1-apt-and-repositories, m05-2-dpkg-and-updates, m05-3-rpm-and-dnf, m05-4-practical]
+  - id: linux-fundamentals.m06
+    title: "Module 6 — Processes and jobs"
+    summary: Inspecting processes, signals and priority, job control and process troubleshooting.
+    lessons: [m06-1-processes, m06-2-signals-and-priority, m06-3-jobs-and-troubleshooting, m06-4-practical]
+  - id: linux-fundamentals.m07
+    title: "Module 7 — Services and boot management"
+    summary: How Linux boots, systemd units and systemctl, and reading the journal.
+    lessons: [m07-1-boot-process, m07-2-systemd-units, m07-3-journalctl, m07-4-practical]
+  - id: linux-fundamentals.m08
+    title: "Module 8 — Storage and filesystems"
+    summary: Disks and partitions, filesystems and mounting, /etc/fstab, disk usage and swap, and introductory LVM.
+    lessons: [m08-1-disks-and-partitions, m08-2-filesystems-and-mounting, m08-3-usage-and-swap, m08-4-lvm, m08-5-practical]
+  - id: linux-fundamentals.m09
+    title: "Module 9 — Networking"
+    summary: IP addressing and routes, DNS and connectivity tests, ports and SSH, and firewalls.
+    lessons: [m09-1-ip-addressing, m09-2-dns-and-connectivity, m09-3-ports-and-ssh, m09-4-firewalls, m09-5-practical]
+  - id: linux-fundamentals.m10
+    title: "Module 10 — Monitoring and troubleshooting"
+    summary: CPU and memory, storage and logs, and a systematic way to troubleshoot failures.
+    lessons: [m10-1-cpu-and-memory, m10-2-storage-and-logs, m10-3-troubleshooting-method, m10-4-practical]
+  - id: linux-fundamentals.m11
+    title: "Module 11 — Security fundamentals"
+    summary: Account security, SSH hardening, updates, firewalls and a basic hardening baseline.
+    lessons: [m11-1-account-security, m11-2-ssh-hardening, m11-3-updates-and-hardening, m11-4-practical]
+  - id: linux-fundamentals.m12
+    title: "Module 12 — Backup and recovery"
+    summary: Backup strategy, tar and compression, rsync, verification, restoration and recovery procedures.
+    lessons: [m12-1-backup-concepts-and-tar, m12-2-rsync, m12-3-verify-and-restore, m12-4-practical]
+  - id: linux-fundamentals.m13
+    title: "Module 13 — Workplace administration and automation"
+    summary: Routine administration, Bash automation, cron and systemd timers, runbooks, tickets and change management.
+    lessons: [m13-1-routine-administration, m13-2-scheduling, m13-3-runbooks-tickets-change, m13-4-practical]
+  - id: linux-fundamentals.m14
+    title: "Module 14 — Beginner capstone"
+    summary: Configure, secure, back up, automate and document a Linux server for a simulated organisation.
+    lessons: [m14-1-scenario, m14-2-build-plan, m14-3-evidence-and-report, m14-4-submission]
+assessments:
+  - m00-quiz
+  - m01-quiz
+  - m02-quiz
+  - m03-quiz
+  - m04-quiz
+  - m05-quiz
+  - m06-quiz
+  - m07-quiz
+  - m08-quiz
+  - m09-quiz
+  - m10-quiz
+  - m11-quiz
+  - m12-quiz
+  - m13-quiz
+  - final-exam

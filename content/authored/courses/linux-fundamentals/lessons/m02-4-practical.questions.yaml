@@ -1,0 +1,33 @@
+- id: linux.m02.l4.commands
+  type: long
+  skill: apply
+  topics: [linux.m02]
+  prompt: List the commands you used for steps 1, 2, 4 and 5, and summarise what `ls -lR ~/kira` showed.
+  minWords: 40
+  rubric:
+    - { id: mkdir, label: "One `mkdir -p` with brace expansion (or equivalent) creates the four directories", keywords: [["mkdir"], ["-p", "{"]] }
+    - { id: cp, label: "`cp -a` or `cp -p` keeps timestamps when copying the configuration files", keywords: [["cp -a", "cp -p", "--preserve"]] }
+    - { id: find, label: "`find` with `-mtime +30` and `-exec mv ... {} ...` (or `-execdir`) moves old files", keywords: [["find"], ["-mtime +30", "-mtime +29"], ["-exec", "-execdir", "xargs"]] }
+    - { id: symlink, label: "`ln -s` creates `latest-config`", keywords: [["ln -s"]] }
+    - { id: result, label: "Result: client1–3 in archive/, nine clients left, three config copies, the symlink", keywords: [["archive"], ["client1", "three", "3", "nine", "9"]] }
+  modelAnswer: >-
+    1. `mkdir -p ~/kira/{clients,templates,archive,config-copies}`. 2. `sudo cp -a /etc/hosts /etc/hostname
+    /etc/ssh/sshd_config ~/kira/config-copies/` (sudo because sshd_config may be readable only by root on some systems;
+    then `sudo chown student: ~/kira/config-copies/*`). 4. `find ~/kira/clients -type f -mtime +30 -exec mv {}
+    ~/kira/archive/ \;`. 5. `ln -s config-copies/sshd_config ~/kira/latest-config`. `ls -lR ~/kira` shows client1–3
+    in archive/, client4–12 in clients/, three files in config-copies/ with their original dates, and
+    `latest-config -> config-copies/sshd_config`.
+
+- id: linux.m02.l4.safety
+  type: long
+  skill: explain
+  topics: [linux.m02]
+  prompt: Before running the `find` that moved files, how did you check it would only touch the right files? What would you do differently if the action were `-delete`?
+  minWords: 30
+  rubric:
+    - { id: preview, label: "Ran the `find` without the action first (or with `-print`/`-ls`) to preview the list", keywords: [["preview", "without", "first", "-print", "-ls", "checked", "list"]] }
+    - { id: delete, label: "For deletion: preview, back up or snapshot first, use an absolute path, consider `-ok` / `-i`", keywords: [["backup", "snapshot", "-ok", "confirm", "absolute", "careful", "archive"]] }
+  modelAnswer: >-
+    I first ran `find ~/kira/clients -type f -mtime +30` without `-exec` and saw exactly client1–3. Only then did I add
+    `-exec mv`. For `-delete` I would do the same preview, use an absolute path, take a snapshot or copy the files to
+    an archive first, and consider `-ok rm {} \;`, which asks for confirmation for each file.

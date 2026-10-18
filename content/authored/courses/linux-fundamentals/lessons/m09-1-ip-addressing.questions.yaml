@@ -1,0 +1,71 @@
+- id: linux.m09.l1.ip-addr
+  type: short
+  skill: recall
+  topics: [linux.m09]
+  prompt: Which command shows a brief list of interfaces with their IP addresses?
+  accepted: ["ip -br address", "ip -br a", "ip -br addr", "ip -brief address", "ip -br address show"]
+  match: { mode: exact }
+
+- id: linux.m09.l1.gateway
+  type: choice
+  skill: apply
+  topics: [linux.m09]
+  prompt: "In `ip route` output, which line names the default gateway?"
+  options:
+    - { id: a, text: "`default via 10.0.2.2 dev enp0s3`", explanation: "Correct. 10.0.2.2 is the router for everything not on a local network." }
+    - { id: b, text: "`10.0.2.0/24 dev enp0s3 proto kernel scope link`", explanation: "A directly connected network." }
+    - { id: c, text: "`192.168.56.0/24 dev enp0s8`", explanation: "Another directly connected network." }
+  correct: [a]
+
+- id: linux.m09.l1.private
+  type: choice
+  skill: recognize
+  topics: [linux.m09]
+  prompt: Which address is in a **private** IPv4 range?
+  options:
+    - { id: a, text: "172.20.5.9", explanation: "Correct. 172.16.0.0/12 covers 172.16.0.0–172.31.255.255." }
+    - { id: b, text: "8.8.8.8", explanation: "A public address." }
+    - { id: c, text: "172.32.1.1", explanation: "Just outside 172.16.0.0/12." }
+  correct: [a]
+
+- id: linux.m09.l1.hosts-24
+  type: short
+  skill: apply
+  topics: [linux.m09]
+  prompt: How many usable host addresses does a `/24` IPv4 network have?
+  accepted: ["254"]
+  match: { mode: number }
+  explanation: "2⁸ = 256 addresses, minus the network and broadcast addresses."
+
+- id: linux.m09.l1.temporary
+  type: choice
+  skill: explain
+  topics: [linux.m09]
+  prompt: "You add an address with `sudo ip address add 192.168.56.150/24 dev enp0s8`. What happens at the next reboot?"
+  options:
+    - { id: a, text: "It is gone: `ip` changes are temporary; persistent settings go in netplan (or NetworkManager).", explanation: "Correct." }
+    - { id: b, text: It is kept forever., explanation: "Nothing was written to a configuration file." }
+    - { id: c, text: The interface is disabled., explanation: "The interface is unaffected." }
+  correct: [a]
+
+- id: linux.m09.l1.netplan-try
+  type: choice
+  skill: explain
+  topics: [linux.m09]
+  prompt: Why use `sudo netplan try` rather than `sudo netplan apply` when changing a remote server's network settings?
+  options:
+    - { id: a, text: "It rolls the change back automatically unless you confirm it, so a mistake does not lock you out.", explanation: "Correct." }
+    - { id: b, text: It is faster., explanation: "Both apply the same configuration." }
+    - { id: c, text: It does not need sudo., explanation: "Both need root." }
+  correct: [a]
+
+- id: linux.m09.l1.nmcli
+  type: choice
+  skill: recognize
+  topics: [linux.m09]
+  prompt: On RHEL, which tool configures network connections persistently from the command line?
+  options:
+    - { id: a, text: "`nmcli`", explanation: "Correct. NetworkManager's CLI." }
+    - { id: b, text: "`netplan`", explanation: "Ubuntu's tool." }
+    - { id: c, text: "`ifconfig`", explanation: "Deprecated and not persistent." }
+  correct: [a]

@@ -1,0 +1,38 @@
+- id: linux.m00.l4.evidence
+  type: long
+  skill: apply
+  topics: [linux.m00]
+  prompt: >-
+    Paste (or summarise) the evidence that your lab is ready: the hostname and OS version, the host-only IP address
+    you SSH to, the result of checking for upgrades, and how you log in.
+  minWords: 30
+  rubric:
+    - { id: host, label: "Hostname lab01 and Ubuntu LTS version shown (hostnamectl or lsb_release)", keywords: [["lab01"], ["ubuntu", "26.04", "24.04", "lts"]] }
+    - { id: ip, label: "The host-only IP address identified (e.g. 192.168.56.x)", keywords: [["192.168.", "host-only", "enp0s8", "ip address"]] }
+    - { id: updates, label: "No upgrades pending (apt list --upgradable / full-upgrade done)", keywords: [["upgradable", "full-upgrade", "upgrade", "up to date", "updated"]] }
+    - { id: key, label: "Logs in over SSH with an Ed25519 key (passphrase asked, not server password)", keywords: [["key", "ed25519", "passphrase"]] }
+  modelAnswer: >-
+    `hostnamectl` shows static hostname `lab01` and Operating System Ubuntu 26.04.1 LTS. `ip -br address` shows
+    `enp0s8 UP 192.168.56.101/24`, the host-only address I use with `ssh lab01`. `apt list --upgradable` prints only
+    `Listing...` after `sudo apt full-upgrade`, so nothing is pending. I log in with my Ed25519 key: SSH asks for the
+    key's passphrase, not the server password, and `~/.ssh/authorized_keys` on the server has my public key.
+
+- id: linux.m00.l4.lab-log
+  type: long
+  skill: explain
+  topics: [linux.m00]
+  prompt: >-
+    Write the lab-log entry for this module as you would hand it to a team lead: date, what you built, the settings
+    you chose and why (network mode, disk, snapshot), and one problem you met and how you solved it (or "none").
+  minWords: 50
+  rubric:
+    - { id: date, label: "Dated entry", keywords: [["202", "date", "/", "today"]] }
+    - { id: network, label: "Network mode chosen and justified (NAT + host-only, isolated from others)", keywords: [["nat", "host-only", "host only"], ["internet", "update", "isolat", "laptop", "reach"]] }
+    - { id: snapshot, label: "Snapshot taken and named", keywords: [["snapshot"]] }
+    - { id: problem, label: "A problem and its fix (or a clear statement that there was none)", keywords: [["problem", "issue", "error", "none", "fixed", "solved"]] }
+  modelAnswer: >-
+    18 Oct 2026. Built lab01 (Ubuntu Server 26.04.1 LTS) in VirtualBox: 2 vCPU, 2 GB RAM, 25 GB dynamic disk with
+    LVM. Network: NAT for updates plus host-only so only my laptop can SSH in; I avoided bridged because I work on
+    campus Wi-Fi. Installed OpenSSH during setup, ran a full upgrade, created an Ed25519 key with a passphrase and
+    installed it. Snapshot `02-ssh-ready` taken after shutdown. Problem: enp0s8 had no address at first; I attached
+    the host-only adapter to vboxnet0 in VirtualBox and rebooted, after which DHCP gave 192.168.56.101.

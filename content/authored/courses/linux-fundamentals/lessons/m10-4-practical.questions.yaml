@@ -1,0 +1,24 @@
+- id: linux.m10.l4.report
+  type: long
+  skill: apply
+  topics: [linux.m10]
+  prompt: "Write the incident report for INC-2026-118: summary, timeline, investigation (commands and findings), root causes, fixes, verification, and follow-up actions."
+  minWords: 80
+  rubric:
+    - { id: summary, label: "Summary with impact and duration", keywords: [["summary", "impact", "down", "slow"]] }
+    - { id: timeline, label: "Timeline with times", keywords: [["10:", "11:", "timeline"]] }
+    - { id: investigation, label: "Investigation steps with the commands used and their findings", keywords: [["systemctl", "journalctl", "ss", "df", "free", "top"]] }
+    - { id: causes, label: "Both root causes identified", keywords: [["cause", "root"]] }
+    - { id: verify, label: "Fix verified from the user's side (page loads)", keywords: [["curl", "browser", "page loads", "200"]] }
+    - { id: followup, label: "Follow-up actions to prevent recurrence", keywords: [["follow", "prevent", "monitor", "alert", "recommend"]] }
+  modelAnswer: >-
+    Summary: the intranet page was unavailable from 10:05 to 10:41 (36 minutes) for all office users. Timeline: 10:05
+    reported; 10:08 triage started; 10:14 first cause found; 10:22 fixed; 10:31 second cause found; 10:38 fixed; 10:41
+    verified. Investigation: `uptime` normal; `systemctl --failed` listed nginx.service; `journalctl -u nginx -b` showed
+    `bind() to 0.0.0.0:80 failed (98: Address already in use)`; `sudo ss -tlnp | grep :80` showed python3 holding
+    port 80, a test server left running. Stopped it (`kill` on its PID), started nginx. `curl -I localhost` then
+    returned 403; `/var/log/nginx/error.log` showed `Permission denied` on /var/www/html, and `namei -l` showed the
+    directory at 700 root. Restored 755. Root causes: a stray process occupying port 80, and a wrong permission change
+    on the web root. Verification: `curl -I http://192.168.56.10` returned 200 from my laptop and the manager confirmed
+    the page loads. Follow-up: alert when nginx is not active, record who changed permissions on /var/www (no change
+    record existed), and add the port check to the health-check script.

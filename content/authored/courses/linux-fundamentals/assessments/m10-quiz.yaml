@@ -1,0 +1,86 @@
+id: linux-fundamentals.m10-quiz
+title: "Module 10 quiz: monitoring and troubleshooting"
+kind: quiz
+passMark: 0.7
+description: Eight questions on load, memory, disk I/O, logs and the troubleshooting method.
+sections:
+  - id: linux-fundamentals.m10-quiz.s1
+    title: Module 10
+    questions:
+      - id: linux.m10.quiz.load-meaning
+        type: choice
+        skill: recognize
+        topics: [linux.m10]
+        prompt: What do the three load-average numbers represent?
+        options:
+          - { id: a, text: "Average runnable (and I/O-waiting) processes over 1, 5 and 15 minutes", explanation: "Correct." }
+          - { id: b, text: "CPU percentage of three CPUs", explanation: "Load is not a percentage." }
+          - { id: c, text: "Memory, disk and network usage", explanation: "It is one measure over three periods." }
+        correct: [a]
+      - id: linux.m10.quiz.high-load-idle
+        type: choice
+        skill: apply
+        topics: [linux.m10]
+        prompt: "Load is 12 on a 4-CPU server, yet `top` shows CPUs 85% idle. Most likely cause?"
+        options:
+          - { id: a, text: "Many processes stuck waiting on I/O (state D), e.g. slow storage or a hung network mount", explanation: "Correct. Check `wa`, `b`, iostat and `ps` for D states." }
+          - { id: b, text: Too many CPU-heavy processes, explanation: "CPUs would be busy." }
+          - { id: c, text: A display error, explanation: "Load counts D-state processes too." }
+        correct: [a]
+      - id: linux.m10.quiz.cache
+        type: choice
+        skill: explain
+        topics: [linux.m10]
+        prompt: Why does Linux use most "free" memory as buff/cache?
+        options:
+          - { id: a, text: "Unused RAM is wasted; caching disk data speeds things up and is released when programs need it.", explanation: "Correct." }
+          - { id: b, text: It is a memory leak., explanation: "It is deliberate and reclaimable." }
+          - { id: c, text: To reserve memory for root., explanation: "Not its purpose." }
+        correct: [a]
+      - id: linux.m10.quiz.failed-units
+        type: short
+        skill: recall
+        topics: [linux.m10]
+        prompt: In the "first five minutes" routine, which command lists systemd units that failed?
+        accepted: ["systemctl --failed", "systemctl list-units --failed", "systemctl list-units --state=failed"]
+        match: { mode: exact }
+      - id: linux.m10.quiz.one-change
+        type: choice
+        skill: explain
+        topics: [linux.m10]
+        prompt: Why change only one thing at a time while troubleshooting?
+        options:
+          - { id: a, text: "So you know which change fixed (or worsened) the problem, and can undo it.", explanation: "Correct." }
+          - { id: b, text: Linux only accepts one change per minute., explanation: "No such limit." }
+          - { id: c, text: It is faster., explanation: "Often slower, but reliable." }
+        correct: [a]
+      - id: linux.m10.quiz.last-x
+        type: choice
+        skill: apply
+        topics: [linux.m10]
+        prompt: You suspect the server rebooted unexpectedly last night. Which command shows recent reboots and shutdowns?
+        options:
+          - { id: a, text: "`last -x | head` (or `journalctl --list-boots`)", explanation: "Correct." }
+          - { id: b, text: "`who`", explanation: "Shows who is logged in now." }
+          - { id: c, text: "`free -h`", explanation: "Memory only." }
+        correct: [a]
+      - id: linux.m10.quiz.logrotate-why
+        type: choice
+        skill: explain
+        topics: [linux.m10]
+        prompt: What problem does logrotate prevent?
+        options:
+          - { id: a, text: Logs growing until they fill the disk, explanation: "Correct. It also keeps a manageable history." }
+          - { id: b, text: Logs being read by attackers, explanation: "Permissions do that." }
+          - { id: c, text: Services crashing, explanation: "Not directly." }
+        correct: [a]
+      - id: linux.m10.quiz.monitoring
+        type: choice
+        skill: recognize
+        topics: [linux.m10]
+        prompt: Which of these is a monitoring system that collects metrics and raises alerts?
+        options:
+          - { id: a, text: Prometheus (with node_exporter), explanation: "Correct. Zabbix, Nagios and cloud monitoring are others." }
+          - { id: b, text: logrotate, explanation: "Rotates logs." }
+          - { id: c, text: netplan, explanation: "Configures networking." }
+        correct: [a]

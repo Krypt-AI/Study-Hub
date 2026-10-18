@@ -1,0 +1,64 @@
+- id: linux.m05.l2.owner
+  type: short
+  skill: recall
+  topics: [linux.m05]
+  prompt: Which command tells you which installed package owns `/usr/sbin/sshd`?
+  accepted: ["dpkg -S /usr/sbin/sshd", "dpkg --search /usr/sbin/sshd"]
+  match: { mode: exact }
+
+- id: linux.m05.l2.upgrade-vs-full
+  type: choice
+  skill: explain
+  topics: [linux.m05]
+  prompt: What is the difference between `apt upgrade` and `apt full-upgrade`?
+  options:
+    - { id: a, text: "`full-upgrade` may remove packages to resolve conflicts; `upgrade` never removes anything.", explanation: "Correct. Read the 'Removing' list before confirming." }
+    - { id: b, text: "`full-upgrade` upgrades to a new Ubuntu release.", explanation: "That is `do-release-upgrade`." }
+    - { id: c, text: There is no difference., explanation: "They differ in whether removals are allowed." }
+  correct: [a]
+
+- id: linux.m05.l2.reboot
+  type: short
+  skill: recall
+  topics: [linux.m05]
+  prompt: Which file's existence tells you Ubuntu needs a reboot to finish applying updates?
+  accepted: ["/var/run/reboot-required", "/run/reboot-required"]
+  match: { mode: exact }
+
+- id: linux.m05.l2.lock
+  type: choice
+  skill: apply
+  topics: [linux.m05]
+  prompt: "`sudo apt install htop` fails with `Could not get lock /var/lib/dpkg/lock-frontend`. What do you do?"
+  options:
+    - { id: a, text: "Delete the lock file and try again.", explanation: "If another process is installing, that can corrupt the package database." }
+    - { id: b, text: "Check for a running apt/dpkg process (often unattended-upgrades) and wait for it to finish.", explanation: "Correct." }
+    - { id: c, text: Reboot immediately., explanation: "Interrupting an upgrade can leave packages half-configured." }
+  correct: [b]
+
+- id: linux.m05.l2.hold
+  type: short
+  skill: recall
+  topics: [linux.m05]
+  prompt: Write the command that stops `nginx` from being upgraded.
+  accepted: ["sudo apt-mark hold nginx", "apt-mark hold nginx"]
+  match: { mode: exact }
+
+- id: linux.m05.l2.configure
+  type: short
+  skill: recall
+  topics: [linux.m05]
+  prompt: "An installation was interrupted and APT tells you `dpkg was interrupted`. Which command finishes configuring the half-installed packages?"
+  accepted: ["sudo dpkg --configure -a", "dpkg --configure -a"]
+  match: { mode: exact }
+
+- id: linux.m05.l2.unattended
+  type: choice
+  skill: recognize
+  topics: [linux.m05]
+  prompt: What does `unattended-upgrades` do on a default Ubuntu Server?
+  options:
+    - { id: a, text: Installs security updates automatically every day., explanation: "Correct. Reboots are not automatic unless configured." }
+    - { id: b, text: Upgrades to new Ubuntu releases automatically., explanation: "Release upgrades are always manual." }
+    - { id: c, text: Removes unused packages weekly., explanation: "Not its job by default." }
+  correct: [a]

@@ -1,0 +1,73 @@
+- id: linux.m06.l2.default-kill
+  type: choice
+  skill: recognize
+  topics: [linux.m06]
+  prompt: Which signal does `kill PID` send when no signal is named?
+  options:
+    - { id: a, text: "`SIGKILL` (9)", explanation: "Only with `kill -9`." }
+    - { id: b, text: "`SIGTERM` (15)", explanation: "Correct: a polite request to exit." }
+    - { id: c, text: "`SIGHUP` (1)", explanation: "Only with `kill -HUP`." }
+  correct: [b]
+
+- id: linux.m06.l2.term-first
+  type: choice
+  skill: explain
+  topics: [linux.m06]
+  prompt: Why try `SIGTERM` before `SIGKILL`?
+  options:
+    - { id: a, text: "SIGTERM lets the program clean up (save data, release locks); SIGKILL stops it instantly and can leave damage.", explanation: "Correct." }
+    - { id: b, text: SIGKILL needs root., explanation: "You can SIGKILL your own processes." }
+    - { id: c, text: SIGTERM is faster., explanation: "Speed is not the point; clean shutdown is." }
+  correct: [a]
+
+- id: linux.m06.l2.hup
+  type: choice
+  skill: recognize
+  topics: [linux.m06]
+  prompt: Many daemons, including nginx, treat `SIGHUP` as a request to...
+  options:
+    - { id: a, text: reload their configuration, explanation: "Correct. `systemctl reload` often sends it for you." }
+    - { id: b, text: shut down, explanation: "That is TERM." }
+    - { id: c, text: pause, explanation: "That is STOP or TSTP." }
+  correct: [a]
+
+- id: linux.m06.l2.zombie
+  type: choice
+  skill: apply
+  topics: [linux.m06]
+  prompt: "`kill -9` has no effect on a process in state `Z`. Why, and what clears it?"
+  options:
+    - { id: a, text: "It is already dead; its parent must collect it, so restarting or stopping the parent clears it.", explanation: "Correct." }
+    - { id: b, text: Zombies need `sudo kill -9`., explanation: "Even root cannot kill what is already dead." }
+    - { id: c, text: A reboot is the only fix., explanation: "Fixing the parent is enough." }
+  correct: [a]
+
+- id: linux.m06.l2.nice-range
+  type: cloze
+  skill: recall
+  topics: [linux.m06]
+  prompt: Fill in the niceness range.
+  text: "Niceness runs from [[1]] (highest priority) to [[2]] (lowest priority); the default is [[3]]."
+  blanks:
+    - { id: "1", accepted: ["-20"], match: { mode: exact } }
+    - { id: "2", accepted: ["19"], match: { mode: exact } }
+    - { id: "3", accepted: ["0"], match: { mode: exact } }
+
+- id: linux.m06.l2.nice-backup
+  type: short
+  skill: apply
+  topics: [linux.m06]
+  prompt: "Write the command that runs `/usr/local/bin/backup.sh` with niceness 10."
+  accepted: ["nice -n 10 /usr/local/bin/backup.sh", "nice -10 /usr/local/bin/backup.sh", "nice -n10 /usr/local/bin/backup.sh"]
+  match: { mode: exact }
+
+- id: linux.m06.l2.pkill-user
+  type: choice
+  skill: apply
+  topics: [linux.m06]
+  prompt: You need to stop every `python3` process belonging to user `farid`, and nobody else's. Which command?
+  options:
+    - { id: a, text: "`sudo pkill -u farid python3`", explanation: "Correct." }
+    - { id: b, text: "`sudo killall python3`", explanation: "That stops everyone's python3." }
+    - { id: c, text: "`sudo kill farid`", explanation: "`kill` takes PIDs, not usernames." }
+  correct: [a]

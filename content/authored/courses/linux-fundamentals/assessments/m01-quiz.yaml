@@ -1,0 +1,85 @@
+id: linux-fundamentals.m01-quiz
+title: "Module 1 quiz: command-line fundamentals"
+kind: quiz
+passMark: 0.7
+description: Eight questions on command syntax, paths, help and exit codes.
+sections:
+  - id: linux-fundamentals.m01-quiz.s1
+    title: Module 1
+    questions:
+      - id: linux.m01.quiz.case
+        type: choice
+        skill: recognize
+        topics: [linux.m01]
+        prompt: "Why does `LS -L` fail on Linux?"
+        options:
+          - { id: a, text: Commands and options are case-sensitive; the command is `ls`., explanation: "Correct." }
+          - { id: b, text: "`ls` needs sudo.", explanation: "Anyone can run `ls`." }
+          - { id: c, text: Options must come after arguments., explanation: "Options normally come first." }
+        correct: [a]
+      - id: linux.m01.quiz.pwd-after
+        type: short
+        skill: apply
+        topics: [linux.m01]
+        prompt: "You run `cd /etc`, then `cd ssh`, then `cd ../..`. What does `pwd` print?"
+        accepted: ["/"]
+        match: { mode: exact }
+        explanation: "`/etc` → `/etc/ssh` → up twice → `/`."
+      - id: linux.m01.quiz.home
+        type: choice
+        skill: recognize
+        topics: [linux.m01]
+        prompt: Which command does **not** take you to your home directory?
+        options:
+          - { id: a, text: "`cd`", explanation: "With no argument, `cd` goes home." }
+          - { id: b, text: "`cd ~`", explanation: "`~` is home." }
+          - { id: c, text: "`cd $HOME`", explanation: "`$HOME` holds your home path." }
+          - { id: d, text: "`cd /`", explanation: "Correct. `/` is the root of the filesystem." }
+        correct: [d]
+      - id: linux.m01.quiz.human
+        type: short
+        skill: recall
+        topics: [linux.m01]
+        prompt: Write the `ls` command that lists `/var/log` in long format with human-readable sizes.
+        accepted: ["ls -lh /var/log", "ls -hl /var/log", "ls -l -h /var/log", "ls -lh /var/log/"]
+        match: { mode: exact }
+      - id: linux.m01.quiz.exit-2
+        type: choice
+        skill: apply
+        topics: [linux.m01]
+        prompt: "`ls /data/report.csv; echo $?` prints an error and `2`. What should you check first?"
+        options:
+          - { id: a, text: "That the path is right: the file or directory does not exist as typed.", explanation: "Correct. `ls` returns 2 for a missing file." }
+          - { id: b, text: That the disk is full., explanation: "A full disk does not stop `ls` from listing." }
+          - { id: c, text: That the network is up., explanation: "A local path does not involve the network." }
+        correct: [a]
+      - id: linux.m01.quiz.apropos
+        type: choice
+        skill: recognize
+        topics: [linux.m01]
+        prompt: You do not know the name of the command you need. Which helps most?
+        options:
+          - { id: a, text: "`apropos keyword` (or `man -k keyword`)", explanation: "Correct. It searches the short descriptions of all man pages." }
+          - { id: b, text: "`which keyword`", explanation: "`which` needs the exact command name." }
+          - { id: c, text: "`type keyword`", explanation: "`type` also needs the exact name." }
+        correct: [a]
+      - id: linux.m01.quiz.streams
+        type: choice
+        skill: recognize
+        topics: [linux.m01]
+        prompt: Where do commands normally write their error messages?
+        options:
+          - { id: a, text: Standard output, explanation: "That is for normal results." }
+          - { id: b, text: Standard error, explanation: "Correct. Keeping them separate lets you redirect errors on their own (Module 3)." }
+          - { id: c, text: "/var/log/errors", explanation: "Commands do not log there; services log to the journal." }
+        correct: [b]
+      - id: linux.m01.quiz.tab
+        type: choice
+        skill: explain
+        topics: [linux.m01]
+        prompt: Pressing Tab after `cd /etc/sh` does nothing. What is the most likely reason?
+        options:
+          - { id: a, text: "No entry in `/etc` starts with `sh`, or several do and you must press Tab twice to see them.", explanation: "Correct. Tab completes only when the start is unique." }
+          - { id: b, text: Tab completion is only for commands., explanation: "It completes paths too." }
+          - { id: c, text: You must be root to use Tab., explanation: "Completion works for everyone." }
+        correct: [a]

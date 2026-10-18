@@ -1,6 +1,7 @@
 /**
  * A course: what it covers, where the material comes from, lessons by unit with progress,
- * mastery per topic and skill, mock exams and related certifications.
+ * mastery per topic and skill, mock exams, the certifications it prepares for and those it is a
+ * foundation for.
  */
 import { Award, Bookmark, BookmarkCheck, ClipboardCheck, Play } from 'lucide-react';
 import { useMemo } from 'react';
@@ -25,6 +26,8 @@ import { CourseAbout } from './CourseAbout';
 import { ResetChapterButton } from './ResetChapterButton';
 import { StudyPlanPicker } from './StudyPlanPicker';
 import { groupAssessments, type PastPaperGroup } from '@/domain/content/pastPapers';
+import { certificationsBuiltOn } from '@/domain/content/foundations';
+import { RELEVANCE } from '@/features/certifications/certificationLabels';
 import { paperWords } from '@/features/practice/paperWords';
 
 export default function CoursePage() {
@@ -43,6 +46,7 @@ export default function CoursePage() {
   const nextLesson = lessons.find(({ lesson }) => records.get(lesson.id)?.status !== 'completed')?.lesson ?? lessons[0]?.lesson;
   const completed = lessons.filter(({ lesson }) => records.get(lesson.id)?.status === 'completed').length;
   const certifications = (catalog.data?.certifications ?? []).filter((certification) => data.certifications.includes(certification.id) || certification.relatedCourses.includes(data.id));
+  const builtOn = certificationsBuiltOn(catalog.data?.certifications ?? [], data.id).filter(({ certification }) => !certifications.includes(certification));
   const prerequisites = (catalog.data?.courses ?? []).filter((candidate) => data.prerequisites.includes(candidate.id));
   const { pastPapers, practice } = groupAssessments(data.assessments);
   // A subject with past papers and no lessons yet: the papers are what there is to do.
@@ -164,6 +168,23 @@ export default function CoursePage() {
                       {certification.name}
                     </Link>
                     {certification.status !== 'active' && <Tag tone={certification.status === 'retired' ? 'wrong' : 'slip'}>{certification.status}</Tag>}
+                  </li>
+                ))}
+              </ul>
+            </Sheet>
+          )}
+          {builtOn.length > 0 && (
+            <Sheet title="A foundation for">
+              <ul className="flex flex-col gap-2">
+                {builtOn.map(({ certification, foundation }) => (
+                  <li key={certification.id} className="flex items-center gap-2">
+                    <Award className="size-4 shrink-0 text-ink-faint" aria-hidden />
+                    <Link to={certificationUrl(certification.id)} className="min-w-0 flex-1 truncate hover:text-print-strong">
+                      {certification.name}
+                    </Link>
+                    <Tag tone={RELEVANCE[foundation.relevance].tone} title={RELEVANCE[foundation.relevance].description}>
+                      {RELEVANCE[foundation.relevance].label}
+                    </Tag>
                   </li>
                 ))}
               </ul>

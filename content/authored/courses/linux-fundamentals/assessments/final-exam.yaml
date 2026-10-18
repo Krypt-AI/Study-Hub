@@ -1,0 +1,309 @@
+id: linux-fundamentals.final-exam
+title: "Linux Fundamentals: final exam"
+kind: mock-exam
+timeLimitMinutes: 60
+passMark: 0.7
+description: >-
+  Thirty scenario questions across all modules, in the style of entry-level certification exams. Aim for 70% or
+  better before starting a certification-specific course. The capstone, not this exam, shows your practical skills.
+sections:
+  - id: linux-fundamentals.final-exam.s1
+    title: Foundations, files and Bash
+    questions:
+      - id: linux.final.q01
+        type: choice
+        skill: apply
+        topics: [linux.m00]
+        prompt: "A colleague asks whether a server runs \"Linux or Ubuntu\". `cat /etc/os-release` shows `ID=ubuntu`, and `uname -r` shows `7.0.0-15-generic`. What is the best answer?"
+        options:
+          - { id: a, text: "Both: it runs Ubuntu 26.04, a distribution built on the Linux kernel 7.0.", explanation: "Correct." }
+          - { id: b, text: "Only Linux; Ubuntu is a desktop theme.", explanation: "Ubuntu is a full distribution, server editions included." }
+          - { id: c, text: "Only Ubuntu; the kernel is a separate product.", explanation: "Ubuntu ships the Linux kernel." }
+        correct: [a]
+      - id: linux.final.q02
+        type: choice
+        skill: apply
+        topics: [linux.m01]
+        prompt: "You are in `/home/aina/projects`. Which command takes you to `/home/aina/docs`?"
+        options:
+          - { id: a, text: "`cd ../docs`", explanation: "Correct." }
+          - { id: b, text: "`cd /docs`", explanation: "That is a directory at the root." }
+          - { id: c, text: "`cd ./docs`", explanation: "That looks inside projects." }
+        correct: [a]
+      - id: linux.final.q03
+        type: choice
+        skill: apply
+        topics: [linux.m02]
+        prompt: Which command finds files under `/var/log` larger than 50 MB that were modified in the last 2 days?
+        options:
+          - { id: a, text: "`find /var/log -type f -size +50M -mtime -2`", explanation: "Correct." }
+          - { id: b, text: "`find /var/log -size 50M -mtime 2`", explanation: "Exactly 50 MB and exactly 2 days." }
+          - { id: c, text: "`ls -lh /var/log | grep 50M`", explanation: "Not recursive and matches text, not size." }
+        correct: [a]
+      - id: linux.final.q04
+        type: choice
+        skill: apply
+        topics: [linux.m03]
+        prompt: "What does `grep -v '^#' app.conf | grep -v '^$' > active.conf` produce?"
+        options:
+          - { id: a, text: "app.conf without comment lines and blank lines, saved to active.conf", explanation: "Correct." }
+          - { id: b, text: Only the comment lines, explanation: "`-v` inverts the match." }
+          - { id: c, text: An empty file, explanation: "Active settings remain." }
+        correct: [a]
+      - id: linux.final.q05
+        type: choice
+        skill: apply
+        topics: [linux.m03]
+        prompt: "A script contains `rm -rf \"$target\"/*`. What protects it if `target` is accidentally empty?"
+        options:
+          - { id: a, text: "`set -u` (stops on unset variables) plus an explicit check such as `[[ -n \"$target\" && -d \"$target\" ]] || exit 1`", explanation: "Correct. An empty variable would otherwise make the path `/*`." }
+          - { id: b, text: Quoting alone, explanation: "Quoting does not stop an empty string turning the path into `/*`." }
+          - { id: c, text: Running it with sudo, explanation: "That makes the damage worse." }
+        correct: [a]
+      - id: linux.final.q06
+        type: short
+        skill: recall
+        topics: [linux.m03]
+        prompt: "In a Bash script, which variable holds the first argument?"
+        accepted: ["$1", "${1}"]
+        match: { mode: exact }
+      - id: linux.final.q07
+        type: choice
+        skill: apply
+        topics: [linux.m02]
+        prompt: You must back up a directory of configuration files and keep owners, permissions, timestamps and symlinks. Which command?
+        options:
+          - { id: a, text: "`sudo cp -a /etc/nginx /root/nginx-backup`", explanation: "Correct." }
+          - { id: b, text: "`cp -r /etc/nginx /root/nginx-backup`", explanation: "Loses ownership and times, and needs root for some files." }
+          - { id: c, text: "`mv /etc/nginx /root/nginx-backup`", explanation: "Moves it away, breaking nginx." }
+        correct: [a]
+  - id: linux-fundamentals.final-exam.s2
+    title: Users, packages, processes and services
+    questions:
+      - id: linux.final.q08
+        type: choice
+        skill: apply
+        topics: [linux.m04]
+        prompt: "`ls -l report.pdf` shows `-rw-r----- 1 aina finance`. User `bob` is in group `finance`. What can bob do?"
+        options:
+          - { id: a, text: Read it but not change it, explanation: "Correct: group bits are r--." }
+          - { id: b, text: Read and change it, explanation: "Group has no write bit." }
+          - { id: c, text: Nothing, explanation: "Group read applies to bob." }
+        correct: [a]
+      - id: linux.final.q09
+        type: choice
+        skill: apply
+        topics: [linux.m04]
+        prompt: A team share must keep new files in the team's group automatically. Which mode on the directory achieves that (with owner and group full access, others none)?
+        options:
+          - { id: a, text: "`2770`", explanation: "Correct: setgid plus rwxrwx---." }
+          - { id: b, text: "`1770`", explanation: "Sticky bit: protects deletion, not group inheritance." }
+          - { id: c, text: "`4770`", explanation: "setuid has no effect on directories." }
+        correct: [a]
+      - id: linux.final.q10
+        type: choice
+        skill: apply
+        topics: [linux.m04]
+        prompt: The auditor `lim` needs read-only access to `/srv/finance` without joining the `finance` group. What do you use?
+        options:
+          - { id: a, text: "An ACL: `setfacl -m u:lim:rX` (plus a default ACL for new files)", explanation: "Correct." }
+          - { id: b, text: "`chmod o+r -R /srv/finance`", explanation: "That opens it to everyone." }
+          - { id: c, text: Add lim to sudo, explanation: "Far too much access." }
+        correct: [a]
+      - id: linux.final.q11
+        type: choice
+        skill: apply
+        topics: [linux.m05]
+        prompt: "On Ubuntu you need the newest security fixes for all installed packages, without removing anything. Which sequence?"
+        options:
+          - { id: a, text: "`sudo apt update && sudo apt upgrade`", explanation: "Correct." }
+          - { id: b, text: "`sudo apt upgrade` alone", explanation: "Without update, the indexes may be stale." }
+          - { id: c, text: "`sudo do-release-upgrade`", explanation: "Moves to a new release." }
+        correct: [a]
+      - id: linux.final.q12
+        type: short
+        skill: recall
+        topics: [linux.m05]
+        prompt: On a RHEL-family system, which command shows which installed package owns `/etc/ssh/sshd_config`?
+        accepted: ["rpm -qf /etc/ssh/sshd_config"]
+        match: { mode: exact }
+      - id: linux.final.q13
+        type: choice
+        skill: apply
+        topics: [linux.m06]
+        prompt: "A stuck process ignores `kill 4242`. What is the reasonable next step?"
+        options:
+          - { id: a, text: "Wait briefly, check it with `ps -p 4242`, then use `kill -9 4242` and record that it was force-killed", explanation: "Correct." }
+          - { id: b, text: Reboot the server, explanation: "Disproportionate." }
+          - { id: c, text: "`kill -HUP 4242` repeatedly", explanation: "HUP usually means reload, not stop." }
+        correct: [a]
+      - id: linux.final.q14
+        type: choice
+        skill: apply
+        topics: [linux.m07]
+        prompt: "After a reboot, a custom service is not running. `systemctl status` shows `Loaded: ...; disabled`. What fixes it permanently?"
+        options:
+          - { id: a, text: "`sudo systemctl enable --now myapp`", explanation: "Correct." }
+          - { id: b, text: "`sudo systemctl start myapp`", explanation: "Starts it now, but not after the next reboot." }
+          - { id: c, text: "`sudo systemctl unmask myapp`", explanation: "It was not masked." }
+        correct: [a]
+      - id: linux.final.q15
+        type: choice
+        skill: apply
+        topics: [linux.m07]
+        prompt: You need every error logged by any unit since the current boot. Which command?
+        options:
+          - { id: a, text: "`journalctl -b -p err`", explanation: "Correct." }
+          - { id: b, text: "`journalctl -u err`", explanation: "Looks for a unit named err." }
+          - { id: c, text: "`dmesg | tail`", explanation: "Kernel messages only, and only the end." }
+        correct: [a]
+      - id: linux.final.q16
+        type: choice
+        skill: apply
+        topics: [linux.m07]
+        prompt: You want nginx to restart automatically after a crash, without editing the packaged unit file. What do you do?
+        options:
+          - { id: a, text: "`sudo systemctl edit nginx` and add `[Service]` `Restart=on-failure`", explanation: "Correct: a drop-in survives upgrades." }
+          - { id: b, text: "Edit `/usr/lib/systemd/system/nginx.service`", explanation: "Overwritten by the next package update." }
+          - { id: c, text: Add nginx to cron every minute, explanation: "A fragile workaround." }
+        correct: [a]
+  - id: linux-fundamentals.final-exam.s3
+    title: Storage, networking and security
+    questions:
+      - id: linux.final.q17
+        type: choice
+        skill: apply
+        topics: [linux.m08]
+        prompt: Which `/etc/fstab` line is the most robust for a data disk that may be absent at boot?
+        options:
+          - { id: a, text: "`UUID=9f1c... /srv/data ext4 defaults,nofail 0 2`", explanation: "Correct: stable identifier and nofail." }
+          - { id: b, text: "`/dev/sdb1 /srv/data ext4 defaults 0 2`", explanation: "Device names can change, and a missing disk stops the boot." }
+          - { id: c, text: "`UUID=9f1c... /srv/data ext4 defaults 0 1`", explanation: "Works, but fsck order 1 is meant for root, and no nofail." }
+        correct: [a]
+      - id: linux.final.q18
+        type: choice
+        skill: apply
+        topics: [linux.m08]
+        prompt: "`/srv/web` (LV `vg_data/lv_web`, XFS) is full and the VG has 5 GiB free. What grows it online?"
+        options:
+          - { id: a, text: "`sudo lvextend -r -L +2G /dev/vg_data/lv_web`", explanation: "Correct. `-r` runs xfs_growfs." }
+          - { id: b, text: "`sudo resize2fs /dev/vg_data/lv_web`", explanation: "resize2fs is for ext4, and the LV must be grown first." }
+          - { id: c, text: "`sudo mkfs.xfs -f /dev/vg_data/lv_web`", explanation: "Destroys the data." }
+        correct: [a]
+      - id: linux.final.q19
+        type: choice
+        skill: apply
+        topics: [linux.m08]
+        prompt: "`df -h` shows `/var` at 100%, but `du -sh /var` adds up to much less. What is the likely cause?"
+        options:
+          - { id: a, text: "Deleted files still held open by a process; check `lsof +L1` and restart that service", explanation: "Correct." }
+          - { id: b, text: df is broken, explanation: "Both tools are accurate about what they measure." }
+          - { id: c, text: Swap is full, explanation: "Unrelated to filesystem usage." }
+        correct: [a]
+      - id: linux.final.q20
+        type: choice
+        skill: apply
+        topics: [linux.m09]
+        prompt: "`ping 8.8.8.8` works and `getent hosts ubuntu.com` returns nothing. `resolvectl status` shows no DNS servers. Where is the fix?"
+        options:
+          - { id: a, text: "Add DNS servers in the netplan configuration and apply it", explanation: "Correct." }
+          - { id: b, text: Add a default route, explanation: "Routing works: 8.8.8.8 replies." }
+          - { id: c, text: "Edit /etc/hosts for every website", explanation: "Not a solution." }
+        correct: [a]
+      - id: linux.final.q21
+        type: choice
+        skill: apply
+        topics: [linux.m09]
+        prompt: "`ss -tln` shows `127.0.0.1:3306`. A web server on another host cannot connect to this MySQL server. Why?"
+        options:
+          - { id: a, text: "MySQL listens on loopback only, so it is unreachable from other hosts.", explanation: "Correct. Bind it to the right interface and allow only the web server in the firewall." }
+          - { id: b, text: Port 3306 is reserved for root., explanation: "Not the issue." }
+          - { id: c, text: MySQL is stopped., explanation: "It is listening." }
+        correct: [a]
+      - id: linux.final.q22
+        type: short
+        skill: apply
+        topics: [linux.m09]
+        prompt: "Write the ufw command that allows TCP port 22 only from the network `10.10.0.0/24`."
+        accepted: ["sudo ufw allow from 10.10.0.0/24 to any port 22 proto tcp", "sudo ufw allow proto tcp from 10.10.0.0/24 to any port 22", "ufw allow from 10.10.0.0/24 to any port 22 proto tcp"]
+        match: { mode: exact }
+      - id: linux.final.q23
+        type: choice
+        skill: apply
+        topics: [linux.m11]
+        prompt: Which combination best protects SSH on an internet-facing server?
+        options:
+          - { id: a, text: "Key-only authentication, no root login, an allowed group, firewall/rate limiting and timely updates", explanation: "Correct: layered controls." }
+          - { id: b, text: A long root password, explanation: "Root should not log in at all." }
+          - { id: c, text: Moving SSH to port 2222, explanation: "Reduces noise only." }
+        correct: [a]
+      - id: linux.final.q24
+        type: choice
+        skill: apply
+        topics: [linux.m11]
+        prompt: "An audit finds `-rw-rw-rw- root root /etc/cron.d/cleanup`. Why is this dangerous?"
+        options:
+          - { id: a, text: "Any user can add a line that cron runs as root: a privilege-escalation path.", explanation: "Correct. Set it to 644 root:root and check for tampering." }
+          - { id: b, text: Cron ignores world-writable files., explanation: "Even if some cron versions skip unsafe files, it is a serious finding." }
+          - { id: c, text: It only wastes disk space., explanation: "The risk is control, not space." }
+        correct: [a]
+  - id: linux-fundamentals.final-exam.s4
+    title: Operations
+    questions:
+      - id: linux.final.q25
+        type: choice
+        skill: apply
+        topics: [linux.m10]
+        prompt: "A 2-CPU VM shows load `6.1, 5.8, 5.2`, `top` shows `st` at 60%. What do you report?"
+        options:
+          - { id: a, text: "The hypervisor host is overcommitted and stealing CPU time; escalate to the virtualisation or cloud team.", explanation: "Correct." }
+          - { id: b, text: A user process is in an infinite loop., explanation: "That would show high us, not st." }
+          - { id: c, text: The disk is full., explanation: "Unrelated to steal time." }
+        correct: [a]
+      - id: linux.final.q26
+        type: choice
+        skill: apply
+        topics: [linux.m10]
+        prompt: "A web service fails after someone's configuration change. What is the first thing you test after editing the config again?"
+        options:
+          - { id: a, text: "The configuration syntax with the service's own test (e.g. `nginx -t`), before reloading", explanation: "Correct." }
+          - { id: b, text: A full reboot, explanation: "Unnecessary and slow." }
+          - { id: c, text: Clearing the journal, explanation: "Destroys evidence." }
+        correct: [a]
+      - id: linux.final.q27
+        type: choice
+        skill: apply
+        topics: [linux.m12]
+        prompt: "The business accepts losing at most 4 hours of data. Which backup schedule meets this RPO?"
+        options:
+          - { id: a, text: Backups at least every 4 hours (e.g. every 4 hours, or hourly incrementals), explanation: "Correct." }
+          - { id: b, text: Nightly full backups, explanation: "Up to 24 hours of loss." }
+          - { id: c, text: Weekly full backups with RAID, explanation: "RAID is not a backup." }
+        correct: [a]
+      - id: linux.final.q28
+        type: choice
+        skill: apply
+        topics: [linux.m12]
+        prompt: "`rsync -aAX --delete /srv/share/ /mnt/mirror/` runs nightly. A user deleted an important file two days ago. Can you restore it from the mirror?"
+        options:
+          - { id: a, text: "No: the mirror deleted it too on the next run; you need dated backups or snapshots.", explanation: "Correct." }
+          - { id: b, text: "Yes: rsync keeps deleted files.", explanation: "Only with --backup or --link-dest snapshots." }
+          - { id: c, text: "Yes, from /tmp", explanation: "Nothing is kept there." }
+        correct: [a]
+      - id: linux.final.q29
+        type: short
+        skill: apply
+        topics: [linux.m13]
+        prompt: "Write the crontab time fields for 02:15 on the 1st of every month."
+        accepted: ["15 2 1 * *"]
+        match: { mode: exact }
+      - id: linux.final.q30
+        type: choice
+        skill: apply
+        topics: [linux.m13]
+        prompt: You plan to disable password logins for all staff tomorrow evening. Which document must exist and be approved first?
+        options:
+          - { id: a, text: "A change request with impact, risk, test plan and a tested rollback plan", explanation: "Correct." }
+          - { id: b, text: An incident ticket, explanation: "Nothing is broken." }
+          - { id: c, text: Nothing; it is a security improvement, explanation: "Security changes can still lock people out." }
+        correct: [a]

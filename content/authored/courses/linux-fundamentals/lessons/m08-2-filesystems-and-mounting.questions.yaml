@@ -1,0 +1,74 @@
+- id: linux.m08.l2.mkfs
+  type: short
+  skill: recall
+  topics: [linux.m08]
+  prompt: Write the command that creates an ext4 filesystem on `/dev/sdb1`.
+  accepted: ["sudo mkfs.ext4 /dev/sdb1", "mkfs.ext4 /dev/sdb1", "sudo mkfs -t ext4 /dev/sdb1"]
+  match: { mode: exact }
+
+- id: linux.m08.l2.uuid
+  type: choice
+  skill: explain
+  topics: [linux.m08]
+  prompt: Why should `/etc/fstab` refer to filesystems by UUID rather than by `/dev/sdb1`?
+  options:
+    - { id: a, text: "Device names can change when disks are added or reordered; the UUID belongs to the filesystem itself.", explanation: "Correct." }
+    - { id: b, text: UUIDs mount faster., explanation: "Speed is the same." }
+    - { id: c, text: "/dev names are not allowed in fstab.", explanation: "They are allowed, just fragile." }
+  correct: [a]
+
+- id: linux.m08.l2.fields
+  type: cloze
+  skill: recall
+  topics: [linux.m08]
+  prompt: Complete the fstab line that mounts an XFS filesystem at `/srv/logs` with default options, without fsck at boot.
+  text: "`UUID=9b1f... [[1]] [[2]] [[3]] 0 [[4]]`"
+  blanks:
+    - { id: "1", accepted: ["/srv/logs"], match: { mode: exact } }
+    - { id: "2", accepted: [xfs], match: { mode: exact } }
+    - { id: "3", accepted: [defaults, "defaults,nofail"], match: { mode: exact } }
+    - { id: "4", accepted: ["0"], match: { mode: exact } }
+
+- id: linux.m08.l2.mount-a
+  type: choice
+  skill: apply
+  topics: [linux.m08]
+  prompt: You added a line to `/etc/fstab`. What do you do before rebooting?
+  options:
+    - { id: a, text: "Run `findmnt --verify`, `systemctl daemon-reload` and `mount -a`, and check the mount.", explanation: "Correct. Errors appear while you still have a working shell." }
+    - { id: b, text: Reboot immediately to test it., explanation: "A mistake could leave the server in emergency mode." }
+    - { id: c, text: Nothing; fstab is checked automatically., explanation: "Only at boot, which is too late." }
+  correct: [a]
+
+- id: linux.m08.l2.busy
+  type: choice
+  skill: apply
+  topics: [linux.m08]
+  prompt: "`sudo umount /srv/data` fails with `target is busy`. What is the most likely cause?"
+  options:
+    - { id: a, text: "A process (maybe your own shell) has a file open or its working directory there.", explanation: "Correct. `cd` out and check `lsof +D` or `fuser -vm`." }
+    - { id: b, text: The disk is full., explanation: "Full disks unmount fine." }
+    - { id: c, text: You typed `umount` instead of `unmount`., explanation: "`umount` is the right spelling." }
+  correct: [a]
+
+- id: linux.m08.l2.xfs-shrink
+  type: choice
+  skill: recognize
+  topics: [linux.m08]
+  prompt: Which statement about XFS is true?
+  options:
+    - { id: a, text: It can be grown but not shrunk., explanation: "Correct. ext4 can be shrunk (offline); XFS cannot." }
+    - { id: b, text: It cannot store files over 2 GB., explanation: "XFS handles very large files." }
+    - { id: c, text: It is Windows' native filesystem., explanation: "That is NTFS." }
+  correct: [a]
+
+- id: linux.m08.l2.nofail
+  type: choice
+  skill: explain
+  topics: [linux.m08]
+  prompt: What does the `nofail` option do in fstab?
+  options:
+    - { id: a, text: "If the device is missing at boot, the boot continues instead of stopping in emergency mode.", explanation: "Correct. Use it for non-essential disks." }
+    - { id: b, text: It prevents disk errors., explanation: "It cannot prevent hardware errors." }
+    - { id: c, text: It mounts the filesystem read-only., explanation: "That is `ro`." }
+  correct: [a]

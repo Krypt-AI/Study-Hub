@@ -78,6 +78,8 @@ content/authored/courses/<course-id>/
   fixtures/*.sql              optional shared SQL databases (`schemaFile: name.sql` in a question)
 ```
 
+Assessments can be written inline under `assessments:` in `course.yaml`, or listed by name (`assessments: [m00-quiz]`) and kept in `assessments/<name>.yaml`, which keeps a course with many quizzes readable (`linux-fundamentals` does this).
+
 Question types: `choice`, `short`, `cloze`, `long` (rubric), `translation`, `code` (tests: `assert` or `stdout`), `sql` (reference query). The schema is `src/domain/content/schema.ts`; the build reports any field that does not match it. After writing exercises, run `npm run content:verify` to prove every reference solution passes.
 
 A question that points at something in its lesson ("In Example 2...") can carry `reference: { heading: "Example 2", label: "See Example 2" }`. The build copies that lesson section into the question, and the learner opens it with the button under the prompt. `image` (an asset) can be given instead of or as well as `heading`; a heading that is not in the lesson fails the build.
@@ -95,3 +97,5 @@ A question that points at something in its lesson ("In Example 2...") can carry 
 Schemes shared by several questions can be written once as YAML anchors under a key the schema does not know (such as `x-schemes:`), which the build ignores. `content/private/courses/bm-f1/course.yaml` is the worked example.
 
 Certifications are in `content/authored/certifications.yaml`: every entry records `verifiedOn`, its official `verificationSources` and the facts that could not be verified. Re-check them before relying on prices or exam formats.
+
+A certification or a roadmap stage can name **foundations**: a course to do first, its `relevance` (`essential`, `strongly-recommended`, `optional`) and the `unitIds` (modules) that matter. A certification's foundation also records the provider's `officialRequirement` (kept apart from Study Hub's recommendation), the `reason`, `concepts`, skills `beyond` the course, `timing`, the `next` step and its `sources` with the date each was checked. A roadmap stage whose course is still in preparation can list its `outline`. The build fails on a unit the course does not have. See [LINUX_PATHWAYS.md](LINUX_PATHWAYS.md).

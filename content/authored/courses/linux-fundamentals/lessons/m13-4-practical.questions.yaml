@@ -1,0 +1,40 @@
+- id: linux.m13.l4.automation
+  type: long
+  skill: apply
+  topics: [linux.m13]
+  prompt: Show the timer unit, the health-check schedule, and the evidence that both ran.
+  minWords: 50
+  rubric:
+    - { id: timer, label: "Timer with OnCalendar 01:30, Persistent=true, WantedBy=timers.target, enabled", keywords: [["OnCalendar"], ["Persistent=true"], ["timers.target"]] }
+    - { id: service, label: "Type=oneshot service runs the backup script", keywords: [["Type=oneshot"], ["kira-backup.sh"]] }
+    - { id: test, label: "Manual run with systemctl start and journal evidence", keywords: [["systemctl start"], ["journalctl"]] }
+    - { id: health, label: "Health check every 15 minutes logging to the journal", keywords: [["*/15", "*:0/15", "OnUnitActiveSec"], ["logger", "journal"]] }
+    - { id: git, label: "Committed to Git", keywords: [["git"], ["commit"]] }
+  modelAnswer: >-
+    `kira-backup.timer`: `[Timer] OnCalendar=*-*-* 01:30:00, Persistent=true, RandomizedDelaySec=10m`,
+    `[Install] WantedBy=timers.target`; `kira-backup.service`: `Type=oneshot`, `ExecStart=/usr/local/sbin/kira-backup.sh`,
+    `Nice=10`. `systemctl list-timers` shows the next run tomorrow at 01:3x. `sudo systemctl start kira-backup.service`
+    finished with status 0/SUCCESS; `journalctl -u kira-backup -n 5` shows "Finished kira-backup.service" and
+    `/srv/backup/2026-10-18/` contains etc.tar.gz, kira.tar.zst, packages.txt and SHA256SUMS. Health check: root
+    crontab `*/15 * * * * /usr/local/sbin/healthcheck.sh 2>&1 | /usr/bin/logger -t healthcheck`; `journalctl -t
+    healthcheck --since -40min` shows runs at 10:15 and 10:30. All files committed to ~/admin with "CR-2026-052:
+    schedule backup and health check".
+
+- id: linux.m13.l4.docs
+  type: long
+  skill: explain
+  topics: [linux.m13]
+  prompt: Paste your runbook "Check last night's backup" and the rollback section of your change record.
+  minWords: 60
+  rubric:
+    - { id: steps, label: "Runbook steps with exact commands (list-timers / journalctl / ls the dated directory / sha256sum -c)", keywords: [["journalctl", "list-timers"], ["sha256sum"]] }
+    - { id: failure, label: "What to do if the backup failed (rerun, investigate, escalate)", keywords: [["fail", "failed"], ["escalat", "rerun", "start"]] }
+    - { id: rollback, label: "Rollback: disable timer, remove cron entry, units; no data affected", keywords: [["rollback", "roll back"], ["disable"]] }
+  modelAnswer: >-
+    Runbook — Prerequisites: sudo on lab01. Steps: 1. `systemctl list-timers kira-backup.timer` — LAST should be
+    today about 01:30. 2. `systemctl status kira-backup.service` — "status=0/SUCCESS". 3. `ls -lh /srv/backup/$(date
+    +%F)/` — four files, kira.tar.zst larger than 1 MB. 4. `cd` there and `sha256sum -c SHA256SUMS` — all OK. If any
+    step fails: `journalctl -u kira-backup -b` for the first error, fix if obvious (disk full, path), rerun with
+    `sudo systemctl start kira-backup.service`, record in the ticket; if not resolved within 1 hour, escalate to the IT
+    lead. Rollback (change record): `sudo systemctl disable --now kira-backup.timer`, remove the two unit files and
+    `daemon-reload`, remove the cron line with `sudo crontab -e`. Existing backups and data are untouched.

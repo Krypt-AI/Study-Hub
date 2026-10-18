@@ -1,0 +1,68 @@
+- id: linux.m14.l3.summary
+  type: long
+  skill: explain
+  topics: [linux.m14]
+  prompt: "Write the half-page executive summary of the as-built document, for Teratai's director (non-technical)."
+  minWords: 100
+  maxWords: 350
+  rubric:
+    - { id: what, label: "What was built, in plain language", keywords: [["server", "files", "shared", "folders"]] }
+    - { id: security, label: "How it is protected, without jargon overload (keys, firewall, separated folders)", keywords: [["secure", "protect", "key", "firewall", "only staff"]] }
+    - { id: backup, label: "Backups and what was tested, plus the off-site limitation", keywords: [["backup"], ["test", "restore"], ["off-site", "offsite", "another location", "outside"]] }
+    - { id: next, label: "Recommended next steps", keywords: [["recommend", "next"]] }
+  modelAnswer: >-
+    Teratai now has one central server, teratai-srv01, where staff keep and share files by department: Admin,
+    Teachers and Management each have their own folder, and only that department can open it. Teachers can view, but
+    not change, the Admin timetable. A simple announcements page is available in staff browsers. The server only
+    accepts connections from the centre's own network; staff who manage it log in with personal security keys instead
+    of passwords, and every administrative action is recorded under the person's name. Hafiz can restart the
+    services and read the system logs, but cannot see confidential files. Every night at 1:30 a.m. the server backs up
+    all files and settings to a separate disk and checks that the backup is complete; we tested that a deleted folder
+    can be restored in about ten minutes. Important limitation: today the backups are inside the same server, so a
+    fire, theft or ransomware could affect both. We recommend adding an off-site backup (an external drive rotated
+    weekly or a cloud backup service) as the next step, followed by a monitoring service that emails Hafiz when
+    something needs attention.
+
+- id: linux.m14.l3.runbooks
+  type: long
+  skill: apply
+  topics: [linux.m14]
+  prompt: "Paste two of your runbooks: \"Add a staff member\" and \"The intranet page is down\"."
+  minWords: 100
+  rubric:
+    - { id: format, label: "Each has prerequisites, numbered steps, verification and escalation", keywords: [["prerequisite"], ["verify", "verification"], ["escalat"]] }
+    - { id: add, label: "Add staff: script or useradd with group, forced password change, SSH key only if needed, test access", keywords: [["useradd", "add-staff"], ["group"], ["passwd -e", "chage -d 0"]] }
+    - { id: down, label: "Intranet down: bottom-up checks (status, journal, nginx -t, ss, ufw, disk) and a fix path", keywords: [["systemctl status"], ["nginx -t"], ["journalctl"], ["ss", "ufw", "df"]] }
+  modelAnswer: >-
+    Add a staff member — Prerequisites: approved request with name and department; sudo. Steps: 1. `sudo
+    /usr/local/sbin/add-staff.sh -n <user> <group>` and check the plan. 2. Run it without `-n`. 3. `sudo passwd <user>`
+    with a temporary password given in person; `sudo passwd -e <user>`. 4. Only if they need SSH: add their public key
+    to ~<user>/.ssh/authorized_keys (700/600) and `usermod -aG sshusers`. Verify: `id <user>`; `sudo -u <user> touch
+    /srv/teratai/<dept>/test && sudo rm` it. Escalate: IT lead if the group does not exist. — Intranet down:
+    Prerequisites: sudo. Steps: 1. `systemctl status nginx`. 2. If failed: `journalctl -u nginx -b | head`, `sudo nginx
+    -t` (fix the reported file and line), `sudo ss -tlnp | grep :80` for a port conflict. 3. `df -h /` (full disk). 4.
+    If running: `curl -I http://localhost` on the server; if that works, check `sudo ufw status` and the staff PC's
+    network. 5. Fix, `sudo systemctl restart nginx`. Verify: page loads from a staff PC. Record a ticket. Escalate after
+    30 minutes or if the configuration was changed by someone else.
+
+- id: linux.m14.l3.test-report
+  type: long
+  skill: apply
+  topics: [linux.m14]
+  prompt: Summarise your test report — R1 to R13 with PASS/FAIL and one line of evidence each, plus anything outstanding.
+  minWords: 120
+  rubric:
+    - { id: all, label: "All thirteen requirements covered", keywords: [["R1"], ["R5"], ["R9"], ["R13"]] }
+    - { id: evidence, label: "Each with a concrete piece of evidence (command or output)", keywords: [["sshd -T", "ufw status", "getfacl", "list-timers", "findmnt"]] }
+    - { id: outstanding, label: "Outstanding items or limitations stated honestly", keywords: [["outstanding", "limitation", "not yet", "recommend"]] }
+  modelAnswer: >-
+    R1 PASS — hostnamectl teratai-srv01, 192.168.56.30/24 static, NTP synchronized, no upgradable packages. R2 PASS —
+    six users, pwquality minlen 12, chage max 365. R3 PASS — ls -ld shows drwxrws--- root:<dept> on each folder. R4
+    PASS — getfacl timetable shows group:teachers:r-x and default entries; mei denied listing admin. R5 PASS — sudo -l
+    -U hafiz lists only the systemctl commands; hafiz denied in admin. R6 PASS — curl -I returns 200; siti can edit
+    index.html, mei cannot. R7 PASS — sshd -T permitrootlogin no, passwordauthentication no, allowgroups sshusers; ufw
+    default deny with SSH limit and HTTP from 192.168.56.0/24. R8 PASS — Lynis 61 → 72; no unexplained world-writable
+    files. R9 PASS — findmnt /srv/teratai on vg_data-lv_teratai by UUID, 1.2 GiB free in VG. R10 PASS — timer active,
+    run OK, restore test identical. R11 PASS — healthcheck every 15 min in the journal, warning observed at 80%. R12
+    PASS — tickets INC-1 (port conflict) and INC-2 (permissions). R13 PASS — documents delivered. Outstanding: no
+    off-site backup (recommendation 1); single server without redundancy; SMB access for Windows PCs not in scope.

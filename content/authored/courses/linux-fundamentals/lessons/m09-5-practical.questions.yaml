@@ -1,0 +1,37 @@
+- id: linux.m09.l5.config
+  type: long
+  skill: apply
+  topics: [linux.m09]
+  prompt: Summarise the configuration and evidence for Part A (netplan file, listening services, firewall rules, tests from your laptop).
+  minWords: 50
+  rubric:
+    - { id: netplan, label: "Static 192.168.56.10/24 in netplan, applied with netplan try, persists", keywords: [["netplan"], ["192.168.56.10"]] }
+    - { id: ss, label: "ss -tulpn shows sshd on all, nginx on :80, kira-status on 127.0.0.1:8080", keywords: [["ss"], ["127.0.0.1:8080", "127.0.0.1"]] }
+    - { id: ufw, label: "ufw default deny incoming, limit SSH from 192.168.56.0/24, allow 80/tcp", keywords: [["ufw"], ["deny"], ["limit", "192.168.56.0/24"], ["80"]] }
+    - { id: tests, label: "Laptop tests: SSH and HTTP succeed, 8080 fails", keywords: [["8080"], ["fail", "refused", "timed out", "blocked"]] }
+  modelAnswer: >-
+    `/etc/netplan/60-static.yaml` sets `enp0s8` to `dhcp4: false` with `addresses: [192.168.56.10/24]`; applied with
+    `netplan try`, confirmed after reconnecting, and still present after a reboot (`ip -br a`). `ip route` keeps the
+    default via 10.0.2.2 on enp0s3. `sudo ss -tulpn` shows sshd on 0.0.0.0:22, nginx on 0.0.0.0:80 and [::]:80, and
+    python3 on 127.0.0.1:8080. ufw: `default deny incoming`, `default allow outgoing`, `limit from 192.168.56.0/24 to
+    any port 22 proto tcp`, `allow 80/tcp`. From the laptop: `ssh lab01` works, `curl -I http://192.168.56.10` returns
+    200, `curl http://192.168.56.10:8080` fails with connection refused (nothing listens there on that interface).
+
+- id: linux.m09.l5.outage
+  type: long
+  skill: explain
+  topics: [linux.m09]
+  prompt: Write the ticket update for #1103 — the steps you took in order, the result of each, the fault, the fix and the verification.
+  minWords: 60
+  rubric:
+    - { id: bottomup, label: "Followed a bottom-up order (link/address → route → gateway → IP → DNS → service)", keywords: [["ip -br", "ip a", "link"], ["route", "gateway"], ["dig", "dns", "getent"]] }
+    - { id: evidence, label: "Recorded each test result, stopping at the first failure", keywords: [["first", "failed", "result", "worked", "ok"]] }
+    - { id: fault, label: "Identified the injected fault correctly", keywords: [["down", "ufw", "nginx", "hosts"]] }
+    - { id: verify, label: "Fixed it and verified both symptoms (page loads, apt update works)", keywords: [["curl", "browser", "page"], ["apt update"]] }
+  modelAnswer: >-
+    1. `ip -br a`: enp0s8 DOWN with no address — first failure, explaining why the intranet page was unreachable from
+    the office network. `sudo ip link set enp0s8 up` restored 192.168.56.10. 2. The update problem persisted: `ip route`
+    and `ping -c2 1.1.1.1` were fine, but `getent hosts archive.ubuntu.com` returned 127.0.0.1 while `dig
+    archive.ubuntu.com +short` returned public addresses, so /etc/hosts was overriding DNS. I removed that line.
+    Verification: `curl -I http://192.168.56.10` from the laptop returned 200, and `sudo apt update` completed. (In this
+    run two faults were present; each was found at the first failing layer.)

@@ -1,0 +1,70 @@
+- id: linux.m09.l3.ss
+  type: short
+  skill: recall
+  topics: [linux.m09]
+  prompt: Write the `ss` command (with sudo) that lists listening TCP and UDP sockets with numeric ports and the owning processes.
+  accepted: ["sudo ss -tulpn", "sudo ss -tulnp", "sudo ss -lntup", "sudo ss -plunt", "sudo ss -lntpu", "sudo ss -tlunp"]
+  match: { mode: exact }
+
+- id: linux.m09.l3.loopback
+  type: choice
+  skill: apply
+  topics: [linux.m09]
+  prompt: "`ss -tln` shows PostgreSQL on `127.0.0.1:5432`. Who can connect to it?"
+  options:
+    - { id: a, text: Only programs on the same machine, explanation: "Correct. Loopback is not reachable from the network." }
+    - { id: b, text: Anyone on the network, explanation: "That would be `0.0.0.0:5432`." }
+    - { id: c, text: Only root, explanation: "Any local user can attempt a connection; authentication is separate." }
+  correct: [a]
+
+- id: linux.m09.l3.ports
+  type: cloze
+  skill: recall
+  topics: [linux.m09]
+  prompt: Fill in the standard ports.
+  text: "SSH uses TCP port [[1]], HTTPS uses [[2]], and DNS uses port [[3]]."
+  blanks:
+    - { id: "1", accepted: ["22"], match: { mode: exact } }
+    - { id: "2", accepted: ["443"], match: { mode: exact } }
+    - { id: "3", accepted: ["53"], match: { mode: exact } }
+
+- id: linux.m09.l3.udp
+  type: choice
+  skill: recognize
+  topics: [linux.m09]
+  prompt: Which service normally uses UDP?
+  options:
+    - { id: a, text: NTP (time synchronisation), explanation: "Correct, on UDP port 123." }
+    - { id: b, text: SSH, explanation: "TCP." }
+    - { id: c, text: PostgreSQL, explanation: "TCP." }
+  correct: [a]
+
+- id: linux.m09.l3.scp
+  type: short
+  skill: apply
+  topics: [linux.m09]
+  prompt: "Write the command that copies `/var/log/nginx/error.log` from host `lab01` into your current local directory with scp."
+  accepted: ["scp lab01:/var/log/nginx/error.log .", "scp lab01:/var/log/nginx/error.log ./"]
+  match: { mode: exact }
+
+- id: linux.m09.l3.tunnel
+  type: choice
+  skill: explain
+  topics: [linux.m09]
+  prompt: "What does `ssh -L 8080:localhost:8080 lab01` do?"
+  options:
+    - { id: a, text: "Forwards your laptop's port 8080, through the encrypted SSH connection, to port 8080 on lab01's loopback.", explanation: "Correct. No firewall port has to be opened." }
+    - { id: b, text: Opens port 8080 on lab01's firewall., explanation: "Firewalls are not changed." }
+    - { id: c, text: Changes SSH to port 8080., explanation: "SSH still uses its normal port." }
+  correct: [a]
+
+- id: linux.m09.l3.jump
+  type: choice
+  skill: recognize
+  topics: [linux.m09]
+  prompt: Which `ssh` option connects to an internal server through a bastion host?
+  options:
+    - { id: a, text: "`-J` (ProxyJump)", explanation: "Correct." }
+    - { id: b, text: "`-L`", explanation: "Local port forwarding." }
+    - { id: c, text: "`-p`", explanation: "Sets the port." }
+  correct: [a]

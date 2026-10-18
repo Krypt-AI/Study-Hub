@@ -1,0 +1,74 @@
+- id: linux.m05.l1.update
+  type: choice
+  skill: recognize
+  topics: [linux.m05]
+  prompt: What does `sudo apt update` do?
+  options:
+    - { id: a, text: Installs all available updates., explanation: "That is `apt upgrade` or `apt full-upgrade`." }
+    - { id: b, text: "Downloads the latest package lists (indexes) from the configured repositories.", explanation: "Correct. It changes no installed software." }
+    - { id: c, text: Upgrades Ubuntu to the next release., explanation: "That is `do-release-upgrade`." }
+  correct: [b]
+
+- id: linux.m05.l1.purge
+  type: choice
+  skill: apply
+  topics: [linux.m05]
+  prompt: You want to remove a package **and** its configuration files so a reinstall starts clean. Which command?
+  options:
+    - { id: a, text: "`sudo apt remove pkg`", explanation: "Keeps configuration files." }
+    - { id: b, text: "`sudo apt purge pkg`", explanation: "Correct." }
+    - { id: c, text: "`sudo apt autoremove pkg`", explanation: "Removes unneeded dependencies." }
+  correct: [b]
+
+- id: linux.m05.l1.dependency
+  type: choice
+  skill: explain
+  topics: [linux.m05]
+  prompt: "`apt install nginx` also installs `nginx-common`. Why?"
+  options:
+    - { id: a, text: "`nginx` declares it as a dependency, and APT resolves dependencies automatically.", explanation: "Correct." }
+    - { id: b, text: APT installs related packages to be helpful., explanation: "It installs what is declared, not guesses." }
+    - { id: c, text: It is a security update., explanation: "It is part of nginx." }
+  correct: [a]
+
+- id: linux.m05.l1.universe
+  type: choice
+  skill: recognize
+  topics: [linux.m05]
+  prompt: Which Ubuntu repository component holds community-maintained free software?
+  options:
+    - { id: a, text: "`main`", explanation: "Supported by Canonical." }
+    - { id: b, text: "`universe`", explanation: "Correct." }
+    - { id: c, text: "`restricted`", explanation: "Proprietary drivers." }
+    - { id: d, text: "`multiverse`", explanation: "Software with licence restrictions." }
+  correct: [b]
+
+- id: linux.m05.l1.signed
+  type: choice
+  skill: explain
+  topics: [linux.m05]
+  prompt: Why are repository indexes signed?
+  options:
+    - { id: a, text: So APT can verify they come from the expected publisher and were not altered., explanation: "Correct. `Signed-By` names the key that must have signed them." }
+    - { id: b, text: To compress them., explanation: "Signing is not compression." }
+    - { id: c, text: To license the software., explanation: "Licences are separate." }
+  correct: [a]
+
+- id: linux.m05.l1.policy
+  type: short
+  skill: recall
+  topics: [linux.m05]
+  prompt: Which command shows the installed version of `openssh-server`, the candidate version, and the repository each comes from?
+  accepted: ["apt policy openssh-server", "apt-cache policy openssh-server"]
+  match: { mode: exact }
+
+- id: linux.m05.l1.third-party
+  type: choice
+  skill: explain
+  topics: [linux.m05]
+  prompt: What is the main risk of adding a third-party repository?
+  options:
+    - { id: a, text: "Its packages run install scripts as root, so you are trusting its publisher with your whole server.", explanation: "Correct. Use only official sources, with a key scoped by Signed-By." }
+    - { id: b, text: It slows down apt update., explanation: "Slightly, but that is not the main risk." }
+    - { id: c, text: It deletes Ubuntu's repositories., explanation: "It adds a source; it does not remove others." }
+  correct: [a]

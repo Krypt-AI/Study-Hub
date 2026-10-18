@@ -1,0 +1,59 @@
+- id: linux.m08.l1.lsblk
+  type: short
+  skill: recall
+  topics: [linux.m08]
+  prompt: Which command shows disks and partitions as a tree with their sizes and mount points?
+  accepted: [lsblk]
+  match: { mode: exact }
+
+- id: linux.m08.l1.partition-name
+  type: choice
+  skill: recognize
+  topics: [linux.m08]
+  prompt: What is `/dev/nvme0n1p2`?
+  options:
+    - { id: a, text: The second partition on the first NVMe disk, explanation: "Correct." }
+    - { id: b, text: The second NVMe disk, explanation: "That would be `/dev/nvme1n1`." }
+    - { id: c, text: An LVM volume, explanation: "Logical volumes appear under `/dev/mapper`." }
+  correct: [a]
+
+- id: linux.m08.l1.gpt
+  type: choice
+  skill: explain
+  topics: [linux.m08]
+  prompt: Why use GPT rather than MBR on a new 4 TB data disk?
+  options:
+    - { id: a, text: "MBR cannot address disks larger than 2 TiB; GPT can, and keeps a backup table.", explanation: "Correct." }
+    - { id: b, text: GPT is required by ext4., explanation: "Filesystems do not care about the table type." }
+    - { id: c, text: MBR is encrypted., explanation: "Neither is encrypted." }
+  correct: [a]
+
+- id: linux.m08.l1.fdisk-quit
+  type: choice
+  skill: recognize
+  topics: [linux.m08]
+  prompt: In `fdisk`, how do you leave **without** saving any changes?
+  options:
+    - { id: a, text: "`q`", explanation: "Correct. Nothing is written until `w`." }
+    - { id: b, text: "`w`", explanation: "Writes the changes." }
+    - { id: c, text: "`x`", explanation: "Enters expert mode." }
+  correct: [a]
+
+- id: linux.m08.l1.verify-disk
+  type: choice
+  skill: apply
+  topics: [linux.m08]
+  prompt: You are about to partition what you believe is the new empty disk. What do you check first?
+  options:
+    - { id: a, text: "With `lsblk`, that the device has the expected size, no partitions and no mount points.", explanation: "Correct. Device names can change." }
+    - { id: b, text: That you are root., explanation: "sudo will tell you; the risk is choosing the wrong disk." }
+    - { id: c, text: That the disk is formatted., explanation: "A new disk is not." }
+  correct: [a]
+
+- id: linux.m08.l1.partprobe
+  type: short
+  skill: recall
+  topics: [linux.m08]
+  prompt: Which command asks the kernel to reread the partition table of `/dev/sdb`?
+  accepted: ["sudo partprobe /dev/sdb", "partprobe /dev/sdb"]
+  match: { mode: exact }

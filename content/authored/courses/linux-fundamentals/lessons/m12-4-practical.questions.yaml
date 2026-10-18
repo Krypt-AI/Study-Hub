@@ -1,0 +1,53 @@
+- id: linux.m12.l4.script
+  type: long
+  skill: apply
+  topics: [linux.m12]
+  prompt: Paste `kira-backup.sh`.
+  minWords: 50
+  rubric:
+    - { id: strict, label: "set -euo pipefail and timestamped logging", keywords: [["set -euo pipefail"], ["date"], ["log"]] }
+    - { id: archives, label: "/etc with gzip and /srv/kira with --acls --xattrs and zstd into a dated directory", keywords: [["tar"], ["--acls"], ["zstd", ".zst"], ["date +%F", "%Y-%m-%d"]] }
+    - { id: packages, label: "Package list saved", keywords: [["dpkg --get-selections", "apt-mark showmanual"]] }
+    - { id: verify, label: "SHA256SUMS written and checked; archives tested", keywords: [["sha256sum"], ["-c"], ["-t"]] }
+    - { id: retention, label: "Retention with find -mtime +14", keywords: [["find"], ["-mtime +14"]] }
+  modelAnswer: |-
+    ```bash
+    #!/usr/bin/env bash
+    # kira-backup.sh - nightly backup of /etc and the Kedai Kira share
+    set -euo pipefail
+    umask 077
+    dest="/srv/backup/$(date +%F)"
+    log="/var/log/kira-backup.log"
+    log() { echo "$(date '+%F %T') $*" >> "$log"; }
+    trap 'log "FAILED at line $LINENO"' ERR
+
+    log "start -> $dest"
+    mkdir -p "$dest"
+    tar -czf "$dest/etc.tar.gz" /etc 2>/dev/null
+    tar --acls --xattrs -cpf - /srv/kira 2>/dev/null | zstd -q -T0 -o "$dest/kira.tar.zst"
+    dpkg --get-selections > "$dest/packages.txt"
+    (cd "$dest" && sha256sum etc.tar.gz kira.tar.zst packages.txt > SHA256SUMS && sha256sum -c --quiet SHA256SUMS)
+    gzip -t "$dest/etc.tar.gz"
+    zstd -q -t "$dest/kira.tar.zst"
+    find /srv/backup -maxdepth 1 -type d -name '20*' -mtime +14 -exec rm -r {} +
+    log "done ($(du -sh "$dest" | cut -f1))"
+    ```
+
+- id: linux.m12.l4.drill
+  type: long
+  skill: explain
+  topics: [linux.m12]
+  prompt: Report the drill — the steps you took, how you verified the restore as each user, and the time taken against the 30-minute RTO.
+  minWords: 50
+  rubric:
+    - { id: source, label: "Chose the latest good backup and verified its checksum before restoring", keywords: [["sha256sum", "checksum"]] }
+    - { id: restore, label: "Restored with ACLs and permissions (tar --acls -xp or rsync -aAX)", keywords: [["--acls", "-aAX", "-xp"]] }
+    - { id: verify, label: "Verified: setgid/group, getfacl, aina can write, mei can only read", keywords: [["getfacl", "ls -ld"], ["aina"], ["mei"]] }
+    - { id: time, label: "Time taken compared with the RTO", keywords: [["minute", "min"], ["RTO", "30"]] }
+  modelAnswer: >-
+    10:02 started. Chose `/srv/backup/2026-10-18/`, ran `sha256sum -c SHA256SUMS` (OK). Extracted only the accounts
+    folder: `sudo tar --acls --xattrs -xpf <(zstd -dc kira.tar.zst) -C / srv/kira/accounts`. `ls -ld
+    /srv/kira/accounts` showed `drwxrws---+ root accounts`; `getfacl` listed mei's r-x entries. `sudo -u aina touch
+    /srv/kira/accounts/test.txt` worked; `sudo -u mei cat` worked and `sudo -u mei touch` was denied. 10:13 confirmed
+    with the office manager. Total 11 minutes, within the 30-minute RTO. Work saved after last night's backup was lost
+    (RPO of one day), which I reported.

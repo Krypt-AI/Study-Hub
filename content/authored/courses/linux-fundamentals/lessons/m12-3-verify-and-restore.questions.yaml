@@ -1,0 +1,62 @@
+- id: linux.m12.l3.test-restore
+  type: choice
+  skill: explain
+  topics: [linux.m12]
+  prompt: Which verification gives the strongest confidence that a backup is usable?
+  options:
+    - { id: a, text: "A test restore to a scratch location (or test VM), compared with the source", explanation: "Correct. Only a restore proves recovery works." }
+    - { id: b, text: The backup job's log says it finished, explanation: "It may have written an empty or wrong archive." }
+    - { id: c, text: The archive file exists, explanation: "Existence is not integrity." }
+  correct: [a]
+
+- id: linux.m12.l3.sha256-check
+  type: short
+  skill: recall
+  topics: [linux.m12]
+  prompt: Which command checks files against the checksums recorded in `SHA256SUMS`?
+  accepted: ["sha256sum -c SHA256SUMS", "sha256sum --check SHA256SUMS"]
+  match: { mode: exact }
+
+- id: linux.m12.l3.restore-temp
+  type: choice
+  skill: apply
+  topics: [linux.m12]
+  prompt: A user asks for yesterday's version of a document. Why restore it to a temporary location first?
+  options:
+    - { id: a, text: "To confirm it is the right version and avoid overwriting today's file, which may contain work the user still needs.", explanation: "Correct." }
+    - { id: b, text: Restoring directly is impossible., explanation: "It is possible, just risky." }
+    - { id: c, text: To compress it., explanation: "Unrelated." }
+  correct: [a]
+
+- id: linux.m12.l3.old-etc
+  type: choice
+  skill: explain
+  topics: [linux.m12]
+  prompt: Why not extract an old `/etc` archive over the whole live `/etc`?
+  options:
+    - { id: a, text: "Packages, UUIDs and settings may have changed since; overwriting everything can break the system. Restore selectively after diffing.", explanation: "Correct." }
+    - { id: b, text: tar cannot write to /etc., explanation: "As root it can." }
+    - { id: c, text: /etc is regenerated at every boot., explanation: "It is not." }
+  correct: [a]
+
+- id: linux.m12.l3.runbook
+  type: choice
+  skill: explain
+  topics: [linux.m12]
+  prompt: Why write and regularly test a recovery runbook?
+  options:
+    - { id: a, text: "So anyone on the team can recover under pressure, and gaps are found during a test rather than during a real outage.", explanation: "Correct." }
+    - { id: b, text: Auditors like long documents., explanation: "Usefulness is the point." }
+    - { id: c, text: Backups do not work without one., explanation: "They work; people may not know how to use them." }
+  correct: [a]
+
+- id: linux.m12.l3.rto-measure
+  type: choice
+  skill: apply
+  topics: [linux.m12]
+  prompt: "The business set a 4-hour RTO for the file share. Your test restore on a fresh VM took 6 hours. What do you do?"
+  options:
+    - { id: a, text: "Report the gap and propose improvements (faster storage, scripted rebuild, a standby VM), then retest.", explanation: "Correct. The test did its job." }
+    - { id: b, text: Nothing; it is only a test., explanation: "A real outage would breach the agreed RTO." }
+    - { id: c, text: Change the RTO in the document to 6 hours without telling anyone., explanation: "RTO is a business decision." }
+  correct: [a]

@@ -6,6 +6,7 @@ import type {
   assessmentSectionSchema,
   blockSchema,
   catalogSchema,
+  certificationFoundationSchema,
   certificationSchema,
   choiceQuestionSchema,
   clozeQuestionSchema,
@@ -16,6 +17,7 @@ import type {
   courseLanguageSchema,
   courseSchema,
   courseSummarySchema,
+  foundationRelevanceSchema,
   lessonSchema,
   longQuestionSchema,
   matchOptionsSchema,
@@ -28,6 +30,7 @@ import type {
   skillSchema,
   sourceRefSchema,
   sqlQuestionSchema,
+  stageFoundationSchema,
   translationQuestionSchema,
   unitSchema,
   universitySchema,
@@ -66,6 +69,9 @@ export type AnswerLanguage = z.output<typeof answerLanguageSchema>;
 export type CourseSummary = z.output<typeof courseSummarySchema>;
 
 export type Certification = z.output<typeof certificationSchema>;
+export type FoundationRelevance = z.output<typeof foundationRelevanceSchema>;
+export type StageFoundation = z.output<typeof stageFoundationSchema>;
+export type CertificationFoundation = z.output<typeof certificationFoundationSchema>;
 export type Roadmap = z.output<typeof roadmapSchema>;
 export type Catalog = z.output<typeof catalogSchema>;
 export type University = z.output<typeof universitySchema>;

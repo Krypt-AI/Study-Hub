@@ -24,7 +24,7 @@ import {
   universitySchema,
 } from '../src/domain/content/schema.ts';
 import { buildAccessManifest, splitSearchDocuments } from '../src/domain/content/accessManifest.ts';
-import type { Course, SearchDocument, University } from '../src/domain/content/types.ts';
+import type { Course, SearchDocument, StageFoundation, University } from '../src/domain/content/types.ts';
 import { lessonUrl, courseUrl, certificationUrl } from '../src/domain/content/urls.ts';
 import { sectionByHeading } from '../src/domain/content/sections.ts';
 import { tierOf } from '../src/domain/learning/tiers.ts';
@@ -123,10 +123,14 @@ function inheritAssessmentSource(assessment: AuthoredAssessment, courseSource: S
   };
 }
 
+/** An assessment written inline in course.yaml, or the name of `<course>/assessments/<name>.yaml`. */
+const loadAssessment = (courseDir: string, entry: AuthoredAssessment | string): AuthoredAssessment =>
+  typeof entry === 'string' ? (readYaml(join(courseDir, 'assessments', `${entry}.yaml`)) as AuthoredAssessment) : entry;
+
 function loadAuthoredCourse(courseDir: string): unknown {
   const raw = readYaml(join(courseDir, 'course.yaml')) as {
     units?: Array<{ lessons?: string[] } & Record<string, unknown>>;
-    assessments?: AuthoredAssessment[];
+    assessments?: Array<AuthoredAssessment | string>;
     source?: SourceRefInput;
   } & Record<string, unknown>;
   const source = raw.source ?? { origin: 'authored' };
@@ -137,7 +141,7 @@ function loadAuthoredCourse(courseDir: string): unknown {
       ...unit,
       lessons: (unit.lessons ?? []).map((name) => loadAuthoredLesson(courseDir, name, source)),
     })),
-    assessments: (raw.assessments ?? []).map((assessment) => inheritAssessmentSource(assessment, source)),
+    assessments: (raw.assessments ?? []).map((entry) => inheritAssessmentSource(loadAssessment(courseDir, entry), source)),
   };
 }
 
@@ -214,6 +218,31 @@ function checkCertificationLinks(certifications: z.output<typeof certificationSc
   for (const certification of certifications) {
     for (const courseId of certification.relatedCourses) {
       if (!courseIds.has(courseId)) warnings.push(`certification ${certification.id}: related course ${courseId} does not exist`);
+    }
+  }
+}
+
+/** A foundation names a course that exists (or is planned) and units that course has; a course is a foundation once per place. */
+function checkFoundations(owner: string, foundations: StageFoundation[], courses: Course[]): void {
+  const seen = new Set<string>();
+  for (const foundation of foundations) {
+    if (seen.has(foundation.courseId)) errors.push(`${owner}: foundation ${foundation.courseId} is listed twice`);
+    seen.add(foundation.courseId);
+    const course = courses.find((candidate) => candidate.id === foundation.courseId);
+    if (!course) {
+      warnings.push(`${owner}: foundation course ${foundation.courseId} does not exist`);
+      continue;
+    }
+    const unitIds = new Set(course.units.map((unit) => unit.id));
+    for (const unitId of foundation.unitIds) if (!unitIds.has(unitId)) errors.push(`${owner}: foundation ${course.id} has no unit ${unitId}`);
+  }
+}
+
+function checkRoadmapLinks(roadmaps: z.output<typeof roadmapSchema>[], certificationIds: Set<string>, courses: Course[]): void {
+  for (const roadmap of roadmaps) {
+    for (const stage of roadmap.stages) {
+      for (const id of stage.certificationIds) if (!certificationIds.has(id)) errors.push(`roadmap ${roadmap.id} ${stage.id}: unknown certification ${id}`);
+      checkFoundations(`roadmap ${roadmap.id} ${stage.id}`, stage.foundations, courses);
     }
   }
 }
@@ -369,6 +398,8 @@ function main(): void {
   const university = loadUniversity(courses);
   checkSchoolCourses(courses);
   checkCertificationLinks(certifications, courseIds);
+  for (const certification of certifications) checkFoundations(`certification ${certification.id}`, certification.foundations, courses);
+  checkRoadmapLinks(roadmaps, new Set(certifications.map((certification) => certification.id)), courses);
 
   for (const warning of warnings) console.warn(`warning: ${warning}`);
   if (errors.length) {
@@ -407,6 +438,7 @@ function main(): void {
         assessmentCount: course.assessments.length,
         hasCode: courseQuestions(course).some((question) => question.type === 'code' || question.type === 'sql'),
         hasTiers: courseQuestions(course).some((question) => tierOf(question) !== undefined),
+        units: course.units.map((unit) => ({ id: unit.id, title: unit.title })),
         lessons,
         assessments: course.assessments.map((assessment) => ({ id: assessment.id, title: assessment.title, kind: assessment.kind, paper: assessment.paper })),
       };

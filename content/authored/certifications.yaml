@@ -71,6 +71,25 @@
     - { title: MLA-C02 update announcement, url: "https://aws.amazon.com/blogs/training-and-certification/updates-to-aws-certified-machine-learning-engineer-associate-mla-c02/", free: true, official: true }
     - { title: AWS Skill Builder exam prep plan, url: "https://skillbuilder.aws/", free: true, official: true }
   relatedCourses: [ai-05-machine-learning, ai-06-evaluation, ai-12-mlops, ai-10-rag]
+  foundations:
+    - courseId: linux-fundamentals
+      relevance: optional
+      unitIds: [linux-fundamentals.m01, linux-fundamentals.m03, linux-fundamentals.m06, linux-fundamentals.m07, linux-fundamentals.m10]
+      officialRequirement: "AWS recommends at least 1 year using Amazon SageMaker and other AWS ML services."
+      reason: >-
+        The exam focuses on AWS's managed ML services. Linux helps with containers, training instances, notebooks and
+        debugging deployments, but it is not a significant exam requirement.
+      concepts:
+        - "Command line and Bash"
+        - "Processes and resources"
+        - "Containers' Linux basics: services and logs"
+      beyond:
+        - "SageMaker, Bedrock and AWS ML services"
+        - "MLOps pipelines and model monitoring on AWS"
+      timing: "Optional; useful before the MLOps stage of the AI Engineering roadmap."
+      next: "AI Engineering roadmap stage 12 (serving, Docker and MLOps)."
+      sources:
+        - { title: "AWS Certified Machine Learning Engineer – Associate", url: "https://aws.amazon.com/certification/certified-machine-learning-engineer-associate/", checkedOn: "2026-10-11" }
   verifiedOn: "2026-10-11"
   verificationSources:
     - "https://aws.amazon.com/certification/certified-machine-learning-engineer-associate/"
@@ -151,6 +170,23 @@
     - { title: Machine Learning Engineer learning path, url: "https://www.cloudskillsboost.google/paths/17", free: false, official: true }
     - { title: Exam guide (PDF), url: "https://services.google.com/fh/files/misc/professional_machine_learning_engineer_exam_guide_english_new.pdf", free: true, official: true }
   relatedCourses: [ai-05-machine-learning, ai-06-evaluation, ai-07-deep-learning, ai-12-mlops]
+  foundations:
+    - courseId: linux-fundamentals
+      relevance: optional
+      unitIds: [linux-fundamentals.m01, linux-fundamentals.m03, linux-fundamentals.m06, linux-fundamentals.m07, linux-fundamentals.m10]
+      officialRequirement: "None; Google recommends 3+ years of industry experience including 1+ year with Google Cloud."
+      reason: >-
+        The exam is about designing, serving and monitoring ML solutions with Google Cloud's managed services. Linux
+        is useful for custom containers, training jobs and debugging, but not a significant requirement.
+      concepts:
+        - "Command line and Bash"
+        - "Processes, services and logs"
+      beyond:
+        - "Vertex AI / Agent Platform, data pipelines and ML system design on Google Cloud"
+      timing: "Optional."
+      next: "AI Engineering roadmap stage 12."
+      sources:
+        - { title: "Google Cloud Professional Machine Learning Engineer", url: "https://cloud.google.com/learn/certification/machine-learning-engineer", checkedOn: "2026-10-11" }
   verifiedOn: "2026-10-11"
   verificationSources: ["https://cloud.google.com/learn/certification/machine-learning-engineer"]
   unverified: [Validity period (the page refers to the renewal FAQ).]
@@ -271,6 +307,25 @@
   resources:
     - { title: AI-300 study guide, url: "https://aka.ms/AI300-StudyGuide", free: true, official: true }
   relatedCourses: [ai-12-mlops, ai-13-responsible-ai]
+  foundations:
+    - courseId: linux-fundamentals
+      relevance: optional
+      unitIds: [linux-fundamentals.m01, linux-fundamentals.m03, linux-fundamentals.m13]
+      officialRequirement: "Microsoft expects a data science background, Python, and entry-level DevOps experience including GitHub Actions and command-line interfaces."
+      reason: >-
+        AI-300 asks for comfort with CLIs and DevOps practice. CLIs and CI runners are often Linux-based, so
+        command-line fluency, Bash and scheduling help, but Linux administration itself is not in scope.
+      concepts:
+        - "Command line, pipes and exit codes"
+        - "Bash scripting"
+        - "Environment variables and configuration"
+      beyond:
+        - "Azure Machine Learning, Microsoft Foundry, Bicep and Azure CLI"
+        - "GitHub Actions pipelines for MLOps and GenAIOps"
+      timing: "Optional; Modules 1 and 3 before starting CI/CD work."
+      next: "AI Engineering roadmap stage 12."
+      sources:
+        - { title: "Microsoft Certified: Machine Learning Operations Engineer Associate (AI-300)", url: "https://learn.microsoft.com/en-us/credentials/certifications/exams/ai-300/", checkedOn: "2026-10-18" }
   verifiedOn: "2026-10-11"
   verificationSources: ["https://learn.microsoft.com/en-us/credentials/certifications/exams/ai-300/"]
   unverified: [Passing score and skill weights.]
@@ -580,6 +635,28 @@
   resources:
     - { title: Exam objectives and practice questions, url: "https://www.comptia.org/en-us/certifications/a/core-1-v15/practice-questions/", free: true, official: true }
   relatedCourses: [it-operating-systems, it-networking]
+  foundations:
+    - courseId: linux-fundamentals
+      relevance: strongly-recommended
+      unitIds: [linux-fundamentals.m00, linux-fundamentals.m01, linux-fundamentals.m02, linux-fundamentals.m04, linux-fundamentals.m05, linux-fundamentals.m06]
+      officialRequirement: "None formally. CompTIA recommends 12 months of hands-on IT support experience."
+      reason: >-
+        Core 2's operating systems domain (28 %) includes working with Linux alongside Windows and macOS. Support
+        technicians also meet Linux on servers, appliances and developer machines, so basic navigation, files,
+        permissions, packages and processes make that part of the exam and the job much easier.
+      concepts:
+        - "Navigating and managing files from the command line"
+        - "Users, permissions and sudo"
+        - "Installing and updating software"
+        - "Processes and basic troubleshooting"
+      beyond:
+        - "Windows administration and troubleshooting (most of Core 2)"
+        - "Hardware, mobile devices and printers (Core 1)"
+        - "Operational procedures and customer service"
+      timing: "During Core 2 preparation; Modules 0–2 can be done in the first weeks."
+      next: "Finish A+, then continue with Network+ or the remaining Linux Fundamentals modules toward Linux+."
+      sources:
+        - { title: "CompTIA A+ Core 1 and Core 2 (V15)", url: "https://www.comptia.org/en-us/certifications/a/core-1-and-2-v15/", checkedOn: "2026-10-18" }
   verifiedOn: "2026-10-11"
   verificationSources: ["https://www.comptia.org/en-us/certifications/a/core-1-and-2-v15/"]
   unverified: [Current voucher price.]
@@ -612,6 +689,27 @@
   resources:
     - { title: CompTIA Network+ page, url: "https://www.comptia.org/en-us/certifications/network/", free: true, official: true }
   relatedCourses: [it-networking]
+  foundations:
+    - courseId: linux-fundamentals
+      relevance: optional
+      unitIds: [linux-fundamentals.m01, linux-fundamentals.m09]
+      officialRequirement: "None formally. CompTIA recommends A+ and 9–12 months of networking experience."
+      reason: >-
+        Network+ is vendor-neutral; its troubleshooting domain (24 %) includes command-line tools, which exist on
+        Windows and Linux. In network operations work, Linux hosts are common for diagnostics (dig, tcpdump, mtr) and
+        for SSH access to devices, so Module 9 is a useful practical complement.
+      concepts:
+        - "Interfaces, IP addressing and routes"
+        - "DNS queries and connectivity testing"
+        - "Ports, sockets and SSH"
+        - "Host firewalls"
+      beyond:
+        - "Switching, routing protocols, wireless and network devices"
+        - "Network design, security and monitoring at the network level"
+      timing: "Any time; Module 9 fits well alongside the troubleshooting domain."
+      next: "Network+ preparation; Security+ or CCNA afterwards."
+      sources:
+        - { title: "CompTIA Network+ (V9, N10-009)", url: "https://www.comptia.org/en-us/certifications/network/", checkedOn: "2026-10-18" }
   verifiedOn: "2026-10-11"
   verificationSources: ["https://www.comptia.org/en-us/certifications/network/"]
   unverified: [Current voucher price.]
@@ -645,6 +743,32 @@
   resources:
     - { title: Security+ V7 practice questions, url: "https://www.comptia.org/en-us/certifications/security/v7/practice-questions/", free: true, official: true }
   relatedCourses: [it-security, it-networking]
+  foundations:
+    - courseId: linux-fundamentals
+      relevance: strongly-recommended
+      unitIds: [linux-fundamentals.m04, linux-fundamentals.m07, linux-fundamentals.m09, linux-fundamentals.m10, linux-fundamentals.m11, linux-fundamentals.m12]
+      officialRequirement: "None formally. CompTIA recommends Network+ and some security experience."
+      reason: >-
+        The SY0-701 objectives do not name Linux, but they include hardening, operating-system vulnerabilities and
+        using log data in investigations, and most servers and security tools you will practise with run Linux.
+        Hands-on Linux makes those objectives concrete and is expected in security operations roles.
+      concepts:
+        - "Permissions, least privilege and sudo"
+        - "Services, ports and firewalls"
+        - "Logs and journalctl"
+        - "SSH hardening and a hardening baseline"
+        - "Backups and recovery"
+      beyond:
+        - "Threats, vulnerabilities and attack techniques"
+        - "Cryptography and PKI"
+        - "Identity and access management at organisation scale"
+        - "Security operations: SIEM, detection and incident response"
+        - "Governance, risk and compliance"
+      timing: "Before or during Security+ preparation; Modules 4, 7, 9, 10 and 11 matter most."
+      next: "Security+ preparation; then a security operations certification (Cybersecurity roadmap stages 7–8)."
+      sources:
+        - { title: "CompTIA Security+", url: "https://www.comptia.org/en-us/certifications/security/", checkedOn: "2026-10-18" }
+        - { title: "CompTIA Security+ V7 (SY0-701) domains", url: "https://www.comptia.org/en-us/certifications/security/v7/", checkedOn: "2026-10-18" }
   verifiedOn: "2026-10-11"
   verificationSources: ["https://www.comptia.org/en-us/certifications/security/", "https://www.comptia.org/en-us/certifications/security/v7/"]
   unverified: [The current price may differ from the January 2025 figure.]
@@ -660,7 +784,15 @@
   status: active
   statusNote: V8 launched July 15, 2025.
   summary: Managing, securing, automating and troubleshooting Linux systems.
-  prerequisites: Recommended experience as a Linux administrator or with Linux systems.
+  objectives:
+    - System management (23%)
+    - Troubleshooting (22%)
+    - Services and user management (20%)
+    - Security (18%)
+    - Automation, orchestration and scripting (17%)
+  prerequisites: >-
+    None formally. Recommended about 12 months of hands-on experience with Linux servers, and A+, Network+ or Server+
+    (or comparable knowledge).
   exam:
     questions: Up to 90
     durationMinutes: 90
@@ -670,10 +802,34 @@
   studyHours: { min: 60, max: 120, estimate: true }
   resources:
     - { title: CompTIA Linux+ page, url: "https://www.comptia.org/en-us/certifications/linux/", free: true, official: true }
-  relatedCourses: [it-operating-systems]
-  verifiedOn: "2026-10-11"
+  relatedCourses: [linux-02-system-administration, linux-05-automation]
+  foundations:
+    - courseId: linux-fundamentals
+      relevance: essential
+      unitIds: [linux-fundamentals.m00, linux-fundamentals.m01, linux-fundamentals.m02, linux-fundamentals.m03, linux-fundamentals.m04, linux-fundamentals.m05, linux-fundamentals.m06, linux-fundamentals.m07, linux-fundamentals.m08, linux-fundamentals.m09, linux-fundamentals.m10, linux-fundamentals.m11, linux-fundamentals.m12, linux-fundamentals.m13]
+      officialRequirement: "None formally. CompTIA recommends about 12 months of hands-on experience with Linux servers and A+, Network+ or Server+ (or comparable knowledge)."
+      reason: >-
+        Linux+ tests Linux administration itself: system management, troubleshooting, services and user management,
+        security, and automation. Every domain assumes fluent command-line work on a Linux server.
+      concepts:
+        - "Command line, files and text processing"
+        - "Users, groups, permissions and sudo"
+        - "Packages, processes, systemd services and logs"
+        - "Storage, LVM and filesystems"
+        - "Networking and firewalls"
+        - "Bash scripting, scheduling and troubleshooting"
+      beyond:
+        - "SELinux in depth, PKI and certificates, and more security tooling"
+        - "Containers (Podman/Docker) and Git-based workflows"
+        - "Configuration management with Ansible and infrastructure-as-code basics"
+        - "Wider troubleshooting across hardware, boot and performance"
+      timing: "Complete the whole course, including the capstone, before starting Linux+ exam preparation."
+      next: "Study the Linux+ objectives against the Linux Administration roadmap (stages 2 and 5), then practise with official CompTIA material."
+      sources:
+        - { title: "CompTIA Linux+ (V8, XK0-006)", url: "https://www.comptia.org/en-us/certifications/linux/", checkedOn: "2026-10-18" }
+  verifiedOn: "2026-10-18"
   verificationSources: ["https://www.comptia.org/en-us/certifications/linux/"]
-  unverified: [Current voucher price; domain weights.]
+  unverified: [Current voucher price.]
 
 - id: cisco-ccna
   name: Cisco CCNA
@@ -703,6 +859,25 @@
     - { title: Cisco Networking Academy, url: "https://www.netacad.com/", free: true, official: true }
     - { title: Cisco U., url: "https://u.cisco.com/", free: false, official: true }
   relatedCourses: [it-networking]
+  foundations:
+    - courseId: linux-fundamentals
+      relevance: optional
+      unitIds: [linux-fundamentals.m01, linux-fundamentals.m03, linux-fundamentals.m09]
+      officialRequirement: "None."
+      reason: >-
+        CCNA centres on Cisco IOS devices. Linux helps with its automation and programmability topics and with network
+        labs and tools that run on Linux, but it is not a significant requirement for the exam.
+      concepts:
+        - "Command-line habits and SSH"
+        - "IP addressing, DNS and connectivity testing"
+        - "Basic scripting"
+      beyond:
+        - "Cisco IOS configuration, switching, routing (OSPF), wireless"
+        - "Network automation with Python and REST APIs"
+      timing: "Optional, any time during CCNA study."
+      next: "CCNA preparation through Cisco Networking Academy."
+      sources:
+        - { title: "Cisco CCNA", url: "https://www.cisco.com/site/us/en/learn/training-certifications/certifications/enterprise/ccna/index.html", checkedOn: "2026-10-18" }
   verifiedOn: "2026-10-11"
   verificationSources: ["https://www.cisco.com/site/us/en/learn/training-certifications/certifications/enterprise/ccna/index.html"]
   unverified: [Topic weights are on the separate exam-topics page.]
@@ -736,6 +911,25 @@
   resources:
     - { title: CC self-study resources, url: "https://www.isc2.org/certifications/cc/cc-self-study-resources", free: false, official: true }
   relatedCourses: [it-security]
+  foundations:
+    - courseId: linux-fundamentals
+      relevance: optional
+      unitIds: [linux-fundamentals.m04, linux-fundamentals.m10, linux-fundamentals.m11, linux-fundamentals.m13]
+      officialRequirement: "No work experience required."
+      reason: >-
+        The CC exam outline does not mention Linux or operating-system administration. Its security operations domain
+        covers logging and monitoring and configuration management, which Modules 10, 11 and 13 make tangible.
+      concepts:
+        - "Logs and monitoring"
+        - "Least privilege and access control"
+        - "Change management"
+      beyond:
+        - "Security principles, governance, business continuity and incident response concepts"
+        - "Network and cloud security concepts"
+      timing: "Optional; useful after CC for hands-on practice."
+      next: "CC, then Security+."
+      sources:
+        - { title: "ISC2 CC exam outline", url: "https://www.isc2.org/certifications/cc/cc-certification-exam-outline", checkedOn: "2026-10-18" }
   verifiedOn: "2026-10-11"
   verificationSources:
     - "https://www.isc2.org/certifications/cc/cc-certification-exam-outline"
@@ -765,6 +959,26 @@
   resources:
     - { title: AWS Skill Builder, url: "https://skillbuilder.aws/", free: true, official: true }
   relatedCourses: [it-cloud]
+  foundations:
+    - courseId: linux-fundamentals
+      relevance: optional
+      unitIds: [linux-fundamentals.m00, linux-fundamentals.m09]
+      officialRequirement: "None; up to 6 months of AWS exposure is helpful but not required."
+      reason: >-
+        Cloud Practitioner is a high-level, conceptual exam for people new to cloud, including non-technical roles;
+        Linux is not in scope. Linux becomes important at the associate level (for example SysOps Administrator or
+        Solutions Architect), where you administer EC2 instances over SSH.
+      concepts:
+        - "What a virtual machine is"
+        - "SSH and key pairs"
+        - "Networking basics: IP, ports, firewalls"
+      beyond:
+        - "AWS services, pricing, the shared responsibility model and IAM"
+        - "Provider-specific networking (VPC, security groups)"
+      timing: "Optional for this exam; complete the full course before an associate-level AWS certification."
+      next: "An associate-level AWS certification, with Linux Fundamentals completed first."
+      sources:
+        - { title: "AWS Certified Cloud Practitioner", url: "https://aws.amazon.com/certification/certified-cloud-practitioner/", checkedOn: "2026-10-18" }
   verifiedOn: "2026-10-11"
   verificationSources: ["https://aws.amazon.com/certification/certified-cloud-practitioner/"]
 
@@ -791,6 +1005,24 @@
   resources:
     - { title: AZ-900 study guide, url: "https://aka.ms/AZ900-StudyGuide", free: true, official: true }
   relatedCourses: [it-cloud]
+  foundations:
+    - courseId: linux-fundamentals
+      relevance: optional
+      unitIds: [linux-fundamentals.m00, linux-fundamentals.m09]
+      officialRequirement: "None."
+      reason: >-
+        AZ-900 covers cloud concepts, Azure architecture and services, and governance at a foundational level; Linux
+        administration is not in scope. Many Azure virtual machines run Linux, so Modules 0 and 9 help when you start
+        hands-on Azure work.
+      concepts:
+        - "Virtual machines and SSH"
+        - "Networking basics"
+      beyond:
+        - "Azure services, identity (Entra ID), governance and pricing"
+      timing: "Optional for this exam."
+      next: "AZ-900, then an associate Azure certification with Linux Fundamentals completed."
+      sources:
+        - { title: "Microsoft Certified: Azure Fundamentals", url: "https://learn.microsoft.com/en-us/credentials/certifications/azure-fundamentals/", checkedOn: "2026-10-11" }
   verifiedOn: "2026-10-11"
   verificationSources: ["https://learn.microsoft.com/en-us/credentials/certifications/azure-fundamentals/"]
 
@@ -820,6 +1052,29 @@
   resources:
     - { title: Cloud Engineer learning path, url: "https://www.cloudskillsboost.google/", free: false, official: true }
   relatedCourses: [it-cloud]
+  foundations:
+    - courseId: linux-fundamentals
+      relevance: strongly-recommended
+      unitIds: [linux-fundamentals.m00, linux-fundamentals.m01, linux-fundamentals.m03, linux-fundamentals.m05, linux-fundamentals.m07, linux-fundamentals.m09, linux-fundamentals.m10]
+      officialRequirement: "None; Google recommends 6+ months of hands-on Google Cloud experience."
+      reason: >-
+        The exam guide includes launching Compute Engine instances with SSH keys, configuring OS Login, remotely
+        connecting to instances, configuring VPC firewall rules and deploying the Ops Agent. Compute Engine VMs are
+        usually Linux, and Cloud Shell is a Linux shell, so general Linux administration directly supports these
+        tasks.
+      concepts:
+        - "SSH, keys and remote administration"
+        - "Packages, services and logs on a VM"
+        - "Networking, ports and host firewalls"
+        - "Bash scripting for repeatable tasks"
+      beyond:
+        - "Google Cloud specifics: projects, IAM, VPC networks and firewall rules, gcloud, GKE, Cloud Storage, billing"
+        - "Infrastructure as code and managed services (provider-specific, not covered here)"
+      timing: "Before hands-on Google Cloud labs; the listed modules at minimum."
+      next: "Google Cloud Skills Boost's Associate Cloud Engineer path; Linux Administration roadmap stage 6 for containers and cloud Linux."
+      sources:
+        - { title: "Google Cloud Associate Cloud Engineer", url: "https://cloud.google.com/learn/certification/cloud-engineer", checkedOn: "2026-10-18" }
+        - { title: "Associate Cloud Engineer exam guide (PDF)", url: "https://services.google.com/fh/files/misc/associate_cloud_engineer_exam_guide_english.pdf", checkedOn: "2026-10-18" }
   verifiedOn: "2026-10-11"
   verificationSources: ["https://cloud.google.com/learn/certification/cloud-engineer"]
 
@@ -831,7 +1086,7 @@
   credentialType: professional-certification
   level: professional
   status: active
-  statusNote: Based on Kubernetes v1.35; the environment follows new minor versions within about 4–8 weeks.
+  statusNote: Based on Kubernetes v1.37 (checked 2026-10-18); the environment follows new minor versions within about 4–8 weeks.
   summary: Hands-on Kubernetes administration, solved live on the command line.
   objectives:
     - Troubleshooting (30%)
@@ -850,6 +1105,30 @@
   resources:
     - { title: Kubernetes documentation, url: "https://kubernetes.io/docs/", free: true, official: true }
   relatedCourses: [ai-12-mlops, it-cloud]
+  foundations:
+    - courseId: linux-fundamentals
+      relevance: essential
+      unitIds: [linux-fundamentals.m01, linux-fundamentals.m02, linux-fundamentals.m03, linux-fundamentals.m04, linux-fundamentals.m06, linux-fundamentals.m07, linux-fundamentals.m09, linux-fundamentals.m10]
+      officialRequirement: "None. The Linux Foundation lists no prerequisites; the exam is at intermediate level."
+      reason: >-
+        CKA tasks are solved from a command line on live clusters whose nodes run Linux. Troubleshooting (30 %)
+        includes nodes and cluster components, which means reading service status and logs, editing files and moving
+        between hosts over SSH.
+      concepts:
+        - "Shell fluency with vim/nano, grep, pipes and exit codes"
+        - "SSH between nodes"
+        - "systemd services and journalctl (kubelet, container runtime)"
+        - "Processes, ports and networking basics"
+        - "File permissions and certificates on disk"
+      beyond:
+        - "Containers and the container runtime (containerd), images and registries"
+        - "Kubernetes architecture, kubectl, YAML manifests and networking (CNI, Services, Ingress)"
+        - "Cluster installation and upgrades with kubeadm, etcd backup and restore"
+        - "Kubernetes RBAC and storage (PersistentVolumes)"
+      timing: "Before starting Kubernetes study; at minimum Modules 1–4, 6, 7, 9 and 10."
+      next: "KCNA or a Kubernetes fundamentals course, then CKA preparation (Linux Administration roadmap stage 6)."
+      sources:
+        - { title: "Linux Foundation: CKA", url: "https://training.linuxfoundation.org/certification/certified-kubernetes-administrator-cka/", checkedOn: "2026-10-18" }
   verifiedOn: "2026-10-11"
   verificationSources: ["https://training.linuxfoundation.org/certification/certified-kubernetes-administrator-cka/"]
 
@@ -878,6 +1157,26 @@
   resources:
     - { title: Kubernetes documentation, url: "https://kubernetes.io/docs/", free: true, official: true }
   relatedCourses: [it-cloud, ai-12-mlops]
+  foundations:
+    - courseId: linux-fundamentals
+      relevance: optional
+      unitIds: [linux-fundamentals.m01, linux-fundamentals.m02, linux-fundamentals.m03, linux-fundamentals.m06, linux-fundamentals.m09]
+      officialRequirement: "None."
+      reason: >-
+        KCNA is a multiple-choice exam on Kubernetes and cloud-native concepts; its published domains do not list
+        Linux. Hands-on practice (minikube, kind, kubectl) is easier from a Linux shell, and Linux becomes essential
+        if you continue to CKA.
+      concepts:
+        - "Using a terminal and editing YAML files"
+        - "Processes and services (what a container is underneath)"
+        - "Basic networking: ports, DNS"
+      beyond:
+        - "Container images and registries"
+        - "Kubernetes objects, scheduling and the cloud-native ecosystem (CNCF projects)"
+      timing: "Alongside KCNA study; complete the full course before moving on to CKA."
+      next: "KCNA preparation, then CKA (Linux Administration roadmap stage 6)."
+      sources:
+        - { title: "Linux Foundation: KCNA", url: "https://training.linuxfoundation.org/certification/kubernetes-cloud-native-associate/", checkedOn: "2026-10-18" }
   verifiedOn: "2026-10-11"
   verificationSources: ["https://training.linuxfoundation.org/certification/kubernetes-cloud-native-associate/"]
 
@@ -906,9 +1205,166 @@
   studyHours: { min: 60, max: 120, estimate: true }
   resources:
     - { title: Linux Foundation training, url: "https://training.linuxfoundation.org/", free: false, official: true }
-  relatedCourses: [it-operating-systems]
-  verifiedOn: "2026-10-11"
+  relatedCourses: [linux-02-system-administration, linux-04-performance-labs]
+  foundations:
+    - courseId: linux-fundamentals
+      relevance: essential
+      unitIds: [linux-fundamentals.m00, linux-fundamentals.m01, linux-fundamentals.m02, linux-fundamentals.m03, linux-fundamentals.m04, linux-fundamentals.m05, linux-fundamentals.m06, linux-fundamentals.m07, linux-fundamentals.m08, linux-fundamentals.m09, linux-fundamentals.m10, linux-fundamentals.m11, linux-fundamentals.m12, linux-fundamentals.m13]
+      officialRequirement: "None."
+      reason: >-
+        LFCS is solved live on a Linux command line in two hours: essential commands, operations deployment, users and
+        groups, networking and storage. Speed depends on the fundamentals being automatic.
+      concepts:
+        - "Fast, accurate command-line work and documentation lookup (man, --help)"
+        - "Users, groups, permissions and sudo"
+        - "systemd services, scheduling, logs and processes"
+        - "Partitions, filesystems, fstab, LVM and swap"
+        - "IP configuration, DNS, SSH and firewalls"
+      beyond:
+        - "Speed under time pressure on unfamiliar tasks (practise in timed labs)"
+        - "RAID, NFS and autofs, network bridges and bonding, routing"
+        - "Virtual machines and containers on Linux"
+        - "Distribution-independent habits: tasks the exam may set on Ubuntu or other systems"
+      timing: "Complete the whole course and capstone, then rebuild the capstone from your notes until it takes under two hours."
+      next: "Follow stage 4 of the Linux Administration roadmap (performance-based practice) and use the two exam simulator sessions included with LFCS."
+      sources:
+        - { title: "Linux Foundation: LFCS", url: "https://training.linuxfoundation.org/certification/linux-foundation-certified-sysadmin-lfcs/", checkedOn: "2026-10-18" }
+  verifiedOn: "2026-10-18"
   verificationSources: ["https://training.linuxfoundation.org/certification/linux-foundation-certified-sysadmin-lfcs/"]
+
+- id: red-hat-rhcsa
+  name: Red Hat Certified System Administrator (RHCSA)
+  code: EX200
+  provider: Red Hat
+  url: https://www.redhat.com/en/services/training/ex200-red-hat-certified-system-administrator-rhcsa-exam
+  category: linux
+  credentialType: professional-certification
+  level: associate
+  status: active
+  statusNote: The exam is based on Red Hat Enterprise Linux 10.
+  summary: Hands-on administration of Red Hat Enterprise Linux, performed on live systems; the base of Red Hat's certification path (RHCE next).
+  objectives:
+    - Understand and use essential tools (shell, redirection, grep and regular expressions, SSH, archives, links, permissions, documentation)
+    - Manage software (RPM repositories and packages, Flatpak repositories and packages)
+    - Create simple shell scripts (conditionals, loops, arguments, command output)
+    - Operate running systems (boot targets, regaining access, processes, tuning profiles, logs and journals, services, secure file transfer)
+    - Configure local storage (GPT partitions, LVM, mounting by UUID or label, swap)
+    - Create and configure file systems (VFAT, ext4, XFS, NFS, autofs, extending logical volumes, permission problems)
+    - Deploy, configure and maintain systems (at, cron, systemd timers, services, boot targets, time clients, packages, boot loader)
+    - Manage basic networking (IPv4 and IPv6, hostname resolution, firewalld)
+    - Manage users and groups (accounts, password ageing, groups, privileged access)
+    - Manage security (firewalld, default permissions, SSH keys, SELinux modes, contexts, port labels and Booleans)
+  prerequisites: >-
+    No formal eligibility requirement stated. Red Hat recommends the RH124 and RH134 courses (or RH199), or comparable
+    work experience as a RHEL system administrator.
+  exam:
+    format: Performance-based tasks on live systems; configurations must persist after a reboot
+    delivery: "Classroom, testing centre or remote; no internet access or notes; product documentation is available"
+  cost: { currency: USD, note: Price varies by country; see Red Hat's exam page. }
+  studyHours: { min: 80, max: 150, estimate: true }
+  resources:
+    - { title: EX200 exam page and objectives, url: "https://www.redhat.com/en/services/training/ex200-red-hat-certified-system-administrator-rhcsa-exam", free: true, official: true }
+    - { title: Free RHEL for developers (no-cost subscription), url: "https://developers.redhat.com/products/rhel/download", free: true, official: true }
+    - { title: RHEL 10 documentation, url: "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/10", free: true, official: true }
+  relatedCourses: [linux-03-enterprise-linux]
+  foundations:
+    - courseId: linux-fundamentals
+      relevance: essential
+      unitIds: [linux-fundamentals.m00, linux-fundamentals.m01, linux-fundamentals.m02, linux-fundamentals.m03, linux-fundamentals.m04, linux-fundamentals.m05, linux-fundamentals.m06, linux-fundamentals.m07, linux-fundamentals.m08, linux-fundamentals.m09, linux-fundamentals.m11, linux-fundamentals.m13]
+      officialRequirement: "No formal prerequisite. Red Hat recommends RH124 and RH134 (or RH199), or comparable RHEL administration experience."
+      reason: >-
+        Every RHCSA objective is a Linux administration task performed on a live RHEL system without internet access.
+        Linux Fundamentals teaches the same concepts on Ubuntu and notes the RHEL differences; the exam then needs
+        RHEL's own tools and SELinux.
+      concepts:
+        - "Shell, redirection, grep, archives, links and permissions"
+        - "Bash scripts with conditions, loops and arguments"
+        - "Processes, boot targets, services, journals and scheduling (cron and timers)"
+        - "GPT partitions, LVM, filesystems, mounting by UUID and swap"
+        - "Users, groups, password ageing and sudo"
+        - "SSH keys, networking and firewall concepts"
+      beyond:
+        - "dnf, RPM repositories and Flatpak on RHEL 10"
+        - "firewalld (firewall-cmd) and NetworkManager (nmcli)"
+        - "SELinux modes, file and port contexts, Booleans and troubleshooting"
+        - "NFS and autofs, tuned profiles, interrupting the boot to regain access"
+        - "Working fast from man pages and /usr/share/doc only"
+      timing: "Complete the course and capstone, then switch your lab to Rocky Linux, AlmaLinux or a free RHEL developer subscription."
+      next: "Linux Administration roadmap stage 3 (Enterprise Linux), using the official EX200 objectives as the checklist."
+      sources:
+        - { title: "Red Hat: EX200 RHCSA exam", url: "https://www.redhat.com/en/services/training/ex200-red-hat-certified-system-administrator-rhcsa-exam", checkedOn: "2026-10-18" }
+  verifiedOn: "2026-10-18"
+  verificationSources: ["https://www.redhat.com/en/services/training/ex200-red-hat-certified-system-administrator-rhcsa-exam"]
+  unverified:
+    - Exam duration (training providers report about 3 hours; the official page checked did not state it).
+    - Exam price in Malaysia.
+    - How long the certification stays current.
+
+- id: lpi-lpic-1
+  name: LPIC-1 Linux Administrator
+  code: 101-500 and 102-500 (version 5.0)
+  provider: Linux Professional Institute (LPI)
+  url: https://www.lpi.org/our-certifications/lpic-1-overview/
+  category: linux
+  credentialType: professional-certification
+  level: associate
+  status: active
+  summary: Distribution-neutral Linux administration knowledge across two exams; the first level of LPI's professional track.
+  objectives:
+    - "101: System architecture"
+    - "101: Linux installation and package management"
+    - "101: GNU and Unix commands"
+    - "101: Devices, Linux filesystems, Filesystem Hierarchy Standard"
+    - "102: Shells and shell scripting"
+    - "102: Interfaces and desktops"
+    - "102: Administrative tasks"
+    - "102: Essential system services"
+    - "102: Networking fundamentals"
+    - "102: Security"
+  prerequisites: None. Both exams (101 and 102) must be passed.
+  exam:
+    questions: 60 per exam
+    durationMinutes: 90
+    format: Multiple choice and fill in the blank (per exam)
+    delivery: Pearson VUE test centres or online (OnVUE)
+    validity: 5 years
+  cost: { currency: USD, note: Price per exam depends on the country; see LPI. }
+  studyHours: { min: 80, max: 160, estimate: true }
+  resources:
+    - { title: LPIC-1 overview, url: "https://www.lpi.org/our-certifications/lpic-1-overview/", free: true, official: true }
+    - { title: LPIC-1 version 5.0 objectives, url: "https://wiki.lpi.org/wiki/LPIC-1_Objectives_V5.0", free: true, official: true }
+    - { title: LPI Learning Materials, url: "https://learning.lpi.org/", free: true, official: true }
+  relatedCourses: [linux-02-system-administration]
+  foundations:
+    - courseId: linux-fundamentals
+      relevance: essential
+      unitIds: [linux-fundamentals.m00, linux-fundamentals.m01, linux-fundamentals.m02, linux-fundamentals.m03, linux-fundamentals.m04, linux-fundamentals.m05, linux-fundamentals.m06, linux-fundamentals.m07, linux-fundamentals.m08, linux-fundamentals.m09, linux-fundamentals.m11, linux-fundamentals.m13]
+      officialRequirement: "None."
+      reason: >-
+        LPIC-1 examines Linux knowledge directly across both exams, independent of distribution, and expects
+        both Debian (dpkg/APT) and RPM (rpm/YUM/DNF) package tools. It tests knowledge in written questions rather than
+        live tasks, so precise command options and file locations matter.
+      concepts:
+        - "GNU commands, text processing, pipes and redirection, regular expressions"
+        - "Filesystem hierarchy, permissions, links, partitions and mounting"
+        - "Package management on Debian and RPM systems"
+        - "Processes, boot, systemd, scheduling and logging"
+        - "Users and groups, networking fundamentals and SSH"
+        - "Shell environment and scripting"
+      beyond:
+        - "Hardware and system architecture, boot loaders (GRUB 2) and kernel modules"
+        - "X11, desktops and accessibility basics (exam 102)"
+        - "Localisation, time zones, printing (CUPS) and mail basics"
+        - "Exact option recall for many commands (fill-in-the-blank questions)"
+      timing: "Complete the course before exam 101; exam 102 builds on Modules 3, 7, 9, 11 and 13."
+      next: "Map each LPIC-1 objective on the LPI wiki to the course, then use LPI's free Learning Materials for the gaps."
+      sources:
+        - { title: "LPI: LPIC-1 overview", url: "https://www.lpi.org/our-certifications/lpic-1-overview/", checkedOn: "2026-10-18" }
+  verifiedOn: "2026-10-18"
+  verificationSources: ["https://www.lpi.org/our-certifications/lpic-1-overview/"]
+  unverified:
+    - Exam prices in Malaysia.
+    - Whether a newer LPIC-1 version is scheduled (the overview page lists version 5.0 as current).
 
 # ---------------------------------------------------------------------------
 # Japanese (JLPT) and Chinese (HSK)

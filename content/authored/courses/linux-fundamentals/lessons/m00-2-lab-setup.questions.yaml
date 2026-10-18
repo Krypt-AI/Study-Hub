@@ -1,0 +1,78 @@
+- id: linux.m00.l2.hypervisor
+  type: choice
+  skill: recognize
+  topics: [linux.m00]
+  prompt: What does a hypervisor do?
+  options:
+    - { id: a, text: It runs several virtual machines on one physical computer., explanation: "Correct. VirtualBox, VMware, Hyper-V and KVM are hypervisors." }
+    - { id: b, text: It is the Linux shell., explanation: "The shell runs inside an operating system; the hypervisor sits below whole operating systems." }
+    - { id: c, text: It encrypts the virtual disk., explanation: "Some hypervisors can, but that is not what makes them hypervisors." }
+    - { id: d, text: It installs packages., explanation: "That is a package manager." }
+  correct: [a]
+
+- id: linux.m00.l2.network-mode
+  type: choice
+  skill: apply
+  topics: [linux.m00]
+  prompt: >-
+    You study on a shared campus Wi-Fi network. You want your lab VM to download updates and to be reachable over
+    SSH from your laptop, but **not** from other students' machines. Which adapter combination fits?
+  options:
+    - { id: a, text: One bridged adapter, explanation: "Bridged puts the VM on the campus network, where anyone can try to reach it." }
+    - { id: b, text: NAT plus host-only, explanation: "Correct. NAT gives internet access; host-only connects only your laptop and the VM." }
+    - { id: c, text: Internal network only, explanation: "Internal networks reach neither the internet nor your laptop." }
+    - { id: d, text: Host-only only, explanation: "Host-only alone has no route to the internet, so updates fail." }
+  correct: [b]
+
+- id: linux.m00.l2.snapshot-vs-backup
+  type: choice
+  skill: explain
+  topics: [linux.m00]
+  prompt: Why is a VM snapshot **not** a backup?
+  options:
+    - { id: a, text: Snapshots cannot be restored., explanation: "Restoring is their whole purpose." }
+    - { id: b, text: "It is stored with the VM on the same disk, so losing that disk loses both.", explanation: "Correct. A backup must survive the loss of the original; Module 12 covers this." }
+    - { id: c, text: Snapshots only store memory., explanation: "Snapshots always capture the disk state; memory is optional." }
+    - { id: d, text: Snapshots are encrypted., explanation: "Encryption has nothing to do with it." }
+  correct: [b]
+
+- id: linux.m00.l2.checksum
+  type: choice
+  skill: explain
+  topics: [linux.m00]
+  prompt: Why check the SHA-256 checksum of the downloaded ISO?
+  options:
+    - { id: a, text: To make the download faster., explanation: "Checksums are calculated after downloading." }
+    - { id: b, text: "To confirm the file is complete and identical to the one Ubuntu published, not corrupted or tampered with.", explanation: "Correct. Any change to the file gives a different hash." }
+    - { id: c, text: To activate an Ubuntu licence., explanation: "Ubuntu needs no licence key." }
+    - { id: d, text: To compress the ISO., explanation: "Hashing does not compress anything." }
+  correct: [b]
+
+- id: linux.m00.l2.virt-error
+  type: short
+  skill: apply
+  topics: [linux.m00]
+  prompt: "A new VM will not start and the error mentions VT-x. Name the kind of setting (two words, as in the lesson) you must switch on in the computer's firmware."
+  accepted: [hardware virtualisation, hardware virtualization, virtualization, virtualisation, VT-x, virtualization technology]
+  match: { mode: text, typoTolerance: low }
+  explanation: "Intel VT-x or AMD-V (hardware virtualisation) must be enabled in the BIOS/UEFI setup for 64-bit VMs to run."
+
+- id: linux.m00.l2.ip-br
+  type: choice
+  skill: apply
+  topics: [linux.m00]
+  prompt: |-
+    `ip -br address` shows:
+
+    ```text
+    lo        UNKNOWN  127.0.0.1/8 ::1/128
+    enp0s3    UP       10.0.2.15/24
+    enp0s8    UP       192.168.56.101/24
+    ```
+
+    In a VirtualBox NAT + host-only lab, which address do you use to SSH from your laptop?
+  options:
+    - { id: a, text: "127.0.0.1", explanation: "That is the loopback address: it always means the machine itself." }
+    - { id: b, text: "10.0.2.15", explanation: "That is the NAT address, not reachable from the host without port forwarding." }
+    - { id: c, text: "192.168.56.101", explanation: "Correct. 192.168.56.0/24 is VirtualBox's default host-only network." }
+  correct: [c]

@@ -1,0 +1,70 @@
+- id: linux.m07.l1.order
+  type: choice
+  skill: recognize
+  topics: [linux.m07]
+  prompt: Which is the correct boot order?
+  options:
+    - { id: a, text: "Firmware → GRUB → kernel and initramfs → systemd → login", explanation: "Correct." }
+    - { id: b, text: "GRUB → firmware → systemd → kernel → login", explanation: "Firmware runs first and systemd needs the kernel." }
+    - { id: c, text: "Kernel → firmware → GRUB → systemd → login", explanation: "The firmware loads the boot loader, which loads the kernel." }
+  correct: [a]
+
+- id: linux.m07.l1.initramfs
+  type: choice
+  skill: explain
+  topics: [linux.m07]
+  prompt: What is the job of the initramfs?
+  options:
+    - { id: a, text: "A small temporary root filesystem that loads the drivers needed to find and mount the real root filesystem.", explanation: "Correct." }
+    - { id: b, text: It stores user passwords., explanation: "Those are in `/etc/shadow` on the real root." }
+    - { id: c, text: It is the GRUB menu., explanation: "GRUB loads it." }
+  correct: [a]
+
+- id: linux.m07.l1.default-target
+  type: short
+  skill: recall
+  topics: [linux.m07]
+  prompt: Which command shows the default systemd target?
+  accepted: ["systemctl get-default"]
+  match: { mode: exact }
+
+- id: linux.m07.l1.server-target
+  type: choice
+  skill: recognize
+  topics: [linux.m07]
+  prompt: Which target is the normal default for a server without a desktop?
+  options:
+    - { id: a, text: "`multi-user.target`", explanation: "Correct." }
+    - { id: b, text: "`graphical.target`", explanation: "Adds a desktop." }
+    - { id: c, text: "`rescue.target`", explanation: "Maintenance only." }
+  correct: [a]
+
+- id: linux.m07.l1.update-grub
+  type: choice
+  skill: apply
+  topics: [linux.m07]
+  prompt: You changed `GRUB_TIMEOUT` in `/etc/default/grub` on Ubuntu. What applies it?
+  options:
+    - { id: a, text: "`sudo update-grub`", explanation: "Correct. It regenerates `/boot/grub/grub.cfg`." }
+    - { id: b, text: Editing `/boot/grub/grub.cfg` too, explanation: "That file is generated and will be overwritten." }
+    - { id: c, text: "`sudo systemctl restart grub`", explanation: "GRUB is not a service." }
+  correct: [a]
+
+- id: linux.m07.l1.shutdown-delay
+  type: short
+  skill: apply
+  topics: [linux.m07]
+  prompt: Write the command that reboots the server in 15 minutes with the message "Kernel update".
+  accepted: ["sudo shutdown -r +15 \"Kernel update\"", "sudo shutdown -r +15 'Kernel update'", "shutdown -r +15 \"Kernel update\""]
+  match: { mode: exact }
+
+- id: linux.m07.l1.blame
+  type: choice
+  skill: apply
+  topics: [linux.m07]
+  prompt: The server takes two minutes to boot. Which command lists units by how long they took to start?
+  options:
+    - { id: a, text: "`systemd-analyze blame`", explanation: "Correct." }
+    - { id: b, text: "`journalctl --boot-time`", explanation: "Not a journalctl option." }
+    - { id: c, text: "`uptime`", explanation: "Shows time since boot, not boot duration." }
+  correct: [a]

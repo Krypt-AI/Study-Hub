@@ -1,0 +1,62 @@
+- id: linux.m12.l2.slash
+  type: choice
+  skill: apply
+  topics: [linux.m12]
+  prompt: "Where do the files end up after `rsync -a /srv/kira /backup/`?"
+  options:
+    - { id: a, text: "In `/backup/kira/` (the directory itself is copied)", explanation: "Correct. No trailing slash on the source copies the directory." }
+    - { id: b, text: "Directly in `/backup/` (only the contents)", explanation: "That needs `/srv/kira/`." }
+    - { id: c, text: "In `/backup/srv/kira/`", explanation: "rsync does not recreate the full path unless asked (`-R`)." }
+  correct: [a]
+
+- id: linux.m12.l2.dry-run
+  type: short
+  skill: recall
+  topics: [linux.m12]
+  prompt: Which rsync option shows what would be copied or deleted without changing anything? (Give the long form.)
+  accepted: ["--dry-run", "-n"]
+  match: { mode: exact }
+
+- id: linux.m12.l2.acl
+  type: choice
+  skill: recognize
+  topics: [linux.m12]
+  prompt: Which rsync option preserves ACLs?
+  options:
+    - { id: a, text: "`-A`", explanation: "Correct. `-X` preserves extended attributes." }
+    - { id: b, text: "`-a`", explanation: "Archive mode does not include ACLs." }
+    - { id: c, text: "`-z`", explanation: "Compression in transit." }
+  correct: [a]
+
+- id: linux.m12.l2.mirror-history
+  type: choice
+  skill: explain
+  topics: [linux.m12]
+  prompt: Why is a mirror made with `rsync --delete` not enough as your only backup?
+  options:
+    - { id: a, text: "It copies deletions and corruption on the next run, so it keeps no history to go back to.", explanation: "Correct. Keep dated snapshots as well." }
+    - { id: b, text: It does not copy permissions., explanation: "With `-a` it does." }
+    - { id: c, text: rsync cannot work over SSH., explanation: "It can." }
+  correct: [a]
+
+- id: linux.m12.l2.link-dest
+  type: choice
+  skill: explain
+  topics: [linux.m12]
+  prompt: "How does `--link-dest` save space in daily snapshots?"
+  options:
+    - { id: a, text: "Unchanged files are hard-linked to the previous snapshot's copy, so their data is stored only once.", explanation: "Correct." }
+    - { id: b, text: It compresses each snapshot., explanation: "No compression is involved." }
+    - { id: c, text: It deletes old snapshots., explanation: "Retention is up to you." }
+  correct: [a]
+
+- id: linux.m12.l2.pull
+  type: choice
+  skill: explain
+  topics: [linux.m12]
+  prompt: Why do many organisations prefer the backup server to **pull** data from production servers?
+  options:
+    - { id: a, text: "A compromised production server then holds no credentials to reach, alter or delete the backups.", explanation: "Correct." }
+    - { id: b, text: Pulling is always faster., explanation: "Speed is similar." }
+    - { id: c, text: rsync only supports pulling., explanation: "It supports both." }
+  correct: [a]

@@ -1,0 +1,31 @@
+- id: linux.m01.l4.ticket-reply
+  type: long
+  skill: apply
+  topics: [linux.m01]
+  prompt: Write your reply to ticket #1042, including each fact, the command that produced it, and the exit-code evidence for `/opt/vendor`.
+  minWords: 40
+  rubric:
+    - { id: kernel, label: "Kernel release with `uname -r`", keywords: [["uname -r", "uname -a", "uname -srm", "kernel"]] }
+    - { id: arch, label: "Architecture with `uname -m` (x86_64 or aarch64)", keywords: [["uname -m", "x86_64", "aarch64", "architecture"]] }
+    - { id: tz, label: "Time zone with `timedatectl` or `date`", keywords: [["timedatectl", "date", "time zone", "timezone"]] }
+    - { id: uptime, label: "Running time with `uptime`", keywords: [["uptime", "up "]] }
+    - { id: user, label: "Current user with `whoami` or `id`", keywords: [["whoami", "id"]] }
+    - { id: exit, label: "`/opt/vendor` checked with `ls -ld` and `$?` (non-zero, typically 2, means it does not exist)", keywords: [["/opt/vendor"], ["$?", "exit", "code", "status"]] }
+  modelAnswer: >-
+    Hello, here are the facts for lab01. Kernel release: `7.0.0-15-generic` (`uname -r`). Architecture: `x86_64`
+    (`uname -m`). Time zone: Asia/Kuala_Lumpur, +08 (`timedatectl`). Running for 2 hours 14 minutes (`uptime`).
+    I am working as `student` (`whoami`). `/opt/vendor` does not exist yet: `ls -ld /opt/vendor` printed
+    "No such file or directory" and `echo $?` printed `2`; for an existing directory it would print `0`.
+
+- id: linux.m01.l4.docs
+  type: long
+  skill: explain
+  topics: [linux.m01]
+  prompt: Describe how you found one option or command for this ticket using only the built-in documentation (which page, how you searched it).
+  minWords: 25
+  rubric:
+    - { id: tool, label: "Names the documentation tool used (man, --help, apropos, type, help)", keywords: [["man", "--help", "apropos", "help", "type"]] }
+    - { id: search, label: "Explains how the answer was located (search with /, reading options, keyword)", keywords: [["/", "search", "option", "keyword", "scroll", "found"]] }
+  modelAnswer: >-
+    I needed the time zone. `apropos time zone` listed `timedatectl (1)`; in `man timedatectl` I searched with
+    `/status` and read that `timedatectl status` (or plain `timedatectl`) shows the "Time zone" line.

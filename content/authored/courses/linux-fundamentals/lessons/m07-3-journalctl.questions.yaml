@@ -1,0 +1,67 @@
+- id: linux.m07.l3.unit
+  type: short
+  skill: recall
+  topics: [linux.m07]
+  prompt: Write the command that shows the journal entries of the `nginx` unit only.
+  accepted: ["journalctl -u nginx", "journalctl -u nginx.service", "sudo journalctl -u nginx"]
+  match: { mode: exact }
+
+- id: linux.m07.l3.previous-boot
+  type: choice
+  skill: apply
+  topics: [linux.m07]
+  prompt: The server rebooted unexpectedly overnight. Which command shows the last messages **before** that reboot?
+  options:
+    - { id: a, text: "`journalctl -b -1 -e`", explanation: "Correct. `-b -1` is the previous boot; `-e` jumps to its end." }
+    - { id: b, text: "`journalctl -b`", explanation: "That is the current boot." }
+    - { id: c, text: "`dmesg`", explanation: "Shows only the current boot's kernel messages." }
+  correct: [a]
+
+- id: linux.m07.l3.follow
+  type: short
+  skill: recall
+  topics: [linux.m07]
+  prompt: Which `journalctl` option follows new entries live?
+  accepted: ["-f", "--follow"]
+  match: { mode: exact }
+
+- id: linux.m07.l3.priority
+  type: choice
+  skill: recognize
+  topics: [linux.m07]
+  prompt: "What does `journalctl -p err` show?"
+  options:
+    - { id: a, text: Entries with priority err or more severe (crit, alert, emerg), explanation: "Correct." }
+    - { id: b, text: Only entries containing the word err, explanation: "That would be `-g err`." }
+    - { id: c, text: Entries from the errata service, explanation: "No such thing." }
+  correct: [a]
+
+- id: linux.m07.l3.first-error
+  type: choice
+  skill: explain
+  topics: [linux.m07]
+  prompt: A failed service's log shows twenty errors. Which do you investigate first?
+  options:
+    - { id: a, text: "The first one: later errors are often consequences of it.", explanation: "Correct." }
+    - { id: b, text: The last one, explanation: "Usually a symptom of an earlier cause." }
+    - { id: c, text: The longest one, explanation: "Length says nothing about cause." }
+  correct: [a]
+
+- id: linux.m07.l3.rhel-messages
+  type: choice
+  skill: recognize
+  topics: [linux.m07]
+  prompt: "Ubuntu's `/var/log/syslog` corresponds to which file on RHEL?"
+  options:
+    - { id: a, text: "`/var/log/messages`", explanation: "Correct." }
+    - { id: b, text: "`/var/log/secure`", explanation: "That corresponds to auth.log." }
+    - { id: c, text: "`/var/log/system`", explanation: "Not a standard file." }
+  correct: [a]
+
+- id: linux.m07.l3.since
+  type: short
+  skill: apply
+  topics: [linux.m07]
+  prompt: "Complete the command to show the ssh unit's entries from the last hour: `journalctl -u ssh --since ____`"
+  accepted: ["\"1 hour ago\"", "'1 hour ago'", "-1h", "\"-1h\"", "\"1h ago\""]
+  match: { mode: exact }

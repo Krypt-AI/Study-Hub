@@ -1,0 +1,62 @@
+- id: linux.m05.l3.dnf-install
+  type: short
+  skill: recall
+  topics: [linux.m05]
+  prompt: On Rocky Linux, write the command that installs `nginx` as an ordinary user with sudo.
+  accepted: ["sudo dnf install nginx", "sudo dnf install -y nginx", "sudo yum install nginx"]
+  match: { mode: exact }
+
+- id: linux.m05.l3.rpm-qf
+  type: choice
+  skill: recognize
+  topics: [linux.m05]
+  prompt: Which command is the RHEL equivalent of `dpkg -S /usr/bin/tree`?
+  options:
+    - { id: a, text: "`rpm -qf /usr/bin/tree`", explanation: "Correct. Query the package owning a file." }
+    - { id: b, text: "`rpm -ql /usr/bin/tree`", explanation: "`-ql` lists a package's files." }
+    - { id: c, text: "`dnf search /usr/bin/tree`", explanation: "Search looks at names and summaries." }
+  correct: [a]
+
+- id: linux.m05.l3.provides
+  type: choice
+  skill: apply
+  topics: [linux.m05]
+  prompt: "On RHEL, `semanage: command not found`. How do you find which package to install?"
+  options:
+    - { id: a, text: "`dnf provides */semanage`", explanation: "Correct. It searches repositories for packages containing that file." }
+    - { id: b, text: "`rpm -qf semanage`", explanation: "Only works for files already installed." }
+    - { id: c, text: "`apt install semanage`", explanation: "APT is not used on RHEL." }
+  correct: [a]
+
+- id: linux.m05.l3.gpgcheck
+  type: choice
+  skill: explain
+  topics: [linux.m05]
+  prompt: "What does `gpgcheck=1` in a `.repo` file protect against?"
+  options:
+    - { id: a, text: Installing packages that were not signed by the repository's trusted key (tampered or fake packages)., explanation: "Correct." }
+    - { id: b, text: Slow mirrors., explanation: "Signature checks do not affect speed choices." }
+    - { id: c, text: Running out of disk space., explanation: "Unrelated." }
+  correct: [a]
+
+- id: linux.m05.l3.history-undo
+  type: choice
+  skill: recognize
+  topics: [linux.m05]
+  prompt: Which DNF feature lets you see and reverse a previous transaction?
+  options:
+    - { id: a, text: "`dnf history` and `dnf history undo`", explanation: "Correct." }
+    - { id: b, text: "`dnf rollback-all`", explanation: "Not a DNF command." }
+    - { id: c, text: "`rpm --revert`", explanation: "Not an rpm option." }
+  correct: [a]
+
+- id: linux.m05.l3.differences
+  type: cloze
+  skill: recall
+  topics: [linux.m05]
+  prompt: Fill in the RHEL-family equivalents.
+  text: "Ubuntu's `ufw` → [[1]] (`firewall-cmd`); AppArmor → [[2]]; `/var/log/auth.log` → `/var/log/[[3]]`."
+  blanks:
+    - { id: "1", accepted: [firewalld] }
+    - { id: "2", accepted: [SELinux, selinux] }
+    - { id: "3", accepted: [secure], match: { mode: exact } }

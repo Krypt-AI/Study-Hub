@@ -1,0 +1,70 @@
+- id: linux.m08.l3.df-vs-du
+  type: choice
+  skill: recognize
+  topics: [linux.m08]
+  prompt: Which pair is right?
+  options:
+    - { id: a, text: "`df` reports free and used space per filesystem; `du` adds up the space used by files and directories.", explanation: "Correct." }
+    - { id: b, text: "`df` measures directories; `du` measures disks.", explanation: "The other way round." }
+    - { id: c, text: They are aliases., explanation: "They answer different questions." }
+  correct: [a]
+
+- id: linux.m08.l3.inodes
+  type: choice
+  skill: apply
+  topics: [linux.m08]
+  prompt: "`touch` fails with `No space left on device`, yet `df -h` shows 40% used. What do you check?"
+  options:
+    - { id: a, text: "`df -i`: the filesystem may have run out of inodes (too many small files).", explanation: "Correct." }
+    - { id: b, text: "`free -h`", explanation: "Memory is unrelated to file creation space." }
+    - { id: c, text: "`swapon --show`", explanation: "Swap is unrelated." }
+  correct: [a]
+
+- id: linux.m08.l3.du-sort
+  type: short
+  skill: apply
+  topics: [linux.m08]
+  prompt: "Complete the pipeline that lists the sizes of the directories in `/var`, smallest to largest: `sudo du -sh /var/* | ____`"
+  accepted: ["sort -h"]
+  match: { mode: exact }
+
+- id: linux.m08.l3.deleted-open
+  type: choice
+  skill: explain
+  topics: [linux.m08]
+  prompt: You deleted a 5 GB log file but `df` still shows the disk full. Why?
+  options:
+    - { id: a, text: "A process still has the deleted file open, so its space is not freed until the process closes it.", explanation: "Correct. Find it with `lsof +L1` and restart or reload that service." }
+    - { id: b, text: df caches results for a day., explanation: "df reads current values." }
+    - { id: c, text: Deleted files go to a recycle bin., explanation: "There is none." }
+  correct: [a]
+
+- id: linux.m08.l3.truncate
+  type: choice
+  skill: apply
+  topics: [linux.m08]
+  prompt: An application's active log is huge and must be emptied without restarting the application. What is the safest command?
+  options:
+    - { id: a, text: "`sudo truncate -s 0 /var/log/app/app.log`", explanation: "Correct. The file stays open and the space is released." }
+    - { id: b, text: "`sudo rm /var/log/app/app.log`", explanation: "The space stays used until the app closes it, and new logs vanish." }
+    - { id: c, text: "`sudo mv app.log /tmp`", explanation: "Same filesystem: no space freed." }
+  correct: [a]
+
+- id: linux.m08.l3.swap-perm
+  type: choice
+  skill: explain
+  topics: [linux.m08]
+  prompt: Why must a swap file have mode `600`?
+  options:
+    - { id: a, text: "Swap can contain sensitive memory such as passwords and keys; only root may read it.", explanation: "Correct." }
+    - { id: b, text: The kernel refuses other modes in all cases., explanation: "It warns; the reason is confidentiality." }
+    - { id: c, text: To make it faster., explanation: "Permissions do not affect speed." }
+  correct: [a]
+
+- id: linux.m08.l3.swapon
+  type: short
+  skill: recall
+  topics: [linux.m08]
+  prompt: After `mkswap /swapfile2`, which command activates it?
+  accepted: ["sudo swapon /swapfile2", "swapon /swapfile2"]
+  match: { mode: exact }

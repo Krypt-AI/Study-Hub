@@ -1,0 +1,44 @@
+- id: linux.m14.l1.acceptance
+  type: choice
+  skill: explain
+  topics: [linux.m14]
+  prompt: Which is a well-formed **acceptance criterion** for "the server must be secure from outside"?
+  options:
+    - { id: a, text: "From a non-staff network, SSH and HTTP connections are refused; from the staff network HTTP works and SSH works only with a key.", explanation: "Correct: specific and testable." }
+    - { id: b, text: The server is very secure., explanation: "Not testable." }
+    - { id: c, text: We installed a firewall., explanation: "Describes an action, not a verifiable outcome." }
+  correct: [a]
+
+- id: linux.m14.l1.least-privilege-hafiz
+  type: choice
+  skill: apply
+  topics: [linux.m14]
+  prompt: Which design meets R5 (Hafiz restarts services and reads logs, but cannot read confidential files)?
+  options:
+    - { id: a, text: "A sudoers.d rule for specific systemctl commands plus membership of `systemd-journal`; not in sudo or any department group", explanation: "Correct: least privilege." }
+    - { id: b, text: Add hafiz to the `sudo` group, explanation: "Full root can read everything." }
+    - { id: c, text: Give hafiz the root password, explanation: "Shared root, no accountability, full access." }
+  correct: [a]
+
+- id: linux.m14.l1.spec
+  type: long
+  skill: apply
+  topics: [linux.m14]
+  prompt: Write your refined specification changes (anything you would add or make more precise in R1–R13), and your list of assumptions, risks and questions for the client.
+  minWords: 80
+  rubric:
+    - { id: refine, label: "At least three concrete refinements to the requirements (numbers, names, paths, tests)", keywords: [["R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9", "R10", "R11", "R12", "R13"]] }
+    - { id: assumptions, label: "Assumptions stated explicitly", keywords: [["assum"]] }
+    - { id: risks, label: "Risks identified (e.g. lock-out, data loss, no off-site copy)", keywords: [["risk"]] }
+    - { id: questions, label: "Questions for the client", keywords: [["question", "ask", "?"]] }
+  modelAnswer: >-
+    Refinements: R2 — test users aina, farid (admin), mei, ravi (teachers), siti (management), hafiz (IT); passwords
+    minlen 12, ageing 365 days. R3 — mode 2770, root owner, department group. R6 — announcements page editable by
+    management via a setgid directory /var/www/teratai owned by root:management, mode 2775, nginx reads as www-data.
+    R9 — vg_data/lv_teratai 2 GiB ext4 at /srv/teratai; backups on lv_backup. R10 — backup at 01:30, retention 14 days,
+    restore tested monthly. Assumptions: 192.168.56.0/24 stands for both staff and admin networks; the director
+    approves changes; staff have SSH keys only if they need shell access (most only use the share later via SMB, out
+    of scope). Risks: SSH lock-out during hardening (mitigate with console and second session); backups on the same
+    server are not off-site (recommend an external target); single server is a single point of failure. Questions:
+    Is there budget for off-site backup? Who besides Hafiz may approve emergency changes? How long must student
+    records be kept?

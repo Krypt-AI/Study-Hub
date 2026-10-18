@@ -1,0 +1,36 @@
+- id: linux.m14.l4.self-assessment
+  type: long
+  skill: explain
+  topics: [linux.m14]
+  prompt: Score your capstone against the marking guide (0–4 for each of the eight areas) and justify the two lowest scores.
+  minWords: 60
+  rubric:
+    - { id: scores, label: "Eight areas scored", keywords: [["base", "storage"], ["permission", "users"], ["security"], ["backup"], ["document"]] }
+    - { id: justify, label: "The two lowest scores justified with specific gaps", keywords: [["because", "gap", "missing", "did not", "not yet"]] }
+    - { id: total, label: "Total out of 32 stated", keywords: [["/32", "out of 32", "32"]] }
+  modelAnswer: >-
+    Base system and storage 4; users and permissions 4; services 3; security 3; backup 3; monitoring 2;
+    troubleshooting 3; documentation 3 — total 25/32. Monitoring scored 2 because the health check logs to the
+    journal but nobody is alerted: there is no email or monitoring system, so a warning at 2 a.m. would go unseen.
+    Security, backup and services scored 3 rather than 4 because the off-site gap and the SMB access for Windows
+    users are reported but not solved, and my nginx site lacks HTTPS.
+
+- id: linux.m14.l4.reflection
+  type: long
+  skill: explain
+  topics: [linux.m14]
+  prompt: "Reflect: which three skills from this course are you now confident in, which two need more practice, and which certification will you target next and why?"
+  minWords: 80
+  rubric:
+    - { id: strengths, label: "Three specific strengths", keywords: [["confident", "can", "strong"]] }
+    - { id: gaps, label: "Two specific gaps", keywords: [["practice", "unsure", "weak", "gap", "need"]] }
+    - { id: target, label: "A target certification with a reason linked to career goals and the official objectives", keywords: [["Linux+", "LFCS", "RHCSA", "LPIC", "Security+", "AWS", "Azure", "Google", "CKA", "KCNA"]] }
+    - { id: plan, label: "A concrete plan (date, objectives mapping, practice)", keywords: [["plan", "objectives", "date", "week", "month"]] }
+  modelAnswer: >-
+    Confident: designing group and ACL permissions and proving them with a test matrix; diagnosing a failed service
+    from systemctl, the journal and ss; writing a backup script with verification and scheduling it with a timer.
+    Need practice: LVM beyond growing a volume (replacing disks, snapshots), and doing tasks quickly without notes.
+    Target: RHCSA, because the helpdesk roles I am applying for at local data centres list RHEL, and its
+    performance-based format matches how I learn. Plan: map the EX200 objectives this week, set up a Rocky Linux lab,
+    study SELinux, firewalld and autofs over six weeks, rebuild the capstone on Rocky twice, and book the exam for
+    early March 2027.

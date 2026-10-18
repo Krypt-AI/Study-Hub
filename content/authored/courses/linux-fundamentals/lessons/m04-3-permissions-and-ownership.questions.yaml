@@ -1,0 +1,82 @@
+- id: linux.m04.l3.octal-640
+  type: short
+  skill: apply
+  topics: [linux.m04]
+  prompt: "Write the octal mode for `rw-r-----`."
+  accepted: ["640", "0640"]
+  match: { mode: exact }
+  explanation: "Owner rw = 4+2 = 6, group r = 4, others nothing = 0."
+
+- id: linux.m04.l3.symbolic-751
+  type: choice
+  skill: apply
+  topics: [linux.m04]
+  prompt: Which permission string is octal `751`?
+  options:
+    - { id: a, text: "`rwxr-x--x`", explanation: "Correct. 7 = rwx, 5 = r-x, 1 = --x." }
+    - { id: b, text: "`rwxr-xr--`", explanation: "That is 754." }
+    - { id: c, text: "`rw-r-x--x`", explanation: "That is 651." }
+  correct: [a]
+
+- id: linux.m04.l3.dir-x
+  type: choice
+  skill: explain
+  topics: [linux.m04]
+  prompt: What does the **execute** bit allow on a **directory**?
+  options:
+    - { id: a, text: Running the programs inside it., explanation: "Each program needs its own execute bit." }
+    - { id: b, text: "Entering it (`cd`) and reaching the files inside by name.", explanation: "Correct. Without `x`, even a readable file inside cannot be opened." }
+    - { id: c, text: Listing the names in it., explanation: "That is `r` on a directory." }
+  correct: [b]
+
+- id: linux.m04.l3.delete
+  type: choice
+  skill: explain
+  topics: [linux.m04]
+  prompt: "farid can delete `report.txt`, even though it belongs to aina and has mode `644`. Why?"
+  options:
+    - { id: a, text: "Deleting is controlled by **write permission on the directory**, and farid can write to the directory.", explanation: "Correct. The sticky bit (next lesson) prevents this in shared directories." }
+    - { id: b, text: "644 lets the group delete the file.", explanation: "File permissions do not govern deletion." }
+    - { id: c, text: farid must be root., explanation: "Not necessary: directory write permission is enough." }
+  correct: [a]
+
+- id: linux.m04.l3.ssh-key
+  type: choice
+  skill: apply
+  topics: [linux.m04]
+  prompt: SSH refuses to use your private key with "UNPROTECTED PRIVATE KEY FILE". Which mode fixes `~/.ssh/id_ed25519`?
+  options:
+    - { id: a, text: "`644`", explanation: "Others can read it: that is what SSH complains about." }
+    - { id: b, text: "`600`", explanation: "Correct. Only the owner may read and write it." }
+    - { id: c, text: "`777`", explanation: "Worse: everyone can read and change it." }
+  correct: [b]
+
+- id: linux.m04.l3.chown
+  type: short
+  skill: recall
+  topics: [linux.m04]
+  prompt: Write the command that makes `www-data` the owner **and** group of everything under `/var/www/kira`.
+  accepted: ["sudo chown -R www-data:www-data /var/www/kira", "sudo chown -R www-data: /var/www/kira", "chown -R www-data:www-data /var/www/kira", "sudo chown -R www-data.www-data /var/www/kira"]
+  match: { mode: exact }
+
+- id: linux.m04.l3.umask
+  type: choice
+  skill: apply
+  topics: [linux.m04]
+  prompt: With `umask 027`, what mode does a newly created **file** get?
+  options:
+    - { id: a, text: "`640`", explanation: "Correct. 666 with group write and all others' bits removed." }
+    - { id: b, text: "`750`", explanation: "That is a new directory (777 − 027)." }
+    - { id: c, text: "`027`", explanation: "The umask is what is removed, not the result." }
+  correct: [a]
+
+- id: linux.m04.l3.777
+  type: choice
+  skill: explain
+  topics: [linux.m04]
+  prompt: A web page fails with "Permission denied" and a colleague suggests `chmod -R 777 /var/www`. What is the professional response?
+  options:
+    - { id: a, text: "Agree: it is the quickest fix.", explanation: "It lets any user or compromised process change the site." }
+    - { id: b, text: "Find which account needs which access (e.g. www-data needs read) and grant only that with the right owner, group or mode.", explanation: "Correct. Diagnose with `namei -l` and fix narrowly." }
+    - { id: c, text: Disable the web server's user., explanation: "That stops the site entirely." }
+  correct: [b]

@@ -1,0 +1,62 @@
+- id: linux.m11.l1.uid0
+  type: choice
+  skill: explain
+  topics: [linux.m11]
+  prompt: "An audit finds `backup2:x:0:0::/home/backup2:/bin/bash` in `/etc/passwd`. Why is this serious?"
+  options:
+    - { id: a, text: "UID 0 is root, whatever the name: this account has full control of the system.", explanation: "Correct. Investigate how it was created; it may indicate a compromise." }
+    - { id: b, text: The home directory is wrong., explanation: "The UID is the real problem." }
+    - { id: c, text: It is a normal backup account., explanation: "Backup accounts never need UID 0." }
+  correct: [a]
+
+- id: linux.m11.l1.chage-d0
+  type: short
+  skill: recall
+  topics: [linux.m11]
+  prompt: Which `chage` command forces user `aina` to change her password at the next login?
+  accepted: ["sudo chage -d 0 aina", "chage -d 0 aina", "sudo chage -d0 aina"]
+  match: { mode: exact }
+
+- id: linux.m11.l1.lastb
+  type: choice
+  skill: recognize
+  topics: [linux.m11]
+  prompt: Which command shows **failed** login attempts?
+  options:
+    - { id: a, text: "`sudo lastb`", explanation: "Correct. It reads /var/log/btmp." }
+    - { id: b, text: "`last`", explanation: "Successful logins and reboots." }
+    - { id: c, text: "`who`", explanation: "Users logged in now." }
+  correct: [a]
+
+- id: linux.m11.l1.keys-locked
+  type: choice
+  skill: explain
+  topics: [linux.m11]
+  prompt: "You locked a former employee's password with `usermod -L`. Why might they still be able to log in?"
+  options:
+    - { id: a, text: "Their SSH public key is still in `~/.ssh/authorized_keys`, and key logins do not use the password.", explanation: "Correct. Also expire the account and remove the keys." }
+    - { id: b, text: usermod -L has no effect., explanation: "It locks password authentication." }
+    - { id: c, text: Locked accounts unlock after 24 hours., explanation: "They stay locked." }
+  correct: [a]
+
+- id: linux.m11.l1.pwquality
+  type: choice
+  skill: recognize
+  topics: [linux.m11]
+  prompt: Which file sets password quality rules such as minimum length on Ubuntu (with libpam-pwquality)?
+  options:
+    - { id: a, text: "`/etc/security/pwquality.conf`", explanation: "Correct." }
+    - { id: b, text: "`/etc/shadow`", explanation: "Stores hashes and ageing, not quality rules." }
+    - { id: c, text: "`/etc/sudoers`", explanation: "Sudo rights." }
+  correct: [a]
+
+- id: linux.m11.l1.unused
+  type: choice
+  skill: apply
+  topics: [linux.m11]
+  prompt: An account has not been used for 200 days and its owner's department is unknown. What is the professional action?
+  options:
+    - { id: a, text: "Raise it with the account owner's manager or HR; disable it pending confirmation, and record the decision.", explanation: "Correct. Least privilege plus accountability." }
+    - { id: b, text: Delete it with `userdel -r` straight away., explanation: "You might destroy needed data." }
+    - { id: c, text: Ignore it; unused accounts are harmless., explanation: "Dormant accounts are a common attack route." }
+  correct: [a]

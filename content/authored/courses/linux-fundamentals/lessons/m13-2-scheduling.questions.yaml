@@ -1,0 +1,81 @@
+- id: linux.m13.l2.cron-fields
+  type: choice
+  skill: apply
+  topics: [linux.m13]
+  prompt: "When does the crontab line `0 8 * * 1-5 /usr/local/bin/report.sh` run?"
+  options:
+    - { id: a, text: "At 08:00 Monday to Friday", explanation: "Correct." }
+    - { id: b, text: "At 00:08 on days 1 to 5 of each month", explanation: "Minute comes first, then hour; the fifth field is the day of week." }
+    - { id: c, text: Every 8 minutes on weekdays, explanation: "That would be `*/8`." }
+  correct: [a]
+
+- id: linux.m13.l2.every-15
+  type: short
+  skill: apply
+  topics: [linux.m13]
+  prompt: "Write the five cron time fields for **every 15 minutes**."
+  accepted: ["*/15 * * * *", "0,15,30,45 * * * *"]
+  match: { mode: exact }
+
+- id: linux.m13.l2.env
+  type: choice
+  skill: explain
+  topics: [linux.m13]
+  prompt: A script works when you run it, but fails under cron with `command not found`. Most likely cause?
+  options:
+    - { id: a, text: "cron's minimal environment: a short PATH and no ~/.bashrc; use full paths or set PATH in the crontab.", explanation: "Correct." }
+    - { id: b, text: cron cannot run Bash scripts., explanation: "It can." }
+    - { id: c, text: The script needs to be in /etc., explanation: "Location is not the problem." }
+  correct: [a]
+
+- id: linux.m13.l2.percent
+  type: choice
+  skill: recognize
+  topics: [linux.m13]
+  prompt: "Why does `0 1 * * * tar czf /backup/etc-$(date +%F).tgz /etc` misbehave in a crontab?"
+  options:
+    - { id: a, text: "`%` is special in crontab (it becomes a newline); escape it as `\\%`.", explanation: "Correct." }
+    - { id: b, text: tar cannot run at 01:00., explanation: "Time is not the issue." }
+    - { id: c, text: "`$( )` is not allowed in cron.", explanation: "It works; the `%` is the problem." }
+  correct: [a]
+
+- id: linux.m13.l2.persistent
+  type: choice
+  skill: explain
+  topics: [linux.m13]
+  prompt: "What does `Persistent=true` do in a systemd timer?"
+  options:
+    - { id: a, text: "If the system was off when the job was due, the job runs soon after the next boot.", explanation: "Correct." }
+    - { id: b, text: It keeps the service running forever., explanation: "The service still runs once per trigger." }
+    - { id: c, text: It saves output to disk., explanation: "The journal handles output." }
+  correct: [a]
+
+- id: linux.m13.l2.list-timers
+  type: short
+  skill: recall
+  topics: [linux.m13]
+  prompt: Which command lists systemd timers with their next and last run times?
+  accepted: ["systemctl list-timers", "systemctl list-timers --all"]
+  match: { mode: exact }
+
+- id: linux.m13.l2.system-crontab
+  type: choice
+  skill: recognize
+  topics: [linux.m13]
+  prompt: "What extra field do lines in `/etc/crontab` and `/etc/cron.d/*` have compared with a user's crontab?"
+  options:
+    - { id: a, text: The user to run the command as, explanation: "Correct: `30 1 * * * root /usr/local/sbin/backup.sh`." }
+    - { id: b, text: The year, explanation: "cron has no year field." }
+    - { id: c, text: The time zone, explanation: "cron uses the system time zone (CRON_TZ is a separate variable)." }
+  correct: [a]
+
+- id: linux.m13.l2.oneshot
+  type: choice
+  skill: recognize
+  topics: [linux.m13]
+  prompt: Which `Type=` is normally used for a service started by a timer to run a script and exit?
+  options:
+    - { id: a, text: "`oneshot`", explanation: "Correct." }
+    - { id: b, text: "`forking`", explanation: "For daemons that fork into the background." }
+    - { id: c, text: "`notify`", explanation: "For daemons that signal readiness to systemd." }
+  correct: [a]

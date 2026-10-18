@@ -1,0 +1,83 @@
+id: linux-fundamentals.m05-quiz
+title: "Module 5 quiz: package management"
+kind: quiz
+passMark: 0.7
+description: Eight questions on APT, dpkg, repositories, updates and DNF.
+sections:
+  - id: linux-fundamentals.m05-quiz.s1
+    title: Module 5
+    questions:
+      - id: linux.m05.quiz.order
+        type: choice
+        skill: apply
+        topics: [linux.m05]
+        prompt: "`sudo apt install htop` says `Unable to locate package htop` on a freshly installed server. What do you try first?"
+        options:
+          - { id: a, text: "`sudo apt update`, then install again", explanation: "Correct. The package index may not have been downloaded yet." }
+          - { id: b, text: Download htop from a website, explanation: "Bypasses updates and signature checks." }
+          - { id: c, text: Add a PPA, explanation: "htop is in Ubuntu's own repositories." }
+        correct: [a]
+      - id: linux.m05.quiz.remove-config
+        type: choice
+        skill: recognize
+        topics: [linux.m05]
+        prompt: After `sudo apt remove nginx`, what remains in `/etc/nginx`?
+        options:
+          - { id: a, text: The configuration files, explanation: "Correct. `purge` would remove them." }
+          - { id: b, text: Nothing, explanation: "That would be after `purge`." }
+          - { id: c, text: The nginx binary, explanation: "The program is removed." }
+        correct: [a]
+      - id: linux.m05.quiz.files
+        type: short
+        skill: recall
+        topics: [linux.m05]
+        prompt: Which command lists all the files installed by the `openssh-server` package on Ubuntu?
+        accepted: ["dpkg -L openssh-server", "dpkg --listfiles openssh-server"]
+        match: { mode: exact }
+      - id: linux.m05.quiz.security-suite
+        type: choice
+        skill: recognize
+        topics: [linux.m05]
+        prompt: "On Ubuntu 26.04, which suite delivers security fixes?"
+        options:
+          - { id: a, text: "`resolute-security`", explanation: "Correct." }
+          - { id: b, text: "`resolute-backports`", explanation: "Newer versions, opt-in; not security fixes." }
+          - { id: c, text: "`resolute-proposed`", explanation: "Testing area for updates." }
+        correct: [a]
+      - id: linux.m05.quiz.hold-risk
+        type: choice
+        skill: explain
+        topics: [linux.m05]
+        prompt: What is the risk of leaving a package on hold indefinitely?
+        options:
+          - { id: a, text: It also misses security fixes., explanation: "Correct. Document holds and review them." }
+          - { id: b, text: It gets uninstalled., explanation: "A hold keeps it installed." }
+          - { id: c, text: None., explanation: "Unpatched software is a risk." }
+        correct: [a]
+      - id: linux.m05.quiz.deb-file
+        type: choice
+        skill: apply
+        topics: [linux.m05]
+        prompt: A vendor gives you `agent_2.4_amd64.deb`. Which command installs it **and** fetches its dependencies?
+        options:
+          - { id: a, text: "`sudo apt install ./agent_2.4_amd64.deb`", explanation: "Correct. The `./` tells APT it is a file." }
+          - { id: b, text: "`sudo dpkg -i agent_2.4_amd64.deb`", explanation: "dpkg does not fetch dependencies." }
+          - { id: c, text: "`sudo apt get agent_2.4_amd64.deb`", explanation: "Not an apt subcommand." }
+        correct: [a]
+      - id: linux.m05.quiz.rhel-updates
+        type: short
+        skill: recall
+        topics: [linux.m05]
+        prompt: On RHEL, which command lists available updates without installing them?
+        accepted: ["dnf check-update", "sudo dnf check-update", "yum check-update"]
+        match: { mode: exact }
+      - id: linux.m05.quiz.dns
+        type: choice
+        skill: apply
+        topics: [linux.m05]
+        prompt: "`apt update` fails with `Temporary failure resolving 'archive.ubuntu.com'`. Where is the problem?"
+        options:
+          - { id: a, text: "Name resolution or network connectivity (Module 9)", explanation: "Correct. APT could not translate the name into an address." }
+          - { id: b, text: The repository's signing key, explanation: "That gives a signature error." }
+          - { id: c, text: A held package, explanation: "Holds do not stop index downloads." }
+        correct: [a]

@@ -12,8 +12,10 @@ stages:
     courseIds: [ai-01-python]
   - id: stage-02
     title: Git, Linux and the command line
-    summary: Version control, the shell, files and processes, and a reproducible development setup.
-    courseIds: [ai-02-dev-tools]
+    summary: >-
+      Version control, the shell, files and processes, and a reproducible development setup. The Linux part is the
+      Linux Fundamentals course (Modules 0–7 at least); the Git and tooling course is in preparation.
+    courseIds: [linux-fundamentals, ai-02-dev-tools]
     certificationIds: [lf-lfcs, comptia-linux-plus]
   - id: stage-03
     title: Mathematics, statistics and probability
@@ -62,6 +64,13 @@ stages:
     summary: APIs for models, containers, CI/CD, model registries and monitoring in production.
     courseIds: [ai-12-mlops]
     certificationIds: [aws-ml-engineer-associate, ms-mlops-engineer, google-ml-engineer, lf-kcna]
+    foundations:
+      - courseId: linux-fundamentals
+        relevance: strongly-recommended
+        unitIds: [linux-fundamentals.m03, linux-fundamentals.m05, linux-fundamentals.m06, linux-fundamentals.m07, linux-fundamentals.m09, linux-fundamentals.m10]
+        note: >-
+          Containers, model servers and CI runners are Linux processes: services, logs, ports and resource limits
+          explain most deployment problems. Cloud-provider services themselves are covered by each provider's courses.
   - id: stage-13
     title: Evaluation, monitoring, security, privacy and responsible AI
     summary: Evaluating LLM systems, prompt injection and data risks, privacy and fairness.

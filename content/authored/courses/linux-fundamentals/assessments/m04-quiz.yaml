@@ -1,0 +1,83 @@
+id: linux-fundamentals.m04-quiz
+title: "Module 4 quiz: users, groups and permissions"
+kind: quiz
+passMark: 0.7
+description: Eight questions on accounts, sudo, permissions, special bits and ACLs.
+sections:
+  - id: linux-fundamentals.m04-quiz.s1
+    title: Module 4
+    questions:
+      - id: linux.m04.quiz.first-match
+        type: choice
+        skill: explain
+        topics: [linux.m04]
+        prompt: "A file is `----rw---- aina accounts`. aina is in `accounts`. Can aina read it?"
+        options:
+          - { id: a, text: "Yes, through the group bits.", explanation: "Linux uses the first matching class: aina is the owner, and the owner bits are `---`." }
+          - { id: b, text: "No: as the owner, only the owner bits apply, and they grant nothing.", explanation: "Correct. She can still `chmod` it because she owns it." }
+          - { id: c, text: Only with sudo., explanation: "She can fix it herself with chmod." }
+        correct: [b]
+      - id: linux.m04.quiz.octal
+        type: short
+        skill: apply
+        topics: [linux.m04]
+        prompt: "Write the command that sets `deploy.sh` to `rwxr-x---` using octal."
+        accepted: ["chmod 750 deploy.sh"]
+        match: { mode: exact }
+      - id: linux.m04.quiz.usermod-g
+        type: choice
+        skill: apply
+        topics: [linux.m04]
+        prompt: "After `sudo usermod -G docker aina`, aina can no longer use sudo. Why?"
+        options:
+          - { id: a, text: "`-G` without `-a` replaced all her supplementary groups, removing `sudo`.", explanation: "Correct. Use `usermod -aG`." }
+          - { id: b, text: The docker group blocks sudo., explanation: "Groups do not block each other." }
+          - { id: c, text: Her password expired., explanation: "Nothing changed her password." }
+        correct: [a]
+      - id: linux.m04.quiz.service-account
+        type: choice
+        skill: recognize
+        topics: [linux.m04]
+        prompt: Which shell setting stops a service account from being used for interactive logins?
+        options:
+          - { id: a, text: "`/usr/sbin/nologin`", explanation: "Correct (or `/bin/false`)." }
+          - { id: b, text: "`/bin/bash`", explanation: "That allows logins." }
+          - { id: c, text: "`/bin/sh`", explanation: "Also a working shell." }
+        correct: [a]
+      - id: linux.m04.quiz.namei
+        type: choice
+        skill: apply
+        topics: [linux.m04]
+        prompt: You need to see the permissions of every directory on the path to `/srv/kira/accounts/ledger.txt` at once. Which command?
+        options:
+          - { id: a, text: "`namei -l /srv/kira/accounts/ledger.txt`", explanation: "Correct." }
+          - { id: b, text: "`ls -R /srv`", explanation: "Lists contents, not each path component's mode." }
+          - { id: c, text: "`getent /srv/kira`", explanation: "`getent` queries databases such as passwd and group." }
+        correct: [a]
+      - id: linux.m04.quiz.sudo-log
+        type: choice
+        skill: explain
+        topics: [linux.m04]
+        prompt: Why do organisations prefer personal accounts with sudo over a shared root password?
+        options:
+          - { id: a, text: "Every privileged action is logged under the person who did it, and access can be removed per person.", explanation: "Correct: accountability and least privilege." }
+          - { id: b, text: Root cannot read logs., explanation: "Root can read everything." }
+          - { id: c, text: "Sudo is faster.", explanation: "Speed is not the reason." }
+        correct: [a]
+      - id: linux.m04.quiz.acl-mask
+        type: choice
+        skill: recognize
+        topics: [linux.m04]
+        prompt: In an ACL, what limits the effective permissions of named users and groups?
+        options:
+          - { id: a, text: The mask entry, explanation: "Correct." }
+          - { id: b, text: The umask, explanation: "The umask shapes new files' modes; the ACL mask is separate." }
+          - { id: c, text: The sticky bit, explanation: "That controls deletion in directories." }
+        correct: [a]
+      - id: linux.m04.quiz.password-age
+        type: short
+        skill: recall
+        topics: [linux.m04]
+        prompt: Which command shows a user's password-ageing information (last change, expiry)? Write it for `aina`.
+        accepted: ["chage -l aina", "sudo chage -l aina"]
+        match: { mode: exact }

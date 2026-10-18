@@ -1,0 +1,82 @@
+- id: linux.m02.l2.mkdir-p
+  type: short
+  skill: recall
+  topics: [linux.m02]
+  prompt: Write the command that creates `/srv/app/data/cache` in one go, including any missing parent directories.
+  accepted: ["mkdir -p /srv/app/data/cache", "sudo mkdir -p /srv/app/data/cache"]
+  match: { mode: exact }
+
+- id: linux.m02.l2.rename
+  type: choice
+  skill: recognize
+  topics: [linux.m02]
+  prompt: How do you rename `draft.txt` to `final.txt`?
+  options:
+    - { id: a, text: "`rename draft.txt final.txt`", explanation: "`rename` exists on some systems but uses a different syntax (patterns)." }
+    - { id: b, text: "`mv draft.txt final.txt`", explanation: "Correct. Moving within the same directory is renaming." }
+    - { id: c, text: "`cp draft.txt final.txt`", explanation: "That copies; the original stays." }
+  correct: [b]
+
+- id: linux.m02.l2.cp-a
+  type: choice
+  skill: apply
+  topics: [linux.m02]
+  prompt: You are copying a web site's directory to a backup location and must keep owners, permissions and timestamps. Which option?
+  options:
+    - { id: a, text: "`cp -r`", explanation: "Recursive, but owners and times are not kept." }
+    - { id: b, text: "`cp -a`", explanation: "Correct. Archive mode preserves attributes and links and is recursive." }
+    - { id: c, text: "`cp -i`", explanation: "Only asks before overwriting." }
+    - { id: d, text: "`cp -v`", explanation: "Only prints what is copied." }
+  correct: [b]
+
+- id: linux.m02.l2.rmdir
+  type: choice
+  skill: explain
+  topics: [linux.m02]
+  prompt: "`rmdir backup` fails with `Directory not empty`. What does that tell you?"
+  options:
+    - { id: a, text: "`rmdir` only removes empty directories; `backup` still has files in it.", explanation: "Correct. Check with `ls -A backup`; use `rm -r` only if you really mean to delete them." }
+    - { id: b, text: You need sudo., explanation: "The message would be `Permission denied`." }
+    - { id: c, text: The directory does not exist., explanation: "That would be `No such file or directory`." }
+  correct: [a]
+
+- id: linux.m02.l2.hard-vs-soft
+  type: choice
+  skill: explain
+  topics: [linux.m02]
+  prompt: You delete `original.txt`. A hard link `hard.txt` and a symlink `soft.txt` pointed to it. What happens?
+  options:
+    - { id: a, text: Both still work., explanation: "The symlink stores a path that no longer exists." }
+    - { id: b, text: "`hard.txt` still has the data; `soft.txt` is now broken.", explanation: "Correct. The data stays while any hard link remains." }
+    - { id: c, text: Both are broken., explanation: "The hard link is a name for the same inode." }
+    - { id: d, text: "`soft.txt` still works; `hard.txt` is broken.", explanation: "It is the other way round." }
+  correct: [b]
+
+- id: linux.m02.l2.symlink-cmd
+  type: short
+  skill: recall
+  topics: [linux.m02]
+  prompt: "Write the command that creates a symbolic link named `current` pointing to `release-2.1`."
+  accepted: ["ln -s release-2.1 current"]
+  match: { mode: exact }
+  explanation: "`ln -s TARGET LINK_NAME`: the target comes first."
+
+- id: linux.m02.l2.brace
+  type: choice
+  skill: apply
+  topics: [linux.m02]
+  prompt: "What does `mkdir -p site/{css,js,img}` create?"
+  options:
+    - { id: a, text: "One directory named `{css,js,img}`", explanation: "The shell expands braces before `mkdir` sees them." }
+    - { id: b, text: "`site/css`, `site/js` and `site/img`", explanation: "Correct. Brace expansion produces three paths." }
+    - { id: c, text: An error, explanation: "This is valid Bash." }
+  correct: [b]
+
+- id: linux.m02.l2.vim-quit
+  type: short
+  skill: recall
+  topics: [linux.m02]
+  prompt: In vim, which command (typed after pressing Esc) quits **without** saving?
+  accepted: [":q!"]
+  match: { mode: exact }
+  explanation: "`:wq` saves and quits; `:q!` discards changes."

@@ -1,0 +1,70 @@
+- id: linux.m11.l2.keys-only
+  type: choice
+  skill: recognize
+  topics: [linux.m11]
+  prompt: Which sshd setting makes password guessing useless?
+  options:
+    - { id: a, text: "`PasswordAuthentication no` (with KbdInteractiveAuthentication no)", explanation: "Correct. Only keys are accepted." }
+    - { id: b, text: "`PermitRootLogin no`", explanation: "Protects root only; other accounts could still be guessed." }
+    - { id: c, text: "`Port 2222`", explanation: "Only reduces automated noise." }
+  correct: [a]
+
+- id: linux.m11.l2.test-config
+  type: short
+  skill: recall
+  topics: [linux.m11]
+  prompt: Which command checks the SSH server's configuration for errors before you restart it?
+  accepted: ["sudo sshd -t", "sshd -t"]
+  match: { mode: exact }
+
+- id: linux.m11.l2.second-session
+  type: choice
+  skill: explain
+  topics: [linux.m11]
+  prompt: Why keep a second SSH session open while changing the SSH configuration?
+  options:
+    - { id: a, text: "If the new settings block logins, the open session still works so you can fix them.", explanation: "Correct. Existing sessions are not affected by the restart." }
+    - { id: b, text: sshd needs two sessions to restart., explanation: "It does not." }
+    - { id: c, text: To double the speed., explanation: "Unrelated." }
+  correct: [a]
+
+- id: linux.m11.l2.first-wins
+  type: choice
+  skill: explain
+  topics: [linux.m11]
+  prompt: "Why does `PasswordAuthentication no` in `/etc/ssh/sshd_config.d/10-hardening.conf` beat `PasswordAuthentication yes` in `50-cloud-init.conf`?"
+  options:
+    - { id: a, text: "The drop-ins are read in name order and, for sshd, the first value found for a setting wins.", explanation: "Correct. Confirm the effective value with `sshd -T`." }
+    - { id: b, text: Lower numbers always mean higher priority in Linux., explanation: "It depends on the program; for sshd, first value wins." }
+    - { id: c, text: "`no` always overrides `yes`.", explanation: "Values do not have built-in priority." }
+  correct: [a]
+
+- id: linux.m11.l2.effective
+  type: short
+  skill: recall
+  topics: [linux.m11]
+  prompt: Which command prints sshd's **effective** configuration (all settings as it will apply them)?
+  accepted: ["sudo sshd -T", "sshd -T"]
+  match: { mode: exact }
+
+- id: linux.m11.l2.fail2ban
+  type: choice
+  skill: recognize
+  topics: [linux.m11]
+  prompt: What does fail2ban do?
+  options:
+    - { id: a, text: "Watches logs for repeated failures and temporarily bans the source addresses in the firewall.", explanation: "Correct." }
+    - { id: b, text: Encrypts SSH traffic., explanation: "SSH already does." }
+    - { id: c, text: Rotates SSH keys., explanation: "Not its job." }
+  correct: [a]
+
+- id: linux.m11.l2.lost-key
+  type: choice
+  skill: apply
+  topics: [linux.m11]
+  prompt: A colleague's laptop with their SSH private key was stolen. What is the most important action on the servers?
+  options:
+    - { id: a, text: "Remove that public key from every `authorized_keys` it was added to, then issue them a new key pair.", explanation: "Correct. The stolen key stops working everywhere it is removed." }
+    - { id: b, text: Change their password., explanation: "Key logins ignore the password." }
+    - { id: c, text: Change the SSH port., explanation: "The key would still work on the new port." }
+  correct: [a]

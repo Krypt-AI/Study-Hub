@@ -1,6 +1,7 @@
 /**
  * A learning roadmap: stages down one column of bubbles, each filled as its courses are
- * completed, with the courses to take and the certifications the stage prepares for.
+ * completed, with the courses to take, the foundation modules to have done first, what a stage
+ * still in preparation will cover, and the certifications the stage prepares for.
  */
 import { Link, useParams } from 'react-router';
 import { Markdown } from '@/components/Markdown';
@@ -10,15 +11,18 @@ import { PageHeader } from '@/components/ui/Sheet';
 import { useCertificationProgress, useLessonProgress } from '@/data/queries';
 import { useCatalog } from '@/domain/content/load';
 import type { Catalog, Roadmap } from '@/domain/content/types';
+import { useLessonStatuses, type LessonStatuses } from '@/features/courses/useLessonStatuses';
 import { certificationUrl, courseUrl } from '@/domain/content/urls';
 import { cn } from '@/lib/cn';
-import { PROVIDER_STATUS, TRACKING } from './certificationLabels';
+import { PROVIDER_STATUS, RELEVANCE, TRACKING } from './certificationLabels';
+import { FoundationModules } from './FoundationModules';
 
 export default function RoadmapPage() {
   const { roadmapId = '' } = useParams();
   const catalog = useCatalog();
   const progress = useLessonProgress();
   const tracking = useCertificationProgress();
+  const statuses = useLessonStatuses();
 
   if (catalog.error) return <ErrorState title="Roadmap content is not built yet" error={catalog.error} />;
   if (!catalog.data || !progress.data || !tracking.data) return <LoadingState />;
@@ -27,7 +31,7 @@ export default function RoadmapPage() {
 
   const completed = new Set(progress.data.filter((record) => record.status === 'completed').map((record) => record.lessonId));
   const started = new Set(progress.data.map((record) => record.lessonId));
-  return <RoadmapView roadmap={roadmap} catalog={catalog.data} completed={completed} started={started} tracking={new Map(tracking.data.map((record) => [record.certId, record.status]))} />;
+  return <RoadmapView roadmap={roadmap} catalog={catalog.data} completed={completed} started={started} statuses={statuses} tracking={new Map(tracking.data.map((record) => [record.certId, record.status]))} />;
 }
 
 interface RoadmapViewProps {
@@ -35,10 +39,11 @@ interface RoadmapViewProps {
   catalog: Catalog;
   completed: Set<string>;
   started: Set<string>;
+  statuses: Map<string, LessonStatuses>;
   tracking: Map<string, keyof typeof TRACKING>;
 }
 
-function RoadmapView({ roadmap, catalog, completed, started, tracking }: RoadmapViewProps) {
+function RoadmapView({ roadmap, catalog, completed, started, statuses, tracking }: RoadmapViewProps) {
   const courseById = new Map(catalog.courses.map((course) => [course.id, course]));
   const certificationById = new Map(catalog.certifications.map((certification) => [certification.id, certification]));
 
@@ -80,6 +85,23 @@ function RoadmapView({ roadmap, catalog, completed, started, tracking }: Roadmap
                 {stage.title}
               </h2>
               <p className="max-w-[70ch] text-ink-muted">{stage.summary}</p>
+              {stage.foundations.flatMap((foundation) => {
+                const course = courseById.get(foundation.courseId);
+                if (!course) return [];
+                const relevance = RELEVANCE[foundation.relevance];
+                return [
+                  <div key={foundation.courseId} className="flex max-w-[70ch] flex-col gap-1.5 rounded-md border border-rule px-3 py-2.5">
+                    <p className="flex flex-wrap items-center gap-2 text-sm">
+                      <span className="font-medium">Before this stage: {course.title}</span>
+                      <Tag tone={relevance.tone} title={relevance.description}>
+                        {relevance.label}
+                      </Tag>
+                    </p>
+                    {foundation.note && <p className="text-sm text-ink-muted">{foundation.note}</p>}
+                    <FoundationModules course={course} foundation={foundation} statuses={statuses.get(course.id)} />
+                  </div>,
+                ];
+              })}
               <div className="flex flex-col gap-1.5">
                 {courses.map((course) => (
                   <Link key={course.id} to={courseUrl(course.id)} className="group flex flex-wrap items-center gap-x-3 gap-y-1">
@@ -99,6 +121,16 @@ function RoadmapView({ roadmap, catalog, completed, started, tracking }: Roadmap
                     {courses.length === 0 ? 'The course for this stage is in preparation.' : `${planned} more course${planned === 1 ? ' is' : 's are'} in preparation.`}
                   </span>
                 )}
+                {planned > 0 && stage.outline.length > 0 && (
+                  <details className="max-w-[70ch] text-sm">
+                    <summary className="cursor-pointer text-ink-muted hover:text-ink">What it will cover</summary>
+                    <ul className="mt-1.5 list-disc pl-5 text-ink-muted">
+                      {stage.outline.map((topic) => (
+                        <li key={topic}>{topic}</li>
+                      ))}
+                    </ul>
+                  </details>
+                )}
               </div>
               {stage.certificationIds.length > 0 && (
                 <div className="flex flex-wrap items-center gap-1.5 pt-1">
@@ -109,8 +141,12 @@ function RoadmapView({ roadmap, catalog, completed, started, tracking }: Roadmap
                     const status = certification.status === 'active' ? undefined : PROVIDER_STATUS[certification.status];
                     const plan = tracking.get(id);
                     return [
-                      <Link key={id} to={certificationUrl(id)} className="inline-flex">
-                        <Tag tone={plan === 'passed' ? 'correct' : status?.tone === 'wrong' ? 'wrong' : 'print'} title={plan ? TRACKING[plan].label : status?.label}>
+                      <Link key={id} to={certificationUrl(id)} className="inline-flex max-w-full min-w-0">
+                        <Tag
+                          tone={plan === 'passed' ? 'correct' : status?.tone === 'wrong' ? 'wrong' : 'print'}
+                          title={plan ? TRACKING[plan].label : (status?.label ?? certification.name)}
+                          className="block max-w-full truncate leading-[1.375rem]"
+                        >
                           {certification.code ?? certification.name}
                           {status && ` · ${status.label}`}
                         </Tag>

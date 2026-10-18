@@ -1,0 +1,79 @@
+- id: linux.m03.l3.grep-v
+  type: choice
+  skill: recognize
+  topics: [linux.m03]
+  prompt: Which `grep` option prints the lines that do **not** match?
+  options:
+    - { id: a, text: "`-i`", explanation: "Ignores case." }
+    - { id: b, text: "`-v`", explanation: "Correct. Invert the match." }
+    - { id: c, text: "`-c`", explanation: "Counts matching lines." }
+    - { id: d, text: "`-n`", explanation: "Adds line numbers." }
+  correct: [b]
+
+- id: linux.m03.l3.anchor
+  type: short
+  skill: recall
+  topics: [linux.m03]
+  prompt: "Write the regular expression (as you would quote it for grep) that matches lines **starting** with `#`."
+  accepted: ["'^#'", "^#", "\"^#\""]
+  match: { mode: exact }
+
+- id: linux.m03.l3.cut
+  type: short
+  skill: apply
+  topics: [linux.m03]
+  prompt: "Write the command that prints only the **home directory** (field 6) of every account in `/etc/passwd`."
+  accepted: ["cut -d: -f6 /etc/passwd", "cut -d : -f 6 /etc/passwd", "cut -f6 -d: /etc/passwd", "cut -d':' -f6 /etc/passwd"]
+  match: { mode: exact }
+  explanation: "Fields are separated by `:`; the sixth is the home directory."
+
+- id: linux.m03.l3.uniq
+  type: choice
+  skill: explain
+  topics: [linux.m03]
+  prompt: "Why is the pipeline `... | sort | uniq -c` and not `... | uniq -c` alone?"
+  options:
+    - { id: a, text: "`uniq` only merges **adjacent** identical lines, so equal lines must be next to each other first.", explanation: "Correct." }
+    - { id: b, text: "`uniq` refuses unsorted input.", explanation: "It accepts it, but the counts would be split." }
+    - { id: c, text: "`sort` removes duplicates.", explanation: "Only with `sort -u`; `uniq -c` is there to count them." }
+  correct: [a]
+
+- id: linux.m03.l3.sed-preview
+  type: choice
+  skill: apply
+  topics: [linux.m03]
+  prompt: You plan to change `PasswordAuthentication yes` to `no` in `/etc/ssh/sshd_config` with `sed`. What is the safest sequence?
+  options:
+    - { id: a, text: "Run the `sed` command without `-i` to check the output, then run it with `-i.bak`.", explanation: "Correct. You see the change first and keep a backup." }
+    - { id: b, text: "Run `sed -i` immediately; you can always undo.", explanation: "There is no undo without a backup." }
+    - { id: c, text: "Use `sed -n` so nothing is printed.", explanation: "`-n` suppresses output; it does not make anything safer." }
+  correct: [a]
+
+- id: linux.m03.l3.awk-last
+  type: choice
+  skill: recognize
+  topics: [linux.m03]
+  prompt: "In `awk`, which expression is the last field of the line?"
+  options:
+    - { id: a, text: "`$0`", explanation: "The whole line." }
+    - { id: b, text: "`$1`", explanation: "The first field." }
+    - { id: c, text: "`$NF`", explanation: "Correct. `NF` is the number of fields." }
+    - { id: d, text: "`$END`", explanation: "Not an awk variable." }
+  correct: [c]
+
+- id: linux.m03.l3.top-ips
+  type: long
+  skill: explain
+  topics: [linux.m03]
+  prompt: "Explain, stage by stage, what `grep 'Failed password' /var/log/auth.log | awk '{print $(NF-3)}' | sort | uniq -c | sort -rn | head -5` produces."
+  minWords: 40
+  rubric:
+    - { id: grep, label: "grep keeps only failed-password log lines", keywords: [["grep"], ["failed", "lines"]] }
+    - { id: awk, label: "awk extracts the IP address field", keywords: [["awk"], ["ip", "address", "field"]] }
+    - { id: count, label: "sort + uniq -c counts attempts per address", keywords: [["uniq"], ["count"]] }
+    - { id: top, label: "sort -rn + head -5 keeps the five addresses with most attempts", keywords: [["sort -rn", "descending", "highest", "most"], ["head", "five", "5", "top"]] }
+  modelAnswer: >-
+    `grep` keeps the lines recording failed SSH password attempts. `awk` prints the fourth-from-last field of each,
+    which in these messages is the source IP address. `sort` puts identical addresses next to each other so `uniq -c`
+    can count them. `sort -rn` orders by that count, highest first, and `head -5` keeps the five addresses that tried
+    most often: a quick list of likely brute-force sources.

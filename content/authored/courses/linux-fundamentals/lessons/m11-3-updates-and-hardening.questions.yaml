@@ -1,0 +1,70 @@
+- id: linux.m11.l3.attack-surface
+  type: choice
+  skill: explain
+  topics: [linux.m11]
+  prompt: Why disable services the server does not need?
+  options:
+    - { id: a, text: "Every running service is code that may contain vulnerabilities; fewer services mean a smaller attack surface.", explanation: "Correct." }
+    - { id: b, text: To save disk space., explanation: "A side effect at best." }
+    - { id: c, text: Services slow down SSH., explanation: "Not the reason." }
+  correct: [a]
+
+- id: linux.m11.l3.world-writable
+  type: short
+  skill: apply
+  topics: [linux.m11]
+  prompt: "Complete the `find` test that matches files writable by **others**: `sudo find / -xdev -type f -perm ____`"
+  accepted: ["-o+w", "-0002", "-002", "/o+w", "/0002"]
+  match: { mode: exact }
+
+- id: linux.m11.l3.mac
+  type: choice
+  skill: explain
+  topics: [linux.m11]
+  prompt: What does mandatory access control (AppArmor or SELinux) add to normal file permissions?
+  options:
+    - { id: a, text: "System-wide policy that confines programs, even ones running as root, to what they are allowed to access.", explanation: "Correct." }
+    - { id: b, text: Encryption of all files., explanation: "MAC controls access; it does not encrypt." }
+    - { id: c, text: Faster file access., explanation: "It adds checks, not speed." }
+  correct: [a]
+
+- id: linux.m11.l3.selinux-status
+  type: short
+  skill: recall
+  topics: [linux.m11]
+  prompt: On RHEL, which command prints the current SELinux mode in one word?
+  accepted: [getenforce]
+  match: { mode: exact }
+
+- id: linux.m11.l3.disable-selinux
+  type: choice
+  skill: apply
+  topics: [linux.m11]
+  prompt: "On RHEL, a web application cannot read files you moved into `/var/www/html`. A forum says 'just disable SELinux'. What should you do?"
+  options:
+    - { id: a, text: "Check the denial (`ausearch -m avc`) and restore the correct labels with `restorecon -Rv /var/www/html`.", explanation: "Correct. Moved files keep their old label." }
+    - { id: b, text: "Set SELinux to Disabled permanently.", explanation: "Removes a whole layer of protection." }
+    - { id: c, text: "`chmod -R 777 /var/www/html`", explanation: "Permissions were not the problem, and 777 creates a new one." }
+  correct: [a]
+
+- id: linux.m11.l3.time
+  type: choice
+  skill: explain
+  topics: [linux.m11]
+  prompt: Why is accurate time synchronisation part of a security baseline?
+  options:
+    - { id: a, text: "Investigations correlate logs across servers by timestamp, and TLS/Kerberos fail with wrong clocks.", explanation: "Correct." }
+    - { id: b, text: Attackers cannot work at night., explanation: "Not a security control." }
+    - { id: c, text: It makes cron faster., explanation: "Unrelated." }
+  correct: [a]
+
+- id: linux.m11.l3.lynis
+  type: choice
+  skill: apply
+  topics: [linux.m11]
+  prompt: "Lynis lists 38 suggestions. What is the professional way to handle them?"
+  options:
+    - { id: a, text: "Evaluate each against the server's role and risk, apply what fits, record decisions not to apply, and re-run.", explanation: "Correct." }
+    - { id: b, text: Apply all 38 immediately on production., explanation: "Some could break services; changes need planning." }
+    - { id: c, text: Ignore them; the index is only a number., explanation: "The suggestions point to real gaps." }
+  correct: [a]

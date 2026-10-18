@@ -1,0 +1,84 @@
+- id: linux.m12.l1.rpo
+  type: choice
+  skill: recognize
+  topics: [linux.m12]
+  prompt: What does the RPO (recovery point objective) express?
+  options:
+    - { id: a, text: How much data (measured in time) the business can afford to lose, explanation: "Correct. It sets backup frequency." }
+    - { id: b, text: How long a restore may take, explanation: "That is the RTO." }
+    - { id: c, text: How many copies to keep, explanation: "That is retention." }
+  correct: [a]
+
+- id: linux.m12.l1.321
+  type: cloze
+  skill: recall
+  topics: [linux.m12]
+  prompt: Complete the 3-2-1 rule.
+  text: "Keep [[1]] copies of the data, on [[2]] different kinds of storage, with [[3]] copy off-site."
+  blanks:
+    - { id: "1", accepted: ["3", three], match: { mode: text } }
+    - { id: "2", accepted: ["2", two], match: { mode: text } }
+    - { id: "3", accepted: ["1", one], match: { mode: text } }
+
+- id: linux.m12.l1.incremental
+  type: choice
+  skill: explain
+  topics: [linux.m12]
+  prompt: "A full backup ran on Sunday and incrementals Monday to Thursday. The server fails on Friday morning. What do you need to restore Thursday's state?"
+  options:
+    - { id: a, text: "Sunday's full plus every incremental from Monday to Thursday", explanation: "Correct. Each incremental only holds changes since the previous backup." }
+    - { id: b, text: Only Thursday's incremental, explanation: "It lacks everything that did not change on Thursday." }
+    - { id: c, text: Sunday's full only, explanation: "That loses four days." }
+  correct: [a]
+
+- id: linux.m12.l1.raid
+  type: choice
+  skill: explain
+  topics: [linux.m12]
+  prompt: Why is RAID not a backup?
+  options:
+    - { id: a, text: "It protects against a disk failing, but instantly mirrors deletions, corruption and ransomware encryption.", explanation: "Correct." }
+    - { id: b, text: RAID is too slow., explanation: "Speed is not the issue." }
+    - { id: c, text: RAID cannot store /etc., explanation: "It stores anything." }
+  correct: [a]
+
+- id: linux.m12.l1.tar-create
+  type: short
+  skill: apply
+  topics: [linux.m12]
+  prompt: "Write the `tar` command that creates a gzip-compressed archive `/srv/backup/home.tar.gz` of `/home`."
+  accepted: ["sudo tar -czf /srv/backup/home.tar.gz /home", "tar -czf /srv/backup/home.tar.gz /home", "sudo tar czf /srv/backup/home.tar.gz /home", "sudo tar -zcf /srv/backup/home.tar.gz /home", "sudo tar -cvzf /srv/backup/home.tar.gz /home", "sudo tar -czvf /srv/backup/home.tar.gz /home"]
+  match: { mode: exact }
+
+- id: linux.m12.l1.tar-list
+  type: choice
+  skill: recognize
+  topics: [linux.m12]
+  prompt: Which option lists the contents of an archive without extracting it?
+  options:
+    - { id: a, text: "`-t`", explanation: "Correct: `tar -tzf archive.tar.gz`." }
+    - { id: b, text: "`-x`", explanation: "Extracts." }
+    - { id: c, text: "`-c`", explanation: "Creates." }
+  correct: [a]
+
+- id: linux.m12.l1.acls
+  type: choice
+  skill: apply
+  topics: [linux.m12]
+  prompt: Your share uses ACLs and setgid directories. Which tar options keep the ACLs in the archive?
+  options:
+    - { id: a, text: "`--acls --xattrs` (run as root, with `-p` to preserve permissions)", explanation: "Correct." }
+    - { id: b, text: "`-z`", explanation: "Compression only." }
+    - { id: c, text: "`--exclude`", explanation: "Leaves files out." }
+  correct: [a]
+
+- id: linux.m12.l1.db-dump
+  type: choice
+  skill: explain
+  topics: [linux.m12]
+  prompt: Why back up a database with its dump tool (e.g. `pg_dump`) rather than copying its data files while it runs?
+  options:
+    - { id: a, text: "Copying live data files can capture an inconsistent, unusable state; a dump is consistent.", explanation: "Correct." }
+    - { id: b, text: Data files are encrypted., explanation: "Not the reason." }
+    - { id: c, text: Dumps are always smaller., explanation: "Often, but consistency is the point." }
+  correct: [a]

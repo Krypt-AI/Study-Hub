@@ -1,0 +1,74 @@
+- id: linux.m04.l2.least-privilege
+  type: choice
+  skill: explain
+  topics: [linux.m04]
+  prompt: Which best describes the principle of least privilege?
+  options:
+    - { id: a, text: Give administrators the root password so they are never blocked., explanation: "That is the opposite." }
+    - { id: b, text: "Give each person and program only the access it needs, for as long as it needs it.", explanation: "Correct." }
+    - { id: c, text: Use as few user accounts as possible., explanation: "Shared accounts remove accountability." }
+  correct: [b]
+
+- id: linux.m04.l2.sudo-group
+  type: choice
+  skill: recognize
+  topics: [linux.m04]
+  prompt: On a Rocky Linux (RHEL-family) server, which group gives full sudo rights by default?
+  options:
+    - { id: a, text: "`sudo`", explanation: "That is Ubuntu and Debian." }
+    - { id: b, text: "`wheel`", explanation: "Correct." }
+    - { id: c, text: "`adm`", explanation: "On Ubuntu, `adm` grants log reading, not sudo." }
+    - { id: d, text: "`root`", explanation: "Not used for sudo rights." }
+  correct: [b]
+
+- id: linux.m04.l2.visudo
+  type: choice
+  skill: explain
+  topics: [linux.m04]
+  prompt: Why edit sudo rules with `visudo` rather than `sudo nano /etc/sudoers.d/file`?
+  options:
+    - { id: a, text: "`visudo` checks the syntax before saving, so a mistake cannot break sudo for everyone.", explanation: "Correct. It also locks the file against simultaneous edits." }
+    - { id: b, text: "`nano` cannot open files in /etc.", explanation: "It can, with sudo." }
+    - { id: c, text: "`visudo` encrypts the file.", explanation: "Sudoers files are plain text." }
+  correct: [a]
+
+- id: linux.m04.l2.sudo-l
+  type: short
+  skill: recall
+  topics: [linux.m04]
+  prompt: Which command lists the commands **you** are allowed to run with sudo?
+  accepted: ["sudo -l", "sudo --list"]
+  match: { mode: exact }
+
+- id: linux.m04.l2.rule
+  type: cloze
+  skill: apply
+  topics: [linux.m04]
+  prompt: Complete the sudoers rule that lets members of the group `helpdesk` restart nginx as root, and nothing else.
+  text: "`[[1]]helpdesk ALL=([[2]]) /usr/bin/systemctl restart nginx`"
+  blanks:
+    - { id: "1", accepted: ["%"], match: { mode: exact } }
+    - { id: "2", accepted: [root, "root:root"], match: { mode: exact } }
+  explanation: "`%` marks a group; `(root)` is the user the command runs as."
+
+- id: linux.m04.l2.dangerous
+  type: choice
+  skill: explain
+  topics: [linux.m04]
+  prompt: Why is allowing `/usr/bin/vim` through sudo effectively the same as giving full root?
+  options:
+    - { id: a, text: "From vim you can open any file and run a shell (`:!bash`), all as root.", explanation: "Correct. Editors, pagers and interpreters escape to a shell." }
+    - { id: b, text: Vim is not installed by default., explanation: "Irrelevant to the risk." }
+    - { id: c, text: It is not dangerous; vim only edits text., explanation: "Editing `/etc/shadow` or `/etc/sudoers` as root is complete control." }
+  correct: [a]
+
+- id: linux.m04.l2.su-ubuntu
+  type: choice
+  skill: recognize
+  topics: [linux.m04]
+  prompt: "On Ubuntu, `su -` with a guessed root password fails. What is the intended way to get a root shell?"
+  options:
+    - { id: a, text: "`sudo -i`", explanation: "Correct. Ubuntu locks root's password; administrators use sudo." }
+    - { id: b, text: "`sudo passwd root`, then `su -`", explanation: "Possible, but it sets a shared root password, which Ubuntu deliberately avoids." }
+    - { id: c, text: "`login root`", explanation: "Root has no usable password." }
+  correct: [a]

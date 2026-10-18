@@ -1,0 +1,13 @@
+import { chromium } from 'playwright';
+const browser = await chromium.launch({ channel: 'chrome' });
+const page = await browser.newPage();
+const problems = [];
+page.on('console', (m) => { if (m.type() === 'error' || m.type() === 'warning') problems.push(`console ${m.type()}: ${m.text()}`); });
+page.on('pageerror', (e) => problems.push(`pageerror: ${e.message}`));
+page.on('requestfailed', (r) => problems.push(`failed ${r.url().slice(0, 120)} ${r.failure()?.errorText}`));
+page.on('response', (r) => { if (r.url().includes('supabase.co') && r.status() >= 400) problems.push(`HTTP ${r.status()} ${r.request().method()} ${r.url().slice(0, 140)}`); });
+await page.goto(process.argv[2], { waitUntil: 'networkidle', timeout: 60000 });
+await page.waitForTimeout(4000);
+console.log('title:', await page.title(), 'url:', page.url());
+console.log(problems.join('\n') || 'no problems recorded');
+await browser.close();

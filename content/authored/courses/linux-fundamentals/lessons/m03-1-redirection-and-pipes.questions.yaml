@@ -1,0 +1,74 @@
+- id: linux.m03.l1.append
+  type: choice
+  skill: recognize
+  topics: [linux.m03]
+  prompt: Which operator **appends** standard output to a file instead of replacing it?
+  options:
+    - { id: a, text: "`>`", explanation: "Replaces (truncates) the file." }
+    - { id: b, text: "`>>`", explanation: "Correct." }
+    - { id: c, text: "`|`", explanation: "A pipe sends output to another command." }
+    - { id: d, text: "`<`", explanation: "Reads standard input from a file." }
+  correct: [b]
+
+- id: linux.m03.l1.errors-null
+  type: short
+  skill: recall
+  topics: [linux.m03]
+  prompt: "Complete the command so that error messages are thrown away: `find / -name passwd ____`"
+  accepted: ["2>/dev/null", "2> /dev/null"]
+  match: { mode: exact }
+
+- id: linux.m03.l1.both
+  type: choice
+  skill: apply
+  topics: [linux.m03]
+  prompt: A backup command must write both its normal output and its errors to `backup.log`. Which form is correct?
+  options:
+    - { id: a, text: "`backup.sh > backup.log 2>&1`", explanation: "Correct. stdout goes to the file, then stderr follows it." }
+    - { id: b, text: "`backup.sh 2>&1 > backup.log`", explanation: "Here stderr is pointed at the terminal (where stdout was) before stdout moves to the file." }
+    - { id: c, text: "`backup.sh | backup.log`", explanation: "A pipe needs a command on the right, not a file." }
+  correct: [a]
+
+- id: linux.m03.l1.truncate
+  type: choice
+  skill: explain
+  topics: [linux.m03]
+  prompt: "Why does `sort names.txt > names.txt` leave `names.txt` empty?"
+  options:
+    - { id: a, text: "The shell truncates `names.txt` for the redirection before `sort` reads it.", explanation: "Correct. Write to a new file, then `mv` it over the original (or use `sort -o names.txt names.txt`)." }
+    - { id: b, text: "`sort` deletes its input.", explanation: "`sort` never modifies its input file." }
+    - { id: c, text: The file is too large., explanation: "Size has nothing to do with it." }
+  correct: [a]
+
+- id: linux.m03.l1.sudo-tee
+  type: choice
+  skill: apply
+  topics: [linux.m03]
+  prompt: "`sudo echo 'Authorised users only' >> /etc/issue.net` says `Permission denied`. Which command works?"
+  options:
+    - { id: a, text: "`echo 'Authorised users only' | sudo tee -a /etc/issue.net`", explanation: "Correct. `tee` runs as root and opens the file itself." }
+    - { id: b, text: "`sudo echo 'Authorised users only' > /etc/issue.net`", explanation: "The redirection is still done by your unprivileged shell." }
+    - { id: c, text: "`echo 'Authorised users only' >> sudo /etc/issue.net`", explanation: "That appends to a file named `sudo`." }
+  correct: [a]
+
+- id: linux.m03.l1.pipeline
+  type: choice
+  skill: apply
+  topics: [linux.m03]
+  prompt: "What does `ls /var/log | wc -l` print?"
+  options:
+    - { id: a, text: The number of entries listed in /var/log, explanation: "Correct. `ls` writes one name per line into the pipe; `wc -l` counts lines." }
+    - { id: b, text: The total size of /var/log, explanation: "Size would need `du`." }
+    - { id: c, text: The longest file name, explanation: "Nothing here measures length." }
+  correct: [a]
+
+- id: linux.m03.l1.pipefail
+  type: choice
+  skill: explain
+  topics: [linux.m03]
+  prompt: In a script, why add `set -o pipefail`?
+  options:
+    - { id: a, text: "So a pipeline reports failure if **any** command in it fails, not only the last one.", explanation: "Correct. Otherwise `false | true` succeeds." }
+    - { id: b, text: So pipes run faster., explanation: "Speed is unchanged." }
+    - { id: c, text: So errors go through the pipe., explanation: "That is `2>&1 |` or `|&`." }
+  correct: [a]

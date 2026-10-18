@@ -1,0 +1,75 @@
+- id: linux.m01.l1.parts
+  type: cloze
+  skill: recognize
+  topics: [linux.m01]
+  prompt: "In the command line `head -n 5 /etc/passwd`, name each part."
+  text: "`head` is the [[1]]; `-n 5` is an [[2]] with a value; `/etc/passwd` is the [[3]]."
+  blanks:
+    - { id: "1", accepted: [command, program] }
+    - { id: "2", accepted: [option, flag, switch] }
+    - { id: "3", accepted: [argument, operand, file] }
+  explanation: "The command is the first word, options start with `-` or `--`, and arguments are what the command acts on."
+
+- id: linux.m01.l1.combine
+  type: choice
+  skill: recognize
+  topics: [linux.m01]
+  prompt: Which command is **not** the same as `ls -l -a`?
+  options:
+    - { id: a, text: "`ls -la`", explanation: "Short options can be combined." }
+    - { id: b, text: "`ls -al`", explanation: "Order of combined short options does not matter here." }
+    - { id: c, text: "`ls -l --all`", explanation: "`--all` is the long form of `-a`." }
+    - { id: d, text: "`ls -L -A`", explanation: "Correct. Options are case-sensitive: `-L` follows links and `-A` hides `.` and `..`." }
+  correct: [d]
+
+- id: linux.m01.l1.whoami
+  type: short
+  skill: recall
+  topics: [linux.m01]
+  prompt: Which command prints only your username?
+  accepted: [whoami]
+  match: { mode: exact }
+
+- id: linux.m01.l1.uname-arch
+  type: choice
+  skill: apply
+  topics: [linux.m01]
+  prompt: You need to know whether a server is x86_64 or ARM before downloading software. Which command answers it?
+  options:
+    - { id: a, text: "`uname -m`", explanation: "Correct. It prints the machine hardware name, such as `x86_64` or `aarch64`." }
+    - { id: b, text: "`uname -r`", explanation: "That is the kernel release." }
+    - { id: c, text: "`hostname`", explanation: "That is the machine's name." }
+    - { id: d, text: "`whoami`", explanation: "That is your username." }
+  correct: [a]
+
+- id: linux.m01.l1.ctrl-c
+  type: choice
+  skill: recognize
+  topics: [linux.m01]
+  prompt: A command you started is taking too long and you want to stop it. Which keys?
+  options:
+    - { id: a, text: "`Ctrl+D`", explanation: "That sends end-of-input; at an empty prompt it logs you out." }
+    - { id: b, text: "`Ctrl+C`", explanation: "Correct. It interrupts the foreground command." }
+    - { id: c, text: "`Ctrl+L`", explanation: "That clears the screen." }
+    - { id: d, text: "`Ctrl+R`", explanation: "That searches history." }
+  correct: [b]
+
+- id: linux.m01.l1.sudo-bang
+  type: short
+  skill: recall
+  topics: [linux.m01]
+  prompt: "`apt update` failed with a permission error. What do you type to rerun the previous command with sudo, without retyping it?"
+  accepted: ["sudo !!"]
+  match: { mode: exact }
+  explanation: "`!!` expands to the previous command, so `sudo !!` becomes `sudo apt update`."
+
+- id: linux.m01.l1.uptime
+  type: choice
+  skill: apply
+  topics: [linux.m01]
+  prompt: "`uptime` prints ` 14:02:11 up 43 days,  3:17,  2 users,  load average: 0.15, 0.10, 0.05`. What does it tell you?"
+  options:
+    - { id: a, text: "The server was rebooted 43 minutes ago.", explanation: "It says 43 days." }
+    - { id: b, text: "The server has run for 43 days 3 hours since its last boot, and two users are logged in.", explanation: "Correct. Module 10 explains the load averages." }
+    - { id: c, text: The server has 43 users., explanation: "The user count is 2." }
+  correct: [b]

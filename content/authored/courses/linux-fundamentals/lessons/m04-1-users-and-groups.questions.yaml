@@ -1,0 +1,80 @@
+- id: linux.m04.l1.uid0
+  type: short
+  skill: recall
+  topics: [linux.m04]
+  prompt: What is the UID of the root account?
+  accepted: ["0", zero]
+  match: { mode: text }
+
+- id: linux.m04.l1.shadow
+  type: choice
+  skill: recognize
+  topics: [linux.m04]
+  prompt: Where are password **hashes** stored on a modern Linux system?
+  options:
+    - { id: a, text: "`/etc/passwd`", explanation: "It shows `x` in the password field; it is readable by everyone." }
+    - { id: b, text: "`/etc/shadow`", explanation: "Correct. Only root can read it." }
+    - { id: c, text: "`/etc/group`", explanation: "Group definitions." }
+    - { id: d, text: "`~/.ssh`", explanation: "SSH keys, not password hashes." }
+  correct: [b]
+
+- id: linux.m04.l1.passwd-line
+  type: choice
+  skill: apply
+  topics: [linux.m04]
+  prompt: "What can you tell from `backup:x:34:34:backup:/var/backups:/usr/sbin/nologin`?"
+  options:
+    - { id: a, text: "A system account (UID 34) used by a service; nobody can log in with it interactively.", explanation: "Correct. UID below 1000 and a nologin shell." }
+    - { id: b, text: A human user called backup with an empty password., explanation: "`x` means the hash is in shadow; UID 34 is a system account." }
+    - { id: c, text: A group with 34 members., explanation: "This is `/etc/passwd`, not `/etc/group`." }
+  correct: [a]
+
+- id: linux.m04.l1.append-group
+  type: short
+  skill: apply
+  topics: [linux.m04]
+  prompt: Write the command that adds user `aina` to the supplementary group `developers` **without** removing her other groups.
+  accepted: ["sudo usermod -aG developers aina", "usermod -aG developers aina", "sudo usermod -a -G developers aina", "sudo gpasswd -a aina developers", "sudo adduser aina developers"]
+  match: { mode: exact }
+  explanation: "`-a` appends; `-G` alone would replace every supplementary group."
+
+- id: linux.m04.l1.lock
+  type: choice
+  skill: apply
+  topics: [linux.m04]
+  prompt: An employee leaves today. Policy says keep their files for 30 days for review. What do you do first?
+  options:
+    - { id: a, text: "`sudo userdel -r farid`", explanation: "That deletes the home directory, which must be kept." }
+    - { id: b, text: "Lock or expire the account (`usermod -L` and `usermod -e 1`, or `chage -E 0`), and remove their SSH keys.", explanation: "Correct. Access stops immediately; data stays for review. Password locking alone does not block SSH keys." }
+    - { id: c, text: Change their shell to bash., explanation: "That does nothing to stop access." }
+  correct: [b]
+
+- id: linux.m04.l1.locked-hash
+  type: choice
+  skill: recognize
+  topics: [linux.m04]
+  prompt: "In `/etc/shadow`, the hash field of an account starts with `!`. What does that mean?"
+  options:
+    - { id: a, text: The password is empty., explanation: "An empty field means no password; `!` means locked." }
+    - { id: b, text: The password login is locked., explanation: "Correct. `usermod -L` or `passwd -l` adds the `!`." }
+    - { id: c, text: The user is root., explanation: "Root is identified by UID 0." }
+  correct: [b]
+
+- id: linux.m04.l1.useradd-m
+  type: choice
+  skill: explain
+  topics: [linux.m04]
+  prompt: "On Ubuntu, `sudo useradd farid` created the account, but farid has no home directory. Why?"
+  options:
+    - { id: a, text: "On Ubuntu `useradd` only creates the home directory with `-m`; `adduser` does it automatically.", explanation: "Correct. RHEL's `useradd` creates it by default." }
+    - { id: b, text: Home directories are created at first boot., explanation: "They are created by the account tools." }
+    - { id: c, text: The disk is full., explanation: "You would see an error." }
+  correct: [a]
+
+- id: linux.m04.l1.getent
+  type: short
+  skill: recall
+  topics: [linux.m04]
+  prompt: Which command shows the `developers` group entry from every configured account source (local files or a directory service)?
+  accepted: ["getent group developers"]
+  match: { mode: exact }

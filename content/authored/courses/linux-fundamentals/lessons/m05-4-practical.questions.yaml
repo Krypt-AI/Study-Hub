@@ -1,0 +1,38 @@
+- id: linux.m05.l4.evidence
+  type: long
+  skill: apply
+  topics: [linux.m05]
+  prompt: Report what you did for CR-2026-031 and the evidence for each requirement.
+  minWords: 50
+  rubric:
+    - { id: snapshot, label: "Snapshot before the change", keywords: [["snapshot"]] }
+    - { id: install, label: "One `apt install` for the five packages after `apt update`", keywords: [["apt install"], ["nginx"], ["acl"]] }
+    - { id: origin, label: "Origin verified with `apt policy` (Ubuntu archive)", keywords: [["apt policy", "apt-cache policy"], ["archive.ubuntu.com", "ubuntu", "resolute"]] }
+    - { id: http, label: "nginx answers: `curl -I http://localhost` returns HTTP 200", keywords: [["curl"], ["200", "HTTP"]] }
+    - { id: patch, label: "Updates applied, reboot handled, kernel confirmed with `uname -r`", keywords: [["upgrade"], ["reboot"], ["uname -r", "kernel"]] }
+    - { id: auto, label: "Unattended-upgrades shown enabled", keywords: [["unattended"]] }
+    - { id: assets, label: "Versions recorded with `dpkg-query`", keywords: [["dpkg-query", "version"]] }
+  modelAnswer: >-
+    Took snapshot m05-before-baseline. `sudo apt update`, then `apt list --upgradable` showed 7 packages; I ran
+    `sudo apt install nginx curl htop tree acl`. `apt policy nginx` shows the installed version from
+    `http://archive.ubuntu.com/ubuntu resolute-updates/main`. `curl -I http://localhost` returned `HTTP/1.1 200 OK`
+    with `Server: nginx`. `sudo apt upgrade` installed the updates; `/var/run/reboot-required` listed a new kernel,
+    so I rebooted and `uname -r` showed the new version. `/etc/apt/apt.conf.d/20auto-upgrades` has both settings at
+    "1" and `systemctl is-enabled unattended-upgrades` says enabled. The `dpkg-query` table was copied into the asset
+    register.
+
+- id: linux.m05.l4.rhel
+  type: long
+  skill: explain
+  topics: [linux.m05]
+  prompt: Rewrite steps 2–5 of this change as they would be done on a Rocky Linux server.
+  minWords: 30
+  rubric:
+    - { id: dnf, label: "Uses `dnf check-update`, `dnf install`, `dnf upgrade`", keywords: [["dnf"], ["upgrade", "check-update"]] }
+    - { id: verify, label: "Verifies origin with `dnf info` / `rpm -qi` (repository, signature)", keywords: [["dnf info", "rpm -qi", "dnf list --installed", "repo"]] }
+    - { id: reboot, label: "Reboot decision with `dnf needs-restarting -r` (or kernel check)", keywords: [["needs-restarting", "reboot"]] }
+  modelAnswer: >-
+    `sudo dnf check-update` to review, then `sudo dnf install nginx curl htop tree acl`. `dnf info nginx` shows "From
+    repo: appstream" and `rpm -qi nginx` the signature. `sudo systemctl enable --now nginx` (RHEL does not start
+    services on install), `curl -I http://localhost`. `sudo dnf upgrade`, then `sudo dnf needs-restarting -r`; reboot
+    if it reports that a reboot is required, and check `uname -r`.

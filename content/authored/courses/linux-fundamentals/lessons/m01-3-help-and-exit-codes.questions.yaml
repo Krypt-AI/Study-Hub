@@ -1,0 +1,69 @@
+- id: linux.m01.l3.exit-success
+  type: short
+  skill: recall
+  topics: [linux.m01]
+  prompt: Which exit code means a command succeeded?
+  accepted: ["0", zero]
+  match: { mode: text }
+
+- id: linux.m01.l3.dollar-q
+  type: short
+  skill: recall
+  topics: [linux.m01]
+  prompt: Which shell variable holds the exit code of the last command? (Write it as you would use it with `echo`.)
+  accepted: ["$?"]
+  match: { mode: exact }
+
+- id: linux.m01.l3.code-127
+  type: choice
+  skill: apply
+  topics: [linux.m01]
+  prompt: "After typing `sytemctl status ssh`, `echo $?` prints `127`. What happened?"
+  options:
+    - { id: a, text: The service is stopped., explanation: "The command never ran, so it could not report on the service." }
+    - { id: b, text: The shell could not find a command with that name (it is misspelt)., explanation: "Correct. 127 means command not found; it should be `systemctl`." }
+    - { id: c, text: You lacked permission., explanation: "Permission problems are usually 126 (not executable) or a message from the command itself." }
+  correct: [b]
+
+- id: linux.m01.l3.man-section
+  type: choice
+  skill: apply
+  topics: [linux.m01]
+  prompt: You want the description of the **file format** of `/etc/passwd`, not the `passwd` command. Which command?
+  options:
+    - { id: a, text: "`man passwd`", explanation: "Section 1 comes first: the `passwd` command." }
+    - { id: b, text: "`man 5 passwd`", explanation: "Correct. Section 5 is file formats." }
+    - { id: c, text: "`man 8 passwd`", explanation: "Section 8 is administration commands." }
+    - { id: d, text: "`passwd --help`", explanation: "That describes the command's options." }
+  correct: [b]
+
+- id: linux.m01.l3.builtin
+  type: choice
+  skill: explain
+  topics: [linux.m01]
+  prompt: "`man cd` says there is no manual entry. Why, and where is `cd` documented?"
+  options:
+    - { id: a, text: "`cd` is a shell built-in; use `help cd` (or the Bash manual).", explanation: "Correct. `type cd` confirms it is a built-in." }
+    - { id: b, text: "`cd` is not installed; run `apt install cd`.", explanation: "It is part of the shell itself." }
+    - { id: c, text: "Man pages need root; use `sudo man cd`.", explanation: "Man pages are readable by everyone." }
+  correct: [a]
+
+- id: linux.m01.l3.search-man
+  type: short
+  skill: recall
+  topics: [linux.m01]
+  prompt: Inside a man page, which key starts a forward search?
+  accepted: ["/"]
+  match: { mode: exact }
+  explanation: "Type `/`, the word, and Enter; `n` jumps to the next match."
+
+- id: linux.m01.l3.silent-failure
+  type: choice
+  skill: explain
+  topics: [linux.m01]
+  prompt: A script runs a command that prints nothing. Why should the script check the exit code instead of assuming success?
+  options:
+    - { id: a, text: "Many commands print nothing on success **and** some print nothing on failure; the exit code is the reliable signal.", explanation: "Correct. `grep -q`, `test` and `cp` all stay quiet; only the exit code says what happened." }
+    - { id: b, text: Commands always print errors to standard output., explanation: "Errors go to standard error, and some failures print nothing at all." }
+    - { id: c, text: Exit codes are only for compiled programs., explanation: "Every command, built-in or program, has an exit code." }
+  correct: [a]

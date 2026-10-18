@@ -1,0 +1,91 @@
+id: linux-fundamentals.m00-quiz
+title: "Module 0 quiz: Linux and your lab"
+kind: quiz
+passMark: 0.7
+description: Eight questions on the Linux ecosystem, virtual labs and SSH. Every answer is explained after you submit.
+sections:
+  - id: linux-fundamentals.m00-quiz.s1
+    title: Module 0
+    questions:
+      - id: linux.m00.quiz.distribution
+        type: choice
+        skill: recognize
+        topics: [linux.m00]
+        prompt: Which statement about Ubuntu is accurate?
+        options:
+          - { id: a, text: Ubuntu is a Linux kernel., explanation: "Ubuntu uses the Linux kernel; it is not one." }
+          - { id: b, text: "Ubuntu is a distribution in the Debian family that packages the Linux kernel with tools such as APT and systemd.", explanation: "Correct." }
+          - { id: c, text: Ubuntu is part of the Red Hat family., explanation: "RHEL, Rocky, AlmaLinux and Fedora are." }
+          - { id: d, text: Ubuntu is a shell., explanation: "The default shell on Ubuntu is Bash." }
+        correct: [b]
+      - id: linux.m00.quiz.rhel-tools
+        type: choice
+        skill: recognize
+        topics: [linux.m00]
+        prompt: On a RHEL server, which pair replaces Ubuntu's `apt` and `ufw`?
+        options:
+          - { id: a, text: "`dnf` and `firewall-cmd`", explanation: "Correct. DNF manages RPM packages; firewalld is configured with `firewall-cmd`." }
+          - { id: b, text: "`dpkg` and `iptables`", explanation: "`dpkg` is the low-level Debian tool." }
+          - { id: c, text: "`yum` and `ufw`", explanation: "`yum` is DNF's older name, and `ufw` is Ubuntu's firewall front end." }
+          - { id: d, text: "`snap` and `nft`", explanation: "Snap is Canonical's package format." }
+        correct: [a]
+      - id: linux.m00.quiz.prompt
+        type: choice
+        skill: apply
+        topics: [linux.m00]
+        prompt: "Your prompt reads `aina@web02:/var/log$`. Which is true?"
+        options:
+          - { id: a, text: "You are root on web02 in /var/log.", explanation: "`$` means an ordinary user, and the user is `aina`." }
+          - { id: b, text: "You are aina on web02, in /var/log, as an ordinary user.", explanation: "Correct." }
+          - { id: c, text: "You are aina on /var/log, in directory web02.", explanation: "The host comes after `@`; the directory after `:`." }
+        correct: [b]
+      - id: linux.m00.quiz.vm-ram
+        type: choice
+        skill: apply
+        topics: [linux.m00]
+        prompt: Your laptop has 8 GB of RAM. Which memory size is sensible for an Ubuntu Server lab VM?
+        options:
+          - { id: a, text: 256 MB, explanation: "Too little for the installer and updates." }
+          - { id: b, text: 2–4 GB, explanation: "Correct. A server without a desktop runs comfortably and leaves memory for your laptop." }
+          - { id: c, text: 8 GB, explanation: "That leaves nothing for your own operating system." }
+        correct: [b]
+      - id: linux.m00.quiz.restore
+        type: choice
+        skill: explain
+        topics: [linux.m00]
+        prompt: What happens to work done after a snapshot when you restore that snapshot?
+        options:
+          - { id: a, text: It is kept and merged., explanation: "Restoring returns the disk to its earlier state." }
+          - { id: b, text: It is lost, so copy out anything you need first., explanation: "Correct." }
+          - { id: c, text: It moves to a backup folder., explanation: "No copy is made automatically." }
+        correct: [b]
+      - id: linux.m00.quiz.keygen
+        type: short
+        skill: recall
+        topics: [linux.m00]
+        prompt: Write the command that creates an Ed25519 SSH key pair.
+        accepted: ["ssh-keygen -t ed25519"]
+        match: { mode: text, typoTolerance: none }
+        explanation: "`ssh-keygen -t ed25519` (optionally with `-C \"comment\"`) writes `~/.ssh/id_ed25519` and `id_ed25519.pub`."
+      - id: linux.m00.quiz.fingerprint
+        type: choice
+        skill: explain
+        topics: [linux.m00]
+        prompt: What does the fingerprint shown on your first SSH connection identify?
+        options:
+          - { id: a, text: Your password., explanation: "Passwords are never shown." }
+          - { id: b, text: The server's host key, so you can check you reached the right server., explanation: "Correct. Compare it with `ssh-keygen -lf` on the server's console." }
+          - { id: c, text: Your private key., explanation: "Your key has its own fingerprint, but this prompt is about the server." }
+        correct: [b]
+      - id: linux.m00.quiz.safe-practice
+        type: choice
+        skill: apply
+        topics: [linux.m00]
+        multiple: true
+        prompt: Which are safe habits before editing `/etc/ssh/sshd_config`? Choose all that apply.
+        options:
+          - { id: a, text: Take a VM snapshot., explanation: "Yes: you can roll back if you lock yourself out." }
+          - { id: b, text: "Copy the file first, e.g. `sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak`.", explanation: "Yes: a quick way back for one file." }
+          - { id: c, text: Keep a second SSH session or the console open while testing., explanation: "Yes: if the new setting breaks logins, you still have a way in." }
+          - { id: d, text: Log in as root so sudo does not get in the way., explanation: "No: use sudo for the single command that needs it." }
+        correct: [a, b, c]

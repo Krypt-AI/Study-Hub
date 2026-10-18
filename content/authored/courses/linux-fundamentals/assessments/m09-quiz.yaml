@@ -1,0 +1,86 @@
+id: linux-fundamentals.m09-quiz
+title: "Module 9 quiz: networking"
+kind: quiz
+passMark: 0.7
+description: Eight questions on addressing, DNS, connectivity tests, ports, SSH and firewalls.
+sections:
+  - id: linux-fundamentals.m09-quiz.s1
+    title: Module 9
+    questions:
+      - id: linux.m09.quiz.route-get
+        type: choice
+        skill: apply
+        topics: [linux.m09]
+        prompt: A server has three interfaces. Which command tells you which interface and source address it will use to reach `10.20.0.5`?
+        options:
+          - { id: a, text: "`ip route get 10.20.0.5`", explanation: "Correct." }
+          - { id: b, text: "`ping 10.20.0.5`", explanation: "Tests reachability but does not explain the route choice." }
+          - { id: c, text: "`ss -tn`", explanation: "Lists connections." }
+        correct: [a]
+      - id: linux.m09.quiz.resolv
+        type: choice
+        skill: apply
+        topics: [linux.m09]
+        prompt: On Ubuntu Server, where do you set the DNS servers persistently?
+        options:
+          - { id: a, text: "In the netplan YAML (`nameservers:`), then apply", explanation: "Correct. /etc/resolv.conf is generated." }
+          - { id: b, text: "Directly in /etc/resolv.conf", explanation: "It is managed by systemd-resolved and may be overwritten." }
+          - { id: c, text: "In /etc/hosts", explanation: "That is a static name list, not resolver configuration." }
+        correct: [a]
+      - id: linux.m09.quiz.nxdomain
+        type: choice
+        skill: recognize
+        topics: [linux.m09]
+        prompt: "`dig` reports `status: NXDOMAIN`. What does it mean?"
+        options:
+          - { id: a, text: The name does not exist in DNS., explanation: "Correct. Check the spelling or the zone." }
+          - { id: b, text: The DNS server is unreachable., explanation: "That would be a timeout." }
+          - { id: c, text: The server failed internally., explanation: "That is SERVFAIL." }
+        correct: [a]
+      - id: linux.m09.quiz.curl-head
+        type: short
+        skill: recall
+        topics: [linux.m09]
+        prompt: Which `curl` option fetches only the response headers (useful to check a status code)?
+        accepted: ["-I", "--head"]
+        match: { mode: exact }
+      - id: linux.m09.quiz.bind-all
+        type: choice
+        skill: explain
+        topics: [linux.m09]
+        prompt: "A new admin panel listens on `0.0.0.0:9000`, and it should only be used by administrators through SSH. What is the best fix?"
+        options:
+          - { id: a, text: "Bind it to 127.0.0.1 and have admins use an SSH tunnel; keep the firewall closed for 9000.", explanation: "Correct: defence in depth." }
+          - { id: b, text: "Open port 9000 to everyone and use a strong password.", explanation: "Needlessly exposes the panel." }
+          - { id: c, text: Change it to port 9001., explanation: "Obscurity is not protection." }
+        correct: [a]
+      - id: linux.m09.quiz.rsync
+        type: choice
+        skill: recognize
+        topics: [linux.m09]
+        prompt: Why prefer `rsync` over `scp` for copying a large directory that changes often?
+        options:
+          - { id: a, text: It transfers only differences and can resume., explanation: "Correct." }
+          - { id: b, text: It does not need SSH., explanation: "It normally runs over SSH." }
+          - { id: c, text: It encrypts better., explanation: "Both use SSH encryption." }
+        correct: [a]
+      - id: linux.m09.quiz.ufw-limit
+        type: choice
+        skill: recognize
+        topics: [linux.m09]
+        prompt: "What does `ufw limit 22/tcp` add compared to `ufw allow 22/tcp`?"
+        options:
+          - { id: a, text: Rate limiting of new connections from one source, slowing password guessing, explanation: "Correct." }
+          - { id: b, text: It restricts SSH to IPv4., explanation: "Not what limit does." }
+          - { id: c, text: It blocks SSH completely., explanation: "It still allows it." }
+        correct: [a]
+      - id: linux.m09.quiz.firewall-order
+        type: choice
+        skill: explain
+        topics: [linux.m09]
+        prompt: Why is a firewall not enough on its own to protect a service?
+        options:
+          - { id: a, text: "Allowed traffic still reaches the service, so it must also be patched, configured securely and bound to the right address.", explanation: "Correct: layers of defence." }
+          - { id: b, text: Firewalls only work on Windows., explanation: "Linux has nftables." }
+          - { id: c, text: It is enough., explanation: "Allowed ports are exactly what attackers target." }
+        correct: [a]

@@ -1,0 +1,83 @@
+- id: linux.m10.l3.first-step
+  type: choice
+  skill: recognize
+  topics: [linux.m10]
+  prompt: What is the first step of a structured troubleshooting method?
+  options:
+    - { id: a, text: Identify the problem (symptom, scope, when it started, what changed), explanation: "Correct." }
+    - { id: b, text: Restart the service, explanation: "Acting before understanding can destroy evidence." }
+    - { id: c, text: Document the fix, explanation: "That is the last step." }
+  correct: [a]
+
+- id: linux.m10.l3.what-changed
+  type: choice
+  skill: apply
+  topics: [linux.m10]
+  prompt: A web application stopped working this morning. Which question is usually the most productive first?
+  options:
+    - { id: a, text: "What changed? (updates, configuration edits, deployments, certificates, disk space)", explanation: "Correct. Most incidents follow a change." }
+    - { id: b, text: Which programming language is it written in?, explanation: "Rarely the first lead." }
+    - { id: c, text: How old is the server hardware?, explanation: "Possible, but recent changes are more likely." }
+  correct: [a]
+
+- id: linux.m10.l3.address-in-use
+  type: choice
+  skill: apply
+  topics: [linux.m10]
+  prompt: "nginx fails with `bind() to 0.0.0.0:80 failed (98: Address already in use)`. Which command finds the culprit?"
+  options:
+    - { id: a, text: "`sudo ss -tlnp | grep ':80 '`", explanation: "Correct. It shows which process holds the port." }
+    - { id: b, text: "`df -h`", explanation: "Unrelated to ports." }
+    - { id: c, text: "`sudo nginx -t`", explanation: "The configuration is valid; the port is taken." }
+  correct: [a]
+
+- id: linux.m10.l3.verify
+  type: choice
+  skill: explain
+  topics: [linux.m10]
+  prompt: After fixing a service, why verify from the **user's** point of view (for example, loading the web page) and not only with `systemctl status`?
+  options:
+    - { id: a, text: "A service can be 'active' and still not serve users (wrong port, firewall, permissions).", explanation: "Correct." }
+    - { id: b, text: systemctl status is often wrong., explanation: "It is accurate about the process, not about the user experience." }
+    - { id: c, text: Users must approve every fix., explanation: "Verification is about function, not approval." }
+  correct: [a]
+
+- id: linux.m10.l3.use
+  type: cloze
+  skill: recall
+  topics: [linux.m10]
+  prompt: Complete the USE method.
+  text: "For every resource, check its [[1]], [[2]] and [[3]]."
+  blanks:
+    - { id: "1", accepted: [utilisation, utilization] }
+    - { id: "2", accepted: [saturation] }
+    - { id: "3", accepted: [errors] }
+
+- id: linux.m10.l3.escalation
+  type: long
+  skill: explain
+  topics: [linux.m10]
+  prompt: List what a good escalation message contains, and explain why each item helps the next engineer.
+  minWords: 40
+  rubric:
+    - { id: symptom, label: "Symptom and impact", keywords: [["symptom", "impact", "users"]] }
+    - { id: time, label: "When it started", keywords: [["when", "start", "since", "time"]] }
+    - { id: checked, label: "What was checked, with commands and results", keywords: [["checked", "commands", "results", "tested"]] }
+    - { id: changed, label: "What was changed", keywords: [["changed", "change"]] }
+    - { id: theory, label: "Current theory", keywords: [["theory", "think", "suspect", "hypothesis"]] }
+  modelAnswer: >-
+    The symptom and its impact (who is affected, how badly) sets priority. When it started lets the next engineer
+    correlate with logs and changes. What I checked, with the exact commands and results, stops them repeating my work.
+    What I changed tells them what might have made it worse or needs reverting. My current theory gives them a
+    starting point to confirm or reject.
+
+- id: linux.m10.l3.forbidden
+  type: choice
+  skill: apply
+  topics: [linux.m10]
+  prompt: "`curl localhost` returns `403 Forbidden` and nginx's error log says `open() \"/var/www/html/index.html\" failed (13: Permission denied)`. What do you check?"
+  options:
+    - { id: a, text: "The file's and directories' permissions for the www-data user (`namei -l /var/www/html/index.html`)", explanation: "Correct. Error 13 is permission denied." }
+    - { id: b, text: The DNS configuration, explanation: "The request reached nginx." }
+    - { id: c, text: The swap size, explanation: "Unrelated." }
+  correct: [a]

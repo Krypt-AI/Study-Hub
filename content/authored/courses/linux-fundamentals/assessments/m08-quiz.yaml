@@ -1,0 +1,83 @@
+id: linux-fundamentals.m08-quiz
+title: "Module 8 quiz: storage and filesystems"
+kind: quiz
+passMark: 0.7
+description: Eight questions on disks, partitions, filesystems, fstab, disk usage, swap and LVM.
+sections:
+  - id: linux-fundamentals.m08-quiz.s1
+    title: Module 8
+    questions:
+      - id: linux.m08.quiz.mkfs-erases
+        type: choice
+        skill: recognize
+        topics: [linux.m08]
+        prompt: What happens to existing data when you run `mkfs.ext4` on a partition?
+        options:
+          - { id: a, text: It is erased (a new, empty filesystem is created)., explanation: "Correct. Check the device name twice." }
+          - { id: b, text: It is converted to ext4., explanation: "mkfs does not convert." }
+          - { id: c, text: It is kept in a hidden folder., explanation: "Nothing is kept." }
+        correct: [a]
+      - id: linux.m08.quiz.blkid
+        type: short
+        skill: recall
+        topics: [linux.m08]
+        prompt: Which command prints the UUID and filesystem type of `/dev/sdb1`?
+        accepted: ["sudo blkid /dev/sdb1", "blkid /dev/sdb1", "lsblk -f /dev/sdb1"]
+        match: { mode: exact }
+      - id: linux.m08.quiz.mount-hides
+        type: choice
+        skill: explain
+        topics: [linux.m08]
+        prompt: Files you saved in `/srv/data` vanished after you mounted a new disk there. Are they lost?
+        options:
+          - { id: a, text: "No: they are hidden under the mount; unmount to see them again.", explanation: "Correct." }
+          - { id: b, text: "Yes: mounting deletes the directory's contents.", explanation: "Mounting only covers them." }
+          - { id: c, text: They were moved to the new disk., explanation: "Nothing is moved." }
+        correct: [a]
+      - id: linux.m08.quiz.pass
+        type: choice
+        skill: recognize
+        topics: [linux.m08]
+        prompt: In `/etc/fstab`, what does the last field (pass) control?
+        options:
+          - { id: a, text: The order of filesystem checks at boot (1 for root, 2 for others, 0 to skip), explanation: "Correct." }
+          - { id: b, text: Whether a password is needed, explanation: "fstab has no passwords." }
+          - { id: c, text: How many times to retry mounting, explanation: "Not an fstab field." }
+        correct: [a]
+      - id: linux.m08.quiz.ncdu
+        type: choice
+        skill: apply
+        topics: [linux.m08]
+        prompt: "`/` is 95% full. Which command helps you find which directory is responsible?"
+        options:
+          - { id: a, text: "`sudo du -xh --max-depth=1 / | sort -h`", explanation: "Correct (or `ncdu -x /`)." }
+          - { id: b, text: "`df -i`", explanation: "Shows inode usage per filesystem, not per directory." }
+          - { id: c, text: "`lsblk`", explanation: "Shows devices, not usage." }
+        correct: [a]
+      - id: linux.m08.quiz.swap-meaning
+        type: choice
+        skill: explain
+        topics: [linux.m08]
+        prompt: "`free -h` shows swap heavily used and the server is slow. What does this suggest?"
+        options:
+          - { id: a, text: "Memory pressure: processes need more RAM than available, so pages move to slow disk.", explanation: "Correct. Find the memory users (Module 10)." }
+          - { id: b, text: The disk is full., explanation: "Swap use is about memory." }
+          - { id: c, text: Nothing; swap is as fast as RAM., explanation: "Swap is far slower." }
+        correct: [a]
+      - id: linux.m08.quiz.lvm-benefit
+        type: choice
+        skill: explain
+        topics: [linux.m08]
+        prompt: What is the main operational benefit of LVM?
+        options:
+          - { id: a, text: "Volumes can be grown online and space pooled across disks without repartitioning.", explanation: "Correct." }
+          - { id: b, text: It encrypts data automatically., explanation: "Encryption is LUKS, a separate layer." }
+          - { id: c, text: It replaces backups., explanation: "LVM snapshots are not backups." }
+        correct: [a]
+      - id: linux.m08.quiz.pvcreate
+        type: short
+        skill: recall
+        topics: [linux.m08]
+        prompt: Which command prepares `/dev/sdc` to be added to a volume group?
+        accepted: ["sudo pvcreate /dev/sdc", "pvcreate /dev/sdc"]
+        match: { mode: exact }

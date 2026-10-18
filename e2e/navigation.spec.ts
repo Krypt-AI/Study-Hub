@@ -6,6 +6,8 @@ const PAGES: Array<[path: string, heading: string | RegExp]> = [
   ['/courses', 'Courses'],
   ['/courses/ai-01-python', 'Python and Programming Fundamentals'],
   ['/courses/it-sql', 'Databases and SQL'],
+  ['/courses/linux-fundamentals', 'Linux Fundamentals'],
+  ['/courses/linux-fundamentals/assessments/linux-fundamentals.final-exam', 'Linux Fundamentals: final exam'],
   ['/practice', 'Practice'],
   ['/practice/review', 'Due reviews'],
   ['/practice/quiz', 'Mixed quiz'],
@@ -13,9 +15,11 @@ const PAGES: Array<[path: string, heading: string | RegExp]> = [
   ['/courses/jlpt-n5/assessments/jlpt-n5.mock', 'JLPT N5 mock exam'],
   ['/certifications', 'Certifications'],
   ['/certifications/comptia-security-plus', 'CompTIA Security+'],
+  ['/certifications/red-hat-rhcsa', 'Red Hat Certified System Administrator (RHCSA)'],
   ['/roadmaps/ai-engineering', 'AI Engineering Roadmap'],
   ['/roadmaps/fullstack-developer', 'Full-Stack Developer Roadmap'],
   ['/roadmaps/cybersecurity', 'Cybersecurity Roadmap'],
+  ['/roadmaps/linux-administration', 'Linux Administration Roadmap'],
   ['/settings', 'Settings'],
 ];
 
@@ -68,6 +72,31 @@ test('certifications open on their areas, with JLPT and HSK among them', async (
   // The SQL course is a stage of the Full-Stack roadmap.
   await page.goto('/roadmaps/fullstack-developer');
   await expect(page.getByRole('link', { name: 'Databases and SQL' })).toBeVisible();
+});
+
+test('Linux Fundamentals is the foundation that certifications and roadmaps link to', async ({ page }) => {
+  // A certification names how much it relies on Linux, apart from the provider's own requirement, and links its modules.
+  await page.goto('/certifications/comptia-security-plus');
+  const linux = page.getByRole('region', { name: 'Linux for this exam' });
+  await expect(linux.getByText('Strongly recommended').first()).toBeVisible();
+  await expect(linux.getByText('Official requirement')).toBeVisible();
+  await linux.getByRole('link', { name: /Module 11 — Security fundamentals/u }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'Account security' })).toBeVisible();
+
+  // The course lists the certifications it is a foundation for.
+  await page.goto('/courses/linux-fundamentals');
+  const foundationFor = page.getByRole('region', { name: 'A foundation for' });
+  await expect(foundationFor.getByRole('link', { name: 'Red Hat Certified System Administrator (RHCSA)' })).toBeVisible();
+
+  // The Cybersecurity roadmap's Linux stage is this course, and later stages name the modules to do first.
+  await page.goto('/roadmaps/cybersecurity');
+  await expect(page.getByRole('link', { name: 'Linux Fundamentals' }).first()).toBeVisible();
+  await expect(page.getByText('Before this stage: Linux Fundamentals').first()).toBeVisible();
+
+  // Certifications › IT courses lists it.
+  await page.goto('/certifications');
+  await page.getByRole('navigation', { name: 'Certification areas' }).getByRole('link', { name: /IT courses/u }).click();
+  await expect(page.getByRole('link', { name: /Linux Fundamentals/u })).toBeVisible();
 });
 
 test('the playground joins the rail once a coding subject is chosen', async ({ page }) => {

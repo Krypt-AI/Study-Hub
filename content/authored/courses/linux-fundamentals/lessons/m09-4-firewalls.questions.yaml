@@ -1,0 +1,70 @@
+- id: linux.m09.l4.default-policy
+  type: choice
+  skill: explain
+  topics: [linux.m09]
+  prompt: What is the usual default firewall policy for a server?
+  options:
+    - { id: a, text: "Deny incoming, allow outgoing, then allow specific services", explanation: "Correct: expose only what the server is for." }
+    - { id: b, text: Allow everything and block known attackers, explanation: "Unknown attackers would get through." }
+    - { id: c, text: Deny everything including outgoing, explanation: "Updates and DNS would fail without careful extra rules." }
+  correct: [a]
+
+- id: linux.m09.l4.ssh-first
+  type: choice
+  skill: apply
+  topics: [linux.m09]
+  prompt: You are connected over SSH and are about to run `sudo ufw enable` for the first time. What must already be in place?
+  options:
+    - { id: a, text: "A rule allowing SSH (port 22) from your address range", explanation: "Correct. Otherwise the default deny cuts you off." }
+    - { id: b, text: A rule allowing ping, explanation: "Ping is not how you are connected." }
+    - { id: c, text: Nothing; ufw always allows SSH, explanation: "It does not, unless a rule says so." }
+  correct: [a]
+
+- id: linux.m09.l4.ufw-port
+  type: short
+  skill: recall
+  topics: [linux.m09]
+  prompt: Write the ufw command that allows incoming HTTPS (TCP 443).
+  accepted: ["sudo ufw allow 443/tcp", "sudo ufw allow https", "ufw allow 443/tcp", "sudo ufw allow 443"]
+  match: { mode: exact }
+
+- id: linux.m09.l4.permanent
+  type: choice
+  skill: explain
+  topics: [linux.m09]
+  prompt: "On RHEL, `firewall-cmd --add-service=http` worked, but after a reboot HTTP was blocked again. Why?"
+  options:
+    - { id: a, text: "Without `--permanent`, the change applies only to the running configuration.", explanation: "Correct. Use `--permanent`, then `--reload`." }
+    - { id: b, text: firewalld forgets services weekly., explanation: "It does not." }
+    - { id: c, text: The service name is wrong., explanation: "It worked before the reboot." }
+  correct: [a]
+
+- id: linux.m09.l4.firewalld-cmd
+  type: short
+  skill: recall
+  topics: [linux.m09]
+  prompt: "On RHEL, write the command that permanently allows TCP port 8080 in the default zone (before reloading)."
+  accepted: ["sudo firewall-cmd --permanent --add-port=8080/tcp", "firewall-cmd --permanent --add-port=8080/tcp", "sudo firewall-cmd --add-port=8080/tcp --permanent"]
+  match: { mode: exact }
+
+- id: linux.m09.l4.cloud
+  type: choice
+  skill: apply
+  topics: [linux.m09]
+  prompt: "On a cloud VM, nginx listens on 0.0.0.0:80 and ufw allows 80/tcp, yet nobody can reach the site. What do you check next?"
+  options:
+    - { id: a, text: "The cloud provider's security group / network firewall rules for port 80", explanation: "Correct. Traffic must pass both layers." }
+    - { id: b, text: The SSH configuration, explanation: "Unrelated to HTTP." }
+    - { id: c, text: Swap usage, explanation: "Unrelated." }
+  correct: [a]
+
+- id: linux.m09.l4.delete
+  type: choice
+  skill: recognize
+  topics: [linux.m09]
+  prompt: How do you remove ufw rule number 3?
+  options:
+    - { id: a, text: "`sudo ufw delete 3` (numbers from `ufw status numbered`)", explanation: "Correct." }
+    - { id: b, text: "`sudo ufw remove rule 3`", explanation: "Not ufw syntax." }
+    - { id: c, text: "`sudo ufw reset 3`", explanation: "`reset` removes all rules." }
+  correct: [a]

@@ -1,0 +1,36 @@
+- id: linux.m11.l4.evidence
+  type: long
+  skill: apply
+  topics: [linux.m11]
+  prompt: Report the evidence for each baseline item in CR-2026-047, and the Lynis index before and after.
+  minWords: 70
+  rubric:
+    - { id: patch, label: "Patched: no upgradable packages, unattended-upgrades on", keywords: [["upgradable", "patched", "unattended"]] }
+    - { id: ssh, label: "sshd -T shows permitrootlogin no, passwordauthentication no, allowgroups sshusers; tested from laptop", keywords: [["permitrootlogin no"], ["passwordauthentication no"], ["sshusers"]] }
+    - { id: fw, label: "ufw default deny, SSH from admin network, HTTP open", keywords: [["ufw"], ["deny"], ["80"]] }
+    - { id: services, label: "Unnecessary services identified and disabled", keywords: [["disable"]] }
+    - { id: password, label: "Password policy configured (pwquality)", keywords: [["pwquality", "minlen"]] }
+    - { id: lynis, label: "Lynis index before and after", keywords: [["lynis", "index"], ["before"], ["after"]] }
+  modelAnswer: >-
+    Patched: `apt list --upgradable` empty; unattended-upgrades enabled. SSH: `sshd -T` shows permitrootlogin no,
+    passwordauthentication no, kbdinteractiveauthentication no, allowgroups sshusers; from my laptop key login worked,
+    `-o PreferredAuthentications=password` gave "Permission denied (publickey)", and `ssh root@lab01` was refused.
+    Firewall: ufw active, default deny incoming, `22/tcp LIMIT IN 192.168.56.0/24`, `80/tcp ALLOW IN Anywhere`.
+    Services: disabled kira-status (no longer needed) and removed the test python server; `ss -tulpn` shows only
+    sshd, nginx and systemd-resolved (loopback). pwquality: minlen 12, all four classes, dictcheck, enforce_for_root.
+    Clock synchronised via chrony. Lynis hardening index 62 before, 71 after.
+
+- id: linux.m11.l4.decisions
+  type: long
+  skill: explain
+  topics: [linux.m11]
+  prompt: Name two Lynis suggestions you applied and one you deliberately did not, with your reasoning.
+  minWords: 40
+  rubric:
+    - { id: applied, label: "Two applied suggestions with the reason they reduce risk", keywords: [["applied", "installed", "set", "enabled"]] }
+    - { id: declined, label: "One declined suggestion with a risk-based justification", keywords: [["not", "declined", "did not", "decided"], ["because", "risk", "lab", "role", "cost"]] }
+  modelAnswer: >-
+    Applied: installed libpam-pwquality (AUTH-9262), because weak local passwords were possible; and set `MaxAuthTries
+    3` / `LoginGraceTime 30` in sshd (SSH-7408), which limits guessing per connection. Not applied: a GRUB password
+    (BOOT-5122). The server sits in a locked room and the VM console is restricted to IT, so the risk is low, and a
+    GRUB password would complicate emergency recovery by colleagues. Recorded in the change record for review.

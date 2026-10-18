@@ -1,0 +1,68 @@
+- id: linux.m06.l1.pid1
+  type: short
+  skill: recall
+  topics: [linux.m06]
+  prompt: Which program runs as PID 1 on Ubuntu and RHEL?
+  accepted: [systemd, init, /sbin/init]
+  match: { mode: text, typoTolerance: none }
+
+- id: linux.m06.l1.program-process
+  type: choice
+  skill: explain
+  topics: [linux.m06]
+  prompt: What is the difference between a program and a process?
+  options:
+    - { id: a, text: "A program is a file on disk; a process is a running instance of it with its own PID and memory.", explanation: "Correct. One program can have many processes." }
+    - { id: b, text: They are the same thing., explanation: "nginx shows one program running as several processes." }
+    - { id: c, text: A process is a program written by root., explanation: "Any user can run processes." }
+  correct: [a]
+
+- id: linux.m06.l1.state-d
+  type: choice
+  skill: apply
+  topics: [linux.m06]
+  prompt: "Many processes show state `D` and the system feels frozen, though CPU usage is low. What does it suggest?"
+  options:
+    - { id: a, text: "They are waiting on I/O (disk or network storage); investigate the storage.", explanation: "Correct. `D` is uninterruptible sleep, usually I/O." }
+    - { id: b, text: They are zombies., explanation: "Zombies are `Z`." }
+    - { id: c, text: They are using all the CPU., explanation: "Running processes show `R`." }
+  correct: [a]
+
+- id: linux.m06.l1.pgrep
+  type: short
+  skill: recall
+  topics: [linux.m06]
+  prompt: Write the command that lists the PIDs **and command lines** of processes named `nginx`.
+  accepted: ["pgrep -a nginx", "pgrep -l nginx"]
+  match: { mode: exact }
+  explanation: "`-a` shows the full command line; `-l` shows only the name."
+
+- id: linux.m06.l1.top-sort
+  type: choice
+  skill: recognize
+  topics: [linux.m06]
+  prompt: In `top`, which key sorts processes by memory usage?
+  options:
+    - { id: a, text: "`M`", explanation: "Correct. `P` sorts by CPU." }
+    - { id: b, text: "`m`", explanation: "Lower-case `m` toggles the memory summary display." }
+    - { id: c, text: "`S`", explanation: "Not the memory sort." }
+  correct: [a]
+
+- id: linux.m06.l1.user-column
+  type: choice
+  skill: explain
+  topics: [linux.m06]
+  prompt: "nginx's master process runs as `root`, its workers as `www-data`. Why is that good design?"
+  options:
+    - { id: a, text: "The master needs root only to bind port 80; the workers handle untrusted requests with minimal privileges.", explanation: "Correct: least privilege applied to services." }
+    - { id: b, text: www-data is faster., explanation: "Speed is unaffected." }
+    - { id: c, text: It is an error., explanation: "It is deliberate." }
+  correct: [a]
+
+- id: linux.m06.l1.sort-mem
+  type: short
+  skill: apply
+  topics: [linux.m06]
+  prompt: "Complete the command to list processes sorted by memory, highest first: `ps aux --sort=____ | head`"
+  accepted: ["-%mem", "-rss"]
+  match: { mode: exact }

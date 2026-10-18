@@ -1,0 +1,72 @@
+- id: linux.m03.l2.assign
+  type: choice
+  skill: recognize
+  topics: [linux.m03]
+  prompt: Which line correctly sets a shell variable?
+  options:
+    - { id: a, text: "`port = 8080`", explanation: "Spaces make Bash run a command named `port`." }
+    - { id: b, text: "`port=8080`", explanation: "Correct. No spaces around `=`." }
+    - { id: c, text: "`$port=8080`", explanation: "`$` is used to read a variable, not to set it." }
+    - { id: d, text: "`set port 8080`", explanation: "That sets positional parameters, not `port`." }
+  correct: [b]
+
+- id: linux.m03.l2.substitution
+  type: short
+  skill: recall
+  topics: [linux.m03]
+  prompt: "Complete the line so that `host` holds the output of the `hostname` command: `host=____`"
+  accepted: ["$(hostname)", "`hostname`"]
+  match: { mode: exact }
+  explanation: "`$(command)` is command substitution; the older backtick form also works."
+
+- id: linux.m03.l2.quotes
+  type: choice
+  skill: apply
+  topics: [linux.m03]
+  prompt: "With `user=aina`, what does `echo 'Hello $user'` print?"
+  options:
+    - { id: a, text: "`Hello aina`", explanation: "Single quotes prevent expansion." }
+    - { id: b, text: "`Hello $user`", explanation: "Correct. Use double quotes to expand the variable." }
+    - { id: c, text: "`Hello`", explanation: "Nothing is removed." }
+  correct: [b]
+
+- id: linux.m03.l2.path
+  type: choice
+  skill: explain
+  topics: [linux.m03]
+  prompt: "You wrote `check.sh` in the current directory and made it executable, but `check.sh` gives `command not found`. Why?"
+  options:
+    - { id: a, text: "The current directory is not in `PATH`; run it as `./check.sh`.", explanation: "Correct. Leaving `.` out of `PATH` stops a planted file from running instead of a real command." }
+    - { id: b, text: "Scripts can only run with `sudo`.", explanation: "Any user can run their own executable scripts." }
+    - { id: c, text: "The file needs a `.exe` extension.", explanation: "Linux does not use extensions to decide what runs." }
+  correct: [a]
+
+- id: linux.m03.l2.and
+  type: choice
+  skill: apply
+  topics: [linux.m03]
+  prompt: "In `cd /srv/old && rm -r cache`, what happens if `/srv/old` does not exist?"
+  options:
+    - { id: a, text: "`cd` fails, so `rm` does not run.", explanation: "Correct. That is why `&&` is safer than `;` here." }
+    - { id: b, text: "`rm -r cache` runs in the current directory.", explanation: "That would happen with `;`." }
+    - { id: c, text: Both commands are skipped silently., explanation: "`cd` still prints an error." }
+  correct: [a]
+
+- id: linux.m03.l2.export
+  type: choice
+  skill: explain
+  topics: [linux.m03]
+  prompt: What does `export` do to a variable?
+  options:
+    - { id: a, text: Makes it permanent across logins., explanation: "For that, put it in `~/.bashrc`." }
+    - { id: b, text: "Copies it into the environment of programs started from this shell.", explanation: "Correct." }
+    - { id: c, text: Writes it to /etc/environment., explanation: "`export` changes nothing on disk." }
+  correct: [b]
+
+- id: linux.m03.l2.bashrc
+  type: short
+  skill: recall
+  topics: [linux.m03]
+  prompt: After adding an alias to `~/.bashrc`, which command loads it into your current shell without logging out? (Give the command and file.)
+  accepted: ["source ~/.bashrc", ". ~/.bashrc"]
+  match: { mode: exact }

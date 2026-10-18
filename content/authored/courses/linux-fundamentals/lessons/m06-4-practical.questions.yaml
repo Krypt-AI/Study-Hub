@@ -1,0 +1,35 @@
+- id: linux.m06.l4.ticket
+  type: long
+  skill: apply
+  topics: [linux.m06]
+  prompt: Write your ticket update for #1077 (symptom, investigation, cause, action, verification, follow-up).
+  minWords: 60
+  rubric:
+    - { id: identify, label: "Identified the process with top/ps: PID, user farid, bash loop, run time", keywords: [["top", "htop", "ps"], ["farid"], ["pid", "PID"]] }
+    - { id: classify, label: "Determined it was a user process, not a service", keywords: [["user process", "not a service", "systemctl status", "no unit", "not managed"]] }
+    - { id: contain, label: "Proportionate containment: renice or STOP before terminating", keywords: [["renice", "STOP", "nice"]] }
+    - { id: stop, label: "Stopped it with SIGTERM (kill) before considering SIGKILL", keywords: [["kill"], ["TERM", "15", "kill PID", "gentle", "polite"]] }
+    - { id: verify, label: "Verified the load returned to normal (uptime/top)", keywords: [["uptime", "load"]] }
+    - { id: followup, label: "Follow-up with the user and the cleaned-up sleep job", keywords: [["follow", "contact", "inform", "farid"], ["sleep"]] }
+  modelAnswer: >-
+    Symptom: slow responses; `uptime` showed load 1.02 on a 2-CPU VM and `top` showed PID 3120 at 100% CPU. `ps -o
+    pid,user,etime,cmd -p 3120` showed user farid, `bash -c while :; do :; done`, running for 1 h 12 min. `systemctl
+    status 3120` placed it in farid's user session, not a service. I reniced it to 19 (`sudo renice -n 19 -p 3120`)
+    and paused it (`sudo kill -STOP 3120`); load fell. With no legitimate purpose for an empty loop, I sent SIGTERM
+    (`sudo kill 3120`) and it exited, so no SIGKILL was needed. I also found my own `sleep 7200` with `pgrep -a sleep`
+    and terminated it. After five minutes `uptime` showed load 0.05. Follow-up: message farid to ask what the job was
+    for and offer to schedule real report jobs at night with nice.
+
+- id: linux.m06.l4.signals
+  type: long
+  skill: explain
+  topics: [linux.m06]
+  prompt: Explain why you did not start with `kill -9`, and in which situation you would have used it.
+  minWords: 25
+  rubric:
+    - { id: why, label: "SIGTERM allows a clean exit; SIGKILL can leave corruption or stale locks", keywords: [["clean", "save", "lock", "corrupt", "tidy"]] }
+    - { id: when, label: "SIGKILL only if the process ignores TERM after waiting", keywords: [["ignore", "still running", "did not exit", "after waiting", "last resort"]] }
+  modelAnswer: >-
+    SIGTERM gives the program a chance to finish writing, release locks and remove temporary files; SIGKILL stops it
+    instantly and can leave half-written data. I would use `kill -9` only if the process was still running some
+    seconds after SIGTERM, and I would note the force-kill in the ticket.

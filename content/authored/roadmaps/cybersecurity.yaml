@@ -4,8 +4,10 @@ description: >-
   A path from IT and networking fundamentals to defensive and offensive security practice: systems and
   networks first, then security principles, cryptography, web and application security, and finally
   detection, response and the certifications that recognise the skills. Practice stays legal and defensive:
-  exercises use your own machines, sandboxes and intentionally vulnerable training targets. The courses for
-  these stages are being prepared; the certification links are available now.
+  exercises use your own machines, sandboxes and intentionally vulnerable training targets. Stage 3 is the Linux
+  Fundamentals course; the other stages' courses are being prepared, and the certification links are available now.
+  Linux runs most of the servers, security tools and lab targets you will meet, so the later stages list the Linux
+  modules to have done first. Linux skills alone do not qualify you for security work: they are one foundation.
 stages:
   - id: stage-01
     title: IT fundamentals and operating systems
@@ -20,8 +22,8 @@ stages:
   - id: stage-03
     title: Linux and the command line
     summary: The shell, permissions, services, logs and scripting for administration and analysis.
-    courseIds: [sec-03-linux]
-    certificationIds: [lf-lfcs, comptia-linux-plus]
+    courseIds: [linux-fundamentals]
+    certificationIds: [comptia-linux-plus, lf-lfcs]
   - id: stage-04
     title: Security principles and risk
     summary: The CIA triad, threats and vulnerabilities, access control, risk management and frameworks.
@@ -40,11 +42,34 @@ stages:
     summary: Firewalls, hardening, segmentation, patching, logging and monitoring with a SIEM.
     courseIds: [sec-07-defence]
     certificationIds: [comptia-security-plus]
+    foundations:
+      - courseId: linux-fundamentals
+        relevance: essential
+        unitIds: [linux-fundamentals.m04, linux-fundamentals.m07, linux-fundamentals.m09, linux-fundamentals.m10, linux-fundamentals.m11]
+        note: >-
+          Hardening, host firewalls, log collection and monitoring are carried out on Linux servers. Beyond the course:
+          auditd, centralised logging into a SIEM, and SELinux/AppArmor policy work.
   - id: stage-08
     title: Incident response and threat analysis
     summary: Detection, triage, containment, forensics basics, malware analysis concepts and reporting.
     courseIds: [sec-08-incident-response]
+    foundations:
+      - courseId: linux-fundamentals
+        relevance: strongly-recommended
+        unitIds: [linux-fundamentals.m02, linux-fundamentals.m03, linux-fundamentals.m06, linux-fundamentals.m07, linux-fundamentals.m10, linux-fundamentals.m12]
+        note: >-
+          Triage and investigation rely on reading logs, timelines, processes and network connections from the
+          command line, and on preserving evidence. Beyond the course: forensic imaging and hashing, memory analysis,
+          and tools such as Volatility and The Sleuth Kit, used only on systems you are authorised to examine.
   - id: stage-09
     title: Ethical hacking and capstone
     summary: Reconnaissance, scanning and exploitation methods on authorised targets, and a written assessment.
     courseIds: [sec-09-ethical-hacking]
+    foundations:
+      - courseId: linux-fundamentals
+        relevance: strongly-recommended
+        unitIds: [linux-fundamentals.m01, linux-fundamentals.m02, linux-fundamentals.m03, linux-fundamentals.m04, linux-fundamentals.m06, linux-fundamentals.m09]
+        note: >-
+          Testing distributions such as Kali Linux are Debian-based, and most tools are command-line programs. Work
+          only in authorised labs (your own VMs and intentionally vulnerable targets). Beyond the course: networking in
+          depth, web application testing, and the legal and reporting side of authorised engagements.

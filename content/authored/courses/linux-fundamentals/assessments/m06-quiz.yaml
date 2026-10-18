@@ -1,0 +1,83 @@
+id: linux-fundamentals.m06-quiz
+title: "Module 6 quiz: processes and jobs"
+kind: quiz
+passMark: 0.7
+description: Eight questions on processes, signals, priority and job control.
+sections:
+  - id: linux-fundamentals.m06-quiz.s1
+    title: Module 6
+    questions:
+      - id: linux.m06.quiz.ppid
+        type: choice
+        skill: recognize
+        topics: [linux.m06]
+        prompt: What is the PPID of a process?
+        options:
+          - { id: a, text: The PID of its parent process, explanation: "Correct." }
+          - { id: b, text: Its priority, explanation: "That is PR/NI." }
+          - { id: c, text: Its port number, explanation: "Processes have PIDs; sockets have ports." }
+        correct: [a]
+      - id: linux.m06.quiz.ctrl-c
+        type: short
+        skill: recall
+        topics: [linux.m06]
+        prompt: Which signal name does `Ctrl+C` send?
+        accepted: [SIGINT, INT]
+        match: { mode: text, typoTolerance: none }
+      - id: linux.m06.quiz.service-stop
+        type: choice
+        skill: apply
+        topics: [linux.m06]
+        prompt: The nginx service must be stopped for maintenance. What is the right command?
+        options:
+          - { id: a, text: "`sudo systemctl stop nginx`", explanation: "Correct. systemd sends the right signals and records the stop." }
+          - { id: b, text: "`sudo killall -9 nginx`", explanation: "Bypasses systemd, and systemd may even restart it." }
+          - { id: c, text: "`sudo kill -STOP $(pgrep nginx)`", explanation: "Pauses it, leaving connections hanging." }
+        correct: [a]
+      - id: linux.m06.quiz.renice-user
+        type: choice
+        skill: explain
+        topics: [linux.m06]
+        prompt: "As an ordinary user, `renice -n -5 -p 4321` fails. Why?"
+        options:
+          - { id: a, text: Only root may raise priority (lower the niceness)., explanation: "Correct. Users can only make their processes nicer." }
+          - { id: b, text: Negative values are invalid., explanation: "Values down to -20 are valid for root." }
+          - { id: c, text: renice only works on services., explanation: "It works on any process." }
+        correct: [a]
+      - id: linux.m06.quiz.jobs
+        type: choice
+        skill: apply
+        topics: [linux.m06]
+        prompt: "`jobs` shows `[1]+ Stopped vim notes.txt`. How do you return to editing?"
+        options:
+          - { id: a, text: "`fg %1`", explanation: "Correct." }
+          - { id: b, text: "`bg %1`", explanation: "vim needs the terminal; in the background it would stop again." }
+          - { id: c, text: "`kill %1`", explanation: "That ends it." }
+        correct: [a]
+      - id: linux.m06.quiz.top-wa
+        type: choice
+        skill: apply
+        topics: [linux.m06]
+        prompt: "In `top`, CPU shows `5.0 us, 2.0 sy, 0.0 ni, 3.0 id, 90.0 wa`. What is the bottleneck?"
+        options:
+          - { id: a, text: Waiting for I/O (disk or storage), explanation: "Correct. `wa` is time spent waiting for I/O." }
+          - { id: b, text: User programs computing, explanation: "`us` is only 5%." }
+          - { id: c, text: Nothing; the CPU is idle, explanation: "Idle is only 3%." }
+        correct: [a]
+      - id: linux.m06.quiz.lsof-dir
+        type: choice
+        skill: apply
+        topics: [linux.m06]
+        prompt: "`umount /mnt/data` says `target is busy`. Which command shows the processes keeping it busy?"
+        options:
+          - { id: a, text: "`sudo lsof +D /mnt/data`", explanation: "Correct (or `sudo fuser -vm /mnt/data`)." }
+          - { id: b, text: "`ps aux --sort=-%cpu`", explanation: "Sorts by CPU; does not show open files." }
+          - { id: c, text: "`jobs -l`", explanation: "Only your shell's jobs." }
+        correct: [a]
+      - id: linux.m06.quiz.proc
+        type: short
+        skill: recall
+        topics: [linux.m06]
+        prompt: Under which directory does the kernel expose each process's details, one subdirectory per PID?
+        accepted: ["/proc", "/proc/"]
+        match: { mode: exact }

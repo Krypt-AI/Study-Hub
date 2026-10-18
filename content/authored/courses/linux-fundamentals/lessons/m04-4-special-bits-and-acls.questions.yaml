@@ -1,0 +1,70 @@
+- id: linux.m04.l4.setgid-dir
+  type: choice
+  skill: explain
+  topics: [linux.m04]
+  prompt: What does the **setgid** bit do on a directory?
+  options:
+    - { id: a, text: Files created inside inherit the directory's group., explanation: "Correct. That keeps shared files in the team's group." }
+    - { id: b, text: Only the owner can delete files., explanation: "That is the sticky bit." }
+    - { id: c, text: Programs in it run as root., explanation: "setuid on a file does something like that; not setgid on a directory." }
+  correct: [a]
+
+- id: linux.m04.l4.sticky
+  type: choice
+  skill: recognize
+  topics: [linux.m04]
+  prompt: "`ls -ld /tmp` shows `drwxrwxrwt`. What does the `t` mean?"
+  options:
+    - { id: a, text: Temporary files are deleted hourly., explanation: "Cleanup is separate." }
+    - { id: b, text: "The sticky bit: users can delete only their own files there.", explanation: "Correct." }
+    - { id: c, text: The directory is a symbolic link., explanation: "Links start with `l`." }
+  correct: [b]
+
+- id: linux.m04.l4.mode-2770
+  type: short
+  skill: apply
+  topics: [linux.m04]
+  prompt: "Write the octal mode for a team directory: setgid, owner and group full access, others nothing."
+  accepted: ["2770", "02770"]
+  match: { mode: exact }
+
+- id: linux.m04.l4.setuid-find
+  type: choice
+  skill: apply
+  topics: [linux.m04]
+  prompt: Which command lists setuid files, which a security audit should review?
+  options:
+    - { id: a, text: "`sudo find / -perm -4000 -type f 2>/dev/null`", explanation: "Correct. `-4000` means the setuid bit is set." }
+    - { id: b, text: "`ls -l / | grep s`", explanation: "Not reliable or recursive." }
+    - { id: c, text: "`find / -user root`", explanation: "Lists files owned by root, not setuid ones." }
+  correct: [a]
+
+- id: linux.m04.l4.setfacl
+  type: short
+  skill: apply
+  topics: [linux.m04]
+  prompt: "Write the command that gives user `farid` read and execute access to the directory `/srv/kira/shared` with an ACL."
+  accepted: ["sudo setfacl -m u:farid:rx /srv/kira/shared", "setfacl -m u:farid:rx /srv/kira/shared", "sudo setfacl -m user:farid:rx /srv/kira/shared", "sudo setfacl -m u:farid:r-x /srv/kira/shared"]
+  match: { mode: exact }
+
+- id: linux.m04.l4.default-acl
+  type: choice
+  skill: explain
+  topics: [linux.m04]
+  prompt: Why also set a **default** ACL (`d:u:farid:rx`) on the directory?
+  options:
+    - { id: a, text: So files and folders created inside later inherit farid's access., explanation: "Correct. The normal ACL applies only to the directory itself." }
+    - { id: b, text: It replaces the group permissions., explanation: "It adds entries; groups are unchanged." }
+    - { id: c, text: Default ACLs are required by ext4., explanation: "They are optional." }
+  correct: [a]
+
+- id: linux.m04.l4.plus
+  type: choice
+  skill: recognize
+  topics: [linux.m04]
+  prompt: "`ls -l` shows `-rw-r-----+`. What does the `+` tell you?"
+  options:
+    - { id: a, text: The file has an ACL; check it with `getfacl`., explanation: "Correct." }
+    - { id: b, text: The file is larger than 1 GB., explanation: "Size is a separate column." }
+    - { id: c, text: The file is being written., explanation: "`ls` does not show that." }
+  correct: [a]

@@ -1,0 +1,86 @@
+id: linux-fundamentals.m07-quiz
+title: "Module 7 quiz: services and boot"
+kind: quiz
+passMark: 0.7
+description: Eight questions on the boot process, systemd units, systemctl and the journal.
+sections:
+  - id: linux-fundamentals.m07-quiz.s1
+    title: Module 7
+    questions:
+      - id: linux.m07.quiz.reload
+        type: choice
+        skill: explain
+        topics: [linux.m07]
+        prompt: Why prefer `systemctl reload nginx` over `restart` after a configuration change on a busy web server?
+        options:
+          - { id: a, text: "Reload rereads configuration without dropping existing connections.", explanation: "Correct (for services that support reload)." }
+          - { id: b, text: Reload also upgrades nginx., explanation: "Packages are not touched." }
+          - { id: c, text: Restart does not apply configuration., explanation: "It does, but interrupts service." }
+        correct: [a]
+      - id: linux.m07.quiz.failed
+        type: short
+        skill: recall
+        topics: [linux.m07]
+        prompt: Which command lists all units that are in a failed state?
+        accepted: ["systemctl --failed", "systemctl list-units --failed", "systemctl list-units --state=failed"]
+        match: { mode: exact }
+      - id: linux.m07.quiz.unit-location
+        type: choice
+        skill: recognize
+        topics: [linux.m07]
+        prompt: Where do you put a unit file you write yourself?
+        options:
+          - { id: a, text: "`/etc/systemd/system/`", explanation: "Correct." }
+          - { id: b, text: "`/usr/lib/systemd/system/`", explanation: "Reserved for packages." }
+          - { id: c, text: "`/var/lib/systemd/`", explanation: "systemd's own state." }
+        correct: [a]
+      - id: linux.m07.quiz.rescue
+        type: choice
+        skill: apply
+        topics: [linux.m07]
+        prompt: A server stops during boot because of a mistake in `/etc/fstab`. How do you get a shell to fix it?
+        options:
+          - { id: a, text: "From the console, boot into rescue or emergency mode (GRUB recovery entry, or add `systemd.unit=emergency.target`).", explanation: "Correct. Remount root read-write if needed and fix the file." }
+          - { id: b, text: SSH in as root., explanation: "SSH usually is not running yet." }
+          - { id: c, text: Reinstall Linux., explanation: "Far too drastic for a one-line fix." }
+        correct: [a]
+      - id: linux.m07.quiz.journal-persistent
+        type: choice
+        skill: recognize
+        topics: [linux.m07]
+        prompt: Which directory's existence makes the journal persistent across reboots (with the default `Storage=auto`)?
+        options:
+          - { id: a, text: "`/var/log/journal`", explanation: "Correct." }
+          - { id: b, text: "`/run/log/journal`", explanation: "That is the volatile, in-memory location." }
+          - { id: c, text: "`/etc/journal`", explanation: "Not used." }
+        correct: [a]
+      - id: linux.m07.quiz.is-enabled
+        type: choice
+        skill: apply
+        topics: [linux.m07]
+        prompt: A script needs to check whether `ssh.socket` will start at boot. Which command fits best?
+        options:
+          - { id: a, text: "`systemctl is-enabled ssh.socket`", explanation: "Correct: one-word answer and an exit code." }
+          - { id: b, text: "`systemctl status ssh.socket | grep enabled`", explanation: "Works, but fragile." }
+          - { id: c, text: "`ps aux | grep ssh`", explanation: "Shows what runs now, not what starts at boot." }
+        correct: [a]
+      - id: linux.m07.quiz.grub-rhel
+        type: choice
+        skill: recognize
+        topics: [linux.m07]
+        prompt: On RHEL, after editing `/etc/default/grub`, which command regenerates the GRUB configuration?
+        options:
+          - { id: a, text: "`grub2-mkconfig -o /boot/grub2/grub.cfg`", explanation: "Correct (or `grubby` to change kernel arguments)." }
+          - { id: b, text: "`update-grub`", explanation: "Debian/Ubuntu wrapper." }
+          - { id: c, text: "`systemctl restart grub2`", explanation: "GRUB is not a service." }
+        correct: [a]
+      - id: linux.m07.quiz.stdout-journal
+        type: choice
+        skill: explain
+        topics: [linux.m07]
+        prompt: A service's script prints messages with `echo`. Where do they end up?
+        options:
+          - { id: a, text: "In the journal, tagged with the unit (`journalctl -u name`)", explanation: "Correct. systemd captures stdout and stderr." }
+          - { id: b, text: Nowhere; services have no terminal, explanation: "systemd connects their output to the journal." }
+          - { id: c, text: "In /tmp/service.log", explanation: "Only if the script writes there." }
+        correct: [a]

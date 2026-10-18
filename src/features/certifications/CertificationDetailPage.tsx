@@ -1,11 +1,13 @@
 /**
  * One certification: status, exam facts, cost, objectives and resources (free or paid,
- * official or not), the Study Hub courses that prepare for it, where every fact was checked,
+ * official or not), the foundation courses to take first (how much they matter, which modules,
+ * what lies beyond them), the Study Hub courses that prepare for it, where every fact was checked,
  * and the learner's own plan: status, target and exam dates, notes.
  */
 import { ExternalLink, TriangleAlert } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useParams } from 'react-router';
+import { Markdown } from '@/components/Markdown';
 import { Bubble } from '@/components/ui/Bubble';
 import { Button } from '@/components/ui/Button';
 import { ErrorState, LoadingState, Tag } from '@/components/ui/Feedback';
@@ -14,18 +16,21 @@ import { PageHeader, Sheet } from '@/components/ui/Sheet';
 import { useCertificationProgress } from '@/data/queries';
 import type { CertificationProgressRecord } from '@/data/records';
 import { useCatalog } from '@/domain/content/load';
-import type { Certification, CourseSummary } from '@/domain/content/types';
+import type { Certification, CertificationFoundation, CourseSummary } from '@/domain/content/types';
 import { courseUrl } from '@/domain/content/urls';
 import { SaveStatusText } from '@/components/SaveStatusText';
 import { useAutosave } from '@/lib/useAutosave';
 import { formatDate, parseDayKey, relativeDay } from '@/lib/dates';
-import { CATEGORY_LABELS, CREDENTIAL_LABELS, formatCost, LEVEL_LABELS, PROVIDER_STATUS, TRACKING, TRACKING_ORDER } from './certificationLabels';
+import { useLessonStatuses, type LessonStatuses } from '@/features/courses/useLessonStatuses';
+import { CATEGORY_LABELS, CREDENTIAL_LABELS, formatCost, LEVEL_LABELS, PROVIDER_STATUS, RELEVANCE, TRACKING, TRACKING_ORDER } from './certificationLabels';
+import { FoundationModules } from './FoundationModules';
 import { useCertificationTracking } from './useCertificationTracking';
 
 export default function CertificationDetailPage() {
   const { certificationId = '' } = useParams();
   const catalog = useCatalog();
   const progress = useCertificationProgress();
+  const statuses = useLessonStatuses();
 
   if (catalog.error) return <ErrorState title="Certification data is not built yet" error={catalog.error} />;
   if (!catalog.data || !progress.data) return <LoadingState />;
@@ -38,6 +43,11 @@ export default function CertificationDetailPage() {
       certification={certification}
       courses={courses}
       plannedCourses={plannedCourses}
+      foundations={certification.foundations.flatMap((foundation) => {
+        const course = catalog.data.courses.find((candidate) => candidate.id === foundation.courseId);
+        return course ? [{ foundation, course }] : [];
+      })}
+      statuses={statuses}
       record={progress.data.find((candidate) => candidate.certId === certification.id)}
     />
   );
@@ -47,11 +57,15 @@ function CertificationView({
   certification,
   courses,
   plannedCourses,
+  foundations,
+  statuses,
   record,
 }: {
   certification: Certification;
   courses: CourseSummary[];
   plannedCourses: number;
+  foundations: Array<{ foundation: CertificationFoundation; course: CourseSummary }>;
+  statuses: Map<string, LessonStatuses>;
   record?: CertificationProgressRecord;
 }) {
   const status = certification.status === 'active' ? undefined : PROVIDER_STATUS[certification.status];
@@ -129,6 +143,10 @@ function CertificationView({
             </Sheet>
           )}
 
+          {foundations.map(({ foundation, course }) => (
+            <FoundationSheet key={course.id} foundation={foundation} course={course} statuses={statuses.get(course.id)} />
+          ))}
+
           {certification.resources.length > 0 && (
             <Sheet title="Resources" padded={false}>
               <ul className="divide-y divide-rule">
@@ -197,6 +215,69 @@ function CertificationView({
         </div>
       </div>
     </div>
+  );
+}
+
+/** A foundation course to take before this exam: how much it matters, which modules, what lies beyond it, and the sources. */
+function FoundationSheet({ foundation, course, statuses }: { foundation: CertificationFoundation; course: CourseSummary; statuses?: LessonStatuses }) {
+  const relevance = RELEVANCE[foundation.relevance];
+  const subject = course.subject === 'linux' ? 'Linux' : course.title;
+  return (
+    <Sheet title={`${subject} for this exam`} aside={<Tag tone={relevance.tone} title={relevance.description}>{relevance.label}</Tag>}>
+      <div className="flex flex-col gap-4 text-sm">
+        <dl className="grid gap-x-6 gap-y-2 sm:grid-cols-[10rem_minmax(0,1fr)]">
+          <dt className="text-ink-muted">Official requirement</dt>
+          <dd>{foundation.officialRequirement}</dd>
+          <dt className="text-ink-muted">Study Hub recommends</dt>
+          <dd>
+            <span className="font-medium">{relevance.label}.</span> {relevance.description}
+          </dd>
+        </dl>
+        <Markdown compact className="max-w-[70ch]">
+          {foundation.reason}
+        </Markdown>
+        {foundation.concepts.length > 0 && (
+          <FoundationList title="Concepts you need" items={foundation.concepts} />
+        )}
+        <section aria-label={`${course.title} modules`} className="flex flex-col gap-2">
+          <h3 className="font-semibold">Modules of {course.title}</h3>
+          <FoundationModules course={course} foundation={foundation} statuses={statuses} />
+        </section>
+        {foundation.beyond.length > 0 && <FoundationList title="Beyond the course" items={foundation.beyond} />}
+        <dl className="grid gap-x-6 gap-y-2 sm:grid-cols-[10rem_minmax(0,1fr)]">
+          <dt className="text-ink-muted">When</dt>
+          <dd>{foundation.timing}</dd>
+          <dt className="text-ink-muted">Next step</dt>
+          <dd>{foundation.next}</dd>
+          <dt className="text-ink-muted">Based on</dt>
+          <dd>
+            <ul className="flex flex-col gap-1">
+              {foundation.sources.map((source) => (
+                <li key={source.url}>
+                  <a href={source.url} target="_blank" rel="noreferrer noopener" className="text-print-strong hover:underline">
+                    {source.title}
+                  </a>
+                  <span className="ml-2 text-xs text-ink-faint">checked {formatDate(parseDayKey(source.checkedOn))}</span>
+                </li>
+              ))}
+            </ul>
+          </dd>
+        </dl>
+      </div>
+    </Sheet>
+  );
+}
+
+function FoundationList({ title, items }: { title: string; items: string[] }) {
+  return (
+    <section aria-label={title} className="flex flex-col gap-1.5">
+      <h3 className="font-semibold">{title}</h3>
+      <ul className="list-disc pl-5 text-ink-muted">
+        {items.map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </ul>
+    </section>
   );
 }
 

@@ -1,0 +1,58 @@
+- id: linux.m14.l2.milestones
+  type: choice
+  skill: explain
+  topics: [linux.m14]
+  prompt: Why snapshot and commit at the end of every milestone?
+  options:
+    - { id: a, text: "If a later step breaks the server, you can return to the last verified state instead of starting again, and you have a history of what changed.", explanation: "Correct." }
+    - { id: b, text: Snapshots make the VM faster., explanation: "They do not." }
+    - { id: c, text: It is required by Ubuntu., explanation: "It is good practice, not a requirement." }
+  correct: [a]
+
+- id: linux.m14.l2.order
+  type: choice
+  skill: apply
+  topics: [linux.m14]
+  prompt: Why is SSH hardening (M5) done after accounts and keys (M3) rather than first?
+  options:
+    - { id: a, text: "Key-only SSH restricted to `sshusers` would lock out anyone whose key and group membership are not in place yet.", explanation: "Correct: dependencies decide order." }
+    - { id: b, text: The order does not matter., explanation: "Doing it first risks lock-out." }
+    - { id: c, text: SSH cannot be configured before nginx., explanation: "No such dependency." }
+  correct: [a]
+
+- id: linux.m14.l2.matrix
+  type: long
+  skill: apply
+  topics: [linux.m14]
+  prompt: Paste your access test matrix results (each test with PASS or FAIL) and explain any test that failed at first and how you fixed it.
+  minWords: 60
+  rubric:
+    - { id: complete, label: "All nine tests reported", keywords: [["aina"], ["mei"], ["siti"], ["hafiz"]] }
+    - { id: pass, label: "Results marked PASS/FAIL against the expected outcome", keywords: [["PASS", "pass"]] }
+    - { id: fix, label: "A failure (or a near-miss) explained with its cause and fix, or a clear statement that all passed first time with evidence", keywords: [["fix", "because", "all passed", "first time"]] }
+  modelAnswer: >-
+    1 aina touch fees.csv — PASS (allowed). 2 mei ls admin — PASS (denied). 3 mei cat timetable/term1.txt — FAIL at
+    first: the file had been created before the default ACL, so only the directory had mei's entry; fixed with
+    `setfacl -R -m g:teachers:rX /srv/teratai/admin/timetable`, then PASS. 4 mei touch in timetable — PASS (denied).
+    5 mei touch teachers/notes.txt — PASS, group teachers thanks to setgid. 6 siti cat fees.csv — PASS (denied).
+    7 hafiz restart nginx — PASS. 8 hafiz ls admin — PASS (denied). 9 hafiz journalctl -u nginx — PASS (member of
+    systemd-journal). Also note: to traverse into admin/timetable, teachers needed `--x` on /srv/teratai/admin via an
+    ACL (`setfacl -m g:teachers:x /srv/teratai/admin`), which allows passing through without listing.
+
+- id: linux.m14.l2.backup-restore
+  type: long
+  skill: apply
+  topics: [linux.m14]
+  prompt: Describe the backup timer, the first run's result, and the restore test you performed with its evidence.
+  minWords: 50
+  rubric:
+    - { id: timer, label: "Timer and service defined and enabled; list-timers shown", keywords: [["timer"], ["list-timers", "OnCalendar"]] }
+    - { id: run, label: "First run succeeded with checksums verified", keywords: [["sha256sum", "checksum"], ["SUCCESS", "success", "0"]] }
+    - { id: restore, label: "Restore test compared with diff -r and ACLs checked with getfacl", keywords: [["diff"], ["getfacl"]] }
+  modelAnswer: >-
+    `teratai-backup.timer` runs `teratai-backup.service` (oneshot) at 01:30 with Persistent=true; `systemctl
+    list-timers` shows the next run. A manual `systemctl start` finished with status 0/SUCCESS in 14 s; the journal
+    shows "checksums OK" and /srv/backup/2026-10-20/ holds etc.tar.gz, teratai.tar.zst, www.tar.gz, packages.txt and
+    SHA256SUMS. Restore test: extracted teratai.tar.zst into /tmp/restore with --acls --xattrs; `diff -r
+    /srv/teratai /tmp/restore/srv/teratai` printed nothing; `getfacl` on admin/timetable matched the live ACL. I also
+    restored a single file for "aina" following the runbook.

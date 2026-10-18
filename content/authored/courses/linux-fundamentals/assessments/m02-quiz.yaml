@@ -1,0 +1,85 @@
+id: linux-fundamentals.m02-quiz
+title: "Module 2 quiz: filesystem and file management"
+kind: quiz
+passMark: 0.7
+description: Eight questions on the directory hierarchy, file operations, links, wildcards and searching.
+sections:
+  - id: linux-fundamentals.m02-quiz.s1
+    title: Module 2
+    questions:
+      - id: linux.m02.quiz.where-nginx
+        type: choice
+        skill: apply
+        topics: [linux.m02]
+        prompt: "nginx is installed from Ubuntu's packages. Where do you expect its configuration and its logs?"
+        options:
+          - { id: a, text: "`/etc/nginx` and `/var/log/nginx`", explanation: "Correct. Configuration in `/etc`, growing data in `/var`." }
+          - { id: b, text: "`/opt/nginx` and `/tmp`", explanation: "Packaged software follows the FHS; `/tmp` is temporary." }
+          - { id: c, text: "`/usr/nginx` and `/home/nginx`", explanation: "`/usr` holds programs, not their settings." }
+        correct: [a]
+      - id: linux.m02.quiz.rm-r
+        type: choice
+        skill: apply
+        topics: [linux.m02]
+        prompt: Which command removes the directory `old-site` **and everything in it**?
+        options:
+          - { id: a, text: "`rmdir old-site`", explanation: "Only works on empty directories." }
+          - { id: b, text: "`rm old-site`", explanation: "Refuses: `Is a directory`." }
+          - { id: c, text: "`rm -r old-site`", explanation: "Correct. Check its contents with `ls -R` first." }
+        correct: [c]
+      - id: linux.m02.quiz.preview
+        type: choice
+        skill: explain
+        topics: [linux.m02]
+        prompt: What is the safest first step before `rm *.bak` in an unfamiliar directory?
+        options:
+          - { id: a, text: "Run `ls *.bak` to see exactly what the pattern matches.", explanation: "Correct. The shell expands the pattern the same way for both commands." }
+          - { id: b, text: "Add `-f` so it does not stop.", explanation: "That removes the last chance to notice a mistake." }
+          - { id: c, text: Use sudo., explanation: "More power, not more safety." }
+        correct: [a]
+      - id: linux.m02.quiz.hardlink-dir
+        type: choice
+        skill: recognize
+        topics: [linux.m02]
+        prompt: You need a link to a directory on another disk. Which kind of link?
+        options:
+          - { id: a, text: A hard link, explanation: "Hard links cannot point to directories or cross filesystems." }
+          - { id: b, text: A symbolic link, explanation: "Correct. `ln -s /mnt/data/projects ~/projects`." }
+        correct: [b]
+      - id: linux.m02.quiz.find-user
+        type: short
+        skill: apply
+        topics: [linux.m02]
+        prompt: Write the command that finds every file under `/home` owned by user `aina` (use sudo).
+        accepted: ["sudo find /home -user aina", "sudo find /home -type f -user aina", "sudo find /home -user aina -type f"]
+        match: { mode: exact }
+      - id: linux.m02.quiz.mtime
+        type: choice
+        skill: recognize
+        topics: [linux.m02]
+        prompt: "In `find`, what does `-mtime -7` select?"
+        options:
+          - { id: a, text: Files modified within the last 7 days, explanation: "Correct. `-` means less than." }
+          - { id: b, text: Files modified more than 7 days ago, explanation: "That is `+7`." }
+          - { id: c, text: Files 7 MB or smaller, explanation: "Size is `-size`." }
+        correct: [a]
+      - id: linux.m02.quiz.less-search
+        type: choice
+        skill: recognize
+        topics: [linux.m02]
+        prompt: Inside `less`, how do you search for `error` and then quit?
+        options:
+          - { id: a, text: "`/error`, Enter, then `q`", explanation: "Correct; `n` jumps to the next match." }
+          - { id: b, text: "`Ctrl+F error`, then `Ctrl+X`", explanation: "Those are not less keys." }
+          - { id: c, text: "`:find error`, then `:exit`", explanation: "Not less commands." }
+        correct: [a]
+      - id: linux.m02.quiz.dev
+        type: choice
+        skill: recognize
+        topics: [linux.m02]
+        prompt: What is `/dev/sda`?
+        options:
+          - { id: a, text: "A device file representing the first disk", explanation: "Correct. Module 8 works with disks." }
+          - { id: b, text: A directory of drivers, explanation: "Drivers are kernel modules under `/usr/lib/modules`." }
+          - { id: c, text: A log file, explanation: "Logs are in `/var/log`." }
+        correct: [a]

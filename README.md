@@ -2,7 +2,7 @@
 
 A personal learning platform for university subjects, IT, AI engineering, professional certifications, JLPT Japanese and HSK Chinese. Lessons end in typed practice with specific feedback; answers drive spaced-repetition reviews and per-topic mastery; your calendar, code and progress stay private to you.
 
-- **Courses**: HSK 1–2 and JLPT N5–N4 built from your own books (OCR, checked against the page images), Python fundamentals (AI engineering stage 1) and Databases & SQL.
+- **Courses**: HSK 1–2 and JLPT N5–N4 built from your own books (OCR, checked against the page images), Python fundamentals (AI engineering stage 1), Databases & SQL, and Linux Fundamentals (15 modules on Ubuntu Server, with labs, practical assessments, quizzes and a capstone).
 - **Practice**: typed answers (pinyin with tone marks or numbers, kana/romaji, text, cloze, translation, explanations with a rubric), due reviews (FSRS), "practise my weaknesses", recent mistakes, saved questions, mixed quizzes, and timed JLPT mock exams with a booklet and an answer sheet.
 - **Study plans**: for each subject choose to just use its material, also practise its weak topics, or also review answered questions when due; only planned subjects bring weak topics and reviews to Today. Today also lists the day's classes from your calendar, each linked to its course.
 - **Welcome**: a new learner gives their age and where they study (primary school, secondary school or university), and an optional nickname; the age suggests their school year.
@@ -11,7 +11,7 @@ A personal learning platform for university subjects, IT, AI engineering, profes
 - **Learners**: several people can share one device or one account (siblings on one computer), each with their own progress, calendar and settings. Guests keep their progress on the device; after signing in, it can be brought into the account once.
 - **Calendar** (optional): your weekly timetable for each semester and the dates of quizzes, tests, midterms, finals and deadlines, in week, month and list views; the next dates show on Today with a countdown.
 - **Playground**: Python (Pyodide), JavaScript, TypeScript and SQL (SQLite) run in sandboxed Web Workers in the browser; C, Java and Bash are clearly labelled editor-only. Projects keep versions; you can write your own exercises with tests.
-- **Certifications**: 44 AI, cloud, security, networking, Linux, JLPT and HSK certifications checked against official sources, with your own plan (status, target and exam dates); the IT courses sit beside them, and the 14-stage AI engineering roadmap under Courses.
+- **Certifications**: 46 AI, cloud, security, networking, Linux, JLPT and HSK certifications checked against official sources, with your own plan (status, target and exam dates). Each one that relies on Linux says how much (essential, strongly recommended or optional, apart from the provider's own requirement) and which Linux Fundamentals modules to do first. The IT courses sit beside them; four roadmaps (AI engineering, full-stack, cybersecurity, Linux administration) have their own menu.
 
 ## Quick start
 
@@ -69,4 +69,5 @@ e2e/             Playwright tests
 - [Supabase](docs/SUPABASE.md): optional cloud storage and sign-in
 - [Deploy](docs/DEPLOY.md): hosting on Netlify with Google sign-in
 - [Status](docs/STATUS.md): what is done, what is not, external services and costs
+- [Linux pathways](docs/LINUX_PATHWAYS.md): how Linux Fundamentals links to certifications and roadmaps, with sources
 - [Design system](DESIGN.md): the "answer sheet" visual language

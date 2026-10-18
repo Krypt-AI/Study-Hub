@@ -1,0 +1,62 @@
+- id: linux.m13.l1.idempotent
+  type: choice
+  skill: explain
+  topics: [linux.m13]
+  prompt: What does it mean for an administration script to be idempotent?
+  options:
+    - { id: a, text: Running it several times has the same result as running it once., explanation: "Correct. It checks the current state before changing it." }
+    - { id: b, text: It runs only once and then deletes itself., explanation: "Not what idempotent means." }
+    - { id: c, text: It needs no root privileges., explanation: "Unrelated." }
+  correct: [a]
+
+- id: linux.m13.l1.non-idempotent
+  type: choice
+  skill: apply
+  topics: [linux.m13]
+  prompt: "Which line is **not** idempotent?"
+  options:
+    - { id: a, text: "`echo '192.168.56.20 db01' >> /etc/hosts`", explanation: "Correct. Each run appends another copy. Check with `grep -q` first." }
+    - { id: b, text: "`mkdir -p /srv/app`", explanation: "Idempotent: no error and no change if it exists." }
+    - { id: c, text: "`systemctl enable nginx`", explanation: "Idempotent: enabling an enabled service changes nothing." }
+  correct: [a]
+
+- id: linux.m13.l1.when-automate
+  type: choice
+  skill: explain
+  topics: [linux.m13]
+  prompt: Which task is the best candidate for automation?
+  options:
+    - { id: a, text: Checking disk space and failed services on 30 servers every morning, explanation: "Correct: repeated, mechanical, error-prone by hand." }
+    - { id: b, text: Deciding whether to approve a firewall exception for a vendor, explanation: "Needs human judgement." }
+    - { id: c, text: A one-off data migration that will never recur, explanation: "A documented runbook may be enough." }
+  correct: [a]
+
+- id: linux.m13.l1.logger
+  type: short
+  skill: recall
+  topics: [linux.m13]
+  prompt: "Which command writes a message to the system journal from a script, e.g. tagged `add-staff`? (Command name only.)"
+  accepted: [logger]
+  match: { mode: exact }
+
+- id: linux.m13.l1.secrets
+  type: choice
+  skill: explain
+  topics: [linux.m13]
+  prompt: Your script needs a database password. Where should it **not** be?
+  options:
+    - { id: a, text: Hard-coded in the script stored in Git, explanation: "Correct. Anyone with repository access, now or later, sees it." }
+    - { id: b, text: In a root-only configuration file read by the script, explanation: "An acceptable simple approach." }
+    - { id: c, text: In a secrets manager the script queries, explanation: "A good practice in larger organisations." }
+  correct: [a]
+
+- id: linux.m13.l1.git
+  type: choice
+  skill: explain
+  topics: [linux.m13]
+  prompt: What do administrators gain by keeping scripts and configuration in Git?
+  options:
+    - { id: a, text: "History of who changed what and why, review before deployment, and easy rollback", explanation: "Correct." }
+    - { id: b, text: Faster scripts, explanation: "Git does not change execution speed." }
+    - { id: c, text: Automatic backups of /srv data, explanation: "Git is not a data backup tool." }
+  correct: [a]

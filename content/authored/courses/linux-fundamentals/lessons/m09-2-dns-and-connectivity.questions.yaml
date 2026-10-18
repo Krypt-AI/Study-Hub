@@ -1,0 +1,74 @@
+- id: linux.m09.l2.dns-vs-ip
+  type: choice
+  skill: apply
+  topics: [linux.m09]
+  prompt: "`ping 1.1.1.1` works, but `ping archive.ubuntu.com` says `Temporary failure in name resolution`. Where is the problem?"
+  options:
+    - { id: a, text: DNS (name resolution), explanation: "Correct. IP connectivity works; translating the name fails." }
+    - { id: b, text: The default gateway, explanation: "The gateway works, since 1.1.1.1 is reachable." }
+    - { id: c, text: The network cable, explanation: "The link works." }
+  correct: [a]
+
+- id: linux.m09.l2.stub
+  type: choice
+  skill: recognize
+  topics: [linux.m09]
+  prompt: "On Ubuntu, `/etc/resolv.conf` shows `nameserver 127.0.0.53`. What is that?"
+  options:
+    - { id: a, text: "systemd-resolved's local stub resolver, which forwards queries to the real DNS servers", explanation: "Correct. See them with `resolvectl status`." }
+    - { id: b, text: A misconfiguration, explanation: "It is the normal default." }
+    - { id: c, text: Google's DNS, explanation: "Google's is 8.8.8.8." }
+  correct: [a]
+
+- id: linux.m09.l2.dig-server
+  type: short
+  skill: apply
+  topics: [linux.m09]
+  prompt: Write a `dig` command that asks the resolver `1.1.1.1` (not your configured one) for the A record of `example.com`.
+  accepted: ["dig @1.1.1.1 example.com", "dig @1.1.1.1 example.com A", "dig @1.1.1.1 A example.com", "dig example.com @1.1.1.1"]
+  match: { mode: exact }
+
+- id: linux.m09.l2.mx
+  type: choice
+  skill: recognize
+  topics: [linux.m09]
+  prompt: Which DNS record type names a domain's mail servers?
+  options:
+    - { id: a, text: "`MX`", explanation: "Correct." }
+    - { id: b, text: "`PTR`", explanation: "Reverse lookups." }
+    - { id: c, text: "`CNAME`", explanation: "Aliases." }
+    - { id: d, text: "`AAAA`", explanation: "IPv6 addresses." }
+  correct: [a]
+
+- id: linux.m09.l2.hosts-vs-dig
+  type: choice
+  skill: explain
+  topics: [linux.m09]
+  prompt: "You added `192.168.56.20 db01` to `/etc/hosts`. `getent hosts db01` finds it, but `dig db01` does not. Why?"
+  options:
+    - { id: a, text: "`dig` queries DNS servers directly and ignores /etc/hosts; getent follows nsswitch (files, then DNS).", explanation: "Correct." }
+    - { id: b, text: The file needs a reboot to take effect., explanation: "/etc/hosts is read on every lookup." }
+    - { id: c, text: "`dig` needs sudo.", explanation: "It does not." }
+  correct: [a]
+
+- id: linux.m09.l2.ping-blocked
+  type: choice
+  skill: explain
+  topics: [linux.m09]
+  prompt: "`ping web01` gets no replies, but users say the web site on web01 works. What is the best next test?"
+  options:
+    - { id: a, text: "Test the service port directly: `nc -zv web01 443` or `curl -I https://web01`.", explanation: "Correct. ICMP is often blocked by firewalls." }
+    - { id: b, text: Report web01 as down., explanation: "No ping reply does not prove a host is down." }
+    - { id: c, text: Reboot web01., explanation: "There is no evidence of a fault." }
+  correct: [a]
+
+- id: linux.m09.l2.order
+  type: choice
+  skill: apply
+  topics: [linux.m09]
+  prompt: When troubleshooting "cannot reach the internet", which order is most efficient?
+  options:
+    - { id: a, text: "Interface/address → route → gateway → internet by IP → DNS → application", explanation: "Correct: bottom-up, stopping at the first failure." }
+    - { id: b, text: "Application → reinstall → reboot", explanation: "Skips diagnosis." }
+    - { id: c, text: "DNS → gateway → interface", explanation: "DNS depends on the lower layers working." }
+  correct: [a]

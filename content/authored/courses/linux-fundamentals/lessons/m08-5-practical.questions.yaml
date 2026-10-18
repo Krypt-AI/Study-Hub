@@ -1,0 +1,35 @@
+- id: linux.m08.l5.build
+  type: long
+  skill: apply
+  topics: [linux.m08]
+  prompt: List the commands that created, populated and permanently mounted `lv_share`, and the evidence after reboot.
+  minWords: 50
+  rubric:
+    - { id: lv, label: "lvcreate 1G in vg_data and mkfs.ext4", keywords: [["lvcreate"], ["mkfs.ext4", "mkfs -t ext4"]] }
+    - { id: copy, label: "Data copied with attributes preserved (cp -a / rsync -aAX) before mounting in place", keywords: [["cp -a", "rsync -a"]] }
+    - { id: fstab, label: "fstab entry by UUID, tested with findmnt --verify / mount -a", keywords: [["UUID"], ["mount -a", "findmnt --verify"]] }
+    - { id: reboot, label: "After reboot: findmnt/df shows /srv/kira on the LV; getfacl/ls -ld show modes and ACLs intact", keywords: [["reboot"], ["findmnt", "df"], ["getfacl", "ls -ld", "2770", "acl"]] }
+  modelAnswer: >-
+    `sudo lvcreate -n lv_share -L 1G vg_data`, `sudo mkfs.ext4 -L share /dev/vg_data/lv_share`. I mounted it
+    temporarily at /mnt/share, ran `sudo cp -a /srv/kira/. /mnt/share/`, compared with `diff -r`, unmounted, moved the
+    old directory aside (`sudo mv /srv/kira /srv/kira.old && sudo mkdir /srv/kira`), and added `UUID=<from blkid>
+    /srv/kira ext4 defaults 0 2` to fstab. `findmnt --verify` was clean, `daemon-reload` and `mount -a` mounted it.
+    After a reboot `findmnt /srv/kira` showed `/dev/mapper/vg_data-lv_share`, `ls -ld /srv/kira/accounts` showed
+    `drwxrws---+ root accounts`, and `getfacl` still listed mei's entries.
+
+- id: linux.m08.l5.full
+  type: long
+  skill: explain
+  topics: [linux.m08]
+  prompt: Describe how you diagnosed and fixed the "disk full" call, and what you recommended.
+  minWords: 40
+  rubric:
+    - { id: diagnose, label: "df -h showed 100% on /srv/kira; du found the large file", keywords: [["df"], ["du", "find"]] }
+    - { id: grow, label: "lvextend -r +512M online, df confirms", keywords: [["lvextend"], ["-r", "resize2fs"]] }
+    - { id: recommend, label: "Recommendation: monitoring/alerts, archive policy or quotas", keywords: [["monitor", "alert", "quota", "archive", "policy"]] }
+  modelAnswer: >-
+    `df -h /srv/kira` showed 100% used; `sudo du -sh /srv/kira/*` pointed at accounts, and `sudo find /srv/kira -size
+    +100M` found the 900 MB scan-archive.bin. As the files were legitimate, I grew the volume online: `sudo lvextend -r
+    -L +512M /dev/vg_data/lv_share`; `df -h` then showed about 540 MB free and users could save again. Recommendations:
+    alert at 80% usage (Module 10's check script or a monitoring agent), move scanned archives to the backup volume
+    monthly, and consider per-group quotas if growth continues.

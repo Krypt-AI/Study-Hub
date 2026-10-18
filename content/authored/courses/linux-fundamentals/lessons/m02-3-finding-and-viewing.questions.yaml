@@ -1,0 +1,70 @@
+- id: linux.m02.l3.glob-question
+  type: choice
+  skill: apply
+  topics: [linux.m02]
+  prompt: "A directory holds `log1.txt`, `log2.txt`, `log10.txt` and `logA.txt`. What does `ls log?.txt` list?"
+  options:
+    - { id: a, text: "`log1.txt log2.txt logA.txt`", explanation: "Correct. `?` matches exactly one character." }
+    - { id: b, text: "`log1.txt log2.txt`", explanation: "`?` matches letters as well as digits." }
+    - { id: c, text: All four files, explanation: "`log10.txt` has two characters in that position." }
+  correct: [a]
+
+- id: linux.m02.l3.find-large
+  type: short
+  skill: apply
+  topics: [linux.m02]
+  prompt: Write a `find` command that lists regular files larger than 100 MB anywhere under `/var`.
+  accepted: ["find /var -type f -size +100M", "sudo find /var -type f -size +100M", "find /var -size +100M -type f", "sudo find /var -size +100M -type f"]
+  match: { mode: exact }
+
+- id: linux.m02.l3.quote-name
+  type: choice
+  skill: explain
+  topics: [linux.m02]
+  prompt: "Why write `find . -name \"*.log\"` with quotes rather than `find . -name *.log`?"
+  options:
+    - { id: a, text: "Without quotes the shell may expand `*.log` to names in the current directory before `find` sees the pattern.", explanation: "Correct. Quoting passes the pattern itself to `find`." }
+    - { id: b, text: "`find` needs quotes for every argument.", explanation: "Only patterns the shell would expand need them." }
+    - { id: c, text: Quotes make the search case-insensitive., explanation: "That is `-iname`." }
+  correct: [a]
+
+- id: linux.m02.l3.tail-f
+  type: choice
+  skill: apply
+  topics: [linux.m02]
+  prompt: You want to watch new lines appear in `/var/log/nginx/error.log` while you test a web page. Which command?
+  options:
+    - { id: a, text: "`cat /var/log/nginx/error.log`", explanation: "Prints the file once and exits." }
+    - { id: b, text: "`sudo tail -f /var/log/nginx/error.log`", explanation: "Correct. `-f` keeps following the file; stop with Ctrl+C." }
+    - { id: c, text: "`head -f /var/log/nginx/error.log`", explanation: "`head` has no follow mode." }
+  correct: [b]
+
+- id: linux.m02.l3.exec
+  type: cloze
+  skill: recall
+  topics: [linux.m02]
+  prompt: Complete the command that runs `gzip` on every `.log` file older than 30 days under `/srv/app/logs`.
+  text: "`find /srv/app/logs -name \"*.log\" -mtime [[1]] -exec gzip [[2]] \\;`"
+  blanks:
+    - { id: "1", accepted: ["+30"], match: { mode: exact } }
+    - { id: "2", accepted: ["{}"], match: { mode: exact } }
+  explanation: "`-mtime +30` means more than 30 days ago; `{}` is replaced by each path, and `\\;` ends the command."
+
+- id: linux.m02.l3.file-cmd
+  type: choice
+  skill: recognize
+  topics: [linux.m02]
+  prompt: Before opening an unknown file `data.bin`, which command tells you what kind of data it holds?
+  options:
+    - { id: a, text: "`file data.bin`", explanation: "Correct. It inspects the content, not the name." }
+    - { id: b, text: "`type data.bin`", explanation: "`type` describes commands, not files." }
+    - { id: c, text: "`wc data.bin`", explanation: "Counts lines, words and bytes only." }
+  correct: [a]
+
+- id: linux.m02.l3.wc
+  type: short
+  skill: recall
+  topics: [linux.m02]
+  prompt: Write the command that counts the lines in `/etc/passwd`.
+  accepted: ["wc -l /etc/passwd", "wc --lines /etc/passwd"]
+  match: { mode: exact }

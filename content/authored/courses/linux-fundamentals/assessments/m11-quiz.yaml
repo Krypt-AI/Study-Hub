@@ -1,0 +1,86 @@
+id: linux-fundamentals.m11-quiz
+title: "Module 11 quiz: security fundamentals"
+kind: quiz
+passMark: 0.7
+description: Eight questions on account security, SSH hardening, baselines and mandatory access control.
+sections:
+  - id: linux-fundamentals.m11-quiz.s1
+    title: Module 11
+    questions:
+      - id: linux.m11.quiz.root-ssh
+        type: choice
+        skill: explain
+        topics: [linux.m11]
+        prompt: Why disable root login over SSH?
+        options:
+          - { id: a, text: "root exists on every system, so it is the first account attackers try; admins should log in personally and use sudo.", explanation: "Correct: smaller target and accountability." }
+          - { id: b, text: root cannot use SSH keys., explanation: "It can; the point is accountability and exposure." }
+          - { id: c, text: It speeds up SSH., explanation: "Unrelated." }
+        correct: [a]
+      - id: linux.m11.quiz.empty-password
+        type: choice
+        skill: apply
+        topics: [linux.m11]
+        prompt: Which audit finds accounts with an empty password field?
+        options:
+          - { id: a, text: "`sudo awk -F: '$2 == \"\" {print $1}' /etc/shadow`", explanation: "Correct." }
+          - { id: b, text: "`awk -F: '$3 == 0' /etc/passwd`", explanation: "Finds UID 0 accounts." }
+          - { id: c, text: "`last -n 10`", explanation: "Shows logins." }
+        correct: [a]
+      - id: linux.m11.quiz.allowgroups
+        type: short
+        skill: recall
+        topics: [linux.m11]
+        prompt: Which sshd setting limits SSH logins to members of the group `sshusers`? Write the full line.
+        accepted: ["AllowGroups sshusers"]
+        match: { mode: text, typoTolerance: none }
+      - id: linux.m11.quiz.order
+        type: choice
+        skill: apply
+        topics: [linux.m11]
+        prompt: In which order do you make SSH key-only on a remote server?
+        options:
+          - { id: a, text: "Confirm key login works → write the setting → `sshd -t` → restart → test a new login while the old session stays open", explanation: "Correct." }
+          - { id: b, text: "Disable passwords → restart → then create a key", explanation: "You would be locked out." }
+          - { id: c, text: "Restart first, test later", explanation: "Untested changes risk lockout." }
+        correct: [a]
+      - id: linux.m11.quiz.apparmor
+        type: choice
+        skill: recognize
+        topics: [linux.m11]
+        prompt: Which command shows AppArmor's loaded profiles and their modes on Ubuntu?
+        options:
+          - { id: a, text: "`sudo aa-status`", explanation: "Correct." }
+          - { id: b, text: "`getenforce`", explanation: "SELinux on RHEL." }
+          - { id: c, text: "`ufw status`", explanation: "Firewall." }
+        correct: [a]
+      - id: linux.m11.quiz.shadow-mode
+        type: choice
+        skill: apply
+        topics: [linux.m11]
+        prompt: "`ls -l /etc/shadow` shows `-rw-r--r-- root root`. What is wrong?"
+        options:
+          - { id: a, text: "Everyone can read the password hashes; it should be `-rw-r----- root shadow` (640).", explanation: "Correct. Readable hashes can be cracked offline." }
+          - { id: b, text: Nothing., explanation: "Hashes must not be world-readable." }
+          - { id: c, text: It should be 777 so tools can read it., explanation: "That makes it worse." }
+        correct: [a]
+      - id: linux.m11.quiz.defence-depth
+        type: choice
+        skill: explain
+        topics: [linux.m11]
+        prompt: Which statement reflects defence in depth?
+        options:
+          - { id: a, text: "Key-only SSH, a restricted group, a firewall limiting the source network and fail2ban together", explanation: "Correct. If one layer fails, others still protect." }
+          - { id: b, text: A strong firewall means patching can wait., explanation: "Allowed services are still exposed." }
+          - { id: c, text: Changing the SSH port is enough., explanation: "That only reduces noise." }
+        correct: [a]
+      - id: linux.m11.quiz.beginner-limits
+        type: choice
+        skill: explain
+        topics: [linux.m11]
+        prompt: After completing this module, which statement is accurate?
+        options:
+          - { id: a, text: "You can apply and evidence a basic Linux hardening baseline; security analyst work needs much more (threats, detection, incident response).", explanation: "Correct. Continue with Security+ or the cybersecurity roadmap." }
+          - { id: b, text: You are qualified as a penetration tester., explanation: "That requires extensive further training and authorisation practice." }
+          - { id: c, text: Your servers are now fully secure., explanation: "No baseline guarantees that." }
+        correct: [a]

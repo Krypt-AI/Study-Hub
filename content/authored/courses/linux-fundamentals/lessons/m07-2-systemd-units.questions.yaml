@@ -1,0 +1,81 @@
+- id: linux.m07.l2.enable-vs-start
+  type: choice
+  skill: explain
+  topics: [linux.m07]
+  prompt: "After a reboot, nginx is not running, although it worked before. `systemctl status` shows `disabled`. What happened?"
+  options:
+    - { id: a, text: "It was started but never enabled; `start` is for now, `enable` is for boot.", explanation: "Correct. `sudo systemctl enable --now nginx` does both." }
+    - { id: b, text: The reboot deleted nginx., explanation: "It is still installed (Loaded)." }
+    - { id: c, text: nginx cannot run after a reboot., explanation: "Enabled services start at boot." }
+  correct: [a]
+
+- id: linux.m07.l2.enable-now
+  type: short
+  skill: recall
+  topics: [linux.m07]
+  prompt: Write one command that both enables `nginx` at boot and starts it now.
+  accepted: ["sudo systemctl enable --now nginx", "systemctl enable --now nginx", "sudo systemctl enable nginx --now"]
+  match: { mode: exact }
+
+- id: linux.m07.l2.test-config
+  type: choice
+  skill: apply
+  topics: [linux.m07]
+  prompt: You edited `/etc/nginx/nginx.conf`. What should you run **before** `systemctl reload nginx`?
+  options:
+    - { id: a, text: "`sudo nginx -t`", explanation: "Correct. Test the syntax so a mistake does not take the site down." }
+    - { id: b, text: "`sudo systemctl daemon-reload`", explanation: "That rereads unit files, not nginx's own configuration." }
+    - { id: c, text: "`sudo systemctl mask nginx`", explanation: "That would block it from starting." }
+  correct: [a]
+
+- id: linux.m07.l2.dropin
+  type: choice
+  skill: explain
+  topics: [linux.m07]
+  prompt: Why use `systemctl edit nginx` rather than editing `/usr/lib/systemd/system/nginx.service`?
+  options:
+    - { id: a, text: "Package upgrades overwrite files in /usr/lib; a drop-in in /etc/systemd/system survives and takes priority.", explanation: "Correct." }
+    - { id: b, text: Files in /usr/lib are read-only for root., explanation: "Root can write them; they will just be overwritten." }
+    - { id: c, text: "`systemctl edit` is faster.", explanation: "Durability, not speed, is the reason." }
+  correct: [a]
+
+- id: linux.m07.l2.daemon-reload
+  type: short
+  skill: recall
+  topics: [linux.m07]
+  prompt: After creating or changing a unit file by hand, which command makes systemd reread unit files?
+  accepted: ["sudo systemctl daemon-reload", "systemctl daemon-reload"]
+  match: { mode: exact }
+
+- id: linux.m07.l2.install-section
+  type: choice
+  skill: recognize
+  topics: [linux.m07]
+  prompt: Which section of a unit file says which target pulls the service in when it is enabled?
+  options:
+    - { id: a, text: "`[Install]` with `WantedBy=`", explanation: "Correct." }
+    - { id: b, text: "`[Unit]` with `After=`", explanation: "`After=` orders start-up but does not enable." }
+    - { id: c, text: "`[Service]` with `ExecStart=`", explanation: "That is the command to run." }
+  correct: [a]
+
+- id: linux.m07.l2.ssh-socket
+  type: choice
+  skill: explain
+  topics: [linux.m07]
+  prompt: "On Ubuntu 26.04, `systemctl status ssh` says `inactive (dead)`, yet you can SSH in. Why?"
+  options:
+    - { id: a, text: "SSH is socket-activated: ssh.socket listens on port 22 and starts ssh.service on the first connection.", explanation: "Correct." }
+    - { id: b, text: The status is wrong., explanation: "It is accurate: the service starts on demand." }
+    - { id: c, text: SSH runs inside nginx., explanation: "Unrelated services." }
+  correct: [a]
+
+- id: linux.m07.l2.mask
+  type: choice
+  skill: recognize
+  topics: [linux.m07]
+  prompt: What does `systemctl mask` do that `disable` does not?
+  options:
+    - { id: a, text: It prevents the unit from being started at all, even manually or as a dependency., explanation: "Correct. It links the unit to /dev/null." }
+    - { id: b, text: It uninstalls the package., explanation: "Packages are untouched." }
+    - { id: c, text: It hides the unit from `systemctl status`., explanation: "Status shows it as masked." }
+  correct: [a]

@@ -1,0 +1,73 @@
+- id: linux.m10.l1.load-cpus
+  type: choice
+  skill: apply
+  topics: [linux.m10]
+  prompt: "A server with **4 CPUs** has load average `3.9, 3.8, 3.7`. Is it overloaded?"
+  options:
+    - { id: a, text: "It is close to fully busy but not queuing much; watch the trend and response times.", explanation: "Correct. Load is relative to the CPU count." }
+    - { id: b, text: Yes; any load above 1 is overload., explanation: "That is true only for a single CPU." }
+    - { id: c, text: No; the load is falling fast., explanation: "It is nearly flat." }
+  correct: [a]
+
+- id: linux.m10.l1.nproc
+  type: short
+  skill: recall
+  topics: [linux.m10]
+  prompt: Which command prints the number of available CPUs?
+  accepted: [nproc]
+  match: { mode: exact }
+
+- id: linux.m10.l1.available
+  type: choice
+  skill: explain
+  topics: [linux.m10]
+  prompt: "Which column of `free` best shows how much memory programs can still use without swapping?"
+  options:
+    - { id: a, text: "`available`", explanation: "Correct. It counts reclaimable cache." }
+    - { id: b, text: "`free`", explanation: "Linux keeps this low on purpose by caching." }
+    - { id: c, text: "`shared`", explanation: "Shared memory such as tmpfs." }
+  correct: [a]
+
+- id: linux.m10.l1.steal
+  type: choice
+  skill: apply
+  topics: [linux.m10]
+  prompt: "On a cloud VM, `top` shows `st` at 35%. What does it mean?"
+  options:
+    - { id: a, text: "The hypervisor is giving the VM's CPU time to others; the host is overloaded, not your processes.", explanation: "Correct. Escalate to the platform team or change instance type." }
+    - { id: b, text: 35% of CPU is spent on storage., explanation: "Storage waits are `wa`." }
+    - { id: c, text: Processes are stopped., explanation: "Unrelated." }
+  correct: [a]
+
+- id: linux.m10.l1.oom
+  type: choice
+  skill: apply
+  topics: [linux.m10]
+  prompt: "A Python service dies at random times with no error in its own log. What do you check first?"
+  options:
+    - { id: a, text: "The kernel log for OOM killer messages (`journalctl -k -g 'out of memory'`)", explanation: "Correct. The kernel kills it without warning the application." }
+    - { id: b, text: The firewall rules, explanation: "Firewalls do not kill processes." }
+    - { id: c, text: "/etc/fstab", explanation: "Unrelated." }
+  correct: [a]
+
+- id: linux.m10.l1.vmstat-so
+  type: choice
+  skill: recognize
+  topics: [linux.m10]
+  prompt: "In `vmstat`, which columns being constantly non-zero indicate memory pressure?"
+  options:
+    - { id: a, text: "`si` and `so` (swap in/out)", explanation: "Correct." }
+    - { id: b, text: "`us` and `sy`", explanation: "CPU usage." }
+    - { id: c, text: "`in` and `cs`", explanation: "Interrupts and context switches." }
+  correct: [a]
+
+- id: linux.m10.l1.baseline
+  type: choice
+  skill: explain
+  topics: [linux.m10]
+  prompt: Why record a baseline of a server's normal behaviour?
+  options:
+    - { id: a, text: "So you can tell abnormal values from normal ones when users report problems.", explanation: "Correct." }
+    - { id: b, text: The kernel requires it., explanation: "It is an operational practice." }
+    - { id: c, text: To make the server faster., explanation: "Measuring does not speed anything up." }
+  correct: [a]

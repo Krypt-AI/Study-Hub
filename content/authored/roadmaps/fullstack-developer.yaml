@@ -23,6 +23,11 @@ stages:
     summary: Commits, branches and pull requests, the terminal, package managers and a repeatable workflow.
     courseIds: [fs-04-git-and-tooling]
     certificationIds: [lf-lfcs]
+    foundations:
+      - courseId: linux-fundamentals
+        relevance: optional
+        unitIds: [linux-fundamentals.m01, linux-fundamentals.m02, linux-fundamentals.m03]
+        note: The terminal, files and pipes in more depth than this stage needs; useful if you work on macOS or Linux.
   - id: stage-05
     title: TypeScript
     summary: Static types, interfaces and unions, generics and narrowing, so mistakes surface before runtime.
@@ -49,3 +54,10 @@ stages:
     summary: Environments, containers and CI/CD, then a complete application that combines every stage.
     courseIds: [fs-10-deploy-capstone]
     certificationIds: [aws-cloud-practitioner, ms-azure-fundamentals]
+    foundations:
+      - courseId: linux-fundamentals
+        relevance: strongly-recommended
+        unitIds: [linux-fundamentals.m04, linux-fundamentals.m05, linux-fundamentals.m07, linux-fundamentals.m09, linux-fundamentals.m11, linux-fundamentals.m13]
+        note: >-
+          Deploying to a VM or container host means users and permissions, packages, a systemd service, ports and a
+          firewall, SSH hardening and scheduled jobs. Managed platforms hide some of this, but not when something breaks.

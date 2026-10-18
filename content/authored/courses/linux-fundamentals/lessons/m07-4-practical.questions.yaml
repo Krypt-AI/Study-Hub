@@ -1,0 +1,50 @@
+- id: linux.m07.l4.unit
+  type: long
+  skill: apply
+  topics: [linux.m07]
+  prompt: Paste your `kira-status.service` and the commands that prove Part A works (start, curl, restart after kill -9, after reboot).
+  minWords: 40
+  rubric:
+    - { id: sections, label: "Unit has [Unit], [Service] and [Install] with WantedBy=multi-user.target", keywords: [["[Service]"], ["WantedBy=multi-user.target"]] }
+    - { id: user, label: "Runs as the non-root system user kira-status", keywords: [["User=kira-status"]] }
+    - { id: restart, label: "Restart=on-failure, demonstrated after kill -9", keywords: [["Restart=on-failure", "Restart=always"], ["kill -9", "SIGKILL"]] }
+    - { id: enable, label: "Enabled (enable --now) and shown running after reboot", keywords: [["enable"], ["reboot"]] }
+    - { id: curl, label: "curl to localhost:8080 returns the page", keywords: [["curl"], ["8080"]] }
+  modelAnswer: |-
+    ```ini
+    [Unit]
+    Description=Kedai Kira internal status page
+    After=network-online.target
+    Wants=network-online.target
+
+    [Service]
+    User=kira-status
+    ExecStart=/usr/bin/python3 -m http.server 8080 --directory /srv/kira/status
+    Restart=on-failure
+    RestartSec=3s
+    NoNewPrivileges=yes
+
+    [Install]
+    WantedBy=multi-user.target
+    ```
+    `sudo systemctl daemon-reload && sudo systemctl enable --now kira-status`; `curl -s localhost:8080` returned my
+    HTML. `sudo kill -9 $(systemctl show -p MainPID --value kira-status)`; three seconds later `systemctl status` showed
+    a new Main PID and the journal said "Scheduled restart job". After `sudo reboot`, `systemctl is-active
+    kira-status` printed `active`.
+
+- id: linux.m07.l4.fault
+  type: long
+  skill: explain
+  topics: [linux.m07]
+  prompt: Describe Part B. Quote the key journal line, explain the cause, and give two possible fixes (the one you used, and one other).
+  minWords: 40
+  rubric:
+    - { id: evidence, label: "Used systemctl status and journalctl -u to find the error", keywords: [["journalctl", "status"]] }
+    - { id: cause, label: "PermissionError: binding a port below 1024 needs privileges", keywords: [["permission"], ["1024", "privileged", "port 80"]] }
+    - { id: fix, label: "Fix: revert to 8080 (plus an alternative: AmbientCapabilities=CAP_NET_BIND_SERVICE or a reverse proxy)", keywords: [["8080"], ["CAP_NET_BIND_SERVICE", "capabilit", "nginx", "proxy"]] }
+  modelAnswer: >-
+    `systemctl status kira-status` showed `failed (Result: exit-code)`. `journalctl -u kira-status -n 20` contained
+    `PermissionError: [Errno 13] Permission denied`, raised while binding port 80. Ports below 1024 are privileged, and
+    the service runs as the unprivileged kira-status user. I set the port back to 8080, ran daemon-reload and restart,
+    and curl worked. Alternatives: grant only that ability with `AmbientCapabilities=CAP_NET_BIND_SERVICE`, or keep
+    8080 and put nginx in front as a reverse proxy on port 80 — never run the service as root.

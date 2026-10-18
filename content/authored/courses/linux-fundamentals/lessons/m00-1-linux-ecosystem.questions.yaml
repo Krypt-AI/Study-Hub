@@ -1,0 +1,68 @@
+- id: linux.m00.l1.kernel
+  type: choice
+  skill: recognize
+  topics: [linux.m00]
+  prompt: Which part of a Linux system schedules processes, manages memory and talks to the hardware?
+  options:
+    - { id: a, text: The shell, explanation: "The shell reads your commands and starts programs; it asks the kernel to do the work." }
+    - { id: b, text: The kernel, explanation: "Correct. The kernel is Linux in the strict sense." }
+    - { id: c, text: The terminal, explanation: "The terminal only displays text and passes on keystrokes." }
+    - { id: d, text: The package manager, explanation: "The package manager installs software; it does not run the hardware." }
+  correct: [b]
+  explanation: "The kernel is the core program; a distribution adds the shell, utilities, service manager and package manager around it."
+
+- id: linux.m00.l1.family
+  type: choice
+  skill: recognize
+  topics: [linux.m00]
+  prompt: Which distribution belongs to the **Red Hat** family and uses `dnf` and `.rpm` packages?
+  options:
+    - { id: a, text: Debian, explanation: "Debian is the parent of the Debian family (`apt`, `.deb`)." }
+    - { id: b, text: Ubuntu, explanation: "Ubuntu is based on Debian." }
+    - { id: c, text: Rocky Linux, explanation: "Correct. Rocky Linux is built to be compatible with RHEL." }
+    - { id: d, text: Linux Mint, explanation: "Mint is based on Ubuntu." }
+  correct: [c]
+
+- id: linux.m00.l1.prompt-root
+  type: short
+  skill: recall
+  topics: [linux.m00]
+  prompt: "At the prompt `root@lab01:/etc#`, the last character tells you something about the user. Which user are you logged in as?"
+  accepted: [root]
+  match: { mode: text, typoTolerance: none }
+  explanation: "The name before `@` is the user, and `#` at the end is the conventional prompt for `root`. An ordinary user gets `$`."
+
+- id: linux.m00.l1.shell-vs-terminal
+  type: choice
+  skill: explain
+  topics: [linux.m00]
+  prompt: A classmate says "Bash is my terminal". What is the most accurate correction?
+  options:
+    - { id: a, text: "Bash is the shell: it interprets commands. The terminal is the window that shows the text.", explanation: "Correct. You can run Bash inside many different terminals, and other shells inside the same terminal." }
+    - { id: b, text: Bash is the kernel., explanation: "The kernel is Linux itself; Bash is an ordinary program." }
+    - { id: c, text: Bash is a distribution., explanation: "Distributions are Ubuntu, Debian, RHEL and so on." }
+    - { id: d, text: "They are right: terminal and shell mean the same thing.", explanation: "They are different programs with different jobs." }
+  correct: [a]
+
+- id: linux.m00.l1.lts
+  type: choice
+  skill: recognize
+  topics: [linux.m00]
+  prompt: Why do organisations usually run Ubuntu **LTS** releases on servers?
+  options:
+    - { id: a, text: LTS releases have the newest features first., explanation: "Interim releases get new features first; LTS releases change more slowly." }
+    - { id: b, text: "They receive security updates for years (five years standard), so servers stay patched without frequent upgrades.", explanation: "Correct. Stability and a long support window are the point." }
+    - { id: c, text: Only LTS releases can run without a desktop., explanation: "Every Ubuntu release has a server edition." }
+    - { id: d, text: LTS releases do not need updates., explanation: "They need updates like any system; LTS means updates keep coming." }
+  correct: [b]
+
+- id: linux.m00.l1.os-release
+  type: cloze
+  skill: recall
+  topics: [linux.m00]
+  prompt: Fill in the gaps.
+  text: "The file [[1]] describes the distribution (name, version, family), and the command `uname [[2]]` prints the kernel release."
+  blanks:
+    - { id: "1", accepted: ["/etc/os-release", "/usr/lib/os-release"], match: { mode: exact } }
+    - { id: "2", accepted: ["-r"], match: { mode: exact } }
+  explanation: "`/etc/os-release` (a link to `/usr/lib/os-release`) is the standard place for distribution identity; `uname -r` prints the running kernel release, such as `7.0.0-15-generic`."

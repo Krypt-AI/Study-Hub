@@ -1,0 +1,121 @@
+id: linux-administration
+title: Linux Administration Roadmap
+description: >-
+  A path from your first Linux command to the professional Linux certifications and the roles that rely on them:
+  IT support, junior system administration, cloud operations, DevOps and security operations. Stage 1, Linux
+  Fundamentals, is complete and is the foundation for every later stage. Stages 2–7 are outlined here with the topics
+  they will cover and the certifications they lead to; their courses are in preparation. Each certification's page in
+  Study Hub shows how much it relies on Linux, which modules support it, and what to learn beyond them. Exam facts are
+  checked against the providers' official pages; the classification of how much each exam relies on Linux is Study
+  Hub's recommendation, not a provider requirement.
+stages:
+  - id: stage-01
+    title: Linux Fundamentals
+    summary: >-
+      Ubuntu Server in your own lab: the command line, files, Bash, users and permissions, packages, processes,
+      services, storage, networking, monitoring, security, backups and workplace practice, ending in a documented
+      capstone server.
+    courseIds: [linux-fundamentals]
+  - id: stage-02
+    title: Linux system administration in depth
+    summary: The broader administration knowledge that Linux+ and LPIC-1 examine, on both Debian- and RHEL-family systems.
+    courseIds: [linux-02-system-administration]
+    certificationIds: [comptia-linux-plus, lpi-lpic-1]
+    foundations:
+      - courseId: linux-fundamentals
+        relevance: essential
+    outline:
+      - Hardware, kernel modules, udev and the boot loader (GRUB 2) in depth
+      - Storage beyond LVM basics, including software RAID (mdadm), NFS and SMB clients, autofs and quotas
+      - Networking in depth, including NetworkManager, bonding and bridges, static routes, IPv6 and time services
+      - Mandatory access control with SELinux and AppArmor
+      - PKI, TLS certificates and OpenSSL; GnuPG
+      - Localisation, printing (CUPS), mail transfer basics and X11/desktop concepts (LPIC-1 102)
+      - Containers on a single host with Podman and Docker
+      - Git, structured troubleshooting across hardware, boot, storage, network and performance
+  - id: stage-03
+    title: Enterprise Linux (Red Hat Enterprise Linux)
+    summary: RHEL 10 administration exactly as RHCSA tests it, on RHEL, Rocky Linux or AlmaLinux, working only from local documentation.
+    courseIds: [linux-03-enterprise-linux]
+    certificationIds: [red-hat-rhcsa]
+    foundations:
+      - courseId: linux-fundamentals
+        relevance: essential
+    outline:
+      - dnf, RPM repositories, application streams and Flatpak repositories and packages
+      - NetworkManager with nmcli, hostname resolution, IPv4 and IPv6
+      - firewalld zones, services, ports and rich rules, permanent versus runtime
+      - SELinux modes, file and process contexts, restorecon, semanage port labels and Booleans
+      - Boot targets, interrupting the boot to regain root access, GRUB arguments with grubby
+      - GPT partitions, LVM, XFS and ext4, VFAT, swap, NFS mounts and autofs, all persistent across reboots
+      - tuned profiles, process scheduling priorities, at, cron and systemd timers, chrony time clients
+      - Timed practice exams on a RHEL lab with no internet access
+  - id: stage-04
+    title: Performance-based administration practice
+    summary: "Speed and accuracy on live systems for LFCS: realistic tasks under a time limit, distribution-independent."
+    courseIds: [linux-04-performance-labs]
+    certificationIds: [lf-lfcs]
+    foundations:
+      - courseId: linux-fundamentals
+        relevance: essential
+    outline:
+      - Timed task sets mirroring the LFCS domains (operations deployment, networking, storage, essential commands, users and groups)
+      - Working from man pages and --help quickly; verifying every task before moving on
+      - Virtual machines with KVM/libvirt and containers as administration tasks
+      - Storage tasks under pressure, including RAID, LVM and network filesystems
+      - Networking tasks including bridges, bonding, routing and port redirection
+      - Full mock exams with review of each mistake
+  - id: stage-05
+    title: Automation and configuration management
+    summary: From Bash scripts to Ansible and version-controlled infrastructure, covering Linux+'s automation domain and the road to RHCE.
+    courseIds: [linux-05-automation]
+    certificationIds: [comptia-linux-plus]
+    foundations:
+      - courseId: linux-fundamentals
+        relevance: essential
+        unitIds: [linux-fundamentals.m03, linux-fundamentals.m07, linux-fundamentals.m13]
+    outline:
+      - "Advanced Bash: functions, arrays, traps, robust error handling and testing"
+      - Git workflows for administrators; reviewing changes before they reach servers
+      - Ansible inventories, playbooks, roles, variables, templates and vault
+      - Idempotent configuration of users, packages, services, firewalls and files at scale
+      - Infrastructure-as-code concepts and CI pipelines that test configuration
+      - Python for administrators (reading APIs and files, small tools)
+  - id: stage-06
+    title: Containers, Kubernetes and Linux in the cloud
+    summary: >-
+      Linux skills applied to cloud VMs, container hosts and Kubernetes. General Linux knowledge transfers across
+      providers; provider-specific services belong to each cloud's own certification path.
+    courseIds: [linux-06-containers-and-cloud]
+    certificationIds: [lf-kcna, lf-cka, google-associate-cloud-engineer]
+    foundations:
+      - courseId: linux-fundamentals
+        relevance: essential
+        unitIds: [linux-fundamentals.m01, linux-fundamentals.m03, linux-fundamentals.m04, linux-fundamentals.m06, linux-fundamentals.m07, linux-fundamentals.m09, linux-fundamentals.m10, linux-fundamentals.m11]
+    outline:
+      - "Linux cloud VMs: images, cloud-init, SSH key management, OS Login and metadata"
+      - Cloud networking versus host networking; security groups and host firewalls together
+      - "Container fundamentals: namespaces, cgroups, images, registries, Podman and Docker"
+      - Kubernetes architecture, kubectl, workloads, services, storage and troubleshooting nodes
+      - Cluster administration with kubeadm, upgrades and etcd backup (towards CKA)
+      - Logs, metrics and troubleshooting for containerised services
+      - Deployment automation with Ansible and infrastructure-as-code tools
+  - id: stage-07
+    title: Linux security operations
+    summary: >-
+      Hardening, logging and investigation on Linux for security roles. It builds on Linux Fundamentals but does not on
+      its own qualify you for security work; follow the Cybersecurity roadmap alongside it.
+    courseIds: [linux-07-security-operations]
+    certificationIds: [comptia-security-plus]
+    foundations:
+      - courseId: linux-fundamentals
+        relevance: essential
+        unitIds: [linux-fundamentals.m04, linux-fundamentals.m07, linux-fundamentals.m09, linux-fundamentals.m10, linux-fundamentals.m11, linux-fundamentals.m12]
+    outline:
+      - Hardening against CIS Benchmarks, with OpenSCAP or Ubuntu's security guide tooling
+      - auditd rules, file integrity monitoring and centralised logging to a SIEM
+      - SELinux and AppArmor policy troubleshooting
+      - Linux incident triage, covering processes, persistence, network connections, user activity and timelines
+      - Evidence handling, hashing and an introduction to Linux forensics on authorised systems
+      - Vulnerability scanning and patch management at scale
+      - Authorised lab practice only, on intentionally vulnerable targets you own

@@ -1,0 +1,70 @@
+- id: linux.m06.l3.background
+  type: short
+  skill: recall
+  topics: [linux.m06]
+  prompt: What do you add at the end of a command to start it in the background?
+  accepted: ["&"]
+  match: { mode: exact }
+
+- id: linux.m06.l3.ctrl-z-bg
+  type: choice
+  skill: apply
+  topics: [linux.m06]
+  prompt: A long copy is running in the foreground and you need your prompt back without stopping it. What do you do?
+  options:
+    - { id: a, text: "`Ctrl+Z`, then `bg`", explanation: "Correct. Pause it, then let it continue in the background." }
+    - { id: b, text: "`Ctrl+C`, then `bg`", explanation: "`Ctrl+C` terminates the copy." }
+    - { id: c, text: "`Ctrl+D`", explanation: "Sends end-of-input; it does not background anything." }
+  correct: [a]
+
+- id: linux.m06.l3.tmux
+  type: choice
+  skill: apply
+  topics: [linux.m06]
+  prompt: You must run a 40-minute upgrade over unreliable Wi-Fi. What protects it from a dropped SSH connection?
+  options:
+    - { id: a, text: Run it inside tmux (or screen) on the server., explanation: "Correct. Reattach after reconnecting." }
+    - { id: b, text: Run it with sudo., explanation: "Privileges do not keep it alive." }
+    - { id: c, text: Increase the terminal font size., explanation: "No effect." }
+  correct: [a]
+
+- id: linux.m06.l3.port-owner
+  type: short
+  skill: recall
+  topics: [linux.m06]
+  prompt: Write an `lsof` command that shows which process is using TCP port 80.
+  accepted: ["sudo lsof -i :80", "lsof -i :80", "sudo lsof -i TCP:80", "sudo lsof -i tcp:80"]
+  match: { mode: exact }
+
+- id: linux.m06.l3.pause
+  type: choice
+  skill: apply
+  topics: [linux.m06]
+  prompt: A user's report script is using all the CPU during business hours, and you cannot reach the user. Which action reduces the impact without losing their work?
+  options:
+    - { id: a, text: "Lower its priority with `renice`, or pause it with `kill -STOP` and resume later with `kill -CONT`.", explanation: "Correct. Both are reversible." }
+    - { id: b, text: "`kill -9` it immediately.", explanation: "Irreversible and the work is lost." }
+    - { id: c, text: Reboot the server., explanation: "Affects every user." }
+  correct: [a]
+
+- id: linux.m06.l3.which-unit
+  type: choice
+  skill: recognize
+  topics: [linux.m06]
+  prompt: Which command quickly tells you which systemd service a PID belongs to?
+  options:
+    - { id: a, text: "`systemctl status PID`", explanation: "Correct. It shows the unit and its log lines." }
+    - { id: b, text: "`jobs -l`", explanation: "Only shows your shell's jobs." }
+    - { id: c, text: "`nice PID`", explanation: "`nice` starts commands with a priority." }
+  correct: [a]
+
+- id: linux.m06.l3.nohup
+  type: choice
+  skill: explain
+  topics: [linux.m06]
+  prompt: "What does `nohup` do?"
+  options:
+    - { id: a, text: Makes the command ignore the hang-up signal sent when your session ends., explanation: "Correct. Redirect its output to a log file." }
+    - { id: b, text: Runs the command with high priority., explanation: "That is `nice` with a negative value." }
+    - { id: c, text: Stops the command when you log out., explanation: "The opposite." }
+  correct: [a]

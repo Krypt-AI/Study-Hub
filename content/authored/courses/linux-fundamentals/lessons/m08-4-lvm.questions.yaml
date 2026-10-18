@@ -1,0 +1,62 @@
+- id: linux.m08.l4.layers
+  type: cloze
+  skill: recall
+  topics: [linux.m08]
+  prompt: Name the LVM layers from the bottom up.
+  text: "Disks or partitions become [[1]] volumes, which are pooled into a [[2]] group, from which [[3]] volumes are created and formatted."
+  blanks:
+    - { id: "1", accepted: [physical, PV] }
+    - { id: "2", accepted: [volume, VG] }
+    - { id: "3", accepted: [logical, LV] }
+
+- id: linux.m08.l4.lvcreate
+  type: short
+  skill: apply
+  topics: [linux.m08]
+  prompt: Write the command that creates a 2 GiB logical volume named `lv_db` in volume group `vg_data`.
+  accepted: ["sudo lvcreate -n lv_db -L 2G vg_data", "sudo lvcreate -L 2G -n lv_db vg_data", "lvcreate -n lv_db -L 2G vg_data", "lvcreate -L 2G -n lv_db vg_data"]
+  match: { mode: exact }
+
+- id: linux.m08.l4.extend-r
+  type: choice
+  skill: explain
+  topics: [linux.m08]
+  prompt: "After `sudo lvextend -L +1G /dev/vg_data/lv_web`, `df -h` still shows the old size. Why?"
+  options:
+    - { id: a, text: "The LV grew but the filesystem did not; use `-r` or run `resize2fs` / `xfs_growfs`.", explanation: "Correct." }
+    - { id: b, text: df needs a reboot to update., explanation: "df reads the filesystem's current size." }
+    - { id: c, text: The VG is full., explanation: "lvextend would have failed." }
+  correct: [a]
+
+- id: linux.m08.l4.vg-full
+  type: choice
+  skill: apply
+  topics: [linux.m08]
+  prompt: The volume group `vg_data` has no free space left. You add a new disk `/dev/sdc`. What are the steps?
+  options:
+    - { id: a, text: "`pvcreate /dev/sdc`, then `vgextend vg_data /dev/sdc`, then `lvextend -r` the LV", explanation: "Correct." }
+    - { id: b, text: "`mkfs.ext4 /dev/sdc`, then mount it on the LV", explanation: "That creates a separate filesystem, not more space in the LV." }
+    - { id: c, text: "`lvcreate` on /dev/sdc", explanation: "lvcreate takes space from a VG, not a disk." }
+  correct: [a]
+
+- id: linux.m08.l4.ubuntu-free
+  type: choice
+  skill: apply
+  topics: [linux.m08]
+  prompt: "On a fresh Ubuntu Server VM with a 50 GB disk, `/` is 24 GB and nearly full; `vgs` shows 24 GB free in `ubuntu-vg`. What is the simplest fix?"
+  options:
+    - { id: a, text: "`sudo lvextend -r -l +100%FREE /dev/ubuntu-vg/ubuntu-lv`", explanation: "Correct. It grows the root LV and its ext4 filesystem online." }
+    - { id: b, text: Reinstall with a bigger disk, explanation: "The space is already there." }
+    - { id: c, text: Delete /var/log, explanation: "Destructive and unnecessary." }
+  correct: [a]
+
+- id: linux.m08.l4.show
+  type: choice
+  skill: recognize
+  topics: [linux.m08]
+  prompt: Which command gives a one-line summary per volume group, including its free space?
+  options:
+    - { id: a, text: "`vgs`", explanation: "Correct." }
+    - { id: b, text: "`lsblk -f`", explanation: "Shows devices and filesystems, not VG free space." }
+    - { id: c, text: "`df -h`", explanation: "Shows filesystems, not unallocated VG space." }
+  correct: [a]

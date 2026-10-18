@@ -1,0 +1,80 @@
+- id: linux.m03.l4.shebang
+  type: choice
+  skill: recognize
+  topics: [linux.m03]
+  prompt: What is the purpose of `#!/usr/bin/env bash` on the first line of a script?
+  options:
+    - { id: a, text: It is a comment and has no effect., explanation: "It starts with `#`, but the kernel reads `#!` on line 1 specially." }
+    - { id: b, text: It names the interpreter that runs the script when it is executed directly., explanation: "Correct. This is the shebang line." }
+    - { id: c, text: It makes the script executable., explanation: "That is `chmod +x`." }
+  correct: [b]
+
+- id: linux.m03.l4.arg-count
+  type: short
+  skill: recall
+  topics: [linux.m03]
+  prompt: Which special variable holds the **number** of arguments passed to a script?
+  accepted: ["$#"]
+  match: { mode: exact }
+
+- id: linux.m03.l4.file-test
+  type: cloze
+  skill: recall
+  topics: [linux.m03]
+  prompt: Complete the test.
+  text: "`if [[ [[1]] /etc/nginx/nginx.conf ]]; then echo \"config present\"; fi` checks that a regular file exists, and `[[ [[2]] /srv/backup ]]` checks that a directory exists."
+  blanks:
+    - { id: "1", accepted: ["-f"], match: { mode: exact } }
+    - { id: "2", accepted: ["-d"], match: { mode: exact } }
+
+- id: linux.m03.l4.set-e
+  type: choice
+  skill: explain
+  topics: [linux.m03]
+  prompt: What does `set -euo pipefail` change in a script?
+  options:
+    - { id: a, text: "It stops at the first failing command, treats unset variables as errors and makes failing pipelines count as failures.", explanation: "Correct. Mistakes stop the script instead of cascading." }
+    - { id: b, text: It hides error messages., explanation: "Errors are still printed." }
+    - { id: c, text: It runs the script as root., explanation: "Privileges are unchanged." }
+  correct: [a]
+
+- id: linux.m03.l4.loop-output
+  type: choice
+  skill: apply
+  topics: [linux.m03]
+  prompt: "What does this print?\n\n```bash\nfor n in 1 2 3; do\n  (( n % 2 == 1 )) && echo \"$n odd\"\ndone\n```"
+  options:
+    - { id: a, text: "`1 odd` and `3 odd` on two lines", explanation: "Correct. `&&` runs `echo` only when the arithmetic test is true." }
+    - { id: b, text: "`1 odd`, `2 odd`, `3 odd`", explanation: "2 % 2 is 0, so the test fails for 2." }
+    - { id: c, text: Nothing, explanation: "The test succeeds for 1 and 3." }
+  correct: [a]
+
+- id: linux.m03.l4.exit-code
+  type: choice
+  skill: explain
+  topics: [linux.m03]
+  prompt: Your script detects that a required argument is missing. What should it do?
+  options:
+    - { id: a, text: "Print a usage message to stderr and `exit` with a non-zero code.", explanation: "Correct. Callers (cron, other scripts, monitoring) rely on the exit code." }
+    - { id: b, text: Print a message and continue with an empty value., explanation: "That can make the rest of the script act on the wrong thing." }
+    - { id: c, text: "`exit 0` so cron does not complain.", explanation: "Hiding a failure means nobody fixes it." }
+  correct: [a]
+
+- id: linux.m03.l4.debug
+  type: short
+  skill: recall
+  topics: [linux.m03]
+  prompt: Which command runs `deploy.sh` while printing every command (after expansion) before it executes?
+  accepted: ["bash -x deploy.sh", "bash -x ./deploy.sh"]
+  match: { mode: exact }
+
+- id: linux.m03.l4.quote-args
+  type: choice
+  skill: explain
+  topics: [linux.m03]
+  prompt: "Why loop over `\"$@\"` rather than `$@` or `$*`?"
+  options:
+    - { id: a, text: "`\"$@\"` keeps each argument as one word, even if it contains spaces.", explanation: "Correct. `My Documents` stays one argument." }
+    - { id: b, text: "`$@` only holds the first argument.", explanation: "It holds them all, but unquoted it splits on spaces." }
+    - { id: c, text: There is no difference., explanation: "The difference shows with spaces and wildcards." }
+  correct: [a]

@@ -1,0 +1,83 @@
+id: linux-fundamentals.m12-quiz
+title: "Module 12 quiz: backup and recovery"
+kind: quiz
+passMark: 0.7
+description: Eight questions on backup strategy, tar, rsync, verification and restores.
+sections:
+  - id: linux-fundamentals.m12-quiz.s1
+    title: Module 12
+    questions:
+      - id: linux.m12.quiz.rto
+        type: choice
+        skill: recognize
+        topics: [linux.m12]
+        prompt: What does RTO measure?
+        options:
+          - { id: a, text: The maximum acceptable time to restore service, explanation: "Correct." }
+          - { id: b, text: The maximum acceptable data loss, explanation: "That is RPO." }
+          - { id: c, text: The backup's compression ratio, explanation: "Unrelated." }
+        correct: [a]
+      - id: linux.m12.quiz.offline
+        type: choice
+        skill: explain
+        topics: [linux.m12]
+        prompt: Why keep at least one backup copy offline or immutable?
+        options:
+          - { id: a, text: "Ransomware or a compromised admin account cannot encrypt or delete it.", explanation: "Correct." }
+          - { id: b, text: Offline copies restore faster., explanation: "Usually slower." }
+          - { id: c, text: It is required by tar., explanation: "Unrelated." }
+        correct: [a]
+      - id: linux.m12.quiz.tar-extract
+        type: short
+        skill: apply
+        topics: [linux.m12]
+        prompt: "Write the command that extracts `etc.tar.gz` into `/tmp/restore` (which exists)."
+        accepted: ["tar -xzf etc.tar.gz -C /tmp/restore", "sudo tar -xzf etc.tar.gz -C /tmp/restore", "tar xzf etc.tar.gz -C /tmp/restore", "tar -xf etc.tar.gz -C /tmp/restore", "sudo tar -xf etc.tar.gz -C /tmp/restore", "tar -C /tmp/restore -xzf etc.tar.gz"]
+        match: { mode: exact }
+      - id: linux.m12.quiz.leading-slash
+        type: choice
+        skill: explain
+        topics: [linux.m12]
+        prompt: "tar prints `Removing leading '/' from member names`. Why is this helpful?"
+        options:
+          - { id: a, text: "Extraction lands relative to the current directory (or -C), so it cannot overwrite live system files by accident.", explanation: "Correct." }
+          - { id: b, text: It makes archives smaller., explanation: "Not meaningfully." }
+          - { id: c, text: It is an error., explanation: "It is a normal informational message." }
+        correct: [a]
+      - id: linux.m12.quiz.zstd
+        type: choice
+        skill: recognize
+        topics: [linux.m12]
+        prompt: Which compressor is very fast with a good ratio and a common modern default?
+        options:
+          - { id: a, text: zstd, explanation: "Correct." }
+          - { id: b, text: bzip2, explanation: "Slow." }
+          - { id: c, text: xz, explanation: "Smallest output, but slowest." }
+        correct: [a]
+      - id: linux.m12.quiz.delete-preview
+        type: choice
+        skill: apply
+        topics: [linux.m12]
+        prompt: Before running an rsync with `--delete` against a backup mirror, what should you do?
+        options:
+          - { id: a, text: "Run it with `--dry-run` and read every `deleting` line.", explanation: "Correct." }
+          - { id: b, text: "Add `-z`.", explanation: "Compression does not make deletion safer." }
+          - { id: c, text: Run it twice quickly., explanation: "No safety benefit." }
+        correct: [a]
+      - id: linux.m12.quiz.cron-silent
+        type: choice
+        skill: explain
+        topics: [linux.m12]
+        prompt: "Your nightly backup has 'worked' for months, but the archives are 20 bytes each. What practice would have caught it?"
+        options:
+          - { id: a, text: "Checking size and integrity (and test restores) automatically, with alerts on failure", explanation: "Correct." }
+          - { id: b, text: Running the backup as a different user, explanation: "Does not detect bad output." }
+          - { id: c, text: Using xz instead of gzip, explanation: "Compression choice is irrelevant." }
+        correct: [a]
+      - id: linux.m12.quiz.packages
+        type: short
+        skill: recall
+        topics: [linux.m12]
+        prompt: Which dpkg command writes the list of installed packages, so you can reinstall them on a rebuilt server?
+        accepted: ["dpkg --get-selections", "dpkg --get-selections > packages.txt"]
+        match: { mode: exact }

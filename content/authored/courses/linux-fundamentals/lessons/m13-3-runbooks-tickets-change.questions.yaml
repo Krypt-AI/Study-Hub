@@ -1,0 +1,73 @@
+- id: linux.m13.l3.runbook-parts
+  type: choice
+  skill: recognize
+  topics: [linux.m13]
+  prompt: Which set of sections makes a runbook usable by a colleague at 3 a.m.?
+  options:
+    - { id: a, text: "Prerequisites, exact steps, verification, rollback and escalation contact", explanation: "Correct." }
+    - { id: b, text: A paragraph describing the system's history, explanation: "Useful background, but not actionable." }
+    - { id: c, text: "A list of commands with no context", explanation: "No verification, rollback or escalation." }
+  correct: [a]
+
+- id: linux.m13.l3.classify
+  type: choice
+  skill: apply
+  topics: [linux.m13]
+  prompt: "\"Backups have failed every Sunday for a month\" is best recorded as a...?"
+  options:
+    - { id: a, text: Problem (the underlying cause of repeated incidents), explanation: "Correct. Each failure is an incident; the recurring cause is a problem." }
+    - { id: b, text: Service request, explanation: "Nobody is asking for a standard service." }
+    - { id: c, text: Standard change, explanation: "No change has been planned yet." }
+  correct: [a]
+
+- id: linux.m13.l3.rollback
+  type: choice
+  skill: explain
+  topics: [linux.m13]
+  prompt: Why must the rollback plan be written and tested before the change?
+  options:
+    - { id: a, text: "During a failed change there is pressure and little time; an untested rollback may not work.", explanation: "Correct." }
+    - { id: b, text: It makes the change faster., explanation: "It makes it safer." }
+    - { id: c, text: Rollbacks are only for emergencies., explanation: "Every change can fail." }
+  correct: [a]
+
+- id: linux.m13.l3.standard-change
+  type: choice
+  skill: recognize
+  topics: [linux.m13]
+  prompt: What is a **standard** change?
+  options:
+    - { id: a, text: "A pre-approved, low-risk, routine change carried out by a documented procedure", explanation: "Correct (e.g. adding a user from a runbook)." }
+    - { id: b, text: Any change made during office hours, explanation: "Timing does not define it." }
+    - { id: c, text: An urgent fix during an outage, explanation: "That is an emergency change." }
+  correct: [a]
+
+- id: linux.m13.l3.ticket-quality
+  type: long
+  skill: apply
+  topics: [linux.m13]
+  prompt: "Rewrite this ticket note professionally: \"server was slow, killed some process, ok now\". Invent plausible details."
+  minWords: 40
+  rubric:
+    - { id: time, label: "Timestamps", keywords: [[":", "2026", "am", "pm"]] }
+    - { id: evidence, label: "Evidence with commands and results", keywords: [["top", "ps", "uptime", "load"]] }
+    - { id: action, label: "Precise action (which process, which signal, why)", keywords: [["pid", "PID", "sigterm", "kill", "renice"]] }
+    - { id: verify, label: "Verification", keywords: [["verified", "confirmed", "normal", "back to"]] }
+    - { id: followup, label: "Follow-up or root-cause action", keywords: [["follow", "root cause", "problem", "prevent"]] }
+  modelAnswer: >-
+    14:05 User reported slow responses on lab01. `uptime` showed load 3.9 on 2 CPUs; `top` showed PID 5120 (python3,
+    user mei, report.py) at 190% CPU for 47 minutes. 14:09 Contacted mei: the report was stuck in a loop. With her
+    agreement, sent SIGTERM (`kill 5120`); it exited. 14:12 Load fell to 0.3 and the intranet responded normally;
+    the user confirmed. Follow-up: mei will fix the loop; I opened PRB-14 to run reports with `nice` outside office
+    hours.
+
+- id: linux.m13.l3.blameless
+  type: choice
+  skill: explain
+  topics: [linux.m13]
+  prompt: What is the purpose of a **blameless** post-incident review?
+  options:
+    - { id: a, text: "To find how the system and processes allowed the incident and fix them, so people report honestly.", explanation: "Correct." }
+    - { id: b, text: To avoid writing anything down., explanation: "It is a written review." }
+    - { id: c, text: To decide whom to discipline., explanation: "That discourages honest reporting." }
+  correct: [a]

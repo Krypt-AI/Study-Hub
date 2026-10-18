@@ -1,0 +1,74 @@
+- id: linux.m01.l2.absolute
+  type: choice
+  skill: recognize
+  topics: [linux.m01]
+  prompt: Which of these is an **absolute** path?
+  options:
+    - { id: a, text: "`log/syslog`", explanation: "No leading `/`: relative to the current directory." }
+    - { id: b, text: "`../etc`", explanation: "Starts from the parent of the current directory: relative." }
+    - { id: c, text: "`/var/log/syslog`", explanation: "Correct. It starts at the root directory `/`." }
+    - { id: d, text: "`./notes.txt`", explanation: "`.` is the current directory: relative." }
+  correct: [c]
+
+- id: linux.m01.l2.relative
+  type: short
+  skill: apply
+  topics: [linux.m01]
+  prompt: "You are in `/var/log`. Write the shortest **relative** path to `/var/lib`."
+  accepted: ["../lib", "../lib/"]
+  match: { mode: exact }
+  explanation: "`..` goes up to `/var`, then `lib` goes down to `/var/lib`."
+
+- id: linux.m01.l2.cd-dash
+  type: choice
+  skill: recognize
+  topics: [linux.m01]
+  prompt: What does `cd -` do?
+  options:
+    - { id: a, text: Goes to the root directory., explanation: "That is `cd /`." }
+    - { id: b, text: Goes to your home directory., explanation: "That is `cd` or `cd ~`." }
+    - { id: c, text: Goes back to the previous directory., explanation: "Correct. Handy for switching between two places." }
+    - { id: d, text: Goes up one level., explanation: "That is `cd ..`." }
+  correct: [c]
+
+- id: linux.m01.l2.hidden
+  type: short
+  skill: recall
+  topics: [linux.m01]
+  prompt: Which `ls` option shows hidden files (names starting with `.`)?
+  accepted: ["-a", "--all", "-A", "--almost-all"]
+  match: { mode: exact }
+  explanation: "`-a` shows everything including `.` and `..`; `-A` shows hidden files but leaves out `.` and `..`."
+
+- id: linux.m01.l2.long-type
+  type: choice
+  skill: apply
+  topics: [linux.m01]
+  prompt: "In `ls -l` output, a line starts with `lrwxrwxrwx`. What is the entry?"
+  options:
+    - { id: a, text: A directory, explanation: "Directories start with `d`." }
+    - { id: b, text: A regular file, explanation: "Regular files start with `-`." }
+    - { id: c, text: A symbolic link, explanation: "Correct. `l` is a symlink; `ls -l` shows its target after `->`." }
+    - { id: d, text: A locked file, explanation: "There is no locked type." }
+  correct: [c]
+
+- id: linux.m01.l2.tilde
+  type: cloze
+  skill: recall
+  topics: [linux.m01]
+  prompt: Fill in the gaps for user `student`.
+  text: "`~` means [[1]], and `~/.ssh` means [[2]]."
+  blanks:
+    - { id: "1", accepted: ["/home/student", "/home/student/"], match: { mode: exact } }
+    - { id: "2", accepted: ["/home/student/.ssh", "/home/student/.ssh/"], match: { mode: exact } }
+
+- id: linux.m01.l2.ld
+  type: choice
+  skill: apply
+  topics: [linux.m01]
+  prompt: You want the permissions of the `/etc` directory itself, not a list of its contents. Which command?
+  options:
+    - { id: a, text: "`ls -l /etc`", explanation: "This lists the contents of `/etc`." }
+    - { id: b, text: "`ls -ld /etc`", explanation: "Correct. `-d` lists the directory as an entry." }
+    - { id: c, text: "`ls -R /etc`", explanation: "This lists everything below `/etc`." }
+  correct: [b]

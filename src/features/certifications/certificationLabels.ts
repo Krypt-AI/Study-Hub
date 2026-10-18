@@ -1,7 +1,7 @@
 /** Display names for certification facts and the learner's tracking statuses. */
 import type { BubbleState } from '@/components/ui/Bubble';
 import type { CertificationStatus } from '@/data/records';
-import type { Certification } from '@/domain/content/types';
+import type { Certification, FoundationRelevance } from '@/domain/content/types';
 
 export type CertificationCategory = Certification['category'];
 
@@ -40,6 +40,13 @@ export const PROVIDER_STATUS: Record<Exclude<Certification['status'], 'active'>,
   announced: { label: 'announced', tone: 'slip' },
   retiring: { label: 'retiring', tone: 'slip' },
   retired: { label: 'retired', tone: 'wrong' },
+};
+
+/** How much a certification or stage relies on a foundation course: Study Hub's recommendation, not the provider's. */
+export const RELEVANCE: Record<FoundationRelevance, { label: string; tone: 'print' | 'slip' | 'neutral'; description: string }> = {
+  essential: { label: 'Essential', tone: 'print', description: 'The exam’s tasks or scope need it directly.' },
+  'strongly-recommended': { label: 'Strongly recommended', tone: 'slip', description: 'It materially improves preparation and work, but is not universally required.' },
+  optional: { label: 'Optional', tone: 'neutral', description: 'Useful in some roles or specialisations.' },
 };
 
 /** The learner's path from interest to a pass, each step with its bubble. */

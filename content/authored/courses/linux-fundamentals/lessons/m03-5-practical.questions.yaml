@@ -1,0 +1,61 @@
+- id: linux.m03.l5.script
+  type: long
+  skill: apply
+  topics: [linux.m03]
+  prompt: Paste your `healthcheck.sh`.
+  minWords: 40
+  rubric:
+    - { id: header, label: "Shebang, `set -euo pipefail` and a comment header", keywords: [["#!/"], ["set -euo pipefail", "set -e"]] }
+    - { id: validate, label: "Default threshold `${1:-80}` and numeric validation with usage message and `exit 2`", keywords: [[":-80", "default"], ["exit 2"]] }
+    - { id: loop, label: "Loops over ext4/xfs filesystems from `df` and compares usage with the threshold", keywords: [["df"], ["while", "for"], ["-gt", ">", "-ge", "threshold"]] }
+    - { id: ssh, label: "Counts today's failed SSH password attempts (auth.log or journalctl)", keywords: [["failed password", "Failed password"], ["grep -c", "wc -l", "count"]] }
+    - { id: log, label: "A `log` function appends timestamped lines with `tee -a`", keywords: [["log()", "function log"], ["tee -a", ">>"]] }
+    - { id: exit, label: "Exit code 0 when all is well, 1 when a warning was raised", keywords: [["exit 1"], ["exit 0", "exit \"$status\"", "exit $status", "exit \"$rc\""]] }
+  modelAnswer: |-
+    ```bash
+    #!/usr/bin/env bash
+    # healthcheck.sh - quick server health summary for the helpdesk
+    # Author: Aina  Date: 2026-10-18
+    set -euo pipefail
+
+    threshold="${1:-80}"
+    if [[ ! "$threshold" =~ ^[0-9]+$ ]]; then
+        echo "Usage: $0 [THRESHOLD_PERCENT]" >&2
+        exit 2
+    fi
+
+    logfile="$HOME/healthcheck.log"
+    log() { echo "$(date '+%F %T') $*" | tee -a "$logfile"; }
+
+    status=0
+    log "Host: $(hostname)  Uptime: $(uptime -p)"
+    while read -r mount pct; do
+        used="${pct%\%}"
+        if (( used > threshold )); then
+            log "WARN $mount at ${used}% (threshold ${threshold}%)"
+            status=1
+        else
+            log "OK   $mount at ${used}%"
+        fi
+    done < <(df --output=target,pcent -t ext4 -t xfs | tail -n +2)
+
+    failed=$(journalctl -u ssh --since today --no-pager 2>/dev/null | grep -c "Failed password" || true)
+    log "Failed SSH password attempts today: $failed"
+    exit "$status"
+    ```
+
+- id: linux.m03.l5.tests
+  type: long
+  skill: explain
+  topics: [linux.m03]
+  prompt: Report your four test runs (no argument, 95, 5, abc) with the exit code of each, and one problem ShellCheck or `bash -x` helped you fix.
+  minWords: 40
+  rubric:
+    - { id: runs, label: "All four runs reported", keywords: [["95"], ["abc"], ["5"]] }
+    - { id: codes, label: "Exit codes match: 0, 0, 1, 2 (first two depend on actual usage)", keywords: [["exit"], ["0"], ["1"], ["2"]] }
+    - { id: debug, label: "A concrete problem found with ShellCheck or bash -x and how it was fixed", keywords: [["shellcheck", "bash -x", "SC"], ["quote", "fixed", "unset", "variable", "warning"]] }
+  modelAnswer: >-
+    No argument: all filesystems OK, exit 0. `95`: OK, exit 0. `5`: `/` at 31% printed WARN, exit 1. `abc`: usage
+    message on stderr, exit 2. ShellCheck reported SC2086 because I had written `$logfile` unquoted in `tee -a`; I quoted
+    it. `bash -x` showed that `grep -c` returned 1 when there were no failures, which stopped the script under `set -e`,
+    so I added `|| true`.

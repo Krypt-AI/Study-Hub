@@ -1,0 +1,83 @@
+id: linux-fundamentals.m13-quiz
+title: "Module 13 quiz: workplace administration and automation"
+kind: quiz
+passMark: 0.7
+description: Eight questions on routine administration, automation, scheduling, runbooks, tickets and change management.
+sections:
+  - id: linux-fundamentals.m13-quiz.s1
+    title: Module 13
+    questions:
+      - id: linux.m13.quiz.monthly
+        type: choice
+        skill: recognize
+        topics: [linux.m13]
+        prompt: Which task belongs in a monthly routine rather than a daily one?
+        options:
+          - { id: a, text: Testing a restore from backup, explanation: "Correct." }
+          - { id: b, text: Reading overnight alerts, explanation: "Daily." }
+          - { id: c, text: Checking whether last night's backup ran, explanation: "Daily." }
+        correct: [a]
+      - id: linux.m13.quiz.dry-run
+        type: choice
+        skill: explain
+        topics: [linux.m13]
+        prompt: Why give an administration script a dry-run option?
+        options:
+          - { id: a, text: So you can see exactly what it would change before it changes anything, explanation: "Correct." }
+          - { id: b, text: To make it run faster, explanation: "Speed is irrelevant." }
+          - { id: c, text: Because cron requires it, explanation: "It does not." }
+        correct: [a]
+      - id: linux.m13.quiz.cron-weekend
+        type: short
+        skill: apply
+        topics: [linux.m13]
+        prompt: Write the five cron fields for 23:00 every Saturday and Sunday.
+        accepted: ["0 23 * * 6,0", "0 23 * * 0,6", "0 23 * * 6,7", "0 23 * * 6-7", "0 23 * * sat,sun", "0 23 * * Sat,Sun"]
+        match: { mode: exact }
+      - id: linux.m13.quiz.timer-why
+        type: choice
+        skill: explain
+        topics: [linux.m13]
+        prompt: Name an advantage of systemd timers over cron.
+        options:
+          - { id: a, text: "Output goes to the journal per unit, status and last result are visible, and missed runs can catch up.", explanation: "Correct." }
+          - { id: b, text: They work on every Unix system., explanation: "cron is more portable." }
+          - { id: c, text: They need only one line., explanation: "They need two unit files." }
+        correct: [a]
+      - id: linux.m13.quiz.test-now
+        type: short
+        skill: recall
+        topics: [linux.m13]
+        prompt: How do you run the job behind `kira-backup.timer` immediately, to test it? Write the command.
+        accepted: ["sudo systemctl start kira-backup.service", "sudo systemctl start kira-backup", "systemctl start kira-backup.service"]
+        match: { mode: exact }
+      - id: linux.m13.quiz.emergency
+        type: choice
+        skill: recognize
+        topics: [linux.m13]
+        prompt: "During an outage you must change a firewall rule immediately. Under change management, what kind of change is it?"
+        options:
+          - { id: a, text: "An emergency change: done now, documented and reviewed afterwards", explanation: "Correct." }
+          - { id: b, text: No change record is needed during outages, explanation: "It still needs recording and review." }
+          - { id: c, text: A standard change, explanation: "Standard changes are routine and pre-approved." }
+        correct: [a]
+      - id: linux.m13.quiz.ticket
+        type: choice
+        skill: explain
+        topics: [linux.m13]
+        prompt: Which ticket update is the most useful?
+        options:
+          - { id: a, text: "10:14 nginx failed: port 80 used by PID 3901 (python3). Stopped it, started nginx; 10:20 site returns 200. Follow-up PRB-12.", explanation: "Correct: timed, evidenced, verified, followed up." }
+          - { id: b, text: "Fixed.", explanation: "Nothing reusable." }
+          - { id: c, text: "farid broke the server again.", explanation: "Blaming, and no evidence." }
+        correct: [a]
+      - id: linux.m13.quiz.ansible
+        type: choice
+        skill: recognize
+        topics: [linux.m13]
+        prompt: After Bash automation, which tool is the usual next step for managing many Linux servers' configuration idempotently?
+        options:
+          - { id: a, text: Ansible, explanation: "Correct. It is part of RHCE and the Linux+ automation domain." }
+          - { id: b, text: logrotate, explanation: "Rotates logs." }
+          - { id: c, text: netplan, explanation: "Configures networking on Ubuntu." }
+        correct: [a]
