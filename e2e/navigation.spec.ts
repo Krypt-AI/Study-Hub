@@ -75,13 +75,17 @@ test('certifications open on their areas, with JLPT and HSK among them', async (
 });
 
 test('Linux Fundamentals is the foundation that certifications and roadmaps link to', async ({ page }) => {
-  // A certification names how much it relies on Linux, apart from the provider's own requirement, and links its modules.
+  // A certification names how much it relies on Linux, apart from the provider's own requirement, and Prepare in Study Hub links its modules.
   await page.goto('/certifications/comptia-security-plus');
   const linux = page.getByRole('region', { name: 'Linux for this exam' });
   await expect(linux.getByText('Strongly recommended').first()).toBeVisible();
   await expect(linux.getByText('Official requirement')).toBeVisible();
-  await linux.getByRole('link', { name: /Module 11 — Security fundamentals/u }).click();
-  await expect(page.getByRole('heading', { level: 1, name: 'Account security' })).toBeVisible();
+  const prepare = page.getByRole('region', { name: 'Prepare in Study Hub' });
+  await prepare.getByRole('link', { name: /Module 11 — Security fundamentals/u }).click();
+  // The link opens the course's Modules list at that module, with its lessons showing.
+  await expect(page).toHaveURL(/\/courses\/linux-fundamentals#linux-fundamentals\.m11$/u);
+  const modules = page.getByRole('region', { name: 'Modules' });
+  await expect(modules.getByRole('link', { name: /Account security/u })).toBeVisible();
 
   // The course lists the certifications it is a foundation for.
   await page.goto('/courses/linux-fundamentals');

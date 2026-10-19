@@ -1,5 +1,5 @@
 /**
- * A course: what it covers, where the material comes from, lessons by unit with progress,
+ * A course: what it covers, where the material comes from, its modules and their lessons with progress,
  * mastery per topic and skill, mock exams, the certifications it prepares for and those it is a
  * foundation for.
  */
@@ -7,7 +7,7 @@ import { Award, Bookmark, BookmarkCheck, ClipboardCheck, Play } from 'lucide-rea
 import { useMemo } from 'react';
 import { Link, useParams } from 'react-router';
 import { SourceBadge } from '@/components/SourceBadge';
-import { Bubble, type BubbleState } from '@/components/ui/Bubble';
+import { Bubble } from '@/components/ui/Bubble';
 import { ButtonLink, IconButton } from '@/components/ui/Button';
 import { LoadingState, Tag } from '@/components/ui/Feedback';
 import { PageHeader, Sheet } from '@/components/ui/Sheet';
@@ -23,7 +23,7 @@ import { useBookmark } from '@/features/practice/useBookmark';
 import { CourseLoadError } from '@/features/auth/LockedContent';
 import { CourseVisibilityNotes } from '@/features/profile/CourseVisibilityNotes';
 import { CourseAbout } from './CourseAbout';
-import { ResetChapterButton } from './ResetChapterButton';
+import { CourseModules } from './CourseModules';
 import { StudyPlanPicker } from './StudyPlanPicker';
 import { groupAssessments, type PastPaperGroup } from '@/domain/content/pastPapers';
 import { certificationsBuiltOn } from '@/domain/content/foundations';
@@ -91,46 +91,7 @@ export default function CoursePage() {
         <div className="flex min-w-0 flex-col gap-6">
           <CourseAbout description={data.description} notice={data.contentNotice} />
           {papersFirst && <PastPapersSheet course={data} groups={pastPapers} />}
-          {data.units.map((unit) => (
-            <Sheet
-              key={unit.id}
-              title={unit.title}
-              aside={
-                unit.lessons.some((lesson) => records.has(lesson.id)) ? (
-                  <ResetChapterButton title={unit.title} lessons={unit.lessons} />
-                ) : (
-                  <span className="tabular">{unit.lessons.length} lesson{unit.lessons.length === 1 ? '' : 's'}</span>
-                )
-              }
-              padded={false}
-            >
-              <ol className="divide-y divide-rule">
-                {unit.lessons.map((lesson) => {
-                  const record = records.get(lesson.id);
-                  const state: BubbleState = record?.status === 'completed' ? 'filled' : record ? 'learning' : 'empty';
-                  const answered = record?.answeredQuestionIds.length ?? 0;
-                  const index = lessons.findIndex((entry) => entry.lesson.id === lesson.id) + 1;
-                  return (
-                    <li key={lesson.id}>
-                      <Link to={lessonUrl(data.id, lesson.id)} className="grid grid-cols-[1.75rem_1.5rem_minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 hover:bg-sheet-2">
-                        <span className="display-numerals text-right text-print">{index}</span>
-                        <Bubble state={state} />
-                        <span className="min-w-0">
-                          <span className="block truncate font-medium" lang={contentLanguage(data)}>
-                            {lesson.title}
-                          </span>
-                          {lesson.subtitle && <span className="block truncate text-sm text-ink-muted">{lesson.subtitle}</span>}
-                        </span>
-                        <span className="tabular text-right text-xs text-ink-faint">
-                          {lesson.questions.length > 0 ? `${answered}/${lesson.questions.length}` : ''}
-                        </span>
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ol>
-            </Sheet>
-          ))}
+          <CourseModules course={data} lessonOrder={lessons.map(({ lesson }) => lesson.id)} records={records} nextLessonId={nextLesson?.id} />
         </div>
 
         <div className="flex min-w-0 flex-col gap-6">

@@ -11,7 +11,6 @@ import { PageHeader } from '@/components/ui/Sheet';
 import { useCertificationProgress, useLessonProgress } from '@/data/queries';
 import { useCatalog } from '@/domain/content/load';
 import type { Catalog, Roadmap } from '@/domain/content/types';
-import { useLessonStatuses, type LessonStatuses } from '@/features/courses/useLessonStatuses';
 import { certificationUrl, courseUrl } from '@/domain/content/urls';
 import { cn } from '@/lib/cn';
 import { PROVIDER_STATUS, RELEVANCE, TRACKING } from './certificationLabels';
@@ -22,7 +21,6 @@ export default function RoadmapPage() {
   const catalog = useCatalog();
   const progress = useLessonProgress();
   const tracking = useCertificationProgress();
-  const statuses = useLessonStatuses();
 
   if (catalog.error) return <ErrorState title="Roadmap content is not built yet" error={catalog.error} />;
   if (!catalog.data || !progress.data || !tracking.data) return <LoadingState />;
@@ -31,7 +29,7 @@ export default function RoadmapPage() {
 
   const completed = new Set(progress.data.filter((record) => record.status === 'completed').map((record) => record.lessonId));
   const started = new Set(progress.data.map((record) => record.lessonId));
-  return <RoadmapView roadmap={roadmap} catalog={catalog.data} completed={completed} started={started} statuses={statuses} tracking={new Map(tracking.data.map((record) => [record.certId, record.status]))} />;
+  return <RoadmapView roadmap={roadmap} catalog={catalog.data} completed={completed} started={started} tracking={new Map(tracking.data.map((record) => [record.certId, record.status]))} />;
 }
 
 interface RoadmapViewProps {
@@ -39,11 +37,10 @@ interface RoadmapViewProps {
   catalog: Catalog;
   completed: Set<string>;
   started: Set<string>;
-  statuses: Map<string, LessonStatuses>;
   tracking: Map<string, keyof typeof TRACKING>;
 }
 
-function RoadmapView({ roadmap, catalog, completed, started, statuses, tracking }: RoadmapViewProps) {
+function RoadmapView({ roadmap, catalog, completed, started, tracking }: RoadmapViewProps) {
   const courseById = new Map(catalog.courses.map((course) => [course.id, course]));
   const certificationById = new Map(catalog.certifications.map((certification) => [certification.id, certification]));
 
@@ -98,7 +95,7 @@ function RoadmapView({ roadmap, catalog, completed, started, statuses, tracking 
                       </Tag>
                     </p>
                     {foundation.note && <p className="text-sm text-ink-muted">{foundation.note}</p>}
-                    <FoundationModules course={course} foundation={foundation} statuses={statuses.get(course.id)} />
+                    <FoundationModules course={course} foundation={foundation} />
                   </div>,
                 ];
               })}

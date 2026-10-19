@@ -1,7 +1,7 @@
 /**
  * One certification: status, exam facts, cost, objectives and resources (free or paid,
- * official or not), the foundation courses to take first (how much they matter, which modules,
- * what lies beyond them), the Study Hub courses that prepare for it, where every fact was checked,
+ * official or not), the foundation courses to take first (how much they matter, what lies beyond
+ * them), the Study Hub courses and foundation modules that prepare for it, where every fact was checked,
  * and the learner's own plan: status, target and exam dates, notes.
  */
 import { ExternalLink, TriangleAlert } from 'lucide-react';
@@ -21,7 +21,6 @@ import { courseUrl } from '@/domain/content/urls';
 import { SaveStatusText } from '@/components/SaveStatusText';
 import { useAutosave } from '@/lib/useAutosave';
 import { formatDate, parseDayKey, relativeDay } from '@/lib/dates';
-import { useLessonStatuses, type LessonStatuses } from '@/features/courses/useLessonStatuses';
 import { CATEGORY_LABELS, CREDENTIAL_LABELS, formatCost, LEVEL_LABELS, PROVIDER_STATUS, RELEVANCE, TRACKING, TRACKING_ORDER } from './certificationLabels';
 import { FoundationModules } from './FoundationModules';
 import { useCertificationTracking } from './useCertificationTracking';
@@ -30,7 +29,6 @@ export default function CertificationDetailPage() {
   const { certificationId = '' } = useParams();
   const catalog = useCatalog();
   const progress = useCertificationProgress();
-  const statuses = useLessonStatuses();
 
   if (catalog.error) return <ErrorState title="Certification data is not built yet" error={catalog.error} />;
   if (!catalog.data || !progress.data) return <LoadingState />;
@@ -47,7 +45,6 @@ export default function CertificationDetailPage() {
         const course = catalog.data.courses.find((candidate) => candidate.id === foundation.courseId);
         return course ? [{ foundation, course }] : [];
       })}
-      statuses={statuses}
       record={progress.data.find((candidate) => candidate.certId === certification.id)}
     />
   );
@@ -58,14 +55,12 @@ function CertificationView({
   courses,
   plannedCourses,
   foundations,
-  statuses,
   record,
 }: {
   certification: Certification;
   courses: CourseSummary[];
   plannedCourses: number;
   foundations: Array<{ foundation: CertificationFoundation; course: CourseSummary }>;
-  statuses: Map<string, LessonStatuses>;
   record?: CertificationProgressRecord;
 }) {
   const status = certification.status === 'active' ? undefined : PROVIDER_STATUS[certification.status];
@@ -144,7 +139,7 @@ function CertificationView({
           )}
 
           {foundations.map(({ foundation, course }) => (
-            <FoundationSheet key={course.id} foundation={foundation} course={course} statuses={statuses.get(course.id)} />
+            <FoundationSheet key={course.id} foundation={foundation} course={course} />
           ))}
 
           {certification.resources.length > 0 && (
@@ -191,35 +186,77 @@ function CertificationView({
 
         <div className="flex min-w-0 flex-col gap-6">
           <PlanSheet certification={certification} record={record} />
-          <Sheet title="Prepare in Study Hub">
-            {courses.length === 0 ? (
-              <p className="text-sm text-ink-muted">{plannedCourses > 0 ? 'Courses for this certification are planned but not written yet.' : 'No Study Hub course targets this certification yet.'}</p>
-            ) : (
-              <ul className="flex flex-col gap-2">
-                {courses.map((course) => (
-                  <li key={course.id}>
-                    <Link to={courseUrl(course.id)} className="text-print-strong hover:underline">
-                      {course.title}
-                    </Link>
-                    <span className="ml-2 text-xs text-ink-faint">{course.lessonCount} lessons</span>
-                  </li>
-                ))}
-                {plannedCourses > 0 && (
-                  <li className="text-xs text-ink-faint">
-                    {plannedCourses} more course{plannedCourses === 1 ? ' is' : 's are'} planned.
-                  </li>
-                )}
-              </ul>
-            )}
-          </Sheet>
+          <PrepareSheet courses={courses} plannedCourses={plannedCourses} foundations={foundations} />
         </div>
       </div>
     </div>
   );
 }
 
-/** A foundation course to take before this exam: how much it matters, which modules, what lies beyond it, and the sources. */
-function FoundationSheet({ foundation, course, statuses }: { foundation: CertificationFoundation; course: CourseSummary; statuses?: LessonStatuses }) {
+/**
+ * Where to study in Study Hub: the foundation courses first, each with links to the modules this exam
+ * builds on, then the courses that prepare for the exam itself.
+ */
+function PrepareSheet({
+  courses,
+  plannedCourses,
+  foundations,
+}: {
+  courses: CourseSummary[];
+  plannedCourses: number;
+  foundations: Array<{ foundation: CertificationFoundation; course: CourseSummary }>;
+}) {
+  const examCourses = courses.filter((course) => !foundations.some((entry) => entry.course.id === course.id));
+  if (foundations.length === 0 && examCourses.length === 0) {
+    return (
+      <Sheet title="Prepare in Study Hub">
+        <p className="text-sm text-ink-muted">{plannedCourses > 0 ? 'Courses for this certification are planned but not written yet.' : 'No Study Hub course targets this certification yet.'}</p>
+      </Sheet>
+    );
+  }
+  return (
+    <Sheet title="Prepare in Study Hub">
+      <div className="flex flex-col gap-4">
+        {foundations.map(({ foundation, course }) => {
+          const relevance = RELEVANCE[foundation.relevance];
+          return (
+            <section key={course.id} aria-label={`${course.title} modules`} className="flex flex-col gap-2">
+              <p className="flex flex-wrap items-center gap-2">
+                <Link to={courseUrl(course.id)} className="text-print-strong hover:underline">
+                  {course.title}
+                </Link>
+                <Tag tone={relevance.tone} title={relevance.description}>
+                  {relevance.label}
+                </Tag>
+              </p>
+              <FoundationModules course={course} foundation={foundation} />
+            </section>
+          );
+        })}
+        {(examCourses.length > 0 || plannedCourses > 0) && (
+          <ul className="flex flex-col gap-2">
+            {examCourses.map((course) => (
+              <li key={course.id}>
+                <Link to={courseUrl(course.id)} className="text-print-strong hover:underline">
+                  {course.title}
+                </Link>
+                <span className="ml-2 text-xs text-ink-faint">{course.lessonCount} lessons</span>
+              </li>
+            ))}
+            {plannedCourses > 0 && (
+              <li className="text-xs text-ink-faint">
+                {plannedCourses} more course{plannedCourses === 1 ? ' is' : 's are'} planned.
+              </li>
+            )}
+          </ul>
+        )}
+      </div>
+    </Sheet>
+  );
+}
+
+/** A foundation course to take before this exam: how much it matters, what lies beyond it, and the sources. */
+function FoundationSheet({ foundation, course }: { foundation: CertificationFoundation; course: CourseSummary }) {
   const relevance = RELEVANCE[foundation.relevance];
   const subject = course.subject === 'linux' ? 'Linux' : course.title;
   return (
@@ -239,10 +276,6 @@ function FoundationSheet({ foundation, course, statuses }: { foundation: Certifi
         {foundation.concepts.length > 0 && (
           <FoundationList title="Concepts you need" items={foundation.concepts} />
         )}
-        <section aria-label={`${course.title} modules`} className="flex flex-col gap-2">
-          <h3 className="font-semibold">Modules of {course.title}</h3>
-          <FoundationModules course={course} foundation={foundation} statuses={statuses} />
-        </section>
         {foundation.beyond.length > 0 && <FoundationList title="Beyond the course" items={foundation.beyond} />}
         <dl className="grid gap-x-6 gap-y-2 sm:grid-cols-[10rem_minmax(0,1fr)]">
           <dt className="text-ink-muted">When</dt>
