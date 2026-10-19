@@ -1,16 +1,17 @@
 /**
  * Markdown renderer for lessons and explanations (GFM tables, task lists, highlighted
- * code). Syntax colours come from the palette in global.css, not a stock highlight theme.
+ * code, "mindmap" blocks). Syntax colours come from the palette in global.css, not a stock highlight theme.
  */
-import type { ComponentProps } from 'react';
+import { type ComponentProps, isValidElement } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Link } from 'react-router';
 import rehypeHighlight from 'rehype-highlight';
 import remarkGfm from 'remark-gfm';
 import { cn } from '@/lib/cn';
+import { MindMap } from './MindMap';
 
 const REMARK_PLUGINS = [remarkGfm];
-const REHYPE_PLUGINS = [[rehypeHighlight, { detect: false, ignoreMissing: true }]] as ComponentProps<typeof ReactMarkdown>['rehypePlugins'];
+const REHYPE_PLUGINS = [[rehypeHighlight, { detect: false, ignoreMissing: true, plainText: ['mindmap'] }]] as ComponentProps<typeof ReactMarkdown>['rehypePlugins'];
 
 export interface MarkdownProps {
   children: string;
@@ -34,6 +35,10 @@ export function Markdown({ children, className, compact = false }: MarkdownProps
                 {linkChildren}
               </a>
             ),
+          pre: ({ children: preChildren }) => {
+            const code = isValidElement<{ className?: string; children?: unknown }>(preChildren) ? preChildren.props : undefined;
+            return code?.className?.includes('language-mindmap') ? <MindMap source={String(code.children ?? '')} /> : <pre>{preChildren}</pre>;
+          },
           table: ({ children: tableChildren }) => (
             <div className="overflow-x-auto">
               <table>{tableChildren}</table>

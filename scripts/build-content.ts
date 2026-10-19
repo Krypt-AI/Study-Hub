@@ -27,6 +27,7 @@ import { buildAccessManifest, splitSearchDocuments } from '../src/domain/content
 import type { Course, SearchDocument, StageFoundation, University } from '../src/domain/content/types.ts';
 import { lessonUrl, courseUrl, certificationUrl } from '../src/domain/content/urls.ts';
 import { sectionByHeading } from '../src/domain/content/sections.ts';
+import { parseMindMap } from '../src/domain/content/mindMap.ts';
 import { tierOf } from '../src/domain/learning/tiers.ts';
 
 const ROOT = process.cwd();
@@ -84,6 +85,7 @@ function loadAuthoredLesson(courseDir: string, name: string, courseSource: Sourc
   const markdownPath = join(courseDir, 'lessons', `${name}.md`);
   const questionsPath = join(courseDir, 'lessons', `${name}.questions.yaml`);
   const { data, body } = parseFrontmatter(readFileSync(markdownPath, 'utf8'));
+  checkMindMaps(body, name);
   const { resources, sourcePages, ...meta } = data as { resources?: unknown[]; sourcePages?: Record<string, unknown> | Array<Record<string, unknown>> } & Record<string, unknown>;
   const questions = existsSync(questionsPath) ? ((readYaml(questionsPath) as unknown[]) ?? []).map((question) => inlineFixtures(courseDir, question)) : [];
   const lessonSource = (meta.source as SourceRefInput | undefined) ?? courseSource;
@@ -97,6 +99,14 @@ function loadAuthoredLesson(courseDir: string, name: string, courseSource: Sourc
     ],
     questions: questions.map((question) => withReferenceExcerpt({ source: lessonSource, ...(question as object) }, body, name)),
   };
+}
+
+/** A "mindmap" block that would not draw fails the build instead of the lesson page. */
+function checkMindMaps(body: string, lessonName: string): void {
+  for (const match of body.matchAll(/^```mindmap\r?\n([\s\S]*?)^```/gmu)) {
+    const map = parseMindMap(match[1] ?? '');
+    if (!map.root || map.branches.length === 0) throw new Error(`lesson ${lessonName}: a mind map needs a centre line and at least one "- " branch`);
+  }
 }
 
 /** Copies the lesson section a question refers to into the question, so the app can show it beside it. */
