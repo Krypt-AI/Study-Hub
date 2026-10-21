@@ -356,6 +356,8 @@ export const unitSchema = z.object({
   id: contentId,
   title: z.string(),
   summary: z.string().optional(),
+  /** Holds the course's past-paper notes: the course page shows its lessons under Past papers, not in the module list. */
+  pastPapers: z.boolean().optional(),
   lessons: z.array(lessonSchema),
 });
 

@@ -16,7 +16,7 @@ import type { TopicMasteryRecord } from '@/data/records';
 import { contentLanguage } from '@/domain/content/language';
 import { useCatalog, useCourse } from '@/domain/content/load';
 import { lessonsInOrder } from '@/domain/content/navigation';
-import type { Assessment, Course } from '@/domain/content/types';
+import type { Assessment, Course, Lesson } from '@/domain/content/types';
 import { assessmentUrl, certificationUrl, courseUrl, lessonUrl } from '@/domain/content/urls';
 import { masteryKey, masteryLevel, SKILL_LABELS, SKILLS } from '@/domain/learning/mastery';
 import { useBookmark } from '@/features/practice/useBookmark';
@@ -51,6 +51,7 @@ export default function CoursePage() {
   const { pastPapers, practice } = groupAssessments(data.assessments);
   // A subject with past papers and no lessons yet: the papers are what there is to do.
   const papersFirst = data.units.length === 0;
+  const paperNotes = data.units.filter((unit) => unit.pastPapers).flatMap((unit) => unit.lessons);
 
   return (
     <div className="mx-auto max-w-6xl">
@@ -90,12 +91,12 @@ export default function CoursePage() {
       <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
         <div className="flex min-w-0 flex-col gap-6">
           <CourseAbout description={data.description} notice={data.contentNotice} />
-          {papersFirst && <PastPapersSheet course={data} groups={pastPapers} />}
+          {papersFirst && <PastPapersSheet course={data} groups={pastPapers} notes={paperNotes} />}
           <CourseModules course={data} lessonOrder={lessons.map(({ lesson }) => lesson.id)} records={records} nextLessonId={nextLesson?.id} />
         </div>
 
         <div className="flex min-w-0 flex-col gap-6">
-          {!papersFirst && <PastPapersSheet course={data} groups={pastPapers} />}
+          {!papersFirst && <PastPapersSheet course={data} groups={pastPapers} notes={paperNotes} />}
           {practice.length > 0 && (
             <Sheet title="Mock exams and quizzes">
               <ul className="flex flex-col gap-3">
@@ -170,12 +171,12 @@ function MasterySheet({ course, mastery }: { course: Course; mastery: TopicMaste
       {rows.length === 0 ? (
         <p className="text-sm text-ink-muted">As you answer questions, each topic shows how well you can recognise, recall, explain and apply it.</p>
       ) : (
-        <table className="w-full text-sm">
+        <table className="w-full table-fixed text-sm">
           <thead>
             <tr className="text-ink-muted">
               <th className="pb-2 text-left font-display font-semibold">Topic</th>
               {SKILLS.map((skill) => (
-                <th key={skill} className="px-1 pb-2 text-center font-display text-xs font-semibold">
+                <th key={skill} className="w-[4.25rem] px-0 pb-2 text-center font-display text-xs font-semibold">
                   {SKILL_LABELS[skill]}
                 </th>
               ))}
@@ -184,7 +185,7 @@ function MasterySheet({ course, mastery }: { course: Course; mastery: TopicMaste
           <tbody>
             {rows.map(({ topic, cells }) => (
               <tr key={topic.id} className="border-t border-rule">
-                <td className="max-w-40 truncate py-1.5 pr-2" title={topic.title}>
+                <td className="truncate py-1.5 pr-2" title={topic.title}>
                   {topic.title}
                 </td>
                 {cells.map(({ skill, record }) => {
@@ -208,8 +209,8 @@ function MasterySheet({ course, mastery }: { course: Course; mastery: TopicMaste
   );
 }
 
-function PastPapersSheet({ course, groups }: { course: Course; groups: PastPaperGroup[] }) {
-  if (groups.length === 0) return null;
+function PastPapersSheet({ course, groups, notes }: { course: Course; groups: PastPaperGroup[]; notes: Lesson[] }) {
+  if (groups.length === 0 && notes.length === 0) return null;
   return (
     <Sheet title="Past papers">
       <div className="flex flex-col gap-5">
@@ -223,6 +224,21 @@ function PastPapersSheet({ course, groups }: { course: Course; groups: PastPaper
             </ul>
           </section>
         ))}
+        {notes.length > 0 && (
+          <section aria-label="Notes on the papers" className="flex flex-col gap-2">
+            <h3 className="text-sm font-semibold tracking-wide text-ink-muted uppercase">Notes on the papers</h3>
+            <ul className="flex flex-col gap-1.5">
+              {notes.map((lesson) => (
+                <li key={lesson.id}>
+                  <Link to={lessonUrl(course.id, lesson.id)} className="text-print-strong hover:underline">
+                    {lesson.title}
+                  </Link>
+                  {lesson.subtitle && <p className="text-sm text-ink-muted">{lesson.subtitle}</p>}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
       </div>
     </Sheet>
   );

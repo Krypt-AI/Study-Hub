@@ -34,13 +34,15 @@ export function CourseModules({ course, lessonOrder, records, nextLessonId }: Co
     if (linkedUnitId) document.getElementById(linkedUnitId)?.scrollIntoView({ block: 'start' });
   }, [linkedUnitId]);
 
-  if (course.units.length === 0) return null;
+  // Past-paper notes live in the course page's Past papers sheet, not among the chapters.
+  const units = course.units.filter((unit) => !unit.pastPapers);
+  if (units.length === 0) return null;
   return (
     <Sheet
       title="Modules"
       aside={
         <>
-          {course.units.length > 2 && (
+          {units.length > 2 && (
             <Button
               size="sm"
               variant="ghost"
@@ -51,13 +53,13 @@ export function CourseModules({ course, lessonOrder, records, nextLessonId }: Co
               {allOpen ? 'Collapse all' : 'Expand all'}
             </Button>
           )}
-          <span className="tabular">{course.units.length}</span>
+          <span className="tabular">{units.length}</span>
         </>
       }
       padded={false}
     >
       <div className="divide-y divide-rule">
-        {course.units.map((unit) => {
+        {units.map((unit) => {
           const states = unit.lessons.map((lesson) => lessonState(records.get(lesson.id)));
           const completed = states.filter((state) => state === 'filled').length;
           const open = allOpen ?? (unit.id === linkedUnitId || unit.lessons.some((lesson) => lesson.id === nextLessonId));
