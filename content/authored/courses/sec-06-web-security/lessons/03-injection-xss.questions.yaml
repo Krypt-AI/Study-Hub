@@ -1,0 +1,64 @@
+- id: sec06.injection.idea
+  type: choice
+  skill: recognize
+  topics: [sec06.injection]
+  prompt: What is the single idea behind SQL injection, command injection and XSS?
+  options:
+    - { id: a, text: "Untrusted input is treated as code instead of data by some interpreter.", explanation: "Correct." }
+    - { id: b, text: "The server is too slow.", explanation: "Unrelated." }
+    - { id: c, text: "The password is weak.", explanation: "Unrelated." }
+  correct: [a]
+
+- id: sec06.injection.param
+  type: choice
+  skill: apply
+  topics: [sec06.injection]
+  prompt: Which line is the safe way to run a query with user input?
+  options:
+    - { id: a, text: "`cursor.execute(\"SELECT * FROM users WHERE name = ?\", (name,))`", explanation: "Correct: parameterised; input bound as data." }
+    - { id: b, text: "`cursor.execute(\"SELECT * FROM users WHERE name = '\" + name + \"'\")`", explanation: "String concatenation — classic SQL injection." }
+    - { id: c, text: "`cursor.execute(f\"SELECT * FROM users WHERE name = '{name}'\")`", explanation: "An f-string still concatenates input into the SQL." }
+  correct: [a]
+
+- id: sec06.injection.xss-type
+  type: choice
+  skill: recognize
+  topics: [sec06.injection]
+  prompt: A script saved in a product review runs in every visitor's browser. Which XSS type?
+  options:
+    - { id: a, text: "Stored XSS", explanation: "Correct: persisted and served to all viewers." }
+    - { id: b, text: "Reflected XSS", explanation: "That rides in a single request and is echoed back." }
+    - { id: c, text: "No XSS; it is CSRF", explanation: "CSRF is a different class." }
+  correct: [a]
+
+- id: sec06.injection.validate
+  type: code
+  skill: apply
+  topics: [sec06.injection]
+  language: python
+  prompt: >-
+    Write `valid_username(name)` using allowlist validation: accept only strings of 3–20 characters made of lowercase
+    letters, digits or underscore, and return a boolean. Then `pick_sort_column(col, allowed)` returns `col` only if it
+    is in the `allowed` set, else the first allowed column — a safe way to handle a column name that cannot be
+    parameterised.
+  starterCode: |
+    import re
+
+    def valid_username(name):
+        ...
+
+    def pick_sort_column(col, allowed):
+        ...
+  tests:
+    - { kind: assert, name: "good username", code: "assert valid_username('aina_01')" }
+    - { kind: assert, name: "rejects symbols and length", code: "assert not valid_username('ab') and not valid_username(\"a'; DROP TABLE users;--\")" }
+    - { kind: assert, name: "column allowlist", code: "cols = ['name', 'date', 'total']\nassert pick_sort_column('date', cols) == 'date'\nassert pick_sort_column('total; DROP TABLE t', cols) == 'name'" }
+  solution: |
+    import re
+
+    def valid_username(name):
+        return re.fullmatch(r'[a-z0-9_]{3,20}', name) is not None
+
+    def pick_sort_column(col, allowed):
+        allowed = list(allowed)
+        return col if col in allowed else allowed[0]

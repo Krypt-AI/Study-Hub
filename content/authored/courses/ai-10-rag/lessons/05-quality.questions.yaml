@@ -1,0 +1,68 @@
+- id: ai10.quality.recall-first
+  type: choice
+  skill: apply
+  topics: [ai10.quality]
+  prompt: Which retrieval metric is most important to optimise first, and why?
+  options:
+    - { id: a, text: "Recall@k — if the relevant chunk is not in the top k, the generator can never use it", explanation: "Correct." }
+    - { id: b, text: "Precision@k, because noise is the only problem", explanation: "Noise matters, but missing the answer entirely is worse." }
+    - { id: c, text: "Answer length", explanation: "Not a retrieval metric." }
+  correct: [a]
+
+- id: ai10.quality.faithfulness
+  type: choice
+  skill: recognize
+  topics: [ai10.quality]
+  prompt: What does "faithfulness" (groundedness) measure in a RAG answer?
+  options:
+    - { id: a, text: "Whether every claim in the answer is supported by the retrieved context", explanation: "Correct." }
+    - { id: b, text: "How long the answer is", explanation: "No." }
+    - { id: c, text: "How fast it was generated", explanation: "No." }
+  correct: [a]
+
+- id: ai10.quality.diagnose
+  type: choice
+  skill: apply
+  topics: [ai10.quality]
+  prompt: The correct chunk IS retrieved, but the answer ignores it and invents something. Which component do you fix?
+  options:
+    - { id: a, text: "Generation/prompt: strengthen grounding, reduce chunks, re-rank", explanation: "Correct: retrieval worked; the prompt did not constrain the model." }
+    - { id: b, text: "The embedding model", explanation: "Retrieval already succeeded." }
+    - { id: c, text: "The chunk size", explanation: "Retrieval found it; chunking is not the problem." }
+  correct: [a]
+
+- id: ai10.quality.recall-code
+  type: code
+  skill: apply
+  topics: [ai10.quality]
+  language: python
+  prompt: >-
+    Write `recall_at_k(retrieved, relevant, k)` = fraction of `relevant` ids found in the first `k` of `retrieved`
+    (0.0 if `relevant` is empty), and `mrr(retrieved, relevant)` = reciprocal rank of the first relevant id in
+    `retrieved` (1-indexed), or 0.0 if none appears.
+  starterCode: |
+    def recall_at_k(retrieved, relevant, k):
+        ...
+
+    def mrr(retrieved, relevant):
+        ...
+  tests:
+    - { kind: assert, name: "recall half", code: "assert recall_at_k(['a', 'b', 'x'], {'a', 'c'}, 3) == 0.5" }
+    - { kind: assert, name: "recall respects k", code: "assert recall_at_k(['x', 'y', 'a'], {'a'}, 2) == 0.0" }
+    - { kind: assert, name: "empty relevant", code: "assert recall_at_k(['a'], set(), 3) == 0.0" }
+    - { kind: assert, name: "mrr rank 2", code: "assert mrr(['x', 'a', 'b'], {'a'}) == 0.5" }
+    - { kind: assert, name: "mrr none", code: "assert mrr(['x', 'y'], {'a'}) == 0.0" }
+  solution: |
+    def recall_at_k(retrieved, relevant, k):
+        relevant = set(relevant)
+        if not relevant:
+            return 0.0
+        found = sum(1 for r in retrieved[:k] if r in relevant)
+        return found / len(relevant)
+
+    def mrr(retrieved, relevant):
+        relevant = set(relevant)
+        for i, r in enumerate(retrieved, start=1):
+            if r in relevant:
+                return 1.0 / i
+        return 0.0

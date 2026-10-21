@@ -1,0 +1,83 @@
+- id: ai03.calculus.power
+  type: short
+  skill: apply
+  topics: [ai03.calculus]
+  prompt: "What is f′(2) for f(x) = x⁴?"
+  accepted: ["32"]
+  match: { mode: number }
+  explanation: "f′(x) = 4x³ = 4·8 = 32."
+
+- id: ai03.calculus.chain
+  type: choice
+  skill: apply
+  topics: [ai03.calculus]
+  prompt: "What is the derivative of f(x) = (2x − 1)³?"
+  options:
+    - { id: a, text: "6(2x − 1)²", explanation: "Correct: 3(2x − 1)² times the inner derivative 2." }
+    - { id: b, text: "3(2x − 1)²", explanation: "Forgets the inner derivative." }
+    - { id: c, text: "(2x − 1)²", explanation: "Not the power rule." }
+  correct: [a]
+
+- id: ai03.calculus.gradient-meaning
+  type: choice
+  skill: recognize
+  topics: [ai03.calculus]
+  prompt: The gradient of the loss with respect to the parameters points in which direction?
+  options:
+    - { id: a, text: "The direction in which the loss increases fastest", explanation: "Correct, so training steps go the opposite way." }
+    - { id: b, text: "Straight to the minimum", explanation: "Only locally steepest, not towards the global minimum." }
+    - { id: c, text: "The direction where the loss stays constant", explanation: "That is perpendicular to the gradient." }
+  correct: [a]
+
+- id: ai03.calculus.vanishing
+  type: long
+  skill: explain
+  topics: [ai03.calculus]
+  prompt: Use the chain rule to explain why gradients can vanish in a deep network of sigmoid layers.
+  minWords: 30
+  rubric:
+    - { id: product, label: "Backprop multiplies local derivatives layer by layer (chain rule)", keywords: [["multipl", "product"], ["chain", "layer"]] }
+    - { id: small, label: "The sigmoid derivative is at most 0.25", keywords: [["0.25", "small", "less than 1", "at most"]] }
+    - { id: effect, label: "So gradients shrink towards zero for early layers, which learn slowly", keywords: [["shrink", "vanish", "zero", "tiny"]] }
+  modelAnswer: >-
+    By the chain rule, the gradient for an early layer is a product of the local derivatives of every later layer.
+    The sigmoid's derivative σ(1 − σ) is at most 0.25, so with many layers the product of many numbers below 1
+    shrinks exponentially towards zero. Early layers then receive tiny updates and learn very slowly. ReLU, careful
+    initialisation, normalisation and residual connections reduce the problem.
+
+- id: ai03.calculus.partial
+  type: cloze
+  skill: apply
+  topics: [ai03.calculus]
+  prompt: "For f(w, b) = (2w + b − 5)² at w = 1, b = 0, compute the partial derivatives."
+  text: "∂f/∂w = [[1]] and ∂f/∂b = [[2]]."
+  blanks:
+    - { id: "1", accepted: ["-12"], match: { mode: number } }
+    - { id: "2", accepted: ["-6"], match: { mode: number } }
+
+- id: ai03.calculus.numeric-gradient
+  type: code
+  skill: apply
+  topics: [ai03.calculus]
+  language: python
+  prompt: >-
+    Write `numeric_gradient(f, point, h=1e-5)` that returns the list of central-difference partial derivatives of `f`
+    (a function taking a list of numbers) at `point`.
+  starterCode: |
+    def numeric_gradient(f, point, h=1e-5):
+        ...
+  tests:
+    - { kind: assert, name: "quadratic", code: "g = numeric_gradient(lambda p: (2 * p[0] + p[1] - 5) ** 2, [1.0, 0.0])\nassert abs(g[0] + 12) < 1e-4 and abs(g[1] + 6) < 1e-4" }
+    - { kind: assert, name: "product", code: "g = numeric_gradient(lambda p: p[0] * p[1], [3.0, 4.0])\nassert abs(g[0] - 4) < 1e-4 and abs(g[1] - 3) < 1e-4" }
+    - { kind: assert, name: "point not modified", code: "p = [1.0, 2.0]\nnumeric_gradient(lambda q: q[0] + q[1], p)\nassert p == [1.0, 2.0]" }
+  hints: ["Copy the point, add h to one coordinate, then subtract h, and divide the difference by 2h."]
+  solution: |
+    def numeric_gradient(f, point, h=1e-5):
+        grads = []
+        for i in range(len(point)):
+            up = list(point)
+            down = list(point)
+            up[i] += h
+            down[i] -= h
+            grads.append((f(up) - f(down)) / (2 * h))
+        return grads

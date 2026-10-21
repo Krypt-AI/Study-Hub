@@ -4,7 +4,8 @@
  * there is nothing to choose, so it opens directly. The AI and full-stack courses live under
  * Roadmaps and the IT courses under Certifications.
  */
-import { FolderPlus } from 'lucide-react';
+import { Building2, FolderPlus, GraduationCap, Languages, Route, ShieldCheck } from 'lucide-react';
+import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { type AreaEntry, AreaBack, AreaIndex } from '@/components/ui/AreaIndex';
@@ -26,8 +27,12 @@ import { dayKey, nowIso } from '@/lib/dates';
 import { CourseRow } from './CourseRow';
 import { type LessonStatuses, useLessonStatuses } from './useLessonStatuses';
 
-/** The areas browsed here; roadmap courses and IT courses are reached through Roadmaps and Certifications. */
-const AREAS = ['elementary', 'secondary', 'university', 'japanese', 'chinese'] as const satisfies readonly CourseCategory[];
+/**
+ * The areas browsed here. The school, university and language areas come from the learner's own
+ * materials; the roadmap courses (AI engineering) and the IT and security courses are the ones
+ * Study Hub prepares, and are also reached from Roadmaps and Certifications.
+ */
+const AREAS = ['elementary', 'secondary', 'university', 'ai-engineering', 'it', 'japanese', 'chinese'] as const satisfies readonly CourseCategory[];
 type Area = (typeof AREAS)[number];
 type SchoolArea = Extract<Area, 'elementary' | 'secondary'>;
 const isArea = (value: string | null): value is Area => AREAS.includes(value as Area);
@@ -37,8 +42,30 @@ const AREA_DESCRIPTIONS: Record<Area, string> = {
   elementary: 'Your primary school subjects, Standard 1 to 6, with your own year first.',
   secondary: 'Your secondary school subjects, Form 1 to 5, with your own year first.',
   university: 'Your UNITEN semester subjects, written from your own notes and slides, with past papers.',
+  'ai-engineering': 'The AI Engineering roadmap: Python, data, machine learning, deep learning, LLMs and agents.',
+  it: 'Cybersecurity, Linux, networking and databases, with hands-on labs and certification prep.',
   japanese: 'JLPT N5 to N1 practice tests and 新にほんご500問, from your own books.',
   chinese: 'HSK 1 to 6 vocabulary and workbook exercises, from your own books.',
+};
+
+const AREA_ICONS: Record<Area, ReactNode> = {
+  elementary: <GraduationCap className="size-6" />,
+  secondary: <GraduationCap className="size-6" />,
+  university: <Building2 className="size-6" />,
+  'ai-engineering': <Route className="size-6" />,
+  it: <ShieldCheck className="size-6" />,
+  japanese: <Languages className="size-6" />,
+  chinese: <Languages className="size-6" />,
+};
+
+/** The Study-Hub-authored roadmap areas use the course noun; the learner's own materials use "subject". */
+const COURSE_NOUN_AREAS = new Set<Area>(['ai-engineering', 'it', 'japanese', 'chinese']);
+
+/** Titles in the Courses index, where the roadmap areas read as course groups rather than certification areas. */
+const areaTitle = (area: Area): string => {
+  if (area === 'ai-engineering') return 'AI Engineering';
+  if (area === 'it') return 'Cybersecurity and IT';
+  return COURSE_CATEGORY_LABELS[area];
 };
 
 type Statuses = Map<string, LessonStatuses>;
@@ -80,11 +107,12 @@ function AreaChoice({ areas, catalog, statuses }: { areas: Area[]; catalog: Visi
   };
   const entries: AreaEntry[] = areas.map((area) => {
     const courses = inArea(area);
-    const noun = area === 'japanese' || area === 'chinese' ? 'course' : 'subject';
+    const noun = COURSE_NOUN_AREAS.has(area) ? 'course' : 'subject';
     return {
       id: area,
-      title: COURSE_CATEGORY_LABELS[area],
+      title: areaTitle(area),
       description: AREA_DESCRIPTIONS[area],
+      icon: AREA_ICONS[area],
       count: `${courses.length} ${noun}${courses.length === 1 ? '' : 's'}`,
       note: startedNote(courses),
       to: `/courses?area=${area}`,
@@ -106,13 +134,13 @@ function AreaCourses({ area, catalog, statuses, back = false }: { area: Area; ca
   return (
     <div className="mx-auto max-w-5xl">
       {back && <AreaBack to="/courses" label="All areas" />}
-      <PageHeader title={back ? COURSE_CATEGORY_LABELS[area] : 'Courses'} lead={AREA_DESCRIPTIONS[area]} />
+      <PageHeader title={back ? areaTitle(area) : 'Courses'} lead={AREA_DESCRIPTIONS[area]} />
       {area === 'university' ? (
         <UniversityCourses courses={courses} statuses={statuses} />
       ) : isSchoolArea(area) ? (
         <SchoolCourses area={area} courses={courses} profile={catalog.visibility.profile} statuses={statuses} />
       ) : (
-        <Sheet padded={false} aria-label={`${COURSE_CATEGORY_LABELS[area]} courses`}>
+        <Sheet padded={false} aria-label={`${areaTitle(area)} courses`}>
           <CourseRows courses={courses} statuses={statuses} />
         </Sheet>
       )}

@@ -1,0 +1,54 @@
+- id: sec09.methodology.passive
+  type: choice
+  skill: recognize
+  topics: [sec09.methodology]
+  prompt: Which activity is passive reconnaissance?
+  options:
+    - { id: a, text: "Reading the target's public job ads, DNS/WHOIS and website without touching their systems", explanation: "Correct: no interaction with the target." }
+    - { id: b, text: "Port-scanning the target", explanation: "That interacts with the target (active)." }
+    - { id: c, text: "Exploiting a login page", explanation: "That is gaining access." }
+  correct: [a]
+
+- id: sec09.methodology.enumeration
+  type: choice
+  skill: recognize
+  topics: [sec09.methodology]
+  prompt: What is enumeration?
+  options:
+    - { id: a, text: "Extracting detailed information (users, shares, versions, endpoints) from discovered services", explanation: "Correct." }
+    - { id: b, text: "Writing the final report", explanation: "That is the reporting phase." }
+    - { id: c, text: "Encrypting the target's disk", explanation: "Not part of testing." }
+  correct: [a]
+
+- id: sec09.methodology.defence-map
+  type: cloze
+  skill: apply
+  topics: [sec09.methodology]
+  prompt: Map phases to their defensive counters.
+  text: "Scanning is countered by reducing attack surface and detecting it with [[1]] and monitoring; exploitation is countered by [[2]] and patching; a foothold's reach is limited by least privilege and [[3]]."
+  blanks:
+    - { id: "1", accepted: ["IDS", "intrusion detection", "an IDS"] }
+    - { id: "2", accepted: [hardening] }
+    - { id: "3", accepted: [segmentation] }
+
+- id: sec09.methodology.goal
+  type: choice
+  skill: apply
+  topics: [sec09.methodology]
+  prompt: In an authorised penetration test, what is the tester's goal when "gaining access"?
+  options:
+    - { id: a, text: "Demonstrate real impact as evidence, within scope — not cause destruction", explanation: "Correct: prove the risk is real and report it." }
+    - { id: b, text: "Delete as much data as possible", explanation: "Destructive and unauthorised." }
+    - { id: c, text: "Keep the access secret forever", explanation: "Legitimate tests document and clean up." }
+  correct: [a]
+
+- id: sec09.methodology.cleanup
+  type: choice
+  skill: recognize
+  topics: [sec09.methodology]
+  prompt: In a legitimate engagement, what replaces the old "covering tracks" idea?
+  options:
+    - { id: a, text: "Cleaning up test artefacts and documenting everything so the client has a complete, honest record", explanation: "Correct." }
+    - { id: b, text: "Deleting the client's logs to hide activity", explanation: "That would destroy the client's evidence — never done." }
+    - { id: c, text: "Nothing", explanation: "Cleanup and documentation are part of the job." }
+  correct: [a]

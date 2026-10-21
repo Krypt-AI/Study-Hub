@@ -10,7 +10,7 @@ export function MindMap({ source }: { source: string }) {
     <figure aria-label={`Mind map: ${root}`} className="not-prose my-6 flex flex-col items-center">
       <p className="max-w-full rounded-full border-2 border-print bg-print-soft px-5 py-2 text-center font-display text-lg leading-snug font-semibold text-ink">{root}</p>
       <span className="h-4 w-px bg-print-line" aria-hidden />
-      <ol className="grid w-full gap-3 border-t border-print-line pt-4 sm:grid-cols-2">
+      <ol className="grid w-full gap-3 border-t border-rule pt-4 sm:grid-cols-2">
         {branches.map((branch, index) => (
           <li key={`${index}-${branch.label}`} className="rounded-md border border-rule bg-sheet px-3.5 py-3">
             <p className="flex items-baseline gap-2 font-display text-[1.0625rem] leading-snug font-semibold text-ink">

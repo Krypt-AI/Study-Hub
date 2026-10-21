@@ -1,0 +1,70 @@
+- id: ai05.unsupervised.kmeans-steps
+  type: choice
+  skill: recognize
+  topics: [ai05.unsupervised]
+  prompt: After assigning every point to its nearest centre, what does k-means do next?
+  options:
+    - { id: a, text: "Moves each centre to the mean of the points assigned to it", explanation: "Correct." }
+    - { id: b, text: "Deletes the smallest cluster", explanation: "k stays fixed." }
+    - { id: c, text: "Labels the clusters using y", explanation: "There are no labels." }
+  correct: [a]
+
+- id: ai05.unsupervised.silhouette
+  type: choice
+  skill: recall
+  topics: [ai05.unsupervised]
+  prompt: Which silhouette score indicates the best-separated clustering?
+  options:
+    - { id: a, text: "0.71", explanation: "Correct: closer to 1 is better." }
+    - { id: b, text: "0.05", explanation: "Overlapping clusters." }
+    - { id: c, text: "−0.3", explanation: "Many points are closer to another cluster." }
+  correct: [a]
+
+- id: ai05.unsupervised.dbscan
+  type: choice
+  skill: apply
+  topics: [ai05.unsupervised]
+  prompt: Your data forms two interlocking crescent shapes with a few scattered noise points. Which method suits it?
+  options:
+    - { id: a, text: "DBSCAN", explanation: "Correct: arbitrary shapes, noise labelled." }
+    - { id: b, text: "k-means with k = 2", explanation: "It assumes round clusters and cuts the crescents wrongly." }
+    - { id: c, text: "PCA", explanation: "PCA reduces dimensions; it does not cluster." }
+  correct: [a]
+
+- id: ai05.unsupervised.pca-variance
+  type: short
+  skill: apply
+  topics: [ai05.unsupervised]
+  prompt: "Explained variance ratios are 0.6, 0.25, 0.1, 0.05. How many components are needed to keep at least 90% of the variance?"
+  accepted: ["3"]
+  match: { mode: number }
+
+- id: ai05.unsupervised.choose-k
+  type: code
+  skill: apply
+  topics: [ai05.unsupervised]
+  language: python
+  packages: [scikit-learn]
+  prompt: >-
+    Write `best_k(X, ks)` that scales X with StandardScaler, fits `KMeans(n_clusters=k, n_init=10, random_state=0)` for
+    every k in `ks`, and returns the k with the highest silhouette score.
+  starterCode: |
+    from sklearn.cluster import KMeans
+    from sklearn.metrics import silhouette_score
+    from sklearn.preprocessing import StandardScaler
+
+    def best_k(X, ks):
+        ...
+  tests:
+    - { kind: assert, name: "three blobs", code: "from sklearn.datasets import make_blobs\nX, _ = make_blobs(n_samples=300, centers=3, cluster_std=0.6, random_state=1)\nassert best_k(X, [2, 3, 4, 5]) == 3" }
+  solution: |
+    from sklearn.cluster import KMeans
+    from sklearn.metrics import silhouette_score
+    from sklearn.preprocessing import StandardScaler
+
+    def best_k(X, ks):
+        Xs = StandardScaler().fit_transform(X)
+        def score(k):
+            labels = KMeans(n_clusters=k, n_init=10, random_state=0).fit_predict(Xs)
+            return silhouette_score(Xs, labels)
+        return max(ks, key=score)

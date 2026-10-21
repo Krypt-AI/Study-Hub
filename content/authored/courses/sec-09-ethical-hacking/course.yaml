@@ -1,0 +1,118 @@
+id: sec-09-ethical-hacking
+title: Ethical Hacking and Penetration Testing
+subtitle: Cybersecurity · Stage 9
+description: >-
+  The authorised offensive discipline, from the defender's and tester's professional side: the law and ethics of
+  authorisation, the phases of a penetration test, what each tool category is for, how the common attack techniques
+  work so you can prevent and detect them, and how to report findings. Aligned to CEH and CompTIA PenTest+, and
+  practised only on legal ranges and your own lab.
+category: it
+subject: cybersecurity
+level: Stage 9
+difficulty: advanced
+tags: [ethical-hacking, penetration-testing, ceh, pentest-plus, ctf]
+prerequisites: [sec-06-web-security, sec-07-defence]
+estimatedHours: 16
+topics:
+  - { id: sec09.setup, title: "Setup: Kali and legal practice ranges" }
+  - { id: sec09.legal, title: Law, ethics and authorisation }
+  - { id: sec09.methodology, title: The penetration-testing methodology }
+  - { id: sec09.techniques, title: Techniques and how to defend them }
+  - { id: sec09.reporting, title: Reporting, CTFs and careers }
+units:
+  - id: sec-09-ethical-hacking.u1
+    title: The rules and the method
+    lessons: [00-setup, 01-law-ethics, 02-methodology]
+  - id: sec-09-ethical-hacking.u2
+    title: Techniques, defence and delivery
+    lessons: [03-techniques-defence, 04-reporting-ctf]
+assessments:
+  - id: sec-09-ethical-hacking.quiz
+    title: "Stage 9 quiz: ethical hacking"
+    kind: quiz
+    passMark: 0.7
+    description: Eight questions across the whole course.
+    sections:
+      - id: sec-09-ethical-hacking.quiz.s1
+        title: Ethical hacking
+        questions:
+          - id: sec09.quiz.authorisation
+            type: choice
+            skill: recognize
+            topics: [sec09.legal]
+            prompt: What is the single thing that separates ethical hacking from a crime?
+            options:
+              - { id: a, text: "Explicit, written, scoped authorisation from the system owner", explanation: "Correct: the same action is lawful only with authorisation and scope." }
+              - { id: b, text: "Using a special tool", explanation: "Tools are neutral; authorisation is what matters." }
+              - { id: c, text: "Good intentions alone", explanation: "Intent without authorisation is still illegal." }
+            correct: [a]
+          - id: sec09.quiz.rules-of-engagement
+            type: choice
+            skill: recall
+            topics: [sec09.legal]
+            prompt: What does the "rules of engagement" document define for a penetration test?
+            options:
+              - { id: a, text: "Scope, timing, methods allowed/forbidden, contacts and handling of sensitive findings", explanation: "Correct." }
+              - { id: b, text: "The tester's salary", explanation: "Not a security document." }
+              - { id: c, text: "The colour of the report", explanation: "No." }
+            correct: [a]
+          - id: sec09.quiz.phases
+            type: choice
+            skill: recall
+            topics: [sec09.methodology]
+            prompt: Which ordering matches a typical penetration-test methodology?
+            options:
+              - { id: a, text: "Reconnaissance → scanning/enumeration → gaining access → maintaining access → covering tracks/analysis → reporting", explanation: "Correct (as taught by CEH/PenTest+)." }
+              - { id: b, text: "Reporting → recon → nothing else", explanation: "Report comes at the end." }
+              - { id: c, text: "Exploitation first, planning never", explanation: "Not a methodology." }
+            correct: [a]
+          - id: sec09.quiz.recon-type
+            type: choice
+            skill: recognize
+            topics: [sec09.methodology]
+            prompt: Gathering information from public sources without touching the target (OSINT, WHOIS, public records) is…
+            options:
+              - { id: a, text: "passive reconnaissance", explanation: "Correct: no interaction with the target." }
+              - { id: b, text: "active exploitation", explanation: "No exploitation occurs." }
+              - { id: c, text: "privilege escalation", explanation: "A later, post-access concept." }
+            correct: [a]
+          - id: sec09.quiz.privesc-defence
+            type: choice
+            skill: apply
+            topics: [sec09.techniques]
+            prompt: Testing finds that a normal user can escalate to admin via a misconfigured service. What is the defender's fix?
+            options:
+              - { id: a, text: "Correct the configuration and apply least privilege so the service cannot be abused", explanation: "Correct: the finding drives a concrete hardening fix." }
+              - { id: b, text: "Hide the service name", explanation: "Obscurity does not fix the misconfiguration." }
+              - { id: c, text: "Ignore it; it needs admin already", explanation: "It starts from a normal user — a real escalation." }
+            correct: [a]
+          - id: sec09.quiz.password-defence
+            type: choice
+            skill: apply
+            topics: [sec09.techniques]
+            prompt: A test shows several accounts had weak, guessable passwords. Which defences address this? (best answer)
+            options:
+              - { id: a, text: "Slow salted password hashing, MFA, length-based policy, breached-password screening and lockout/rate limiting", explanation: "Correct: the layered defences from the Cryptography course." }
+              - { id: b, text: "A faster server", explanation: "Irrelevant to credential strength." }
+              - { id: c, text: "Emailing passwords to users", explanation: "Insecure and unrelated." }
+            correct: [a]
+          - id: sec09.quiz.scope-creep
+            type: choice
+            skill: apply
+            topics: [sec09.legal]
+            prompt: During a test you discover a vulnerable system that is out of the agreed scope. What do you do?
+            options:
+              - { id: a, text: "Stop, do not touch it, and report it to the client contact to decide — never exceed scope", explanation: "Correct: scope is a legal boundary." }
+              - { id: b, text: "Exploit it anyway to be thorough", explanation: "Out of scope means no authorisation — unlawful." }
+              - { id: c, text: "Tell no one", explanation: "It should be reported through the agreed channel." }
+            correct: [a]
+          - id: sec09.quiz.report-value
+            type: choice
+            skill: recognize
+            topics: [sec09.reporting]
+            prompt: What makes a penetration-test report valuable to the client?
+            options:
+              - { id: a, text: "Clear, prioritised, reproducible findings with business risk and concrete remediation", explanation: "Correct: the report is the deliverable, not the exploitation." }
+              - { id: b, text: "A long list of tools run", explanation: "Tool output is not analysis." }
+              - { id: c, text: "Proof the tester is clever", explanation: "The client needs actionable risk reduction." }
+            correct: [a]

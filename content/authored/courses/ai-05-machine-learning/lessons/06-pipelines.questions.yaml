@@ -1,0 +1,83 @@
+- id: ai05.pipelines.param-name
+  type: short
+  skill: apply
+  topics: [ai05.pipelines]
+  prompt: "In a Pipeline whose classifier step is named `clf`, how is its `C` parameter named in a param grid?"
+  accepted: [clf__C]
+  match: { mode: exact, caseSensitive: true }
+
+- id: ai05.pipelines.unknown
+  type: choice
+  skill: apply
+  topics: [ai05.pipelines]
+  prompt: "A new state never seen in training arrives at prediction time. What prevents a crash?"
+  options:
+    - { id: a, text: "`OneHotEncoder(handle_unknown='ignore')`", explanation: "Correct: unseen categories become all zeros." }
+    - { id: b, text: "`StandardScaler()`", explanation: "Scales numbers; does not encode categories." }
+    - { id: c, text: "Nothing can", explanation: "The encoder option handles it." }
+  correct: [a]
+
+- id: ai05.pipelines.why
+  type: long
+  skill: explain
+  topics: [ai05.pipelines]
+  prompt: Explain two problems that putting preprocessing inside a scikit-learn Pipeline solves.
+  minWords: 30
+  rubric:
+    - { id: leakage, label: "Prevents leakage: preprocessing statistics learned from training data (per CV fold) only", keywords: [["leak"], ["train", "fold"]] }
+    - { id: consistency, label: "The same transformations are applied at prediction time (training/serving consistency)", keywords: [["same", "consistent", "prediction time", "serving", "production"]] }
+    - { id: one-object, label: "One object to tune, save and deploy", keywords: [["one object", "save", "deploy", "grid", "single"]] }
+  modelAnswer: >-
+    First, leakage: when the imputer, scaler and encoder are fitted inside the pipeline, they learn only from the
+    training data, and in cross-validation from each training fold, so validation data never influences them.
+    Second, consistency: the exact same fitted transformations are applied when predicting, so training and serving
+    cannot drift apart. The pipeline is also a single object to grid-search, save and deploy.
+
+- id: ai05.pipelines.ordinal
+  type: choice
+  skill: apply
+  topics: [ai05.pipelines]
+  prompt: "A `size` column holds small, medium, large. Which encoder keeps their order?"
+  options:
+    - { id: a, text: "`OrdinalEncoder(categories=[['small', 'medium', 'large']])`", explanation: "Correct: you specify the order explicitly." }
+    - { id: b, text: "`OneHotEncoder()`", explanation: "Treats them as unordered." }
+    - { id: c, text: "`OrdinalEncoder()` with defaults", explanation: "The default order is alphabetical: large < medium < small." }
+  correct: [a]
+
+- id: ai05.pipelines.build
+  type: code
+  skill: apply
+  topics: [ai05.pipelines]
+  language: python
+  packages: [scikit-learn, pandas]
+  prompt: >-
+    Write `build_model(numeric, categorical)` returning an unfitted Pipeline: a ColumnTransformer that median-imputes
+    and scales the `numeric` columns and most-frequent-imputes and one-hot encodes (ignoring unknown categories) the
+    `categorical` columns, followed by `LogisticRegression(max_iter=1000)`. The tests fit it on a small DataFrame with
+    missing values.
+  starterCode: |
+    from sklearn.compose import ColumnTransformer
+    from sklearn.impute import SimpleImputer
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.pipeline import Pipeline
+    from sklearn.preprocessing import OneHotEncoder, StandardScaler
+
+    def build_model(numeric, categorical):
+        ...
+  tests:
+    - { kind: assert, name: "fits with NaN and predicts unseen category", code: "import pandas as pd, numpy as np\nX = pd.DataFrame({'age': [20, 30, np.nan, 50, 60, 25], 'plan': ['a', 'b', 'a', None, 'b', 'a']})\ny = [0, 1, 0, 1, 1, 0]\nm = build_model(['age'], ['plan']).fit(X, y)\npred = m.predict(pd.DataFrame({'age': [55], 'plan': ['zzz']}))\nassert len(pred) == 1" }
+    - { kind: assert, name: "is a pipeline", code: "from sklearn.pipeline import Pipeline\nassert isinstance(build_model(['a'], ['b']), Pipeline)" }
+  solution: |
+    from sklearn.compose import ColumnTransformer
+    from sklearn.impute import SimpleImputer
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.pipeline import Pipeline
+    from sklearn.preprocessing import OneHotEncoder, StandardScaler
+
+    def build_model(numeric, categorical):
+        preprocess = ColumnTransformer([
+            ('num', Pipeline([('impute', SimpleImputer(strategy='median')), ('scale', StandardScaler())]), numeric),
+            ('cat', Pipeline([('impute', SimpleImputer(strategy='most_frequent')),
+                              ('onehot', OneHotEncoder(handle_unknown='ignore'))]), categorical),
+        ])
+        return Pipeline([('prep', preprocess), ('clf', LogisticRegression(max_iter=1000))])

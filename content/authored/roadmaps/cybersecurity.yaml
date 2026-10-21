@@ -28,15 +28,17 @@ stages:
     title: Security principles and risk
     summary: The CIA triad, threats and vulnerabilities, access control, risk management and frameworks.
     courseIds: [sec-04-principles]
-    certificationIds: [isc2-certified-in-cybersecurity]
+    certificationIds: [isc2-certified-in-cybersecurity, isc2-sscp]
   - id: stage-05
     title: Cryptography and identity
     summary: Hashing, symmetric and public-key encryption, TLS, certificates, authentication and passwords.
     courseIds: [sec-05-cryptography]
+    certificationIds: [ms-sc-900]
   - id: stage-06
     title: Web application security
     summary: Injection, XSS, CSRF, broken access control and the OWASP Top 10, with safe test targets.
     courseIds: [sec-06-web-security]
+    certificationIds: [ec-council-ceh]
   - id: stage-07
     title: Network and system defence
     summary: Firewalls, hardening, segmentation, patching, logging and monitoring with a SIEM.
@@ -53,6 +55,7 @@ stages:
     title: Incident response and threat analysis
     summary: Detection, triage, containment, forensics basics, malware analysis concepts and reporting.
     courseIds: [sec-08-incident-response]
+    certificationIds: [comptia-cysa-plus, cisco-cyberops-associate]
     foundations:
       - courseId: linux-fundamentals
         relevance: strongly-recommended
@@ -65,6 +68,7 @@ stages:
     title: Ethical hacking and capstone
     summary: Reconnaissance, scanning and exploitation methods on authorised targets, and a written assessment.
     courseIds: [sec-09-ethical-hacking]
+    certificationIds: [ec-council-ceh, comptia-pentest-plus]
     foundations:
       - courseId: linux-fundamentals
         relevance: strongly-recommended

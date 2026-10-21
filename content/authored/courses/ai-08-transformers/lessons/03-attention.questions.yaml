@@ -1,0 +1,78 @@
+- id: ai08.attention.qkv
+  type: cloze
+  skill: recall
+  topics: [ai08.attention]
+  prompt: Name the three projections in attention.
+  text: "A token's [[1]] is matched against every [[2]] to get scores, which weight the [[3]] that are blended into the output."
+  blanks:
+    - { id: "1", accepted: [query] }
+    - { id: "2", accepted: [key] }
+    - { id: "3", accepted: [values, value] }
+
+- id: ai08.attention.scale
+  type: choice
+  skill: recognize
+  topics: [ai08.attention]
+  prompt: "Why divide the attention scores by √dₖ before softmax?"
+  options:
+    - { id: a, text: "To stop large dot products making the softmax too peaky and gradients unstable", explanation: "Correct: the 'scaled' in scaled dot-product attention." }
+    - { id: b, text: "To normalise the vocabulary size", explanation: "Unrelated." }
+    - { id: c, text: "To encrypt the scores", explanation: "No." }
+  correct: [a]
+
+- id: ai08.attention.causal
+  type: choice
+  skill: apply
+  topics: [ai08.attention]
+  prompt: In a generative LLM, why is attention usually causal (masked)?
+  options:
+    - { id: a, text: "So a token can attend only to earlier tokens, letting the model predict the next token without seeing the future", explanation: "Correct." }
+    - { id: b, text: "To make it faster to type", explanation: "Not the reason." }
+    - { id: c, text: "Because future tokens do not exist in language", explanation: "During training they do; the mask hides them." }
+  correct: [a]
+
+- id: ai08.attention.multihead
+  type: choice
+  skill: recognize
+  topics: [ai08.attention]
+  prompt: What do multiple attention heads provide?
+  options:
+    - { id: a, text: "Several parallel attention patterns, each learning different relationships, giving a richer representation", explanation: "Correct." }
+    - { id: b, text: "A backup in case one head fails", explanation: "Not redundancy; they learn different things." }
+    - { id: c, text: "Faster tokenization", explanation: "Unrelated." }
+  correct: [a]
+
+- id: ai08.attention.code
+  type: code
+  skill: apply
+  topics: [ai08.attention]
+  language: python
+  packages: [numpy]
+  prompt: >-
+    Implement single-head scaled dot-product attention. Write `softmax(x)` (row-wise, numerically stable) and
+    `attention(Q, K, V)` returning `softmax(Q @ K.T / sqrt(d_k)) @ V`, where Q, K, V are 2-D NumPy arrays and d_k is
+    the number of columns of K.
+  starterCode: |
+    import numpy as np
+
+    def softmax(x):
+        ...
+
+    def attention(Q, K, V):
+        ...
+  tests:
+    - { kind: assert, name: "softmax rows sum to 1", code: "import numpy as np\ns = softmax(np.array([[1.0, 2.0, 3.0], [1.0, 1.0, 1.0]]))\nassert np.allclose(s.sum(axis=1), 1)" }
+    - { kind: assert, name: "attention shape", code: "import numpy as np\nrng = np.random.default_rng(0)\nQ, K, V = rng.normal(size=(3, 4)), rng.normal(size=(5, 4)), rng.normal(size=(5, 2))\nassert attention(Q, K, V).shape == (3, 2)" }
+    - { kind: assert, name: "identity-ish: one dominant key", code: "import numpy as np\nQ = np.array([[10.0, 0.0]])\nK = np.array([[10.0, 0.0], [0.0, 10.0]])\nV = np.array([[1.0, 1.0], [9.0, 9.0]])\nout = attention(Q, K, V)\nassert out[0, 0] < 2.0  # attends mostly to the first value" }
+  solution: |
+    import numpy as np
+
+    def softmax(x):
+        x = x - x.max(axis=-1, keepdims=True)
+        e = np.exp(x)
+        return e / e.sum(axis=-1, keepdims=True)
+
+    def attention(Q, K, V):
+        d_k = K.shape[1]
+        scores = Q @ K.T / np.sqrt(d_k)
+        return softmax(scores) @ V

@@ -1,0 +1,42 @@
+- id: sec07.network.stateful
+  type: choice
+  skill: recognize
+  topics: [sec07.network]
+  prompt: What does a stateful firewall track?
+  options:
+    - { id: a, text: "Active connections, so replies to allowed requests are permitted automatically", explanation: "Correct." }
+    - { id: b, text: "Each user's password", explanation: "No." }
+    - { id: c, text: "The weather", explanation: "No." }
+  correct: [a]
+
+- id: sec07.network.dmz
+  type: choice
+  skill: apply
+  topics: [sec07.network]
+  prompt: Why place internet-facing servers in a DMZ?
+  options:
+    - { id: a, text: "So a compromise of a public server does not give direct access to the internal network", explanation: "Correct: another boundary to cross." }
+    - { id: b, text: "To make them load faster", explanation: "Not the reason." }
+    - { id: c, text: "To avoid needing a firewall", explanation: "The DMZ is created with firewall rules." }
+  correct: [a]
+
+- id: sec07.network.outbound
+  type: choice
+  skill: apply
+  topics: [sec07.network]
+  prompt: Why filter and log outbound traffic, not just inbound?
+  options:
+    - { id: a, text: "To catch data exfiltration and command-and-control connections leaving the network", explanation: "Correct." }
+    - { id: b, text: "Outbound traffic cannot be attacked", explanation: "Not the point." }
+    - { id: c, text: "It is required to receive email", explanation: "Unrelated." }
+  correct: [a]
+
+- id: sec07.network.ids-ips
+  type: cloze
+  skill: recall
+  topics: [sec07.network]
+  prompt: Distinguish the two.
+  text: "An [[1]] detects and alerts on suspicious traffic; an [[2]] sits inline and can also block it."
+  blanks:
+    - { id: "1", accepted: [IDS, ids] }
+    - { id: "2", accepted: [IPS, ips] }

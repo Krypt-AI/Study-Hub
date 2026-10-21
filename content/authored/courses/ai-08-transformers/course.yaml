@@ -1,0 +1,115 @@
+id: ai-08-transformers
+title: Transformers, Tokenization, Embeddings and LLM Fundamentals
+subtitle: AI Engineering · Stage 8
+description: >-
+  How modern language models work under the hood: turning text into tokens and vectors, the attention mechanism and
+  the transformer architecture, pretraining and fine-tuning, and what LLMs can and cannot do. Exercises implement
+  tokenization, embeddings and attention maths in NumPy so the ideas are concrete.
+category: ai-engineering
+subject: deep-learning
+level: Stage 8
+difficulty: intermediate
+tags: [transformers, tokenization, embeddings, attention, llm]
+prerequisites: [ai-03-math, ai-07-deep-learning]
+certifications: [nvidia-genai-llm-associate, google-genai-leader, aws-ai-practitioner, hf-agents-course]
+estimatedHours: 16
+topics:
+  - { id: ai08.tokens, title: Tokenization }
+  - { id: ai08.embeddings, title: Embeddings }
+  - { id: ai08.attention, title: Attention }
+  - { id: ai08.transformer, title: The transformer }
+  - { id: ai08.llm, title: LLM behaviour }
+units:
+  - id: ai-08-transformers.u1
+    title: From text to vectors
+    lessons: [01-tokenization, 02-embeddings]
+  - id: ai-08-transformers.u2
+    title: Attention and the transformer
+    lessons: [03-attention, 04-transformer-architecture, 05-llm-behaviour]
+assessments:
+  - id: ai-08-transformers.quiz
+    title: "Stage 8 quiz: transformers and LLMs"
+    kind: quiz
+    passMark: 0.7
+    description: Eight questions across the whole course.
+    sections:
+      - id: ai-08-transformers.quiz.s1
+        title: Transformers and LLMs
+        questions:
+          - id: ai08.quiz.token
+            type: choice
+            skill: recognize
+            topics: [ai08.tokens]
+            prompt: What is a token, as an LLM uses the word?
+            options:
+              - { id: a, text: "A chunk of text (often a subword) mapped to an integer id the model processes", explanation: "Correct." }
+              - { id: b, text: "A single English word, always", explanation: "Tokens are usually subwords, not whole words." }
+              - { id: c, text: "An API authentication secret", explanation: "Different meaning of the word." }
+            correct: [a]
+          - id: ai08.quiz.embedding
+            type: choice
+            skill: recognize
+            topics: [ai08.embeddings]
+            prompt: What does an embedding represent?
+            options:
+              - { id: a, text: "A piece of text as a dense vector whose geometry captures meaning (similar meanings are nearby)", explanation: "Correct." }
+              - { id: b, text: "The text compressed with zip", explanation: "Not a lossless compression." }
+              - { id: c, text: "The text's SHA-256 hash", explanation: "A hash carries no semantic geometry." }
+            correct: [a]
+          - id: ai08.quiz.cosine
+            type: choice
+            skill: apply
+            topics: [ai08.embeddings]
+            prompt: Which metric is standard for comparing embedding vectors in search?
+            options:
+              - { id: a, text: "Cosine similarity", explanation: "Correct: direction, not magnitude." }
+              - { id: b, text: "Edit distance", explanation: "That compares strings, not vectors." }
+              - { id: c, text: "File size difference", explanation: "Meaningless here." }
+            correct: [a]
+          - id: ai08.quiz.attention
+            type: choice
+            skill: recognize
+            topics: [ai08.attention]
+            prompt: What does self-attention let each token do?
+            options:
+              - { id: a, text: "Weigh and incorporate information from other tokens in the sequence based on relevance", explanation: "Correct." }
+              - { id: b, text: "Ignore all other tokens", explanation: "The opposite." }
+              - { id: c, text: "Encrypt the sequence", explanation: "Unrelated." }
+            correct: [a]
+          - id: ai08.quiz.qkv
+            type: short
+            skill: recall
+            topics: [ai08.attention]
+            prompt: "Attention computes scores from queries and which other vector, then uses them to weight the values? (one word)"
+            accepted: [keys, key]
+            match: { mode: text }
+          - id: ai08.quiz.parallel
+            type: choice
+            skill: recognize
+            topics: [ai08.transformer]
+            prompt: Why did transformers largely replace RNNs for language?
+            options:
+              - { id: a, text: "Attention processes a whole sequence in parallel and models long-range dependencies well", explanation: "Correct." }
+              - { id: b, text: "They use no maths", explanation: "They are heavily mathematical." }
+              - { id: c, text: "They need no training data", explanation: "They need vast data." }
+            correct: [a]
+          - id: ai08.quiz.pretrain
+            type: choice
+            skill: recognize
+            topics: [ai08.llm]
+            prompt: What does a base LLM learn during pretraining?
+            options:
+              - { id: a, text: "To predict the next token over huge text corpora, absorbing language patterns and knowledge", explanation: "Correct." }
+              - { id: b, text: "To follow instructions politely", explanation: "That comes from later fine-tuning/alignment." }
+              - { id: c, text: "To browse the live internet", explanation: "Base models do not browse." }
+            correct: [a]
+          - id: ai08.quiz.context
+            type: choice
+            skill: apply
+            topics: [ai08.llm]
+            prompt: An LLM "forgets" text from very early in a long document. Why?
+            options:
+              - { id: a, text: "It can only attend within its finite context window; content beyond it is not available", explanation: "Correct." }
+              - { id: b, text: "Its hard drive is full", explanation: "LLMs do not store the document on disk during inference like that." }
+              - { id: c, text: "It deletes old tokens to save money", explanation: "The limit is the context window, not a cost deletion." }
+            correct: [a]

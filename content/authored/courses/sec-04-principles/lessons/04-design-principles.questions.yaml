@@ -1,0 +1,43 @@
+- id: sec04.principles.fail-safe
+  type: choice
+  skill: apply
+  topics: [sec04.principles]
+  prompt: A network filter crashes. Following fail-safe defaults, what should happen to traffic?
+  options:
+    - { id: a, text: "It should be denied until the filter is restored", explanation: "Correct: fail closed, deny by default." }
+    - { id: b, text: "It should all be allowed so work continues", explanation: "That fails open — insecure." }
+    - { id: c, text: "It should be encrypted", explanation: "Not what fail-safe defaults addresses." }
+  correct: [a]
+
+- id: sec04.principles.obscurity
+  type: choice
+  skill: recognize
+  topics: [sec04.principles]
+  prompt: "\"Our system is safe because no one knows how it works.\" Which principle does this violate?"
+  options:
+    - { id: a, text: "Open design — security should not depend on secrecy of the design, only of keys", explanation: "Correct: security through obscurity is fragile." }
+    - { id: b, text: "Availability", explanation: "Not a CIA goal issue." }
+    - { id: c, text: "Separation of duties", explanation: "Unrelated principle." }
+  correct: [a]
+
+- id: sec04.principles.mediation
+  type: choice
+  skill: apply
+  topics: [sec04.principles]
+  prompt: An app checks a user's permission at login and then never again for the session. Which principle is broken?
+  options:
+    - { id: a, text: "Complete mediation — authorisation should be checked on every access", explanation: "Correct: this is how broken access control creeps in." }
+    - { id: b, text: "Economy of mechanism", explanation: "That is about simplicity." }
+    - { id: c, text: "Psychological acceptability", explanation: "That is about usability." }
+  correct: [a]
+
+- id: sec04.principles.zero-trust
+  type: choice
+  skill: recognize
+  topics: [sec04.principles]
+  prompt: Zero trust replaces "trusted inside the perimeter" with what?
+  options:
+    - { id: a, text: "\"Never trust, always verify\": authenticate and authorise every request by identity, device and context", explanation: "Correct." }
+    - { id: b, text: "\"Trust everything on the VPN\"", explanation: "That is the old perimeter model." }
+    - { id: c, text: "\"Disable all authentication\"", explanation: "The opposite of zero trust." }
+  correct: [a]

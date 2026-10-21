@@ -1,0 +1,48 @@
+- id: sec06.access.idor-fix
+  type: choice
+  skill: apply
+  topics: [sec06.access]
+  prompt: "`GET /api/orders/1002` returns an order belonging to another user. What is the correct fix?"
+  options:
+    - { id: a, text: "On the server, verify the logged-in user owns order 1002 before returning it.", explanation: "Correct: enforce ownership on every request." }
+    - { id: b, text: "Make the order ids longer and random.", explanation: "Helps a little (defence in depth) but is not the control; a leaked id still works." }
+    - { id: c, text: "Hide the order link in the UI.", explanation: "The endpoint is still callable directly." }
+  correct: [a]
+
+- id: sec06.access.function-level
+  type: choice
+  skill: apply
+  topics: [sec06.access]
+  prompt: Admin buttons are hidden for normal users, but `POST /admin/deleteUser` still works when called directly. What was missing?
+  options:
+    - { id: a, text: "A server-side authorisation check on the admin endpoint itself", explanation: "Correct: hiding the button is not access control." }
+    - { id: b, text: "HTTPS", explanation: "Transport security does not authorise actions." }
+    - { id: c, text: "A CAPTCHA", explanation: "Does not enforce authorisation." }
+  correct: [a]
+
+- id: sec06.access.default
+  type: choice
+  skill: recognize
+  topics: [sec06.access]
+  prompt: Which principle should the default access decision follow?
+  options:
+    - { id: a, text: "Deny by default; grant only what a rule explicitly allows", explanation: "Correct." }
+    - { id: b, text: "Allow by default; block known-bad", explanation: "Fails open; the opposite of fail-safe." }
+    - { id: c, text: "Decide based on the client-sent role field", explanation: "That is attacker-controlled." }
+  correct: [a]
+
+- id: sec06.access.root-cause
+  type: long
+  skill: explain
+  topics: [sec06.access]
+  prompt: Explain the common root cause behind IDOR, forced browsing and missing function-level checks, and the general defence.
+  minWords: 30
+  rubric:
+    - { id: cause, label: "Authorisation is decided by client input/UI rather than enforced on the server", keywords: [["server", "client", "trust", "omission", "forgot"]] }
+    - { id: fix, label: "Enforce authorisation server-side on every request, checking ownership, deny by default", keywords: [["every request", "ownership", "server-side", "deny by default", "complete mediation"]] }
+  modelAnswer: >-
+    All three come from the server deciding access based on what the client sends or sees — a guessable id, a hidden
+    button, a role field — instead of independently enforcing authorisation itself. The developer built the feature
+    and omitted the check. The general defence is to enforce authorisation on the server for every request, denying by
+    default and verifying that the authenticated user is entitled to the specific object or function requested, with
+    that logic centralised so it cannot be forgotten per endpoint.

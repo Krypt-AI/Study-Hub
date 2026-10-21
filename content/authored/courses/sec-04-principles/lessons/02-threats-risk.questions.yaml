@@ -1,0 +1,54 @@
+- id: sec04.risk.terms
+  type: cloze
+  skill: recall
+  topics: [sec04.risk]
+  prompt: Place the right term in each gap.
+  text: "A weakness is a [[1]]; something that could exploit it is a [[2]]; the path it uses is a [[3]]."
+  blanks:
+    - { id: "1", accepted: [vulnerability] }
+    - { id: "2", accepted: [threat] }
+    - { id: "3", accepted: ["threat vector", "vector", "attack vector"] }
+
+- id: sec04.risk.low-risk
+  type: choice
+  skill: apply
+  topics: [sec04.risk]
+  prompt: A serious vulnerability exists, but the system is isolated, holds nothing valuable, and no threat targets it. The risk is…
+  options:
+    - { id: a, text: "low, because impact and likely threat are both low even though the vulnerability is serious", explanation: "Correct: risk needs threat, vulnerability and impact together." }
+    - { id: b, text: "high, because the vulnerability is serious", explanation: "A vulnerability alone is not risk." }
+    - { id: c, text: "undefinable", explanation: "It can be assessed as low." }
+  correct: [a]
+
+- id: sec04.risk.treatment
+  type: choice
+  skill: apply
+  topics: [sec04.risk]
+  prompt: A company buys cyber-insurance to cover possible breach costs. Which risk treatment is that?
+  options:
+    - { id: a, text: "Transfer", explanation: "Correct: the financial loss is shifted to the insurer." }
+    - { id: b, text: "Avoid", explanation: "They have not stopped the risky activity." }
+    - { id: c, text: "Mitigate", explanation: "Insurance does not reduce likelihood or impact of the event itself." }
+  correct: [a]
+
+- id: sec04.risk.attack-surface
+  type: choice
+  skill: apply
+  topics: [sec04.risk]
+  prompt: Which action most directly reduces the attack surface?
+  options:
+    - { id: a, text: "Disabling and removing unused services and accounts", explanation: "Correct: fewer points to attack." }
+    - { id: b, text: "Buying a bigger server", explanation: "Capacity, not surface." }
+    - { id: c, text: "Increasing the screen brightness", explanation: "Unrelated." }
+  correct: [a]
+
+- id: sec04.risk.attack
+  type: choice
+  skill: recognize
+  topics: [sec04.risk]
+  prompt: What is MITRE ATT&CK?
+  options:
+    - { id: a, text: "A public knowledge base of real-world attacker tactics and techniques, used as a shared defensive language", explanation: "Correct." }
+    - { id: b, text: "An antivirus product", explanation: "It is a framework, not a product." }
+    - { id: c, text: "A password cracker", explanation: "No." }
+  correct: [a]

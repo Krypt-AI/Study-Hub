@@ -1,0 +1,32 @@
+- id: ai15.setup.extra
+  type: choice
+  skill: recall
+  topics: [ai15.setup]
+  prompt: "What does the bracket part in `pip install \"langchain[anthropic]\"` do?"
+  options:
+    - { id: a, text: "Installs the provider integration (extra) for that model family", explanation: "Correct." }
+    - { id: b, text: "Sets the temperature", explanation: "No." }
+    - { id: c, text: "Downloads the model weights", explanation: "No; it installs the integration package." }
+  correct: [a]
+
+- id: ai15.setup.tracing
+  type: choice
+  skill: apply
+  topics: [ai15.setup]
+  prompt: Which environment variables turn on LangSmith tracing?
+  options:
+    - { id: a, text: "`LANGSMITH_TRACING=true` and `LANGSMITH_API_KEY=...`", explanation: "Correct." }
+    - { id: b, text: "`DEBUG=1` only", explanation: "Not LangSmith." }
+    - { id: c, text: "None; tracing cannot be configured", explanation: "It can, via env vars." }
+  correct: [a]
+
+- id: ai15.setup.lcae
+  type: choice
+  skill: recognize
+  topics: [ai15.setup]
+  prompt: The LCAE exam is organised around which lifecycle?
+  options:
+    - { id: a, text: "Building, testing, deploying and monitoring agents", explanation: "Correct — the agent development lifecycle." }
+    - { id: b, text: "Only writing prompts", explanation: "Broader than that." }
+    - { id: c, text: "Training base models", explanation: "Not its focus." }
+  correct: [a]

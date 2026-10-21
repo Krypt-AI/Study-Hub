@@ -1,0 +1,113 @@
+id: sec-01-it-fundamentals
+title: IT Fundamentals and Operating Systems
+subtitle: Cybersecurity · Stage 1
+description: >-
+  The ground floor of security work: how computers, operating systems, files, users and processes work on Windows
+  and Linux, and how to build the safe virtual lab the later Cybersecurity courses use. You cannot defend a system
+  you do not understand.
+category: it
+subject: cybersecurity
+level: Stage 1
+difficulty: beginner
+tags: [it-fundamentals, operating-systems, windows, linux, virtualization]
+estimatedHours: 12
+topics:
+  - { id: sec01.setup, title: "Setup: a safe virtual lab" }
+  - { id: sec01.hardware, title: Hardware, firmware and boot }
+  - { id: sec01.os, title: Operating systems }
+  - { id: sec01.files, title: Files, users and permissions }
+  - { id: sec01.processes, title: Processes, memory and the CLI }
+units:
+  - id: sec-01-it-fundamentals.u1
+    title: Machines and operating systems
+    lessons: [00-setup, 01-hardware-boot, 02-operating-systems]
+  - id: sec-01-it-fundamentals.u2
+    title: How systems are organised
+    lessons: [03-files-users-permissions, 04-processes-cli]
+assessments:
+  - id: sec-01-it-fundamentals.quiz
+    title: "Stage 1 quiz: IT fundamentals"
+    kind: quiz
+    passMark: 0.7
+    description: Eight questions across the whole course.
+    sections:
+      - id: sec-01-it-fundamentals.quiz.s1
+        title: IT fundamentals
+        questions:
+          - id: sec01.quiz.vm-snapshot
+            type: choice
+            skill: apply
+            topics: [sec01.setup]
+            prompt: Why take a VM snapshot before testing something risky in your lab?
+            options:
+              - { id: a, text: "You can roll the machine back to a known-good state in seconds.", explanation: "Correct: snapshots make a lab safe to break." }
+              - { id: b, text: "It makes the VM run faster.", explanation: "Snapshots do not speed up a VM." }
+              - { id: c, text: "It encrypts the disk.", explanation: "Unrelated to snapshots." }
+            correct: [a]
+          - id: sec01.quiz.ram-volatile
+            type: choice
+            skill: recognize
+            topics: [sec01.hardware]
+            prompt: Which statement about RAM is true?
+            options:
+              - { id: a, text: "It is volatile: its contents are lost when power is removed.", explanation: "Correct, which is why memory forensics must capture it live." }
+              - { id: b, text: "It keeps data after shutdown, like a disk.", explanation: "That describes non-volatile storage." }
+              - { id: c, text: "It stores the operating system permanently.", explanation: "The OS lives on persistent storage and is loaded into RAM." }
+            correct: [a]
+          - id: sec01.quiz.kernel-user
+            type: choice
+            skill: recognize
+            topics: [sec01.os]
+            prompt: What is the difference between kernel mode and user mode?
+            options:
+              - { id: a, text: "Kernel mode has full hardware access; user-mode programs must ask the kernel via system calls.", explanation: "Correct: the privilege boundary is central to OS security." }
+              - { id: b, text: "Kernel mode is for graphics only.", explanation: "No." }
+              - { id: c, text: "User mode is faster because it skips security checks.", explanation: "User mode is the restricted mode." }
+            correct: [a]
+          - id: sec01.quiz.least-priv
+            type: choice
+            skill: apply
+            topics: [sec01.files]
+            prompt: Running day-to-day as a standard user rather than Administrator/root is an example of…
+            options:
+              - { id: a, text: "least privilege", explanation: "Correct: limit the damage a mistake or malware can do." }
+              - { id: b, text: "defence in depth", explanation: "Related, but this specific practice is least privilege." }
+              - { id: c, text: "obscurity", explanation: "No." }
+            correct: [a]
+          - id: sec01.quiz.chmod
+            type: short
+            skill: apply
+            topics: [sec01.files]
+            prompt: "In Linux octal permissions, which three-digit value means owner read/write/execute and group and others read/execute only?"
+            accepted: ["755"]
+            match: { mode: exact }
+          - id: sec01.quiz.process
+            type: choice
+            skill: recognize
+            topics: [sec01.processes]
+            prompt: What is a process?
+            options:
+              - { id: a, text: "A running instance of a program, with its own memory and one or more threads.", explanation: "Correct." }
+              - { id: b, text: "A file on disk that has not been opened.", explanation: "That is just a file; a process is it running." }
+              - { id: c, text: "A network cable.", explanation: "No." }
+            correct: [a]
+          - id: sec01.quiz.path
+            type: choice
+            skill: apply
+            topics: [sec01.processes]
+            prompt: "On Linux, which command shows the full path of the `python3` executable that would run?"
+            options:
+              - { id: a, text: "`which python3`", explanation: "Correct." }
+              - { id: b, text: "`ls python3`", explanation: "Lists a file by that name in the current directory only." }
+              - { id: c, text: "`cat python3`", explanation: "Prints file contents." }
+            correct: [a]
+          - id: sec01.quiz.logs
+            type: choice
+            skill: recognize
+            topics: [sec01.os]
+            prompt: Where does a Linux system typically record service and authentication events?
+            options:
+              - { id: a, text: "The system journal / `/var/log` (viewed with `journalctl` or by reading log files)", explanation: "Correct: logs are the analyst's primary evidence." }
+              - { id: b, text: "In RAM only, never on disk", explanation: "Logs are persisted so they survive reboots." }
+              - { id: c, text: "In the BIOS", explanation: "No." }
+            correct: [a]

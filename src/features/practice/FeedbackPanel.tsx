@@ -47,7 +47,7 @@ export interface FeedbackPanelProps {
 export function FeedbackPanel({ question, feedback, run, pendingSelfReview, onConfirmSelfReview, onAcceptAsCorrect }: FeedbackPanelProps) {
   const imageOnlyChoice = isNumberedChoice(question);
   return (
-    <section aria-live="polite" aria-label="Feedback" className="flex flex-col gap-4 border-t border-print-line pt-4">
+    <section aria-live="polite" aria-label="Feedback" className="flex flex-col gap-4 border-t border-rule pt-4">
       <header className="flex items-center gap-3">
         <Bubble state={pendingSelfReview ? 'current' : verdictBubble(feedback.verdict)} size="lg" animate />
         <h3 className={cn('text-xl font-semibold', feedback.verdict === 'correct' ? 'text-correct' : feedback.verdict === 'almost' ? 'text-slip' : feedback.verdict === 'self-review' ? 'text-ink' : 'text-wrong')}>

@@ -1,0 +1,43 @@
+- id: ai15.langsmith.trace
+  type: choice
+  skill: apply
+  topics: [ai15.langsmith]
+  prompt: An agent gives a wrong final answer after several steps. What in LangSmith helps you find why?
+  options:
+    - { id: a, text: "The trace — the full tree of model and tool calls with inputs, outputs, tokens and latency", explanation: "Correct." }
+    - { id: b, text: "Raising the temperature", explanation: "Not a debugging tool." }
+    - { id: c, text: "Deleting the dataset", explanation: "No." }
+  correct: [a]
+
+- id: ai15.langsmith.evaluate
+  type: cloze
+  skill: recall
+  topics: [ai15.langsmith]
+  prompt: The pieces of a LangSmith evaluation.
+  text: "Run a [[1]] (the agent) over a [[2]] of examples, scored by [[3]] (including LLM-as-judge), and compare experiments."
+  blanks:
+    - { id: "1", accepted: [target] }
+    - { id: "2", accepted: [dataset] }
+    - { id: "3", accepted: [evaluators, evaluator] }
+
+- id: ai15.langsmith.gate
+  type: choice
+  skill: apply
+  topics: [ai15.langsmith]
+  prompt: How should the evaluation suite be used at deploy time?
+  options:
+    - { id: a, text: "As a quality gate: promote a new agent version only if it beats the current one on the dataset", explanation: "Correct (Stage 12)." }
+    - { id: b, text: "Ignore it and ship", explanation: "Defeats testing." }
+    - { id: c, text: "Run it only after an outage", explanation: "Too late." }
+  correct: [a]
+
+- id: ai15.langsmith.feedback
+  type: choice
+  skill: apply
+  topics: [ai15.langsmith]
+  prompt: A production run fails in a new way. What closes the lifecycle loop?
+  options:
+    - { id: a, text: "Add that failing case to the evaluation dataset so future versions are tested against it", explanation: "Correct: real failures become permanent tests." }
+    - { id: b, text: "Turn off tracing", explanation: "Removes your visibility." }
+    - { id: c, text: "Nothing; production failures can't inform testing", explanation: "They should feed the dataset." }
+  correct: [a]

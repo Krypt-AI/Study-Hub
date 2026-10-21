@@ -1,0 +1,47 @@
+- id: sec01.processes.listen
+  type: choice
+  skill: apply
+  topics: [sec01.processes]
+  prompt: Which command lists listening network ports and the process that owns each, on Linux?
+  options:
+    - { id: a, text: "`ss -tulpn`", explanation: "Correct (older systems: `netstat -tulpn`)." }
+    - { id: b, text: "`ls -la`", explanation: "Lists files." }
+    - { id: c, text: "`chmod 755`", explanation: "Changes permissions." }
+  correct: [a]
+
+- id: sec01.processes.path
+  type: long
+  skill: explain
+  topics: [sec01.processes]
+  prompt: Explain why a writable directory appearing early in a user's PATH can be a security problem.
+  minWords: 25
+  rubric:
+    - { id: search, label: "PATH is searched in order for the command you type", keywords: [["path", "search", "order", "first"]] }
+    - { id: hijack, label: "A malicious binary placed earlier runs instead of the real one", keywords: [["malicious", "instead", "hijack", "replace", "fake"]] }
+  modelAnswer: >-
+    When you type a command, the shell runs the first matching executable found by walking PATH in order. If an
+    attacker can write to a directory that appears early in PATH, they can drop a malicious program named like a common
+    command (say `ls`), and it will run instead of the genuine one, with your privileges. PATH directories should not
+    be writable by untrusted users, and the current directory should not be on root's PATH.
+
+- id: sec01.processes.tree
+  type: choice
+  skill: recognize
+  topics: [sec01.processes]
+  prompt: Why is the parent of a process useful during an investigation?
+  options:
+    - { id: a, text: "A normal program launched by an unexpected parent is a red flag (e.g. a shell spawned by a document viewer).", explanation: "Correct: the process tree reveals suspicious launches." }
+    - { id: b, text: "The parent sets the file's permissions.", explanation: "Unrelated." }
+    - { id: c, text: "Parents make processes run faster.", explanation: "No." }
+  correct: [a]
+
+- id: sec01.processes.memory
+  type: choice
+  skill: recall
+  topics: [sec01.processes]
+  prompt: Which region of a process's memory holds local variables and the function-call chain?
+  options:
+    - { id: a, text: "The stack", explanation: "Correct." }
+    - { id: b, text: "The heap", explanation: "The heap holds dynamic allocations." }
+    - { id: c, text: "The code segment", explanation: "That holds the instructions." }
+  correct: [a]

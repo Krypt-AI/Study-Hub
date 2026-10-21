@@ -1,0 +1,47 @@
+- id: sec07.patch.inventory
+  type: choice
+  skill: recognize
+  topics: [sec07.patch]
+  prompt: Why is an asset inventory the foundation of defence?
+  options:
+    - { id: a, text: "You cannot patch, monitor or protect systems you do not know you have.", explanation: "Correct: unmanaged assets are where breaches hide." }
+    - { id: b, text: "It makes the network faster.", explanation: "Unrelated." }
+    - { id: c, text: "It replaces the firewall.", explanation: "No." }
+  correct: [a]
+
+- id: sec07.patch.prioritise
+  type: choice
+  skill: apply
+  topics: [sec07.patch]
+  prompt: "Two unpatched vulnerabilities: one is theoretical and internal-only; one is internet-facing and on CISA's actively-exploited list. Which first?"
+  options:
+    - { id: a, text: "The internet-facing, actively-exploited one", explanation: "Correct: exposure plus active exploitation is the priority." }
+    - { id: b, text: "The theoretical internal one, because it is newer", explanation: "Exploitation and exposure matter more than age." }
+    - { id: c, text: "Neither; wait for the next quarter", explanation: "Active exploitation demands urgency." }
+  correct: [a]
+
+- id: sec07.patch.ransomware-backup
+  type: choice
+  skill: apply
+  topics: [sec07.patch]
+  prompt: Ransomware encrypted the servers AND the network backup share. What backup practice would have saved the day?
+  options:
+    - { id: a, text: "An offline or immutable copy the ransomware could not reach or alter", explanation: "Correct: at least one copy must be offline/write-once." }
+    - { id: b, text: "More frequent backups to the same share", explanation: "The share itself was encrypted." }
+    - { id: c, text: "A faster internet connection", explanation: "Irrelevant." }
+  correct: [a]
+
+- id: sec07.patch.test-restore
+  type: long
+  skill: explain
+  topics: [sec07.patch]
+  prompt: Why is an untested backup described as "a hope, not a control"?
+  minWords: 20
+  rubric:
+    - { id: unknown, label: "You do not know it actually restores until tested", keywords: [["untested", "might fail", "corrupt", "incomplete", "assume"]] }
+    - { id: test, label: "Regular test restores prove it works and measure recovery time", keywords: [["test restore", "restore", "verify", "recovery time", "rto"]] }
+  modelAnswer: >-
+    A backup only matters if it restores, and backups fail silently — missing files, corruption, wrong scope, a broken
+    job no one noticed. Until you actually restore it you are only hoping it works. Regular test restores prove the
+    data comes back intact and let you measure how long recovery takes (the recovery-time objective), turning a hope
+    into a control you can rely on in an incident.

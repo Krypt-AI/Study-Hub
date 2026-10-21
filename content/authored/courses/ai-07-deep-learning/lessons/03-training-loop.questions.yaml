@@ -1,0 +1,74 @@
+- id: ai07.training.order
+  type: choice
+  skill: recall
+  topics: [ai07.training]
+  prompt: Which order of calls in a training step is correct?
+  options:
+    - { id: a, text: "forward → loss → `zero_grad()` → `backward()` → `step()`", explanation: "Correct (zero_grad may also come first)." }
+    - { id: b, text: "forward → `step()` → loss → `backward()`", explanation: "step needs gradients from backward first." }
+    - { id: c, text: "`backward()` → forward → loss → `step()`", explanation: "Nothing to differentiate yet." }
+  correct: [a]
+
+- id: ai07.training.shuffle
+  type: choice
+  skill: apply
+  topics: [ai07.training]
+  prompt: Which DataLoader should shuffle?
+  options:
+    - { id: a, text: "The training loader only", explanation: "Correct: shuffling validation data changes nothing but wastes effort." }
+    - { id: b, text: "Both", explanation: "Harmless for validation, but unnecessary." }
+    - { id: c, text: "The validation loader only", explanation: "Training is where order matters." }
+  correct: [a]
+
+- id: ai07.training.state-dict
+  type: choice
+  skill: recognize
+  topics: [ai07.training]
+  prompt: What is the recommended way to save a trained PyTorch model?
+  options:
+    - { id: a, text: "`torch.save(model.state_dict(), path)` and rebuild the class before loading", explanation: "Correct." }
+    - { id: b, text: "Pickle the whole model object", explanation: "Brittle across code changes and less safe." }
+    - { id: c, text: "Print the weights to a text file", explanation: "Not practical." }
+  correct: [a]
+
+- id: ai07.training.eval-forget
+  type: long
+  skill: explain
+  topics: [ai07.training]
+  prompt: What goes wrong if you evaluate without `model.eval()` and `torch.no_grad()`?
+  minWords: 30
+  rubric:
+    - { id: dropout, label: "Dropout stays active (random units dropped), so predictions are noisy/worse", keywords: [["dropout"]] }
+    - { id: batchnorm, label: "Batch norm uses batch statistics and updates its running statistics", keywords: [["batch norm", "batchnorm", "running"]] }
+    - { id: nograd, label: "Without no_grad, a graph is built: wasted memory and time", keywords: [["memory", "graph", "slower", "time"]] }
+  modelAnswer: >-
+    Without `model.eval()`, dropout keeps randomly zeroing activations, so validation predictions are noisy and usually
+    worse, and batch normalisation normalises with the current batch's statistics and even updates its running
+    averages with validation data. Without `torch.no_grad()`, PyTorch records a computation graph for every batch,
+    wasting memory and time even though no backward pass will happen.
+
+- id: ai07.training.loop-numpy
+  type: code
+  skill: apply
+  topics: [ai07.training]
+  language: python
+  packages: [numpy]
+  prompt: >-
+    Mini-batches are the heart of a DataLoader. Write `batches(n, batch_size, shuffle, seed=0)` returning a list of index
+    arrays that together cover 0..n−1 exactly once; the last batch may be smaller. When `shuffle` is True, permute with
+    `np.random.default_rng(seed)`; otherwise keep order.
+  starterCode: |
+    import numpy as np
+
+    def batches(n, batch_size, shuffle, seed=0):
+        ...
+  tests:
+    - { kind: assert, name: "ordered", code: "b = batches(10, 4, False)\nassert [list(x) for x in b] == [[0, 1, 2, 3], [4, 5, 6, 7], [8, 9]]" }
+    - { kind: assert, name: "shuffled covers all", code: "import numpy as np\nb = batches(10, 3, True)\nassert sorted(np.concatenate(b).tolist()) == list(range(10)) and len(b) == 4" }
+    - { kind: assert, name: "shuffled differs from order", code: "import numpy as np\nassert np.concatenate(batches(50, 10, True)).tolist() != list(range(50))" }
+  solution: |
+    import numpy as np
+
+    def batches(n, batch_size, shuffle, seed=0):
+        order = np.random.default_rng(seed).permutation(n) if shuffle else np.arange(n)
+        return [order[i:i + batch_size] for i in range(0, n, batch_size)]

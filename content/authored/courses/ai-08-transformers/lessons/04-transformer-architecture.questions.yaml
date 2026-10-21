@@ -1,0 +1,43 @@
+- id: ai08.transformer.block
+  type: choice
+  skill: recall
+  topics: [ai08.transformer]
+  prompt: What are the two sub-layers of a transformer block?
+  options:
+    - { id: a, text: "Multi-head self-attention and a position-wise feed-forward network, each with a residual + normalisation", explanation: "Correct." }
+    - { id: a2, text: "A convolution and a pooling layer", explanation: "That is a CNN." }
+    - { id: c, text: "An encoder and a tokenizer", explanation: "Not sub-layers of a block." }
+  correct: [a]
+
+- id: ai08.transformer.position
+  type: choice
+  skill: apply
+  topics: [ai08.transformer]
+  prompt: Why do transformers add positional encodings?
+  options:
+    - { id: a, text: "Self-attention is order-agnostic, so position must be injected or word order is lost", explanation: "Correct." }
+    - { id: b, text: "To compress the sequence", explanation: "No." }
+    - { id: c, text: "To encrypt the tokens", explanation: "No." }
+  correct: [a]
+
+- id: ai08.transformer.decoder-only
+  type: choice
+  skill: recognize
+  topics: [ai08.transformer]
+  prompt: Most modern general-purpose LLMs use which architecture?
+  options:
+    - { id: a, text: "Decoder-only with causal attention, generating one token at a time", explanation: "Correct." }
+    - { id: b, text: "Encoder-only", explanation: "Better for understanding/embeddings than open-ended generation." }
+    - { id: c, text: "No transformer at all", explanation: "They are transformers." }
+  correct: [a]
+
+- id: ai08.transformer.residual
+  type: choice
+  skill: recognize
+  topics: [ai08.transformer]
+  prompt: Why do residual connections matter in a deep transformer?
+  options:
+    - { id: a, text: "They let gradients flow through many stacked blocks, enabling very deep models to train", explanation: "Correct (Stage 7)." }
+    - { id: b, text: "They tokenize the input", explanation: "Unrelated." }
+    - { id: c, text: "They remove the need for attention", explanation: "Attention is still essential." }
+  correct: [a]

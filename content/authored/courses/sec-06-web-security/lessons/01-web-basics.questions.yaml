@@ -1,0 +1,43 @@
+- id: sec06.http.client-trust
+  type: choice
+  skill: apply
+  topics: [sec06.http]
+  prompt: A shopping cart sends the item price as a hidden form field, and the server charges whatever it receives. What is wrong?
+  options:
+    - { id: a, text: "Client data is attacker-controlled; the server must look up the price itself, not trust the submitted one.", explanation: "Correct: never trust the client." }
+    - { id: b, text: "Hidden fields are invisible, so it is safe.", explanation: "They are trivially editable with a proxy." }
+    - { id: c, text: "Nothing, if the field is disabled in the UI.", explanation: "Disabling in the UI does not stop a crafted request." }
+  correct: [a]
+
+- id: sec06.http.status
+  type: choice
+  skill: recall
+  topics: [sec06.http]
+  prompt: Which status code means the user is authenticated but not allowed to access the resource?
+  options:
+    - { id: a, text: "403 Forbidden", explanation: "Correct (401 is unauthenticated)." }
+    - { id: b, text: "200 OK", explanation: "Success." }
+    - { id: c, text: "404 Not Found", explanation: "Resource not found." }
+  correct: [a]
+
+- id: sec06.http.cookie
+  type: choice
+  skill: apply
+  topics: [sec06.http]
+  prompt: Which cookie attribute most limits a stolen-via-XSS risk by hiding the cookie from JavaScript?
+  options:
+    - { id: a, text: "HttpOnly", explanation: "Correct." }
+    - { id: b, text: "SameSite", explanation: "That limits cross-site sending (CSRF), not JS access." }
+    - { id: c, text: "Max-Age", explanation: "That sets lifetime." }
+  correct: [a]
+
+- id: sec06.http.sop
+  type: choice
+  skill: recognize
+  topics: [sec06.http]
+  prompt: What does the same-origin policy prevent?
+  options:
+    - { id: a, text: "A script on one origin from reading data belonging to another origin", explanation: "Correct." }
+    - { id: b, text: "A server from setting cookies", explanation: "No." }
+    - { id: c, text: "HTTPS from working", explanation: "Unrelated." }
+  correct: [a]

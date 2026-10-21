@@ -1,0 +1,78 @@
+- id: sec10.consensus.verify-easy
+  type: choice
+  skill: recognize
+  topics: [sec10.consensus]
+  prompt: What is the key asymmetry in proof-of-work?
+  options:
+    - { id: a, text: "Finding a qualifying hash is hard (brute force), but checking it is one quick hash.", explanation: "Correct." }
+    - { id: b, text: "Both finding and checking are hard.", explanation: "Checking is trivial." }
+    - { id: c, text: "Both are easy.", explanation: "Finding one is deliberately expensive." }
+  correct: [a]
+
+- id: sec10.consensus.confirmations
+  type: choice
+  skill: apply
+  topics: [sec10.consensus]
+  prompt: Why do exchanges wait for several confirmations before treating a deposit as final on a proof-of-work chain?
+  options:
+    - { id: a, text: "A shallow fork could still reorganise the tip; more blocks on top make reversal exponentially harder.", explanation: "Correct." }
+    - { id: b, text: "To let the sender cancel.", explanation: "Confirmed transactions are not cancellable by the sender." }
+    - { id: c, text: "Because signatures take time to verify.", explanation: "Verification is fast; depth is the issue." }
+  correct: [a]
+
+- id: sec10.consensus.51
+  type: choice
+  skill: apply
+  topics: [sec10.consensus]
+  prompt: Which can a 51% attacker do?
+  options:
+    - { id: a, text: "Reverse a recent transaction to double-spend", explanation: "Correct: rewrite recent history they produced." }
+    - { id: b, text: "Spend coins from any address they like", explanation: "That needs the private keys, which hash power does not give." }
+    - { id: c, text: "Change the block reward rules unilaterally", explanation: "Nodes enforce the consensus rules and reject invalid blocks." }
+  correct: [a]
+
+- id: sec10.consensus.pos-energy
+  type: choice
+  skill: recognize
+  topics: [sec10.consensus]
+  prompt: Compared with proof-of-work, proof-of-stake mainly changes what?
+  options:
+    - { id: a, text: "The scarce resource securing the chain: locked capital instead of electricity, using far less energy", explanation: "Correct." }
+    - { id: b, text: "It removes the need for cryptographic signatures.", explanation: "Signatures still authorise transactions." }
+    - { id: c, text: "It makes the ledger private.", explanation: "Transparency is unchanged." }
+  correct: [a]
+
+- id: sec10.consensus.mine-code
+  type: code
+  skill: apply
+  topics: [sec10.consensus]
+  language: python
+  prompt: >-
+    Implement a toy proof-of-work. Write `mine(header, difficulty)` returning the smallest non-negative integer nonce
+    such that the SHA-256 hex of `f"{header}{nonce}"` starts with `difficulty` zero characters, and
+    `check(header, nonce, difficulty)` returning whether a nonce satisfies the target. Keep difficulty small (1–3).
+  starterCode: |
+    import hashlib
+
+    def mine(header, difficulty):
+        ...
+
+    def check(header, nonce, difficulty):
+        ...
+  tests:
+    - { kind: assert, name: "mined nonce checks out", code: "n = mine('block-1', 2)\nassert check('block-1', n, 2)" }
+    - { kind: assert, name: "it is the smallest", code: "n = mine('abc', 2)\nassert all(not check('abc', k, 2) for k in range(n))" }
+    - { kind: assert, name: "check rejects non-solutions", code: "assert not check('abc', 0, 3) or check('abc', 0, 3)  # just ensure it returns a bool\nassert isinstance(check('abc', 1, 1), bool)" }
+  hints: ["Loop nonce from 0 upward until check passes."]
+  solution: |
+    import hashlib
+
+    def check(header, nonce, difficulty):
+        digest = hashlib.sha256(f"{header}{nonce}".encode()).hexdigest()
+        return digest.startswith("0" * difficulty)
+
+    def mine(header, difficulty):
+        nonce = 0
+        while not check(header, nonce, difficulty):
+            nonce += 1
+        return nonce

@@ -1,0 +1,75 @@
+- id: ai04.cleaning.coerce
+  type: choice
+  skill: recognize
+  topics: [ai04.cleaning]
+  prompt: "What does `pd.to_numeric(s, errors='coerce')` do with the value \"N/A\"?"
+  options:
+    - { id: a, text: "Turns it into NaN so it can be counted and handled", explanation: "Correct." }
+    - { id: b, text: "Raises a ValueError", explanation: "That is `errors='raise'`, the default." }
+    - { id: c, text: "Turns it into 0", explanation: "That would invent data." }
+  correct: [a]
+
+- id: ai04.cleaning.dedupe-order
+  type: choice
+  skill: apply
+  topics: [ai04.cleaning]
+  prompt: When should duplicate rows be removed relative to the train/test split?
+  options:
+    - { id: a, text: "Before splitting, so the same example cannot appear in both", explanation: "Correct." }
+    - { id: b, text: "After splitting, only in the test set", explanation: "Copies in train would still match test rows." }
+    - { id: c, text: "Never: duplicates add data", explanation: "They inflate test scores and overweight some examples." }
+  correct: [a]
+
+- id: ai04.cleaning.iqr
+  type: short
+  skill: apply
+  topics: [ai04.cleaning]
+  prompt: "Q1 = 20 and Q3 = 40. Using the 1.5 × IQR rule, above what value is a point an outlier?"
+  accepted: ["70"]
+  match: { mode: number }
+  explanation: "IQR = 20; Q3 + 1.5·20 = 70."
+
+- id: ai04.cleaning.outlier-decision
+  type: long
+  skill: explain
+  topics: [ai04.cleaning]
+  prompt: "A house-price dataset contains a few sales above RM20 million. Describe how you would decide what to do with them."
+  minWords: 30
+  rubric:
+    - { id: inspect, label: "Inspect the rows to tell errors from genuine extreme cases", keywords: [["inspect", "look at", "check", "investigate"]] }
+    - { id: error, label: "Fix or remove clear data-entry errors", keywords: [["error", "typo", "mistake", "remove", "fix"]] }
+    - { id: genuine, label: "Keep genuine values, possibly with a log transform, capping or a robust model/metric", keywords: [["log", "cap", "clip", "robust", "keep"]] }
+  modelAnswer: >-
+    First inspect those rows: an extra zero or a commercial property mislabelled as a house is an error to fix or
+    remove. If they are genuine luxury sales, keep them, because the model may meet such houses, but reduce their
+    influence with a log transform of the price, capping at a high percentile, or a loss/metric that is less sensitive
+    to outliers. Record the decision in the cleaning code.
+
+- id: ai04.cleaning.clean-function
+  type: code
+  skill: apply
+  topics: [ai04.cleaning]
+  language: python
+  packages: [pandas]
+  prompt: >-
+    Write `clean(df)` for a DataFrame with columns `state` (text) and `price` (text such as "RM1,200"). Return a new
+    DataFrame where `state` is stripped and title-cased, `price` is a float (invalid values become NaN), duplicate rows
+    (after cleaning) are dropped, and the index is reset.
+  starterCode: |
+    import pandas as pd
+
+    def clean(df):
+        ...
+  tests:
+    - { kind: assert, name: "values", code: "import pandas as pd\nout = clean(pd.DataFrame({'state': [' selangor', 'Selangor ', 'johor'], 'price': ['RM1,200', 'RM1,200', 'n/a']}))\nassert out['state'].tolist() == ['Selangor', 'Johor']" }
+    - { kind: assert, name: "prices", code: "import pandas as pd\nout = clean(pd.DataFrame({'state': ['a', 'b'], 'price': ['RM 1,500', 'oops']}))\nassert out.loc[0, 'price'] == 1500.0 and pd.isna(out.loc[1, 'price'])" }
+    - { kind: assert, name: "input unchanged", code: "import pandas as pd\nraw = pd.DataFrame({'state': [' x'], 'price': ['RM1']})\nclean(raw)\nassert raw.loc[0, 'state'] == ' x'" }
+  solution: |
+    import pandas as pd
+
+    def clean(df):
+        out = df.copy()
+        out['state'] = out['state'].str.strip().str.title()
+        digits = out['price'].str.replace(r'[RM,\s]', '', regex=True)
+        out['price'] = pd.to_numeric(digits, errors='coerce')
+        return out.drop_duplicates().reset_index(drop=True)

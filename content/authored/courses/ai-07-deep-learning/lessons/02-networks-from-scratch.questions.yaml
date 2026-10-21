@@ -1,0 +1,96 @@
+- id: ai07.networks.param-count
+  type: short
+  skill: apply
+  topics: [ai07.networks]
+  prompt: "An MLP has layers 20 → 64 → 3 (with biases). How many parameters in total?"
+  accepted: ["1539"]
+  match: { mode: number }
+  explanation: "20·64 + 64 + 64·3 + 3 = 1280 + 64 + 192 + 3 = 1539."
+
+- id: ai07.networks.no-activation
+  type: choice
+  skill: recognize
+  topics: [ai07.networks]
+  prompt: What happens if you stack three linear layers with no activation functions?
+  options:
+    - { id: a, text: "The network is equivalent to a single linear layer.", explanation: "Correct: a product of linear maps is linear." }
+    - { id: b, text: "It becomes three times as expressive.", explanation: "No added expressiveness." }
+    - { id: c, text: "Training fails with an error.", explanation: "It trains, but only as a linear model." }
+  correct: [a]
+
+- id: ai07.networks.double-softmax
+  type: choice
+  skill: apply
+  topics: [ai07.networks]
+  prompt: "A model ends with `nn.Softmax(dim=1)` and is trained with `nn.CrossEntropyLoss`. What is wrong?"
+  options:
+    - { id: a, text: "CrossEntropyLoss already applies softmax; it expects raw logits.", explanation: "Correct: remove the Softmax layer." }
+    - { id: b, text: "Nothing.", explanation: "Softmax is applied twice, which weakens gradients." }
+    - { id: c, text: "Softmax needs dim=0.", explanation: "dim=1 is right for (batch, classes); the issue is the double softmax." }
+  correct: [a]
+
+- id: ai07.networks.zero-init
+  type: choice
+  skill: recognize
+  topics: [ai07.networks]
+  prompt: Why not initialise all weights to zero?
+  options:
+    - { id: a, text: "Every neuron in a layer would compute and learn the same thing (symmetry is never broken).", explanation: "Correct." }
+    - { id: b, text: "Zero is not a valid float.", explanation: "It is." }
+    - { id: c, text: "Biases would overflow.", explanation: "No." }
+  correct: [a]
+
+- id: ai07.networks.mlp
+  type: code
+  skill: apply
+  topics: [ai07.networks]
+  language: python
+  packages: [numpy]
+  prompt: >-
+    Implement `train_mlp(X, y, hidden=16, lr=0.5, epochs=500, seed=0)` in NumPy: a 2-layer network (Linear → ReLU →
+    Linear → softmax) trained with full-batch gradient descent on cross-entropy, using the backpropagation formulas
+    from the lesson. Initialise weights with `rng.normal(0, 0.5, size)` and biases with zeros. Return a function
+    `predict(X)` giving class indices. `y` holds integer class labels.
+  starterCode: |
+    import numpy as np
+
+    def train_mlp(X, y, hidden=16, lr=0.5, epochs=500, seed=0):
+        rng = np.random.default_rng(seed)
+        ...
+        def predict(Xn):
+            ...
+        return predict
+  tests:
+    - { kind: assert, name: "learns XOR", code: "import numpy as np\nX = np.array([[0, 0], [0, 1], [1, 0], [1, 1]], dtype=float)\ny = np.array([0, 1, 1, 0])\npredict = train_mlp(X, y, hidden=16, lr=0.5, epochs=2000)\nassert (predict(X) == y).all()" }
+    - { kind: assert, name: "three classes", code: "import numpy as np\nrng = np.random.default_rng(1)\ncentres = np.array([[0, 3], [3, 0], [-3, -3]])\nX = np.vstack([c + rng.normal(0, 0.5, (30, 2)) for c in centres])\ny = np.repeat([0, 1, 2], 30)\nassert (train_mlp(X, y)(X) == y).mean() > 0.95" }
+  solution: |
+    import numpy as np
+
+    def train_mlp(X, y, hidden=16, lr=0.5, epochs=500, seed=0):
+        rng = np.random.default_rng(seed)
+        n, d = X.shape
+        k = int(y.max()) + 1
+        W1 = rng.normal(0, 0.5, (d, hidden)); b1 = np.zeros(hidden)
+        W2 = rng.normal(0, 0.5, (hidden, k)); b2 = np.zeros(k)
+        Y = np.eye(k)[y]
+
+        def forward(Xn):
+            Z1 = Xn @ W1 + b1
+            A1 = np.maximum(Z1, 0)
+            Z2 = A1 @ W2 + b2
+            Z2 = Z2 - Z2.max(axis=1, keepdims=True)
+            P = np.exp(Z2) / np.exp(Z2).sum(axis=1, keepdims=True)
+            return Z1, A1, P
+
+        for _ in range(epochs):
+            Z1, A1, P = forward(X)
+            dZ2 = (P - Y) / n
+            dW2 = A1.T @ dZ2; db2 = dZ2.sum(axis=0)
+            dZ1 = (dZ2 @ W2.T) * (Z1 > 0)
+            dW1 = X.T @ dZ1; db1 = dZ1.sum(axis=0)
+            W1 -= lr * dW1; b1 -= lr * db1
+            W2 -= lr * dW2; b2 -= lr * db2
+
+        def predict(Xn):
+            return forward(Xn)[2].argmax(axis=1)
+        return predict

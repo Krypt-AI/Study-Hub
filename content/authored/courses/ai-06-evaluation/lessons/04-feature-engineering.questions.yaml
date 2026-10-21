@@ -1,0 +1,75 @@
+- id: ai06.features.log1p
+  type: choice
+  skill: apply
+  topics: [ai06.features]
+  prompt: "Purchase counts range from 0 to 50,000 with a long right tail. Which transform suits a linear model?"
+  options:
+    - { id: a, text: "`np.log1p(count)`", explanation: "Correct: compresses the tail and handles 0." }
+    - { id: b, text: "`np.log(count)`", explanation: "log(0) is −infinity." }
+    - { id: c, text: "Square the counts", explanation: "That stretches the tail further." }
+  correct: [a]
+
+- id: ai06.features.tree-invariant
+  type: choice
+  skill: recognize
+  topics: [ai06.features]
+  prompt: For which model does a log transform of a feature make essentially no difference?
+  options:
+    - { id: a, text: "A decision tree", explanation: "Correct: splits depend only on order, which log preserves." }
+    - { id: b, text: "Linear regression", explanation: "Changes the shape of the relationship." }
+    - { id: c, text: "k-nearest neighbours", explanation: "Changes the distances." }
+  correct: [a]
+
+- id: ai06.features.tfidf
+  type: choice
+  skill: recognize
+  topics: [ai06.features]
+  prompt: Why does TF-IDF give the word "the" a low weight?
+  options:
+    - { id: a, text: "It appears in almost every document, so its inverse document frequency is low.", explanation: "Correct." }
+    - { id: b, text: "It is short.", explanation: "Length is irrelevant." }
+    - { id: c, text: "It is on a fixed stop-word list in every TF-IDF.", explanation: "Stop-word lists are optional; IDF does this anyway." }
+  correct: [a]
+
+- id: ai06.features.aggregate-leak
+  type: choice
+  skill: apply
+  topics: [ai06.features]
+  prompt: You add "customer's total orders" computed over the whole dataset as a churn feature. What is wrong?
+  options:
+    - { id: a, text: "It counts orders made after the prediction date, leaking the future.", explanation: "Correct: aggregate only data before each prediction time." }
+    - { id: b, text: "Counts cannot be features.", explanation: "They can." }
+    - { id: c, text: "Nothing.", explanation: "It leaks." }
+  correct: [a]
+
+- id: ai06.features.cyclical-code
+  type: code
+  skill: apply
+  topics: [ai06.features]
+  language: python
+  prompt: >-
+    Write `encode_cyclical(value, period)` returning `(sin, cos)` of 2π·value/period, and `cyclic_distance(a, b,
+    period)` returning the Euclidean distance between the two encodings. Hour 23 should be closer to hour 0 than to
+    hour 12.
+  starterCode: |
+    import math
+
+    def encode_cyclical(value, period):
+        ...
+
+    def cyclic_distance(a, b, period):
+        ...
+  tests:
+    - { kind: assert, name: "zero", code: "s, c = encode_cyclical(0, 24)\nassert abs(s) < 1e-9 and abs(c - 1) < 1e-9" }
+    - { kind: assert, name: "wrap-around", code: "assert cyclic_distance(23, 0, 24) < cyclic_distance(23, 12, 24)" }
+    - { kind: assert, name: "same point", code: "assert cyclic_distance(24, 0, 24) < 1e-9" }
+  solution: |
+    import math
+
+    def encode_cyclical(value, period):
+        angle = 2 * math.pi * value / period
+        return math.sin(angle), math.cos(angle)
+
+    def cyclic_distance(a, b, period):
+        (s1, c1), (s2, c2) = encode_cyclical(a, period), encode_cyclical(b, period)
+        return math.hypot(s1 - s2, c1 - c2)

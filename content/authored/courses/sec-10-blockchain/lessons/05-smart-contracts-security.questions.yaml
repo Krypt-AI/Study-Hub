@@ -1,0 +1,61 @@
+- id: sec10.security.immutable
+  type: choice
+  skill: apply
+  topics: [sec10.security]
+  prompt: Why is immutability of smart contracts described as cutting both ways?
+  options:
+    - { id: a, text: "It removes the need to trust an operator, but it also means a bug cannot simply be patched.", explanation: "Correct." }
+    - { id: b, text: "It makes contracts run faster but cost more.", explanation: "Not the trade-off in question." }
+    - { id: c, text: "It hides the code from attackers.", explanation: "Contract code is public." }
+  correct: [a]
+
+- id: sec10.security.reentrancy
+  type: choice
+  skill: recognize
+  topics: [sec10.security]
+  prompt: Reentrancy exploits a contract that…
+  options:
+    - { id: a, text: "calls an external contract before updating its own state, letting the callee call back in", explanation: "Correct: checks-effects-interactions ordering prevents it." }
+    - { id: b, text: "uses too little gas", explanation: "Not the reentrancy pattern." }
+    - { id: c, text: "stores data off-chain", explanation: "Unrelated." }
+  correct: [a]
+
+- id: sec10.security.approval
+  type: choice
+  skill: apply
+  topics: [sec10.security]
+  prompt: A user signs a token "approval" from a link in a DM and their wallet is drained. What was the lesson?
+  options:
+    - { id: a, text: "Signing is authorising; an approval can let a contract move your tokens, so read and limit what you sign.", explanation: "Correct." }
+    - { id: b, text: "The blockchain's cryptography was broken.", explanation: "The crypto was fine; the user authorised the transfer." }
+    - { id: c, text: "The private key was guessed.", explanation: "No key was guessed; a transaction was signed." }
+  correct: [a]
+
+- id: sec10.security.fit
+  type: choice
+  skill: apply
+  topics: [sec10.security]
+  prompt: Which scenario is a genuinely good fit for a public blockchain?
+  options:
+    - { id: a, text: "Mutually distrusting parties need a shared record no single party controls, with public auditability.", explanation: "Correct." }
+    - { id: b, text: "One company's internal inventory that it fully controls.", explanation: "A database is faster, cheaper and editable." }
+    - { id: c, text: "Storing confidential medical records.", explanation: "Public chains are transparent; confidentiality is the wrong property." }
+  correct: [a]
+
+- id: sec10.security.losses
+  type: long
+  skill: explain
+  topics: [sec10.security]
+  prompt: "A friend says \"blockchain is unhackable because the cryptography is unbreakable.\" Explain why large losses still happen."
+  minWords: 35
+  rubric:
+    - { id: crypto-ok, label: "The core cryptography (hashes, signatures) is usually sound", keywords: [["cryptography", "hash", "signature", "sound", "strong"]] }
+    - { id: contracts, label: "Losses come from smart-contract bugs (reentrancy, access control, oracles)", keywords: [["contract", "bug", "reentrancy", "logic"]] }
+    - { id: edges, label: "And from keys, phishing/approvals, scams and custodial failures", keywords: [["key", "phishing", "approval", "scam", "exchange", "custodial", "seed"]] }
+  modelAnswer: >-
+    The primitive cryptography — hash links and digital signatures — is generally sound, so attackers rarely break the
+    math. Losses instead come from the software and the humans around it: smart-contract bugs such as reentrancy,
+    arithmetic errors, missing access control and manipulable price oracles, all made worse because deployed code is
+    immutable and public. And most ordinary users lose funds at the edges: lost or stolen private keys and seed
+    phrases, phishing that tricks them into signing malicious transactions or token approvals, outright scams, and
+    exchange hacks or failures where they never held their own keys.

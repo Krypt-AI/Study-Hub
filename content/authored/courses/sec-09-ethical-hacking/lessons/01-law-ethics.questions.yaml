@@ -1,0 +1,59 @@
+- id: sec09.legal.written
+  type: choice
+  skill: recognize
+  topics: [sec09.legal]
+  prompt: Why must testing authorisation be written and come from someone with authority over the systems?
+  options:
+    - { id: a, text: "Unauthorised access is a crime; written authorisation from the right person is the legal basis for the work", explanation: "Correct." }
+    - { id: b, text: "Because paper looks professional", explanation: "It is a legal requirement, not aesthetics." }
+    - { id: c, text: "It is optional if you are careful", explanation: "It is never optional." }
+  correct: [a]
+
+- id: sec09.legal.engagement-type
+  type: choice
+  skill: recognize
+  topics: [sec09.legal]
+  prompt: A goal-oriented, stealthy exercise that tests the defenders' detection and response is a…
+  options:
+    - { id: a, text: "red team engagement", explanation: "Correct (purple team = red and blue collaborating)." }
+    - { id: b, text: "vulnerability assessment", explanation: "That finds/reports weaknesses, not stealthy goal-seeking." }
+    - { id: c, text: "code review", explanation: "A different activity." }
+  correct: [a]
+
+- id: sec09.legal.disclosure
+  type: choice
+  skill: apply
+  topics: [sec09.legal]
+  prompt: You find a serious vulnerability in a product you use. What is responsible disclosure?
+  options:
+    - { id: a, text: "Report it privately to the vendor, allow reasonable time to fix, and coordinate any public details", explanation: "Correct." }
+    - { id: b, text: "Publish a working exploit immediately against live users", explanation: "Harmful and unethical." }
+    - { id: c, text: "Sell access to the highest bidder", explanation: "Criminal." }
+  correct: [a]
+
+- id: sec09.legal.bounty-scope
+  type: choice
+  skill: apply
+  topics: [sec09.legal]
+  prompt: A bug-bounty program lists `app.example.com` in scope and `*.corp.example.com` out of scope. You find a flaw in the corp domain. What now?
+  options:
+    - { id: a, text: "Do not test it further; report through the program and respect the stated scope", explanation: "Correct: out-of-scope means no authorisation." }
+    - { id: b, text: "Exploit it; a bounty program means everything is fair game", explanation: "Only the stated scope is authorised." }
+    - { id: c, text: "Attack their email too", explanation: "Clearly unauthorised." }
+  correct: [a]
+
+- id: sec09.legal.scope-boundary
+  type: long
+  skill: explain
+  topics: [sec09.legal]
+  prompt: Explain why staying within the agreed scope is both a legal and an ethical obligation, even when an out-of-scope system looks vulnerable.
+  minWords: 30
+  rubric:
+    - { id: legal, label: "Authorisation only covers the agreed scope; outside it there is no permission (a crime)", keywords: [["authorisation", "scope", "no permission", "illegal", "crime"]] }
+    - { id: action, label: "Stop, do not touch, and report to the client to decide", keywords: [["stop", "report", "do not touch", "client", "decide"]] }
+  modelAnswer: >-
+    The written authorisation only grants permission for the systems named in scope; anything outside it has no
+    permission at all, so testing it is unauthorised access — a crime — no matter how vulnerable it looks or how good
+    the intent. Ethically, the client set that boundary deliberately, and exceeding it breaks the trust the profession
+    depends on. The correct action is to stop, not touch the out-of-scope system, and report it through the agreed
+    contact so the client can decide whether to extend scope.

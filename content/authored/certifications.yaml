@@ -634,7 +634,7 @@
   studyHours: { min: 80, max: 150, estimate: true }
   resources:
     - { title: Exam objectives and practice questions, url: "https://www.comptia.org/en-us/certifications/a/core-1-v15/practice-questions/", free: true, official: true }
-  relatedCourses: [it-operating-systems, it-networking]
+  relatedCourses: [sec-01-it-fundamentals, sec-02-networking]
   foundations:
     - courseId: linux-fundamentals
       relevance: strongly-recommended
@@ -688,7 +688,7 @@
   studyHours: { min: 60, max: 120, estimate: true }
   resources:
     - { title: CompTIA Network+ page, url: "https://www.comptia.org/en-us/certifications/network/", free: true, official: true }
-  relatedCourses: [it-networking]
+  relatedCourses: [sec-02-networking]
   foundations:
     - courseId: linux-fundamentals
       relevance: optional
@@ -742,7 +742,7 @@
   studyHours: { min: 30, max: 40, estimate: true }
   resources:
     - { title: Security+ V7 practice questions, url: "https://www.comptia.org/en-us/certifications/security/v7/practice-questions/", free: true, official: true }
-  relatedCourses: [it-security, it-networking]
+  relatedCourses: [sec-07-defence, sec-04-principles, sec-02-networking]
   foundations:
     - courseId: linux-fundamentals
       relevance: strongly-recommended
@@ -858,7 +858,7 @@
   resources:
     - { title: Cisco Networking Academy, url: "https://www.netacad.com/", free: true, official: true }
     - { title: Cisco U., url: "https://u.cisco.com/", free: false, official: true }
-  relatedCourses: [it-networking]
+  relatedCourses: [sec-02-networking]
   foundations:
     - courseId: linux-fundamentals
       relevance: optional
@@ -910,7 +910,7 @@
   studyHours: { min: 20, max: 40, estimate: true }
   resources:
     - { title: CC self-study resources, url: "https://www.isc2.org/certifications/cc/cc-self-study-resources", free: false, official: true }
-  relatedCourses: [it-security]
+  relatedCourses: [sec-04-principles, sec-07-defence]
   foundations:
     - courseId: linux-fundamentals
       relevance: optional
@@ -1365,6 +1365,293 @@
   unverified:
     - Exam prices in Malaysia.
     - Whether a newer LPIC-1 version is scheduled (the overview page lists version 5.0 as current).
+
+# ---------------------------------------------------------------------------
+# Offensive / defensive security and more certifications
+# ---------------------------------------------------------------------------
+
+- id: ec-council-ceh
+  name: Certified Ethical Hacker (CEH)
+  code: CEH v13
+  provider: EC-Council
+  url: https://www.eccouncil.org/train-certify/certified-ethical-hacker-ceh/
+  category: security
+  credentialType: professional-certification
+  level: associate
+  status: active
+  statusNote: Currently version 13. An optional practical exam earns the higher "CEH Master" designation.
+  summary: Ethical-hacking knowledge and methodology across the phases of an authorised penetration test, from reconnaissance to reporting.
+  objectives:
+    - Reconnaissance and footprinting
+    - Scanning, enumeration and vulnerability analysis
+    - System, web, wireless and network attack techniques (and their defences)
+    - Social engineering, cryptography and cloud/IoT topics
+    - The penetration-testing methodology and reporting
+  prerequisites: No formal prerequisite; EC-Council strongly recommends at least 2 years of IT security experience (or official training). Not aimed at complete beginners.
+  exam:
+    questions: 125 (knowledge exam)
+    durationMinutes: 240
+    passingScore: 60–85% (varies by form)
+    format: Multiple choice (knowledge); optional 6-hour, 20-challenge practical on a cyber range for CEH Master
+    delivery: Online via the ECC exam portal (knowledge); iLabs Cyber Range (practical)
+  cost: { currency: USD, note: Paid; price and exam voucher/eligibility vary by training route. Confirm with EC-Council. }
+  studyHours: { min: 80, max: 160, estimate: true }
+  resources:
+    - { title: "CEH program page", url: "https://www.eccouncil.org/train-certify/certified-ethical-hacker-ceh/", free: true, official: true }
+    - { title: "EC-Council Code of Ethics", url: "https://www.eccouncil.org/code-of-ethics/", free: true, official: true }
+  relatedCourses: [sec-09-ethical-hacking, sec-06-web-security]
+  verifiedOn: "2026-10-21"
+  verificationSources: ["https://www.eccouncil.org/train-certify/certified-ethical-hacker-ceh/"]
+  unverified: [Exam price, exam code and current voucher/eligibility policy are not stated on the overview page.]
+
+- id: comptia-pentest-plus
+  name: CompTIA PenTest+
+  code: PT0-003
+  provider: CompTIA
+  url: https://www.comptia.org/en-us/certifications/pentest/
+  category: security
+  credentialType: professional-certification
+  level: professional
+  status: active
+  summary: Hands-on penetration testing and vulnerability management across the full engagement, from planning and scoping to reporting.
+  objectives:
+    - Engagement management (planning, scoping, legal)
+    - Reconnaissance and enumeration
+    - Vulnerability discovery and analysis
+    - Attacks and exploits
+    - Post-exploitation and lateral movement
+  prerequisites: Recommended 3–4 years of hands-on security/penetration-testing experience, and Network+/Security+ or equivalent knowledge.
+  exam:
+    questions: Up to 90
+    durationMinutes: 165
+    passingScore: 750 (scale 100–900)
+    format: Multiple choice and performance-based
+    validity: 3 years
+  cost: { currency: USD, note: See the CompTIA store for the current price. }
+  studyHours: { min: 40, max: 60, estimate: true }
+  resources:
+    - { title: "CompTIA PenTest+ (PT0-003)", url: "https://www.comptia.org/en-us/certifications/pentest/", free: true, official: true }
+  relatedCourses: [sec-09-ethical-hacking, sec-06-web-security]
+  verifiedOn: "2026-10-21"
+  verificationSources: ["https://www.comptia.org/en-us/certifications/pentest/"]
+  unverified: [Current retail price; any announced successor version.]
+
+- id: comptia-cysa-plus
+  name: CompTIA CySA+
+  code: CS0-004 (V4)
+  provider: CompTIA
+  url: https://www.comptia.org/en-us/certifications/cybersecurity-analyst/
+  category: security
+  credentialType: professional-certification
+  level: professional
+  status: active
+  statusNote: V4 (CS0-004) launched June 23, 2026; the previous V3 (CS0-003) English exam retires December 22, 2026.
+  summary: Behavioural-analytics and security-operations skills for a SOC/security analyst role, across detection, response and reporting.
+  objectives:
+    - Security operations (34%)
+    - Vulnerability management (26%)
+    - Incident response and management (24%)
+    - Reporting and communication (16%)
+  prerequisites: Recommended ~4 years in a SOC analyst or vulnerability analyst role; Network+/Security+ or equivalent knowledge.
+  exam:
+    questions: Up to 85
+    durationMinutes: 165
+    passingScore: 750 (scale 100–900)
+    format: Multiple choice and performance-based
+    validity: 3 years
+  cost: { currency: USD, note: See the CompTIA store for the current price. }
+  studyHours: { min: 40, max: 60, estimate: true }
+  resources:
+    - { title: "CompTIA CySA+ (V4)", url: "https://www.comptia.org/en-us/certifications/cybersecurity-analyst/v4/", free: true, official: true }
+  relatedCourses: [sec-08-incident-response, sec-07-defence]
+  verifiedOn: "2026-10-21"
+  verificationSources:
+    - "https://www.comptia.org/en-us/certifications/cybersecurity-analyst/"
+    - "https://www.comptia.org/en-us/certifications/cybersecurity-analyst/v4/"
+  unverified: [Current retail price.]
+
+- id: isc2-sscp
+  name: ISC2 Systems Security Certified Practitioner (SSCP)
+  provider: ISC2
+  url: https://www.isc2.org/certifications/sscp
+  category: security
+  credentialType: professional-certification
+  level: associate
+  status: active
+  summary: Hands-on operational security across seven domains for practitioners who implement and administer security controls.
+  objectives:
+    - Security concepts and practices (16%)
+    - Access controls (15%)
+    - Risk identification, monitoring and analysis (15%)
+    - Incident response and recovery (14%)
+    - Cryptography (9%)
+    - Network and communications security (16%)
+    - Systems and application security (15%)
+  prerequisites: One year of paid work experience in one or more of the seven domains (a relevant degree can substitute for a year); without it you can pass and become an Associate of ISC2.
+  exam:
+    questions: 100–125 (computerised adaptive testing)
+    durationMinutes: 120
+    passingScore: 700 out of 1000
+    format: Multiple choice and advanced item types
+  cost: { currency: USD, note: See ISC2 for the current exam price and annual maintenance fee. }
+  studyHours: { min: 40, max: 80, estimate: true }
+  resources:
+    - { title: "SSCP exam outline", url: "https://www.isc2.org/certifications/sscp/sscp-certification-exam-outline", free: true, official: true }
+  relatedCourses: [sec-07-defence, sec-04-principles]
+  verifiedOn: "2026-10-21"
+  verificationSources: ["https://www.isc2.org/certifications/sscp", "https://www.isc2.org/certifications/sscp/sscp-certification-exam-outline"]
+  unverified: [Exam price and annual maintenance fee.]
+
+- id: cisco-cyberops-associate
+  name: Cisco Certified CyberOps Associate
+  code: 200-201 CBROPS
+  provider: Cisco
+  url: https://www.cisco.com/site/us/en/learn/training-certifications/certifications/cyberops/cyberops-associate/index.html
+  category: security
+  credentialType: professional-certification
+  level: associate
+  status: active
+  summary: Entry-level security-operations knowledge for a SOC analyst — monitoring, intrusion analysis and response.
+  objectives:
+    - Security concepts
+    - Security monitoring
+    - Host-based analysis
+    - Network intrusion analysis
+    - Security policies and procedures
+  prerequisites: None; assumes foundational networking and IT knowledge.
+  exam:
+    durationMinutes: 120
+    format: One exam (200-201 CBROPS)
+    delivery: Pearson VUE
+  cost: { amount: 300, currency: USD, note: USD 300 for the 200-201 exam; confirm with Cisco. }
+  studyHours: { min: 40, max: 80, estimate: true }
+  resources:
+    - { title: "Cisco CyberOps Associate", url: "https://www.cisco.com/site/us/en/learn/training-certifications/certifications/cyberops/cyberops-associate/index.html", free: true, official: true }
+  relatedCourses: [sec-08-incident-response, sec-07-defence, sec-02-networking]
+  verifiedOn: "2026-10-21"
+  verificationSources: ["https://www.cisco.com/site/us/en/learn/training-certifications/certifications/cyberops/cyberops-associate/index.html"]
+  unverified: [Exam question count and passing score are not stated on the overview page.]
+
+- id: ms-sc-900
+  name: "Microsoft Certified: Security, Compliance, and Identity Fundamentals"
+  code: SC-900
+  provider: Microsoft
+  url: https://learn.microsoft.com/en-us/credentials/certifications/security-compliance-and-identity-fundamentals/
+  category: security
+  credentialType: professional-certification
+  level: foundational
+  status: active
+  statusNote: The English version of this certification was updated on October 21, 2026; review the study guide for current skills.
+  summary: Foundational knowledge of security, compliance and identity concepts and related Microsoft cloud solutions.
+  objectives:
+    - Concepts of security, compliance and identity
+    - Capabilities of Microsoft Entra (identity)
+    - Capabilities of Microsoft security solutions
+    - Capabilities of Microsoft compliance solutions
+  prerequisites: None; familiarity with Azure and Microsoft 365 is helpful.
+  exam:
+    durationMinutes: 45
+    format: Proctored; may include interactive items
+    delivery: Pearson VUE (or Certiport for students/educators)
+  cost: { currency: USD, note: Price varies by country; a free practice assessment and study guide are provided. }
+  studyHours: { min: 10, max: 20, estimate: true }
+  resources:
+    - { title: "SC-900 certification page", url: "https://learn.microsoft.com/en-us/credentials/certifications/security-compliance-and-identity-fundamentals/", free: true, official: true }
+    - { title: "SC-900 study guide", url: "https://aka.ms/sc900-StudyGuide", free: true, official: true }
+    - { title: "Microsoft Learn (free training)", url: "https://learn.microsoft.com/en-us/training/", free: true, official: true }
+  relatedCourses: [sec-04-principles, sec-05-cryptography]
+  verifiedOn: "2026-10-21"
+  verificationSources: ["https://learn.microsoft.com/en-us/credentials/certifications/security-compliance-and-identity-fundamentals/"]
+  unverified: [Exam price by region; exact post-update skills until the study guide is re-read.]
+
+- id: google-cybersecurity-certificate
+  name: Google Cybersecurity Professional Certificate
+  provider: Google (Coursera)
+  url: https://grow.google/certificates/cybersecurity/
+  category: security
+  credentialType: completion-certificate
+  level: foundational
+  status: active
+  summary: An eight-course beginner programme covering security foundations, networks, Linux and SQL, detection and response, and Python automation.
+  objectives:
+    - Security foundations and risk management
+    - Networks and network security
+    - Linux and SQL for security
+    - Assets, threats and vulnerabilities
+    - Detection and response (SIEM, IDS)
+    - Automating security tasks with Python
+  prerequisites: None; designed for beginners.
+  exam:
+    format: Course assessments and projects (no proctored exam); graduates can sit CompTIA Security+ at a discount for a dual credential
+  cost: { currency: USD, note: Coursera subscription (about USD 49/month in the US/Canada after a free trial); lower in some countries. }
+  studyHours: { min: 120, max: 180, estimate: true }
+  resources:
+    - { title: "Google Cybersecurity Certificate", url: "https://grow.google/certificates/cybersecurity/", free: false, official: true }
+  relatedCourses: [sec-01-it-fundamentals, sec-02-networking, sec-08-incident-response]
+  verifiedOn: "2026-10-21"
+  verificationSources: ["https://grow.google/certificates/cybersecurity/"]
+  unverified: [Current subscription price by region.]
+
+- id: langchain-lcae
+  name: LangChain Certified Agent Engineer (LCAE)
+  provider: LangChain
+  url: https://academy.langchain.com/pages/certifications-lcae
+  category: ai-ml
+  credentialType: professional-certification
+  level: associate
+  status: active
+  summary: Industry certification covering the agent development lifecycle — building, testing, deploying and monitoring LLM agents with LangChain and LangSmith.
+  objectives:
+    - Building agents (25%)
+    - Testing agents (25%)
+    - Deploying agents (25%)
+    - Monitoring agents (25%)
+  prerequisites: Five free LangChain Academy foundation courses are recommended before the exam.
+  exam:
+    questions: 40
+    durationMinutes: 120
+    passingScore: 28 out of 40
+    format: Multiple choice, online live-proctored, English; semi-open-book (LangChain resources only)
+    validity: 24 months
+  cost: { amount: 99, currency: USD, note: USD 99 exam fee. }
+  studyHours: { min: 20, max: 40, estimate: true }
+  resources:
+    - { title: "LCAE certification page", url: "https://academy.langchain.com/pages/certifications-lcae", free: true, official: true }
+    - { title: "LangChain Academy (free courses)", url: "https://academy.langchain.com/", free: true, official: true }
+    - { title: "What is the LCAE exam?", url: "https://kb.langchain.com/articles/5297173898-what-is-the-langchain-certified-agent-engineer-exam", free: true, official: true }
+  relatedCourses: [ai-15-langchain, ai-11-agents, ai-10-rag]
+  verifiedOn: "2026-10-21"
+  verificationSources: ["https://academy.langchain.com/pages/certifications-lcae", "https://kb.langchain.com/articles/5297173898-what-is-the-langchain-certified-agent-engineer-exam"]
+  unverified: [Whether a free resit is included.]
+
+- id: nvidia-agentic-ai-professional
+  name: NVIDIA-Certified Professional — Agentic AI
+  code: NCP-AAI
+  provider: NVIDIA
+  url: https://www.nvidia.com/en-us/learn/certification/agentic-ai-professional/
+  category: ai-ml
+  credentialType: professional-certification
+  level: professional
+  status: active
+  summary: Professional certification in building and operating agentic AI and LLM systems on NVIDIA's platform.
+  objectives:
+    - Agentic AI and LLM application design
+    - Building and orchestrating agents
+    - Deployment and operations
+  prerequisites: NVIDIA suggests 1–2 years of hands-on AI/ML experience, including production agentic-AI work.
+  exam:
+    questions: 60–70
+    durationMinutes: 120
+    format: Online, remotely proctored, English
+    validity: 2 years
+  cost: { amount: 200, currency: USD, note: USD 200. }
+  studyHours: { min: 40, max: 80, estimate: true }
+  resources:
+    - { title: "NCP Agentic AI certification", url: "https://www.nvidia.com/en-us/learn/certification/agentic-ai-professional/", free: true, official: true }
+  relatedCourses: [ai-11-agents, ai-15-langchain, ai-12-mlops]
+  verifiedOn: "2026-10-21"
+  verificationSources: ["https://www.nvidia.com/en-us/learn/certification/agentic-ai-professional/", "https://www.nvidia.com/en-us/learn/certification/"]
+  unverified: [Detailed domain weights.]
 
 # ---------------------------------------------------------------------------
 # Japanese (JLPT) and Chinese (HSK)

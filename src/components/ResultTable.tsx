@@ -9,7 +9,7 @@ export function ResultTable({ table, caption }: { table: TableResult; caption: s
       <table className="w-full text-left text-sm">
         <caption className="pb-1 text-left text-xs text-ink-faint">{caption}</caption>
         <thead>
-          <tr className="border-b border-print-line">
+          <tr className="border-b border-rule-strong">
             {table.columns.map((column) => (
               <th key={column} className="px-2 py-1 font-display font-semibold">
                 {column}

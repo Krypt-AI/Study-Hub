@@ -1,0 +1,69 @@
+- id: ai11.tools.who-runs
+  type: choice
+  skill: recognize
+  topics: [ai11.tools]
+  prompt: In tool calling, what does the model actually produce?
+  options:
+    - { id: a, text: "A structured request to call a named tool with arguments; your code executes it", explanation: "Correct." }
+    - { id: b, text: "The executed result of the function", explanation: "Your code executes; the model only requests." }
+    - { id: c, text: "Nothing until the user runs code", explanation: "The model emits the call request." }
+  correct: [a]
+
+- id: ai11.tools.description
+  type: choice
+  skill: apply
+  topics: [ai11.tools]
+  prompt: The model keeps calling the wrong tool. Which fix is most direct?
+  options:
+    - { id: a, text: "Improve each tool's name and description so it is clear what it does and when to use it", explanation: "Correct: the model chooses from descriptions." }
+    - { id: b, text: "Raise the temperature", explanation: "Adds randomness, not clarity." }
+    - { id: c, text: "Add more unrelated tools", explanation: "More choices make selection harder." }
+  correct: [a]
+
+- id: ai11.tools.good-tool
+  type: choice
+  skill: apply
+  topics: [ai11.tools]
+  prompt: Which is the best candidate for a tool, given LLM weaknesses?
+  options:
+    - { id: a, text: "A calculator for exact arithmetic", explanation: "Correct: offloads a known weakness." }
+    - { id: b, text: "A tool that rephrases text", explanation: "The model already does this well itself." }
+    - { id: c, text: "A tool that makes the model more confident", explanation: "Not a real capability." }
+  correct: [a]
+
+- id: ai11.tools.dispatch-code
+  type: code
+  skill: apply
+  topics: [ai11.tools]
+  language: python
+  prompt: >-
+    Build a tool registry and dispatcher. Write a class `ToolRegistry` with `register(name, fn)` and
+    `call(request)` where `request` is a dict `{"name": str, "args": dict}`. `call` runs the registered function with
+    `**args` and returns its result; if the tool is unknown, return the string `"error: unknown tool <name>"`.
+  starterCode: |
+    class ToolRegistry:
+        def __init__(self):
+            self.tools = {}
+
+        def register(self, name, fn):
+            ...
+
+        def call(self, request):
+            ...
+  tests:
+    - { kind: assert, name: "dispatch", code: "r = ToolRegistry()\nr.register('add', lambda a, b: a + b)\nassert r.call({'name': 'add', 'args': {'a': 2, 'b': 3}}) == 5" }
+    - { kind: assert, name: "unknown tool", code: "r = ToolRegistry()\nassert r.call({'name': 'nope', 'args': {}}) == 'error: unknown tool nope'" }
+    - { kind: assert, name: "another tool", code: "r = ToolRegistry()\nr.register('upper', lambda text: text.upper())\nassert r.call({'name': 'upper', 'args': {'text': 'hi'}}) == 'HI'" }
+  solution: |
+    class ToolRegistry:
+        def __init__(self):
+            self.tools = {}
+
+        def register(self, name, fn):
+            self.tools[name] = fn
+
+        def call(self, request):
+            name = request['name']
+            if name not in self.tools:
+                return f'error: unknown tool {name}'
+            return self.tools[name](**request.get('args', {}))

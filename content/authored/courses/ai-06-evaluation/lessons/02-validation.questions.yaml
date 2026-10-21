@@ -1,0 +1,81 @@
+- id: ai06.validation.users
+  type: choice
+  skill: apply
+  topics: [ai06.validation]
+  prompt: A recommendation model will be used for brand-new users. The data has many rows per user. Which splitter?
+  options:
+    - { id: a, text: "GroupKFold with user id as the group", explanation: "Correct: validates on unseen users." }
+    - { id: b, text: "StratifiedKFold", explanation: "The same user would appear in train and validation." }
+    - { id: c, text: "TimeSeriesSplit", explanation: "Only right if time order is the main concern." }
+  correct: [a]
+
+- id: ai06.validation.nested
+  type: long
+  skill: explain
+  topics: [ai06.validation]
+  prompt: Why is the best cross-validated score from a grid search an optimistic estimate, and how does nested cross-validation fix it?
+  minWords: 30
+  rubric:
+    - { id: selection, label: "Choosing the best of many configurations selects for luck on those folds", keywords: [["best", "select", "max"], ["luck", "noise", "chance", "optimistic"]] }
+    - { id: nested, label: "Nested CV: inner loop tunes, outer loop evaluates on data the tuning never saw", keywords: [["inner"], ["outer"]] }
+  modelAnswer: >-
+    A grid search tries many configurations and reports the maximum score. Some of that score is luck on the particular
+    folds, and picking the maximum selects for that luck, so it overestimates performance on new data. Nested
+    cross-validation runs the whole tuning procedure (the inner loop) inside each training fold of an outer loop, and
+    scores the chosen model on the outer fold, which the tuning never saw.
+
+- id: ai06.validation.learning-curve
+  type: choice
+  skill: apply
+  topics: [ai06.validation]
+  prompt: Training score 0.99, validation score 0.80, and the gap shrinks steadily as training size grows. What helps most?
+  options:
+    - { id: a, text: "More training data", explanation: "Correct: a narrowing gap means the model is data-hungry (overfitting)." }
+    - { id: b, text: "A more complex model", explanation: "It already overfits." }
+    - { id: c, text: "Nothing", explanation: "The curve suggests a clear improvement path." }
+  correct: [a]
+
+- id: ai06.validation.stratified
+  type: choice
+  skill: recognize
+  topics: [ai06.validation]
+  prompt: What does StratifiedKFold guarantee?
+  options:
+    - { id: a, text: "Each fold has roughly the same class proportions as the whole dataset.", explanation: "Correct." }
+    - { id: b, text: "No group appears in two folds.", explanation: "That is GroupKFold." }
+    - { id: c, text: "Folds follow time order.", explanation: "That is TimeSeriesSplit." }
+  correct: [a]
+
+- id: ai06.validation.cv-code
+  type: code
+  skill: apply
+  topics: [ai06.validation]
+  language: python
+  packages: [scikit-learn, numpy]
+  prompt: >-
+    Write `group_cv_score(X, y, groups)` that returns the mean accuracy of `LogisticRegression(max_iter=1000)` under
+    `GroupKFold(n_splits=3)`, and `leaks(train_idx, val_idx, groups)` that returns True if any group appears in both
+    index arrays.
+  starterCode: |
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.model_selection import GroupKFold, cross_val_score
+
+    def group_cv_score(X, y, groups):
+        ...
+
+    def leaks(train_idx, val_idx, groups):
+        ...
+  tests:
+    - { kind: assert, name: "leak check", code: "import numpy as np\ng = np.array([1, 1, 2, 2, 3, 3])\nassert leaks(np.array([0, 2]), np.array([1]), g)\nassert not leaks(np.array([0, 1]), np.array([2, 3]), g)" }
+    - { kind: assert, name: "group folds never leak", code: "import numpy as np\nfrom sklearn.model_selection import GroupKFold\ng = np.repeat(np.arange(6), 5)\nX = np.random.default_rng(0).normal(size=(30, 2))\nfor tr, va in GroupKFold(n_splits=3).split(X, groups=g):\n    assert not leaks(tr, va, g)" }
+    - { kind: assert, name: "score in range", code: "import numpy as np\nrng = np.random.default_rng(0)\nX = rng.normal(size=(60, 2))\ny = (X[:, 0] > 0).astype(int)\ng = np.repeat(np.arange(12), 5)\ns = group_cv_score(X, y, g)\nassert 0.8 <= s <= 1.0" }
+  solution: |
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.model_selection import GroupKFold, cross_val_score
+
+    def group_cv_score(X, y, groups):
+        scores = cross_val_score(LogisticRegression(max_iter=1000), X, y, groups=groups, cv=GroupKFold(n_splits=3))
+        return scores.mean()
+
+    def leaks(train_idx, val_idx, groups):
+        return bool(set(groups[train_idx]) & set(groups[val_idx]))

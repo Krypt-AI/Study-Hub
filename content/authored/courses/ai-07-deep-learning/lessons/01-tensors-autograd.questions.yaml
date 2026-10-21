@@ -1,0 +1,68 @@
+- id: ai07.tensors.grad-value
+  type: short
+  skill: apply
+  topics: [ai07.tensors]
+  prompt: "w = 2 (requires_grad), x = 3, y = 7, b = 0.5, loss = (w·x + b − y)². After `loss.backward()`, what is `w.grad`?"
+  accepted: ["-3", "-3.0"]
+  match: { mode: number }
+  explanation: "2(6.5 − 7)·3 = −3."
+
+- id: ai07.tensors.accumulate
+  type: choice
+  skill: apply
+  topics: [ai07.tensors]
+  prompt: You call `loss.backward()` twice on two batches without clearing gradients. What is in `.grad`?
+  options:
+    - { id: a, text: "The sum of both batches' gradients", explanation: "Correct: gradients accumulate." }
+    - { id: b, text: "Only the second batch's gradient", explanation: "That would need zero_grad in between." }
+    - { id: c, text: "An error is raised", explanation: "Accumulation is allowed (and used deliberately for gradient accumulation)." }
+  correct: [a]
+
+- id: ai07.tensors.no-grad
+  type: choice
+  skill: recognize
+  topics: [ai07.tensors]
+  prompt: "Why wrap a manual weight update in `with torch.no_grad():`?"
+  options:
+    - { id: a, text: "The update must not be recorded in the graph as part of the model's computation.", explanation: "Correct." }
+    - { id: b, text: "It makes the update use the GPU.", explanation: "Device is unrelated." }
+    - { id: c, text: "It clears the gradients.", explanation: "It does not." }
+  correct: [a]
+
+- id: ai07.tensors.item
+  type: choice
+  skill: apply
+  topics: [ai07.tensors]
+  prompt: "You append `loss` (a tensor) to a list every step for plotting, and memory grows until the GPU runs out. Fix?"
+  options:
+    - { id: a, text: "Append `loss.item()` instead", explanation: "Correct: a plain number does not keep the graph alive." }
+    - { id: b, text: "Use a bigger GPU", explanation: "Postpones the problem." }
+    - { id: c, text: "Call `loss.backward()` twice", explanation: "Makes nothing better." }
+  correct: [a]
+
+- id: ai07.tensors.manual-autograd
+  type: code
+  skill: apply
+  topics: [ai07.tensors]
+  language: python
+  prompt: >-
+    Autograd applies the chain rule node by node. Implement a tiny version for one neuron with a sigmoid and squared
+    error: `forward_backward(w, b, x, y)` computes z = w·x + b, a = σ(z), L = (a − y)² and returns `(L, dL_dw, dL_db)`
+    using the chain rule.
+  starterCode: |
+    import math
+
+    def forward_backward(w, b, x, y):
+        ...
+  tests:
+    - { kind: assert, name: "matches numeric gradient", code: "import math\nL, gw, gb = forward_backward(0.5, -0.2, 2.0, 1.0)\nf = lambda w, b: (1 / (1 + math.exp(-(w * 2.0 + b))) - 1.0) ** 2\nh = 1e-6\nassert abs(gw - (f(0.5 + h, -0.2) - f(0.5 - h, -0.2)) / (2 * h)) < 1e-6\nassert abs(gb - (f(0.5, -0.2 + h) - f(0.5, -0.2 - h)) / (2 * h)) < 1e-6\nassert abs(L - f(0.5, -0.2)) < 1e-12" }
+  hints: ["dL/da = 2(a − y); da/dz = a(1 − a); dz/dw = x; dz/db = 1."]
+  solution: |
+    import math
+
+    def forward_backward(w, b, x, y):
+        z = w * x + b
+        a = 1 / (1 + math.exp(-z))
+        loss = (a - y) ** 2
+        dL_dz = 2 * (a - y) * a * (1 - a)
+        return loss, dL_dz * x, dL_dz

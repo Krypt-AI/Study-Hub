@@ -178,7 +178,7 @@ function Welcome({ onCreate }: { onCreate: (language: CodeLanguage) => void }) {
         </p>
       </div>
       <section className="rounded-md border border-rule bg-sheet">
-        <h3 className="border-b border-print-line px-4 py-2 font-semibold">Start a project</h3>
+        <h3 className="border-b border-rule px-4 py-2 font-semibold">Start a project</h3>
         <LanguageList onChoose={onCreate} />
       </section>
     </div>
@@ -340,7 +340,7 @@ function OutputPanel({ run, running, status }: { run?: RunResponse; running: boo
   const failed = run && (run.status !== 'ok' || Boolean(run.error));
   return (
     <section aria-label="Output" className="flex min-h-56 flex-col rounded-md border border-rule bg-sheet">
-      <header className="flex items-center gap-2 border-b border-print-line px-3 py-1.5">
+      <header className="flex items-center gap-2 border-b border-rule px-3 py-1.5">
         <h2 className="font-display text-sm font-semibold">Output</h2>
         {run && !running && <Tag tone={run.status === 'timeout' ? 'slip' : failed ? 'wrong' : 'correct'}>{run.status === 'timeout' ? 'stopped: time limit' : failed ? 'error' : 'finished'}</Tag>}
         {run && !running && <span className="tabular ml-auto text-xs text-ink-faint">{Math.round(run.durationMs)} ms</span>}

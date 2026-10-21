@@ -1,0 +1,49 @@
+- id: ai09.prompting.specific
+  type: choice
+  skill: apply
+  topics: [ai09.prompting]
+  prompt: Which prompt is most likely to give a usable result?
+  options:
+    - { id: a, text: "\"Summarise this article in 3 bullet points for a non-technical manager; if a figure is not stated, omit it.\"", explanation: "Correct: specific audience, format and an unsure-case rule." }
+    - { id: b, text: "\"Summarise this.\"", explanation: "Too vague." }
+    - { id: c, text: "\"You are the world's greatest genius. Summarise.\"", explanation: "Flattery is not specification." }
+  correct: [a]
+
+- id: ai09.prompting.unsure
+  type: choice
+  skill: apply
+  topics: [ai09.prompting]
+  prompt: Which instruction most reduces hallucination on a grounded extraction task?
+  options:
+    - { id: a, text: "\"If the answer is not in the provided text, reply 'not stated'.\"", explanation: "Correct: gives the model a truthful out." }
+    - { id: b, text: "\"Always give a confident answer.\"", explanation: "Encourages making things up." }
+    - { id: c, text: "\"Be creative.\"", explanation: "Wrong for extraction." }
+  correct: [a]
+
+- id: ai09.prompting.cot
+  type: choice
+  skill: recognize
+  topics: [ai09.prompting]
+  prompt: Chain-of-thought prompting helps most on which kind of task?
+  options:
+    - { id: a, text: "Multi-step reasoning and logic problems", explanation: "Correct." }
+    - { id: b, text: "Returning a one-word label fastest", explanation: "It adds tokens and latency." }
+    - { id: c, text: "Reducing cost", explanation: "It increases cost." }
+  correct: [a]
+
+- id: ai09.prompting.iterate
+  type: long
+  skill: explain
+  topics: [ai09.prompting]
+  prompt: Describe how to improve a prompt like an engineer rather than by superstition.
+  minWords: 30
+  rubric:
+    - { id: set, label: "Use a set of representative inputs with known-good outputs", keywords: [["set", "examples", "representative", "test cases"]] }
+    - { id: one, label: "Change one thing and compare across the set", keywords: [["one", "compare", "measure", "across"]] }
+    - { id: keep, label: "Keep changes that actually help; version prompts", keywords: [["keep", "discard", "version", "track"]] }
+  modelAnswer: >-
+    Build a small set of representative inputs with known good outputs. Change one thing in the prompt at a time, run
+    the whole set, and compare results across all the cases rather than eyeballing a single lucky example. Keep the
+    change only if it measurably improves the set, and discard the rest. Version the prompts in your repository and
+    record which prompt produced which results, so you can tell what changed and whether it helped — the same
+    evaluation discipline used for models.

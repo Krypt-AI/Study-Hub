@@ -32,7 +32,7 @@ function Choice({ settings, initial }: { settings: Settings; initial: ExtraCateg
   return (
     <main className="flex min-h-dvh items-center justify-center px-4 py-10">
       <div className="w-full max-w-md rounded-md border border-rule bg-sheet">
-        <header className="border-b border-print-line px-5 py-3">
+        <header className="border-b border-rule px-5 py-3">
           <h1 className="font-display text-2xl font-semibold">What do you want to study?</h1>
         </header>
         <div className="flex flex-col gap-4 px-5 py-5">

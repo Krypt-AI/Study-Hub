@@ -39,7 +39,7 @@ export function WelcomePage({ settings }: { settings: Settings }) {
         <BringDeviceProgress />
       </div>
       <div className="w-full max-w-md rounded-md border border-rule bg-sheet">
-        <header className="flex flex-wrap items-center justify-between gap-2 border-b border-print-line px-5 py-3">
+        <header className="flex flex-wrap items-center justify-between gap-2 border-b border-rule px-5 py-3">
           <h1 className="font-display text-2xl font-semibold">Welcome to Study Hub</h1>
           {/* Someone added by mistake, or a sibling at the wrong turn, can go back to another learner. */}
           {learners.list.length > 1 && <LearnerSwitcher />}

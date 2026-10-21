@@ -1,0 +1,43 @@
+- id: ai11.planning.decompose
+  type: choice
+  skill: apply
+  topics: [ai11.planning]
+  prompt: Why ask an agent to plan/decompose a complex goal before executing?
+  options:
+    - { id: a, text: "Smaller subtasks are easier to get right, check and re-plan than one giant step", explanation: "Correct." }
+    - { id: b, text: "It uses fewer tokens", explanation: "It usually uses more; the gain is reliability." }
+    - { id: c, text: "It removes the need for tools", explanation: "No." }
+  correct: [a]
+
+- id: ai11.planning.longterm
+  type: choice
+  skill: apply
+  topics: [ai11.planning]
+  prompt: How is long-term agent memory across sessions actually implemented?
+  options:
+    - { id: a, text: "Store memories externally (text + embeddings) and retrieve the relevant ones into the prompt (like RAG)", explanation: "Correct." }
+    - { id: b, text: "The model saves them in its weights", explanation: "Inference does not update weights." }
+    - { id: c, text: "Keep every past session in every prompt", explanation: "Overflows the context window." }
+  correct: [a]
+
+- id: ai11.planning.context
+  type: choice
+  skill: apply
+  topics: [ai11.planning]
+  prompt: A long-running agent's history is approaching the context-window limit. A good tactic is to…
+  options:
+    - { id: a, text: "Summarise older turns into a running summary while keeping recent turns verbatim", explanation: "Correct." }
+    - { id: b, text: "Keep adding everything and hope", explanation: "It will overflow and fail." }
+    - { id: c, text: "Delete the user's question", explanation: "Loses the goal." }
+  correct: [a]
+
+- id: ai11.planning.reflection
+  type: choice
+  skill: recognize
+  topics: [ai11.planning]
+  prompt: What does a reflection/critique step add to an agent?
+  options:
+    - { id: a, text: "A self-review that can catch and fix mistakes before finishing, at the cost of extra steps", explanation: "Correct." }
+    - { id: b, text: "Guaranteed correctness", explanation: "It helps, not guarantees; measure it." }
+    - { id: c, text: "Faster responses", explanation: "It adds steps." }
+  correct: [a]

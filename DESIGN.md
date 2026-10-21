@@ -1,6 +1,6 @@
 # Study Hub design system: "Answer Sheet"
 
-Every study session is a sitting at an exam mark sheet. The sheet's printed structure is dropout-ink salmon; the learner's marks are pencil fill; grading comes in check, cross and slip inks. Progress is always shown as filled bubbles.
+Every study session is a sitting at an exam mark sheet, softened for long reading. The sheet's printed structure is dropout-ink salmon; the learner's marks are pencil fill; grading comes in check, cross and slip inks. Progress is always shown as filled bubbles. Panels are softly rounded and separated by space rather than hard rules; the navigation rail collapses to icons when the learner wants a wider reading area.
 
 Recorded from the shipped code (`src/styles/global.css`, `src/components/ui/`) on 2026-10-11.
 
@@ -8,7 +8,7 @@ Recorded from the shipped code (`src/styles/global.css`, `src/components/ui/`) o
 
 1. **Fill, then mark.** A bubble fills when you answer and gets its mark (check, cross, dashed check for "almost") when it is graded. This is the only signature motion; it is skipped under reduced motion.
 2. **Printed structure, pencil content.** Headers, rules, numbers and empty bubbles are print ink; anything the learner did is ink or mark colour.
-3. **Low glare at night.** The default night theme is graphite, never pure black or pure white.
+3. **Low glare at night, and soft everywhere.** The default night theme is graphite, never pure black or pure white. Corners are rounded (controls 8–10 px, panels 12–16 px), hairlines are quiet neutral `rule`, not salmon, and headers are set off by space, so the sheet reads calm rather than sharp.
 4. **Ruled rows, not card grids.** Lists are rows on a sheet, like an answer sheet. Browse pages start with an index of areas (large ruled rows, like a test booklet's contents page) and open one area at a time, so nobody scrolls past what they don't study.
 5. **Honest labels.** Provenance, "editor only", estimates and unverified facts are always visible.
 6. **Bubbles mean progress.** Bubbles appear only where they record answers, lessons, goals or a tracked plan; navigation and decoration never use them, and lists never repeat a symbol on every row.
@@ -35,7 +35,7 @@ Printing always uses the day palette on white.
 ## Type
 
 - **Text**: Public Sans Variable, 16 px base.
-- **Display**: Barlow Semi Condensed 500–700 for headings, sheet titles and numerals (`.display-numerals`, tabular figures).
+- **Display**: Nunito Variable (600–700, rounded humanist) for headings, sheet titles and numerals (`.display-numerals`, tabular figures). Its gently rounded terminals carry the calmer, learning-friendly tone; it replaced the condensed Barlow Semi Condensed.
 - **Code**: JetBrains Mono Variable.
 - **CJK**: `:lang(zh)` and `:lang(ja)` select system CJK fonts; content in Chinese or Japanese always carries a `lang` attribute.
 
@@ -44,14 +44,14 @@ Printing always uses the day palette on white.
 - **Bubble / BubbleStrip**: ellipse 22×15 (sm 16×11, lg 30×20). States: empty, current (thicker print stroke), filled, correct, almost, wrong, review (inner ring), and mastery levels new (dashed), learning (half fill), weak (red stroke), mastered (filled).
 - **Sheet**: rounded 6 px panel, `rule` border, optional header band with a `print-line` underline. **PageHeader**: page title (28–32 px), lead, actions.
 - **Button**: primary (print fill), secondary (bordered sheet), ghost, danger; sizes sm 32 px, md 36 px, lg 44 px. **IconButton**: 32 px, always labelled.
-- **Field / Input / Select / Textarea**: write-in boxes, print focus ring. **Tabs** (underlined in print), **Segmented** (small exclusive toggles), **Tag** (neutral, print, correct, wrong, slip), **Dialog** (native `<dialog>`), **Toast**.
+- **Field / Input / Select / Textarea**: write-in boxes, print focus ring. **Tabs** (underlined in print), **Segmented** (small exclusive toggles), **Tag** (soft filled pill, no border: neutral, print, correct, wrong, slip), **Dialog** (native `<dialog>`), **Toast**.
 - **Feedback**: loading, empty (dashed border) and error states.
-- **AreaIndex / AreaBack**: the first step of Courses and Certifications: one ruled row per area with its name in the display face (26 px), a one-line description, a count and a chevron (two columns from `lg` when there are many); `AreaBack` returns from an opened area.
+- **AreaIndex / AreaBack**: the first step of Courses and Certifications: one ruled row per area with its name in the display face (26 px), a one-line description, a count and a chevron (two columns from `lg` when there are many); `AreaBack` returns from an opened area. An area index may give every row a leading icon in a soft tile (used on Courses, where the roadmap-course areas sit beside the book areas); icons show only when every row has one.
 - **Switch**: an on/off control with a visible label and description (or only its accessible name, in lists).
 
 ## Layout
 
-- Rail 15 rem on large screens; a drawer below 1024 px. Its items are icon and label only (40 px tall); the current page is a raised sheet in semibold. Playground is listed only for learners of a course with code exercises. Content max width 64–96 rem depending on the page; 16–40 px gutters.
+- Rail 15 rem on large screens, collapsible to a 4.25 rem icon strip (toggle in the rail header, Ctrl+B, remembered per browser via `study-hub:rail`); a drawer below 1024 px. Collapsed, each item keeps its label for screen readers and as a tooltip, and the “reviews due” badge becomes a dot. Items are 40 px tall; the current page is a raised sheet in semibold. Playground is listed only for learners of a course with code exercises. Content max width 64–96 rem depending on the page; 16–40 px gutters.
 - Two-column pages (main + side sheets) collapse to one column below `xl`.
 - The lesson page is a single reading column (max 56 rem).
 - The calendar week view gives each weekday a column from `lg` (weekends only when something is on them) and stacks the days below it; the month grid keeps seven columns and shows dots instead of titles below `sm`.

@@ -1,0 +1,43 @@
+- id: ai14.present.casestudy
+  type: choice
+  skill: apply
+  topics: [ai14.present]
+  prompt: What should a portfolio project's case study contain?
+  options:
+    - { id: a, text: "The problem, your approach and trade-offs, honest results with limitations, and what you learned", explanation: "Correct." }
+    - { id: b, text: "Only a list of libraries", explanation: "Not the reasoning or evidence." }
+    - { id: c, text: "A claim of state-of-the-art with no numbers", explanation: "Unsupported." }
+  correct: [a]
+
+- id: ai14.present.choose
+  type: choice
+  skill: apply
+  topics: [ai14.present]
+  prompt: How should you choose a certification?
+  options:
+    - { id: a, text: "By your target role/stack, verifying current cost, format and content on the official page", explanation: "Correct." }
+    - { id: b, text: "Collect as many as possible", explanation: "Costly and unfocused." }
+    - { id: c, text: "Whichever has the nicest logo", explanation: "Irrelevant." }
+  correct: [a]
+
+- id: ai14.present.plan
+  type: choice
+  skill: apply
+  topics: [ai14.present]
+  prompt: Which is a sound certification preparation step?
+  options:
+    - { id: a, text: "Map the exam objectives to your courses/projects and study the gaps, using official materials", explanation: "Correct." }
+    - { id: b, text: "Study everything equally, including what you already know", explanation: "Inefficient." }
+    - { id: c, text: "Skip hands-on practice", explanation: "Hands-on backs up the cert." }
+  correct: [a]
+
+- id: ai14.present.pin
+  type: choice
+  skill: recognize
+  topics: [ai14.present]
+  prompt: How should you present projects on your GitHub profile?
+  options:
+    - { id: a, text: "Pin your best two or three finished, documented projects — depth over quantity", explanation: "Correct." }
+    - { id: b, text: "Leave many half-finished repos unpinned and unexplained", explanation: "Weak signal." }
+    - { id: c, text: "Make everything private", explanation: "Then reviewers see nothing." }
+  correct: [a]

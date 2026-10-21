@@ -1,0 +1,119 @@
+id: ai-09-llm-apis
+title: Prompt Engineering and LLM APIs
+subtitle: AI Engineering · Stage 9
+description: >-
+  Working with LLMs programmatically: the message format, prompting techniques that actually help, getting
+  structured output, streaming, controlling cost and latency, and handling the non-determinism and safety concerns of
+  real systems. Exercises build prompts and parse model-style responses in the browser sandbox; a setup lesson covers
+  getting an API key safely.
+category: ai-engineering
+subject: llm
+level: Stage 9
+difficulty: intermediate
+tags: [prompting, llm-apis, structured-output, streaming, cost]
+prerequisites: [ai-02-dev-tools, ai-08-transformers]
+certifications: [claude-certified-developer, openai-certifications, claude-academy-badges]
+estimatedHours: 14
+topics:
+  - { id: ai09.setup, title: "Setup: API keys and a client" }
+  - { id: ai09.messages, title: Messages and roles }
+  - { id: ai09.prompting, title: Prompting techniques }
+  - { id: ai09.structured, title: Structured output }
+  - { id: ai09.production, title: Streaming, cost and reliability }
+units:
+  - id: ai-09-llm-apis.u1
+    title: Talking to a model
+    lessons: [00-setup, 01-messages, 02-prompting]
+  - id: ai-09-llm-apis.u2
+    title: Useful and reliable output
+    lessons: [03-structured-output, 04-streaming-cost-reliability]
+assessments:
+  - id: ai-09-llm-apis.quiz
+    title: "Stage 9 quiz: prompting and LLM APIs"
+    kind: quiz
+    passMark: 0.7
+    description: Eight questions across the whole course.
+    sections:
+      - id: ai-09-llm-apis.quiz.s1
+        title: Prompting and LLM APIs
+        questions:
+          - id: ai09.quiz.roles
+            type: choice
+            skill: recognize
+            topics: [ai09.messages]
+            prompt: What is the system message for in a chat API?
+            options:
+              - { id: a, text: "Setting the assistant's role, rules and context for the whole conversation", explanation: "Correct." }
+              - { id: b, text: "The user's first question", explanation: "That is a user message." }
+              - { id: c, text: "The model's reply", explanation: "That is an assistant message." }
+            correct: [a]
+          - id: ai09.quiz.key-safety
+            type: choice
+            skill: apply
+            topics: [ai09.setup]
+            prompt: Where should your LLM API key live in a project?
+            options:
+              - { id: a, text: "In an environment variable / untracked .env, never in code or Git", explanation: "Correct (Stage 2)." }
+              - { id: b, text: "Hard-coded in the script so it always works", explanation: "Leaks the key the moment it is shared or committed." }
+              - { id: c, text: "In a public README", explanation: "Never." }
+            correct: [a]
+          - id: ai09.quiz.fewshot
+            type: choice
+            skill: recognize
+            topics: [ai09.prompting]
+            prompt: What is few-shot prompting?
+            options:
+              - { id: a, text: "Including a few worked examples of the task in the prompt to show the desired pattern", explanation: "Correct." }
+              - { id: b, text: "Sending only a few words", explanation: "Not what 'shot' means here." }
+              - { id: c, text: "Fine-tuning the model weights", explanation: "That is training, not prompting." }
+            correct: [a]
+          - id: ai09.quiz.cot
+            type: choice
+            skill: apply
+            topics: [ai09.prompting]
+            prompt: Asking the model to "work through it step by step" before the final answer tends to help most with…
+            options:
+              - { id: a, text: "multi-step reasoning and arithmetic-style problems", explanation: "Correct: chain-of-thought gives room to reason." }
+              - { id: b, text: "reducing token cost", explanation: "It increases tokens." }
+              - { id: c, text: "making the model faster", explanation: "It is slower." }
+            correct: [a]
+          - id: ai09.quiz.structured
+            type: choice
+            skill: apply
+            topics: [ai09.structured]
+            prompt: You need the model's answer as reliable JSON for a downstream program. Best approach?
+            options:
+              - { id: a, text: "Use the provider's structured-output / JSON-schema feature, or a tool/function schema, and validate the result", explanation: "Correct." }
+              - { id: b, text: "Ask nicely and hope the prose is parseable", explanation: "Unreliable." }
+              - { id: c, text: "Parse the English with regex forever", explanation: "Fragile; use structured output." }
+            correct: [a]
+          - id: ai09.quiz.injection
+            type: choice
+            skill: recognize
+            topics: [ai09.production]
+            prompt: What is prompt injection?
+            options:
+              - { id: a, text: "Untrusted input (e.g. a web page or document) containing instructions that hijack the model's behaviour", explanation: "Correct (Stage 13 covers defences)." }
+              - { id: b, text: "Injecting SQL into a database", explanation: "That is SQL injection." }
+              - { id: c, text: "A faster prompting method", explanation: "No." }
+            correct: [a]
+          - id: ai09.quiz.streaming
+            type: choice
+            skill: recognize
+            topics: [ai09.production]
+            prompt: Why stream an LLM response token by token?
+            options:
+              - { id: a, text: "Lower perceived latency — the user sees output as it is generated", explanation: "Correct." }
+              - { id: b, text: "It reduces the total tokens billed", explanation: "Billing is unchanged." }
+              - { id: c, text: "It makes the answer more accurate", explanation: "Accuracy is unchanged." }
+            correct: [a]
+          - id: ai09.quiz.idempotent-retry
+            type: choice
+            skill: apply
+            topics: [ai09.production]
+            prompt: An API call fails with a transient rate-limit error. The robust client behaviour is…
+            options:
+              - { id: a, text: "Retry with exponential backoff, respecting the provider's retry guidance", explanation: "Correct." }
+              - { id: b, text: "Retry instantly in a tight loop forever", explanation: "Worsens the rate limit." }
+              - { id: c, text: "Crash the whole application", explanation: "Not robust." }
+            correct: [a]

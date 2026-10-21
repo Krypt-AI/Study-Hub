@@ -1,0 +1,117 @@
+id: sec-06-web-security
+title: Web Application Security
+subtitle: Cybersecurity · Stage 6
+description: >-
+  The vulnerabilities behind most real breaches and the defences that stop them: broken access control, injection,
+  cross-site scripting, the OWASP Top 10 (2025), and how to test safely against intentionally vulnerable targets in
+  your own lab. Written from the defender's side — understand the bug so you can prevent it.
+category: it
+subject: cybersecurity
+level: Stage 6
+difficulty: intermediate
+tags: [web-security, owasp, injection, xss, access-control]
+prerequisites: [sec-04-principles, sec-05-cryptography]
+estimatedHours: 14
+topics:
+  - { id: sec06.setup, title: "Setup: a web security lab" }
+  - { id: sec06.http, title: How the web works, for security }
+  - { id: sec06.access, title: Broken access control }
+  - { id: sec06.injection, title: Injection and XSS }
+  - { id: sec06.owasp, title: The OWASP Top 10 }
+units:
+  - id: sec-06-web-security.u1
+    title: The web and its weak points
+    lessons: [00-setup, 01-web-basics, 02-access-control]
+  - id: sec-06-web-security.u2
+    title: Injection and the big picture
+    lessons: [03-injection-xss, 04-owasp-top-10]
+assessments:
+  - id: sec-06-web-security.quiz
+    title: "Stage 6 quiz: web application security"
+    kind: quiz
+    passMark: 0.7
+    description: Eight questions across the whole course.
+    sections:
+      - id: sec-06-web-security.quiz.s1
+        title: Web application security
+        questions:
+          - id: sec06.quiz.top
+            type: choice
+            skill: recognize
+            topics: [sec06.access]
+            prompt: Which category tops the OWASP Top 10 (2021 and 2025)?
+            options:
+              - { id: a, text: "Broken Access Control", explanation: "Correct: it remains the most common serious web flaw." }
+              - { id: b, text: "Physical theft", explanation: "Not a web category." }
+              - { id: c, text: "Weak Wi-Fi passwords", explanation: "Not an OWASP web app category." }
+            correct: [a]
+          - id: sec06.quiz.idor
+            type: choice
+            skill: apply
+            topics: [sec06.access]
+            prompt: "Changing `/invoice?id=1001` to `id=1002` and seeing another customer's invoice is an example of…"
+            options:
+              - { id: a, text: "broken access control (an insecure direct object reference)", explanation: "Correct: the server failed to check ownership." }
+              - { id: b, text: "cross-site scripting", explanation: "No script injection here." }
+              - { id: c, text: "a denial-of-service attack", explanation: "No availability impact." }
+            correct: [a]
+          - id: sec06.quiz.sqli-defence
+            type: choice
+            skill: apply
+            topics: [sec06.injection]
+            prompt: What is the primary defence against SQL injection?
+            options:
+              - { id: a, text: "Parameterised queries (prepared statements) so input is never mixed into SQL code", explanation: "Correct." }
+              - { id: b, text: "Hiding the database version", explanation: "Obscurity does not stop injection." }
+              - { id: c, text: "A longer admin password", explanation: "Unrelated to injection." }
+            correct: [a]
+          - id: sec06.quiz.xss
+            type: choice
+            skill: apply
+            topics: [sec06.injection]
+            prompt: Which defence most directly prevents cross-site scripting (XSS)?
+            options:
+              - { id: a, text: "Context-aware output encoding of user data, plus a Content Security Policy", explanation: "Correct: encode on output so data is never treated as script." }
+              - { id: b, text: "Encrypting the database", explanation: "Does not stop injected script running in the browser." }
+              - { id: c, text: "Rate limiting logins", explanation: "Unrelated to XSS." }
+            correct: [a]
+          - id: sec06.quiz.csrf
+            type: choice
+            skill: recognize
+            topics: [sec06.owasp]
+            prompt: Which defends against cross-site request forgery (CSRF)?
+            options:
+              - { id: a, text: "Anti-CSRF tokens and SameSite cookies", explanation: "Correct." }
+              - { id: b, text: "A faster server", explanation: "Unrelated." }
+              - { id: c, text: "Longer session timeouts", explanation: "Would make it worse, if anything." }
+            correct: [a]
+          - id: sec06.quiz.validation
+            type: choice
+            skill: apply
+            topics: [sec06.injection]
+            prompt: Which input-validation approach is safest?
+            options:
+              - { id: a, text: "Allowlisting: accept only input matching an expected pattern", explanation: "Correct: define what is allowed, reject the rest." }
+              - { id: b, text: "Denylisting: block known-bad strings", explanation: "Attackers find encodings the denylist missed." }
+              - { id: c, text: "Trust the client-side validation", explanation: "Client checks are easily bypassed." }
+            correct: [a]
+          - id: sec06.quiz.lab
+            type: choice
+            skill: recognize
+            topics: [sec06.setup]
+            prompt: Which is a safe, legal place to practise web attacks?
+            options:
+              - { id: a, text: "An intentionally vulnerable app like OWASP Juice Shop running in your own isolated lab", explanation: "Correct." }
+              - { id: b, text: "A live e-commerce site you use", explanation: "Not authorised — illegal." }
+              - { id: c, text: "Your bank's website", explanation: "Not authorised — illegal." }
+            correct: [a]
+          - id: sec06.quiz.supply-chain
+            type: choice
+            skill: recognize
+            topics: [sec06.owasp]
+            prompt: The 2025 OWASP Top 10 broadened "Vulnerable and Outdated Components" into which category?
+            options:
+              - { id: a, text: "Software Supply Chain Failures", explanation: "Correct: A03:2025 covers dependencies, build systems and distribution." }
+              - { id: b, text: "Physical Security Failures", explanation: "Not an OWASP web category." }
+              - { id: c, text: "Weak Cryptography Only", explanation: "Cryptographic Failures is a separate category." }
+            correct: [a]

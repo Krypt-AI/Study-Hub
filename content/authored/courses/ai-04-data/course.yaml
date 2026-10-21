@@ -1,0 +1,115 @@
+id: ai-04-data
+title: NumPy, pandas and Data Preparation
+subtitle: AI Engineering · Stage 4
+description: >-
+  Turning raw data into a clean table a model can learn from: NumPy arrays and vectorised computation, pandas
+  DataFrames, cleaning missing and messy values, joining and aggregating, and exploring data with charts. Exercises
+  run real NumPy and pandas in the browser sandbox.
+category: ai-engineering
+subject: data
+level: Stage 4
+difficulty: intermediate
+tags: [numpy, pandas, data-cleaning, matplotlib, eda]
+prerequisites: [ai-01-python, ai-03-math]
+estimatedHours: 14
+topics:
+  - { id: ai04.setup, title: "Setup: data tools in VS Code" }
+  - { id: ai04.numpy, title: NumPy arrays }
+  - { id: ai04.pandas, title: pandas DataFrames }
+  - { id: ai04.cleaning, title: Cleaning data }
+  - { id: ai04.combine, title: Joining and aggregating }
+  - { id: ai04.eda, title: Exploratory data analysis }
+units:
+  - id: ai-04-data.u1
+    title: Arrays and tables
+    lessons: [00-setup, 01-numpy, 02-pandas-basics]
+  - id: ai-04-data.u2
+    title: Preparing data
+    lessons: [03-cleaning, 04-joins-groupby, 05-eda]
+assessments:
+  - id: ai-04-data.quiz
+    title: "Stage 4 quiz: data preparation"
+    kind: quiz
+    passMark: 0.7
+    description: Eight questions across the whole course.
+    sections:
+      - id: ai-04-data.quiz.s1
+        title: Data preparation
+        questions:
+          - id: ai04.quiz.vectorise
+            type: choice
+            skill: recognize
+            topics: [ai04.numpy]
+            prompt: Why is `prices * 1.06` on a NumPy array much faster than a Python loop over a list?
+            options:
+              - { id: a, text: "The operation runs in compiled code over a contiguous block of memory, without per-element Python overhead.", explanation: "Correct: that is vectorisation." }
+              - { id: b, text: "NumPy uses the GPU automatically.", explanation: "NumPy runs on the CPU." }
+              - { id: c, text: "Python lists cannot hold floats.", explanation: "They can." }
+            correct: [a]
+          - id: ai04.quiz.axis
+            type: choice
+            skill: apply
+            topics: [ai04.numpy]
+            prompt: "`X` has shape (100, 5). What is the shape of `X.mean(axis=0)`?"
+            options:
+              - { id: a, text: "(5,)", explanation: "Correct: axis 0 collapses the rows, giving one mean per column." }
+              - { id: b, text: "(100,)", explanation: "That is axis=1." }
+              - { id: c, text: "A single number", explanation: "That is `X.mean()` with no axis." }
+            correct: [a]
+          - id: ai04.quiz.loc-iloc
+            type: choice
+            skill: recall
+            topics: [ai04.pandas]
+            prompt: Which pandas accessor selects rows and columns by label?
+            options:
+              - { id: a, text: "`.loc`", explanation: "Correct." }
+              - { id: b, text: "`.iloc`", explanation: "Integer position." }
+              - { id: c, text: "`.at_position`", explanation: "Not a pandas accessor." }
+            correct: [a]
+          - id: ai04.quiz.missing
+            type: choice
+            skill: apply
+            topics: [ai04.cleaning]
+            prompt: 40% of the `income` column is missing. What is usually the best first step?
+            options:
+              - { id: a, text: "Investigate why it is missing, then impute (for example the median) and add an `income_missing` indicator column.", explanation: "Correct: missingness itself can carry information." }
+              - { id: b, text: "Drop every row with a missing value.", explanation: "You would lose 40% of the data and possibly bias it." }
+              - { id: c, text: "Fill with 0.", explanation: "Zero income is a real value and distorts the column." }
+            correct: [a]
+          - id: ai04.quiz.join
+            type: choice
+            skill: apply
+            topics: [ai04.combine]
+            prompt: You need every customer, with their orders where they exist. Which merge?
+            options:
+              - { id: a, text: "`customers.merge(orders, on='customer_id', how='left')`", explanation: "Correct: keeps all customers." }
+              - { id: b, text: "`how='inner'`", explanation: "Drops customers without orders." }
+              - { id: c, text: "`how='right'`", explanation: "Keeps all orders instead." }
+            correct: [a]
+          - id: ai04.quiz.groupby
+            type: short
+            skill: recall
+            topics: [ai04.combine]
+            prompt: "Complete the pandas call that averages `score` per `topic`: `df.groupby('topic')['score'].____()`"
+            accepted: [mean]
+            match: { mode: exact }
+          - id: ai04.quiz.leak
+            type: choice
+            skill: apply
+            topics: [ai04.cleaning]
+            prompt: When should missing values be imputed with a column's median for a model?
+            options:
+              - { id: a, text: "Compute the median on the training split only, then apply it to validation and test data.", explanation: "Correct: using test statistics leaks information." }
+              - { id: b, text: "On the whole dataset before splitting.", explanation: "Leakage." }
+              - { id: c, text: "Separately on each split with its own median.", explanation: "Then the same raw value is filled differently in each split." }
+            correct: [a]
+          - id: ai04.quiz.chart
+            type: choice
+            skill: apply
+            topics: [ai04.eda]
+            prompt: Which chart best shows the distribution of a single numeric column?
+            options:
+              - { id: a, text: "A histogram", explanation: "Correct (or a box plot)." }
+              - { id: b, text: "A pie chart", explanation: "For parts of a whole, and rarely the best choice." }
+              - { id: c, text: "A line chart", explanation: "For ordered values such as time series." }
+            correct: [a]

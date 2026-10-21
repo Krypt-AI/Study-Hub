@@ -1,0 +1,68 @@
+- id: ai09.structured.why
+  type: choice
+  skill: recognize
+  topics: [ai09.structured]
+  prompt: Why prefer schema-constrained output over parsing the model's prose with regex?
+  options:
+    - { id: a, text: "The provider enforces the structure during generation, so output is reliably machine-readable", explanation: "Correct." }
+    - { id: b, text: "Regex is not available in Python", explanation: "It is; the issue is brittleness." }
+    - { id: c, text: "Prose is always valid JSON", explanation: "It is not." }
+  correct: [a]
+
+- id: ai09.structured.validate
+  type: choice
+  skill: apply
+  topics: [ai09.structured]
+  prompt: Even with a structured-output feature, what should your code still do with the response?
+  options:
+    - { id: a, text: "Validate it (parse, check required fields and types) and have a fallback for failures", explanation: "Correct." }
+    - { id: b, text: "Trust it blindly", explanation: "Validation is still needed." }
+    - { id: c, text: "Print it and hope", explanation: "Not robust." }
+  correct: [a]
+
+- id: ai09.structured.tools
+  type: choice
+  skill: recognize
+  topics: [ai09.structured]
+  prompt: How does structured output relate to tool/function calling?
+  options:
+    - { id: a, text: "Both are schema-driven: a function schema is like a structured-output schema the model fills with call arguments", explanation: "Correct." }
+    - { id: b, text: "They are unrelated", explanation: "They share the same machinery." }
+    - { id: c, text: "Tools replace the need for any schema", explanation: "Tools are defined by schemas." }
+  correct: [a]
+
+- id: ai09.structured.validate-code
+  type: code
+  skill: apply
+  topics: [ai09.structured]
+  language: python
+  prompt: >-
+    Simulate validating an LLM's JSON reply. Write `parse_flashcard(text)` that parses `text` as JSON and returns a
+    dict only if it has string `front`, string `back`, and integer `difficulty` in 1..5; otherwise raise `ValueError`.
+    Use the `json` module.
+  starterCode: |
+    import json
+
+    def parse_flashcard(text):
+        ...
+  tests:
+    - { kind: assert, name: "valid", code: "assert parse_flashcard('{\"front\":\"Q\",\"back\":\"A\",\"difficulty\":3}') == {'front': 'Q', 'back': 'A', 'difficulty': 3}" }
+    - { kind: assert, name: "bad json", code: "try:\n    parse_flashcard('not json')\n    raise AssertionError('expected ValueError')\nexcept ValueError:\n    pass" }
+    - { kind: assert, name: "out of range", code: "try:\n    parse_flashcard('{\"front\":\"Q\",\"back\":\"A\",\"difficulty\":9}')\n    raise AssertionError('expected ValueError')\nexcept ValueError:\n    pass" }
+    - { kind: assert, name: "wrong type", code: "try:\n    parse_flashcard('{\"front\":1,\"back\":\"A\",\"difficulty\":2}')\n    raise AssertionError('expected ValueError')\nexcept ValueError:\n    pass" }
+  solution: |
+    import json
+
+    def parse_flashcard(text):
+        try:
+            data = json.loads(text)
+        except json.JSONDecodeError as exc:
+            raise ValueError("invalid JSON") from exc
+        if not isinstance(data, dict):
+            raise ValueError("not an object")
+        if not isinstance(data.get("front"), str) or not isinstance(data.get("back"), str):
+            raise ValueError("front/back must be strings")
+        diff = data.get("difficulty")
+        if not isinstance(diff, int) or isinstance(diff, bool) or not 1 <= diff <= 5:
+            raise ValueError("difficulty must be an int in 1..5")
+        return {"front": data["front"], "back": data["back"], "difficulty": diff}

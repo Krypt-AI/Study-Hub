@@ -1,0 +1,43 @@
+- id: sec08.triage.first
+  type: choice
+  skill: apply
+  topics: [sec08.triage]
+  prompt: What is the first question in triaging an alert?
+  options:
+    - { id: a, text: "Is it a true or false positive — does the evidence really indicate malicious activity?", explanation: "Correct: confirm before escalating." }
+    - { id: b, text: "Who should we blame?", explanation: "Not triage, and not useful." }
+    - { id: c, text: "Should we tell the press?", explanation: "Far later, via comms/legal if at all." }
+  correct: [a]
+
+- id: sec08.triage.scope
+  type: choice
+  skill: apply
+  topics: [sec08.triage]
+  prompt: One host is confirmed compromised. What does scoping involve?
+  options:
+    - { id: a, text: "Pivoting through logs to find other affected hosts/accounts and when it really began", explanation: "Correct: assume lateral movement; find the full extent." }
+    - { id: b, text: "Assuming only that one host is affected", explanation: "Attackers move laterally; one finding is a thread to pull." }
+    - { id: c, text: "Immediately rebuilding every machine", explanation: "Premature and destroys evidence." }
+  correct: [a]
+
+- id: sec08.triage.killchain
+  type: choice
+  skill: recognize
+  topics: [sec08.triage]
+  prompt: How do the Cyber Kill Chain and MITRE ATT&CK help an investigation?
+  options:
+    - { id: a, text: "They structure reasoning about attacker stages and techniques, suggesting what to look for next", explanation: "Correct: maps, not scripts." }
+    - { id: b, text: "They automatically remove malware", explanation: "They are frameworks, not tools." }
+    - { id: c, text: "They encrypt the evidence", explanation: "No." }
+  correct: [a]
+
+- id: sec08.triage.declare
+  type: choice
+  skill: apply
+  topics: [sec08.triage]
+  prompt: You are fairly sure something real is happening but not certain. What is the safer bias?
+  options:
+    - { id: a, text: "Declare an incident and stand down later if needed, rather than let a real one smoulder unowned", explanation: "Correct." }
+    - { id: b, text: "Wait days for certainty before telling anyone", explanation: "Lets a real incident spread." }
+    - { id: c, text: "Never declare to avoid paperwork", explanation: "Dangerous." }
+  correct: [a]

@@ -1,7 +1,5 @@
 import '@fontsource-variable/public-sans';
-import '@fontsource/barlow-semi-condensed/500.css';
-import '@fontsource/barlow-semi-condensed/600.css';
-import '@fontsource/barlow-semi-condensed/700.css';
+import '@fontsource-variable/nunito';
 import '@fontsource-variable/jetbrains-mono';
 import './styles/global.css';
 import { StrictMode } from 'react';

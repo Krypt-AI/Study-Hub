@@ -1,0 +1,85 @@
+- id: sec10.merkle.proof-size
+  type: choice
+  skill: recognize
+  topics: [sec10.merkle]
+  prompt: Roughly how many hashes are in a Merkle membership proof for a block of n transactions?
+  options:
+    - { id: a, text: "About log₂(n)", explanation: "Correct: one sibling per level up the tree." }
+    - { id: b, text: "All n", explanation: "That defeats the purpose." }
+    - { id: c, text: "Exactly 1", explanation: "Only for a single-transaction block." }
+  correct: [a]
+
+- id: sec10.merkle.header
+  type: choice
+  skill: recognize
+  topics: [sec10.merkle]
+  prompt: What does the block header store to summarise all its transactions?
+  options:
+    - { id: a, text: "The Merkle root", explanation: "Correct: one hash at the top of the tree." }
+    - { id: b, text: "Every transaction hash", explanation: "Those are in the tree, not the header." }
+    - { id: c, text: "The miner's private key", explanation: "Private keys are never stored." }
+  correct: [a]
+
+- id: sec10.merkle.light-client
+  type: long
+  skill: explain
+  topics: [sec10.merkle]
+  prompt: Explain how a light wallet can confirm its transaction is in a block without downloading the whole block.
+  minWords: 30
+  rubric:
+    - { id: header, label: "It keeps block headers with the Merkle root", keywords: [["header", "root"]] }
+    - { id: proof, label: "It requests a short path of sibling hashes (a Merkle proof)", keywords: [["proof", "sibling", "path"]] }
+    - { id: recompute, label: "It recomputes the root and compares with the trusted root", keywords: [["recompute", "compare", "matches", "verify"]] }
+  modelAnswer: >-
+    The light client stores only block headers, each containing the block's Merkle root. To check that its transaction
+    is included, it asks a full node for a Merkle proof: the sibling hashes along the path from its transaction up to
+    the root. It then recomputes the root from its transaction plus those siblings and compares it with the root in the
+    header it already trusts. A match proves inclusion; any tampering changes the recomputed root and fails.
+
+- id: sec10.merkle.code
+  type: code
+  skill: apply
+  topics: [sec10.merkle]
+  language: python
+  prompt: >-
+    Write `h(x)` (SHA-256 hex of a str), `merkle_root(leaves)` for a list of leaf strings (hash each leaf, then
+    repeatedly pair and hash `h(left + right)`, duplicating the last item when a level has an odd count; the root of an
+    empty list is `h("")`), and `verify_proof(leaf, proof, root)` where `proof` is a list of `(sibling_hash, is_left)`
+    pairs from leaf to root.
+  starterCode: |
+    import hashlib
+
+    def h(x):
+        ...
+
+    def merkle_root(leaves):
+        ...
+
+    def verify_proof(leaf, proof, root):
+        ...
+  tests:
+    - { kind: assert, name: "single leaf", code: "import hashlib\nassert merkle_root(['a']) == hashlib.sha256(b'a').hexdigest()" }
+    - { kind: assert, name: "four leaves stable", code: "r = merkle_root(['a', 'b', 'c', 'd'])\nassert isinstance(r, str) and len(r) == 64" }
+    - { kind: assert, name: "proof verifies", code: "leaves = ['a', 'b', 'c', 'd']\nhl = [h(x) for x in leaves]\nh12 = h(hl[0] + hl[1])\n# proof for leaf 'c' (index 2): sibling h(d) on the right, then h12 on the left\nproof = [(hl[3], False), (h12, True)]\nassert verify_proof('c', proof, merkle_root(leaves))" }
+    - { kind: assert, name: "wrong proof fails", code: "assert not verify_proof('x', [(h('b'), False)], merkle_root(['a', 'b']))" }
+  solution: |
+    import hashlib
+
+    def h(x):
+        return hashlib.sha256(x.encode()).hexdigest()
+
+    def merkle_root(leaves):
+        level = [h(leaf) for leaf in leaves]
+        if not level:
+            return h("")
+        while len(level) > 1:
+            if len(level) % 2:
+                level.append(level[-1])
+            level = [h(level[i] + level[i + 1]) for i in range(0, len(level), 2)]
+        return level[0]
+
+    def verify_proof(leaf, proof, root):
+        current = h(leaf)
+        for sibling, is_left in proof:
+            current = h(sibling + current) if is_left else h(current + sibling)
+        return current == root

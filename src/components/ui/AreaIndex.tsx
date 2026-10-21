@@ -11,6 +11,8 @@ export interface AreaEntry {
   id: string;
   title: string;
   description: string;
+  /** A leading icon for the row, drawn in a soft tile. Shown only when every entry on the page has one. */
+  icon?: ReactNode;
   /** e.g. "6 subjects"; shown at the row's end. */
   count?: string;
   /** Something the learner has going on here, e.g. "2 in your plan"; shown in print ink. */
@@ -19,19 +21,31 @@ export interface AreaEntry {
 }
 
 export function AreaIndex({ label, entries, twoColumns = false }: { label: string; entries: AreaEntry[]; twoColumns?: boolean }) {
+  // Icons show only when every row has one, so a page never mixes tiled and untiled rows.
+  const withIcons = entries.length > 0 && entries.every((entry) => entry.icon);
   return (
     <nav aria-label={label}>
-      <ul className={cn('overflow-hidden rounded-md border border-rule bg-sheet', twoColumns && 'lg:grid lg:grid-cols-2')}>
+      <ul className={cn('overflow-hidden rounded-xl border border-rule bg-sheet', twoColumns && 'lg:grid lg:grid-cols-2')}>
         {entries.map((entry, index) => (
           <li key={entry.id} className={cn('border-rule', index > 0 && 'border-t', twoColumns && 'lg:odd:border-r', twoColumns && index === 1 && 'lg:border-t-0')}>
             <Link
               to={entry.to}
               className="group grid min-h-24 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 px-5 py-4 transition-colors duration-150 hover:bg-sheet-2 focus-visible:bg-sheet-2"
             >
-              <span className="min-w-0">
-                <span className="block font-display text-[1.625rem] leading-tight font-semibold text-ink group-hover:text-print-strong">{entry.title}</span>
-                <span className="mt-1 block text-sm text-ink-muted">{entry.description}</span>
-                {entry.note && <span className="mt-1.5 block text-sm font-medium text-print-strong">{entry.note}</span>}
+              <span className="flex min-w-0 items-center gap-4">
+                {withIcons && (
+                  <span
+                    aria-hidden
+                    className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-print-soft text-print-strong transition-colors duration-150 group-hover:bg-print group-hover:text-on-print"
+                  >
+                    {entry.icon}
+                  </span>
+                )}
+                <span className="min-w-0">
+                  <span className="block font-display text-[1.5rem] leading-tight font-bold text-ink group-hover:text-print-strong">{entry.title}</span>
+                  <span className="mt-1 block text-sm text-ink-muted">{entry.description}</span>
+                  {entry.note && <span className="mt-1.5 block text-sm font-medium text-print-strong">{entry.note}</span>}
+                </span>
               </span>
               <span className="flex items-center gap-2 text-ink-muted">
                 {entry.count && <span className="tabular text-sm whitespace-nowrap">{entry.count}</span>}

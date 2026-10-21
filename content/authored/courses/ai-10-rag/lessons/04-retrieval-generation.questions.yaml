@@ -1,0 +1,63 @@
+- id: ai10.retrieval.only-context
+  type: choice
+  skill: apply
+  topics: [ai10.retrieval]
+  prompt: Which system instruction most improves a RAG answer's trustworthiness?
+  options:
+    - { id: a, text: "\"Answer only from the context; if it is not there, say you don't know; cite the source for each claim.\"", explanation: "Correct: grounding, a truthful out, and citations." }
+    - { id: b, text: "\"Use your own knowledge freely.\"", explanation: "Invites hallucination, defeating RAG." }
+    - { id: c, text: "\"Be as confident as possible.\"", explanation: "Encourages unsupported claims." }
+  correct: [a]
+
+- id: ai10.retrieval.lost-middle
+  type: choice
+  skill: apply
+  topics: [ai10.retrieval]
+  prompt: Why can retrieving 100 chunks give worse answers than retrieving 5 good ones?
+  options:
+    - { id: a, text: "Too much context buries the relevant passage and costs more; fewer, better chunks win", explanation: "Correct." }
+    - { id: b, text: "The model reads faster with more context", explanation: "No." }
+    - { id: c, text: "More chunks are always better", explanation: "Not true in practice." }
+  correct: [a]
+
+- id: ai10.retrieval.threshold
+  type: choice
+  skill: apply
+  topics: [ai10.retrieval]
+  prompt: The best retrieved chunks all have low similarity to the question. A good design…
+  options:
+    - { id: a, text: "declines to answer (\"I don't have information on that\") below a similarity threshold", explanation: "Correct: better than a confident guess." }
+    - { id: b, text: "answers confidently anyway", explanation: "Likely a hallucination." }
+    - { id: c, text: "retrieves the entire corpus", explanation: "Will not fit and adds noise." }
+  correct: [a]
+
+- id: ai10.retrieval.prompt-code
+  type: code
+  skill: apply
+  topics: [ai10.retrieval]
+  language: python
+  prompt: >-
+    Assemble a grounded prompt. Write `build_prompt(question, chunks)` where `chunks` is a list of `(source_id, text)`.
+    Return a string with a system instruction to answer only from the context and say "I don't know" otherwise, then a
+    CONTEXT section with each chunk as `[source_id] text` on its own line, then `QUESTION: <question>`. Use the exact
+    labels shown in the tests.
+  starterCode: |
+    def build_prompt(question, chunks):
+        ...
+  tests:
+    - { kind: assert, name: "includes instruction and chunks", code: "p = build_prompt('What is X?', [('d1', 'X is a thing.'), ('d2', 'More.')])\nassert \"only\" in p.lower() and \"i don't know\" in p.lower()\nassert '[d1] X is a thing.' in p and '[d2] More.' in p\nassert p.rstrip().endswith('QUESTION: What is X?')" }
+    - { kind: assert, name: "no chunks still well formed", code: "p = build_prompt('Q?', [])\nassert 'CONTEXT:' in p and p.rstrip().endswith('QUESTION: Q?')" }
+  solution: |
+    def build_prompt(question, chunks):
+        lines = [
+            "Answer the question using only the context below. "
+            "Cite the source id in brackets after each claim. "
+            "If the answer is not in the context, say \"I don't know\".",
+            "",
+            "CONTEXT:",
+        ]
+        for source_id, text in chunks:
+            lines.append(f"[{source_id}] {text}")
+        lines.append("")
+        lines.append(f"QUESTION: {question}")
+        return "\n".join(lines)

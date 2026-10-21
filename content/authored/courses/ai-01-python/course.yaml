@@ -12,6 +12,7 @@ difficulty: beginner
 tags: [python, programming, fundamentals]
 estimatedHours: 12
 topics:
+  - { id: py.setup, title: "Setup: VS Code, Python and Git" }
   - { id: py.values, title: Values, types and variables }
   - { id: py.control, title: Control flow }
   - { id: py.functions, title: Functions }
@@ -20,7 +21,7 @@ topics:
 units:
   - id: ai-01-python.u1
     title: The core language
-    lessons: [01-values, 02-control-flow, 03-functions]
+    lessons: [00-setup, 01-values, 02-control-flow, 03-functions]
   - id: ai-01-python.u2
     title: Data and reliability
     lessons: [04-collections, 05-errors-and-tests]

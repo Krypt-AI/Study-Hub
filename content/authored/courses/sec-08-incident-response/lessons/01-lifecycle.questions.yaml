@@ -1,0 +1,47 @@
+- id: sec08.lifecycle.event-incident
+  type: choice
+  skill: recognize
+  topics: [sec08.lifecycle]
+  prompt: What distinguishes a security incident from an event?
+  options:
+    - { id: a, text: "An incident actually or imminently harms CIA or violates policy; an event is any observable occurrence.", explanation: "Correct." }
+    - { id: b, text: "Events are always worse than incidents.", explanation: "Reversed." }
+    - { id: c, text: "They are the same thing.", explanation: "They are not." }
+  correct: [a]
+
+- id: sec08.lifecycle.order
+  type: cloze
+  skill: recall
+  topics: [sec08.lifecycle]
+  prompt: Complete the NIST IR phases.
+  text: "[[1]] → Detection & Analysis → Containment, Eradication & [[2]] → Post-incident activity."
+  blanks:
+    - { id: "1", accepted: [Preparation, preparation] }
+    - { id: "2", accepted: [Recovery, recovery] }
+
+- id: sec08.lifecycle.eradication
+  type: choice
+  skill: apply
+  topics: [sec08.lifecycle]
+  prompt: A team restores service from backup but never finds how the attacker got in. What is the likely result?
+  options:
+    - { id: a, text: "The attacker exploits the same unaddressed root cause and returns", explanation: "Correct: eradication must remove the cause, not just the symptom." }
+    - { id: b, text: "The incident is permanently resolved", explanation: "Not without eradicating the root cause." }
+    - { id: c, text: "The backups become immutable", explanation: "Unrelated." }
+  correct: [a]
+
+- id: sec08.lifecycle.prep
+  type: long
+  skill: explain
+  topics: [sec08.lifecycle]
+  prompt: Why is preparation often called the most important incident-response phase?
+  minWords: 25
+  rubric:
+    - { id: ready, label: "The plan, logs, backups, roles and rehearsal must exist before the incident", keywords: [["plan", "logs", "backup", "roles", "rehears", "tabletop", "before"]] }
+    - { id: outcome, label: "Readiness determines how calmly and quickly the team responds", keywords: [["fast", "calm", "mistakes", "outcome", "improvise"]] }
+  modelAnswer: >-
+    Everything the later phases depend on must already exist when an incident starts: a written, rehearsed plan, clear
+    roles and decision authority, the logs needed to investigate, tested backups to recover from, and contacts for
+    legal and communications. Teams that prepared respond quickly and calmly and make fewer avoidable mistakes, while
+    teams that improvise during the crisis lose evidence and time. You cannot choose when an incident happens, only
+    how ready you are.

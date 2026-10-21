@@ -1,0 +1,79 @@
+- id: ai10.indexing.same-model
+  type: choice
+  skill: apply
+  topics: [ai10.indexing]
+  prompt: Why must the query use the same embedding model as the indexed chunks?
+  options:
+    - { id: a, text: "Different models produce vectors in different spaces, so similarity between them is meaningless", explanation: "Correct." }
+    - { id: b, text: "For licensing reasons only", explanation: "It is a correctness requirement." }
+    - { id: c, text: "It is faster", explanation: "Not the reason." }
+  correct: [a]
+
+- id: ai10.indexing.ann
+  type: choice
+  skill: recognize
+  topics: [ai10.indexing]
+  prompt: What does approximate nearest-neighbour (ANN) search trade off?
+  options:
+    - { id: a, text: "A little retrieval accuracy for large gains in speed and memory at scale", explanation: "Correct." }
+    - { id: b, text: "Accuracy for nothing", explanation: "The trade buys speed/memory." }
+    - { id: c, text: "Nothing; it is exact and instant", explanation: "Exact search is the slow brute-force option." }
+  correct: [a]
+
+- id: ai10.indexing.hybrid
+  type: choice
+  skill: apply
+  topics: [ai10.indexing]
+  prompt: Users search by exact error codes that embeddings keep missing. What helps?
+  options:
+    - { id: a, text: "Hybrid search: combine dense embeddings with keyword (BM25) search", explanation: "Correct." }
+    - { id: b, text: "A larger LLM", explanation: "The problem is retrieval, not generation." }
+    - { id: c, text: "Higher temperature", explanation: "Irrelevant." }
+  correct: [a]
+
+- id: ai10.indexing.index-code
+  type: code
+  skill: apply
+  topics: [ai10.indexing]
+  language: python
+  packages: [numpy]
+  prompt: >-
+    Build a tiny brute-force vector index. Write a class `VectorIndex` with `add(id, vector)` and `search(query, k)`
+    returning the ids of the `k` most cosine-similar vectors, most similar first. Use NumPy.
+  starterCode: |
+    import numpy as np
+
+    class VectorIndex:
+        def __init__(self):
+            self.ids = []
+            self.vectors = []
+
+        def add(self, id, vector):
+            ...
+
+        def search(self, query, k):
+            ...
+  tests:
+    - { kind: assert, name: "ranks by similarity", code: "import numpy as np\nidx = VectorIndex()\nidx.add('a', [1, 0]); idx.add('b', [0.8, 0.2]); idx.add('c', [0, 1])\nassert idx.search([1, 0.05], 2) == ['a', 'b']" }
+    - { kind: assert, name: "k larger than size", code: "idx = VectorIndex()\nidx.add('x', [1, 0]); idx.add('y', [0, 1])\nassert set(idx.search([1, 0], 5)) == {'x', 'y'}" }
+    - { kind: assert, name: "empty index", code: "assert VectorIndex().search([1, 0], 3) == []" }
+  solution: |
+    import numpy as np
+
+    class VectorIndex:
+        def __init__(self):
+            self.ids = []
+            self.vectors = []
+
+        def add(self, id, vector):
+            self.ids.append(id)
+            self.vectors.append(np.asarray(vector, dtype=float))
+
+        def search(self, query, k):
+            if not self.ids:
+                return []
+            q = np.asarray(query, dtype=float)
+            def cos(v):
+                return float(q @ v / (np.linalg.norm(q) * np.linalg.norm(v)))
+            order = sorted(range(len(self.ids)), key=lambda i: cos(self.vectors[i]), reverse=True)
+            return [self.ids[i] for i in order[:k]]

@@ -1,0 +1,43 @@
+- id: ai12.cicd.three
+  type: cloze
+  skill: recall
+  topics: [ai12.cicd]
+  prompt: Reproducing an ML result needs three versioned things.
+  text: "[[1]] (in Git), [[2]] (snapshots/DVC), and the [[3]] (in a registry)."
+  blanks:
+    - { id: "1", accepted: [code] }
+    - { id: "2", accepted: [data] }
+    - { id: "3", accepted: [model] }
+
+- id: ai12.cicd.gate
+  type: choice
+  skill: apply
+  topics: [ai12.cicd]
+  prompt: In an automated training pipeline, when should a newly trained model be promoted?
+  options:
+    - { id: a, text: "Only if it beats the current model on the agreed evaluation metrics", explanation: "Correct: automate the quality gate, not just the mechanics." }
+    - { id: b, text: "Always, because it is newer", explanation: "Newer is not necessarily better." }
+    - { id: c, text: "Never automatically", explanation: "Gated automation is the goal." }
+  correct: [a]
+
+- id: ai12.cicd.registry-decouple
+  type: choice
+  skill: apply
+  topics: [ai12.cicd]
+  prompt: How does a model registry with aliases let you roll back instantly?
+  options:
+    - { id: a, text: "Move the serving alias (e.g. champion) back to the previous version — no redeploy of serving code", explanation: "Correct." }
+    - { id: b, text: "Rebuild the whole image from scratch", explanation: "Slower; the registry avoids that." }
+    - { id: c, text: "Retrain the old model", explanation: "Unnecessary; the version is stored." }
+  correct: [a]
+
+- id: ai12.cicd.pipeline
+  type: choice
+  skill: recognize
+  topics: [ai12.cicd]
+  prompt: What should a CI pipeline do on every pull request?
+  options:
+    - { id: a, text: "Install locked deps and run lint, type checks and tests, failing fast on problems", explanation: "Correct." }
+    - { id: b, text: "Deploy straight to production", explanation: "Production deploy is gated, not on every PR." }
+    - { id: c, text: "Delete the previous model", explanation: "No." }
+  correct: [a]

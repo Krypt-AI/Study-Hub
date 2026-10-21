@@ -1,0 +1,115 @@
+id: sec-04-principles
+title: Security Principles and Risk
+subtitle: Cybersecurity · Stage 4
+description: >-
+  The vocabulary and thinking that underpin everything else: the CIA triad, threats, vulnerabilities and risk,
+  access control models, defence in depth and zero trust, and the governance frameworks used to manage security.
+  Prepares for ISC2 Certified in Cybersecurity (CC).
+category: it
+subject: cybersecurity
+level: Stage 4
+difficulty: beginner
+tags: [security-principles, risk, access-control, governance, frameworks]
+prerequisites: [sec-01-it-fundamentals]
+certifications: [isc2-certified-in-cybersecurity]
+estimatedHours: 12
+topics:
+  - { id: sec04.cia, title: The CIA triad }
+  - { id: sec04.risk, title: Threats, vulnerabilities and risk }
+  - { id: sec04.access, title: Access control }
+  - { id: sec04.principles, title: Design principles }
+  - { id: sec04.governance, title: Governance and frameworks }
+units:
+  - id: sec-04-principles.u1
+    title: Goals and risk
+    lessons: [01-cia-triad, 02-threats-risk, 03-access-control]
+  - id: sec-04-principles.u2
+    title: Principles and governance
+    lessons: [04-design-principles, 05-governance-frameworks]
+assessments:
+  - id: sec-04-principles.quiz
+    title: "Stage 4 quiz: security principles"
+    kind: quiz
+    passMark: 0.7
+    description: Eight questions across the whole course.
+    sections:
+      - id: sec-04-principles.quiz.s1
+        title: Security principles
+        questions:
+          - id: sec04.quiz.cia
+            type: choice
+            skill: apply
+            topics: [sec04.cia]
+            prompt: A ransomware attack encrypts a hospital's records so staff cannot open them. Which part of the CIA triad is most directly harmed?
+            options:
+              - { id: a, text: "Availability", explanation: "Correct: the data exists but cannot be accessed when needed." }
+              - { id: b, text: "Confidentiality", explanation: "Harmed only if data was also stolen; the core impact here is access." }
+              - { id: c, text: "Non-repudiation", explanation: "Not a CIA element and not the main impact." }
+            correct: [a]
+          - id: sec04.quiz.risk-formula
+            type: choice
+            skill: recognize
+            topics: [sec04.risk]
+            prompt: Risk is best described as a function of…
+            options:
+              - { id: a, text: "threat, vulnerability and impact (likelihood × impact)", explanation: "Correct." }
+              - { id: b, text: "the number of firewalls", explanation: "A control count is not risk." }
+              - { id: c, text: "the price of the hardware", explanation: "Cost is not risk." }
+            correct: [a]
+          - id: sec04.quiz.vuln-threat
+            type: choice
+            skill: recognize
+            topics: [sec04.risk]
+            prompt: An unpatched service is a __; a criminal group that might exploit it is a __.
+            options:
+              - { id: a, text: "vulnerability; threat", explanation: "Correct." }
+              - { id: b, text: "threat; vulnerability", explanation: "Reversed." }
+              - { id: c, text: "risk; control", explanation: "Neither term fits." }
+            correct: [a]
+          - id: sec04.quiz.least-priv
+            type: choice
+            skill: apply
+            topics: [sec04.access]
+            prompt: Giving a new intern access only to the one folder they need is an example of…
+            options:
+              - { id: a, text: "least privilege", explanation: "Correct." }
+              - { id: b, text: "separation of duties", explanation: "That splits a sensitive task across people." }
+              - { id: c, text: "defence in depth", explanation: "That is layering multiple controls." }
+            correct: [a]
+          - id: sec04.quiz.rbac
+            type: choice
+            skill: recognize
+            topics: [sec04.access]
+            prompt: In role-based access control (RBAC), permissions are assigned to…
+            options:
+              - { id: a, text: "roles, which users are then given", explanation: "Correct: manage access by role, not per user." }
+              - { id: b, text: "individual users directly, one by one", explanation: "That is harder to manage and audit." }
+              - { id: c, text: "files, with no users involved", explanation: "Users still need roles/permissions." }
+            correct: [a]
+          - id: sec04.quiz.defence-depth
+            type: choice
+            skill: apply
+            topics: [sec04.principles]
+            prompt: Why layer multiple independent controls (defence in depth)?
+            options:
+              - { id: a, text: "If one control fails, others still stand between the attacker and the asset.", explanation: "Correct." }
+              - { id: b, text: "To use up the security budget.", explanation: "Not the reason." }
+              - { id: c, text: "Because one strong control is always enough.", explanation: "The opposite assumption of defence in depth." }
+            correct: [a]
+          - id: sec04.quiz.residual
+            type: short
+            skill: recall
+            topics: [sec04.risk]
+            prompt: "What is the name for the risk that remains after controls have been applied? (two words)"
+            accepted: ["residual risk"]
+            match: { mode: text }
+          - id: sec04.quiz.framework
+            type: choice
+            skill: recognize
+            topics: [sec04.governance]
+            prompt: What is the NIST Cybersecurity Framework used for?
+            options:
+              - { id: a, text: "Organising security activities into functions (Govern, Identify, Protect, Detect, Respond, Recover)", explanation: "Correct (CSF 2.0)." }
+              - { id: b, text: "Encrypting disks", explanation: "That is a control, not a framework." }
+              - { id: c, text: "Assigning IP addresses", explanation: "Unrelated." }
+            correct: [a]

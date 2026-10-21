@@ -1,0 +1,47 @@
+- id: sec04.cia.integrity
+  type: choice
+  skill: apply
+  topics: [sec04.cia]
+  prompt: An attacker silently changes the bank-account number in a supplier's stored invoice. Which goal is harmed?
+  options:
+    - { id: a, text: "Integrity", explanation: "Correct: the data was altered without authorisation." }
+    - { id: b, text: "Availability", explanation: "The data is still accessible; it is just wrong." }
+    - { id: c, text: "Confidentiality", explanation: "Nothing secret was necessarily disclosed." }
+  correct: [a]
+
+- id: sec04.cia.control-map
+  type: cloze
+  skill: recall
+  topics: [sec04.cia]
+  prompt: Map controls to CIA goals.
+  text: "Encryption primarily protects [[1]]; a digital signature protects [[2]]; backups and redundancy protect [[3]]."
+  blanks:
+    - { id: "1", accepted: [confidentiality] }
+    - { id: "2", accepted: [integrity] }
+    - { id: "3", accepted: [availability] }
+
+- id: sec04.cia.tension
+  type: long
+  skill: explain
+  topics: [sec04.cia]
+  prompt: Give an example where increasing one CIA goal reduces another or hurts usability, and say how you would balance it.
+  minWords: 30
+  rubric:
+    - { id: tension, label: "Names a concrete trade-off between goals or with usability", keywords: [["confidential", "availab", "integrity", "usab", "friction"]] }
+    - { id: balance, label: "Balances proportionate to risk rather than maximising one", keywords: [["balance", "proportion", "risk", "depends", "appropriate"]] }
+  modelAnswer: >-
+    Encrypting a shared drive and giving only one person the key maximises confidentiality but hurts availability: if
+    that person is unavailable, no one can read critical files. I would balance it by escrowing the key with a second
+    trusted custodian or using role-based access, sized to the data's sensitivity — strong protection for truly
+    secret data, lighter controls where availability matters more, guided by the risk assessment.
+
+- id: sec04.cia.nonrepudiation
+  type: choice
+  skill: recognize
+  topics: [sec04.cia]
+  prompt: Which provides non-repudiation?
+  options:
+    - { id: a, text: "A digital signature tied to the signer's private key", explanation: "Correct: only they could have produced it." }
+    - { id: b, text: "A shared password", explanation: "Anyone with it could have acted; no attribution." }
+    - { id: c, text: "A firewall rule", explanation: "Unrelated to proving who did something." }
+  correct: [a]

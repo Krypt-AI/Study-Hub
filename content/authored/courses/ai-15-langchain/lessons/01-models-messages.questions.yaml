@@ -1,0 +1,43 @@
+- id: ai15.basics.swap
+  type: choice
+  skill: apply
+  topics: [ai15.basics]
+  prompt: What mainly changes when you switch an `init_chat_model` app from one provider to another?
+  options:
+    - { id: a, text: "The model string (and the installed provider extra); your logic stays the same", explanation: "Correct — that is the point of the common interface." }
+    - { id: b, text: "You rewrite the whole application", explanation: "The interface abstracts the provider." }
+    - { id: c, text: "Nothing works across providers", explanation: "It is designed to." }
+  correct: [a]
+
+- id: ai15.basics.interface
+  type: cloze
+  skill: recall
+  topics: [ai15.basics]
+  prompt: The standard component interface.
+  text: "`[[1]]` runs one call, `[[2]]` yields chunks as they generate, and `[[3]]` runs many inputs efficiently."
+  blanks:
+    - { id: "1", accepted: [invoke] }
+    - { id: "2", accepted: [stream] }
+    - { id: "3", accepted: [batch] }
+
+- id: ai15.basics.structured
+  type: choice
+  skill: apply
+  topics: [ai15.basics]
+  prompt: Which call makes a model return data matching a Pydantic schema, parsed for you?
+  options:
+    - { id: a, text: "`model.with_structured_output(Schema)`", explanation: "Correct." }
+    - { id: b, text: "`model.invoke(Schema)`", explanation: "invoke takes messages, not a schema." }
+    - { id: c, text: "`model.bind_tools(Schema)`", explanation: "bind_tools attaches tools, not an output schema." }
+  correct: [a]
+
+- id: ai15.basics.stateless
+  type: choice
+  skill: recognize
+  topics: [ai15.basics]
+  prompt: Does using LangChain message classes make the conversation stateful on its own?
+  options:
+    - { id: a, text: "No — you still pass the full history each call; memory needs a checkpointer (lesson 2)", explanation: "Correct." }
+    - { id: b, text: "Yes, the model now remembers everything", explanation: "Still stateless by default." }
+    - { id: c, text: "Only with streaming", explanation: "Streaming is unrelated to memory." }
+  correct: [a]

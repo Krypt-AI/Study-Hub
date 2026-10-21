@@ -1,0 +1,47 @@
+- id: ai10.why.pattern
+  type: cloze
+  skill: recall
+  topics: [ai10.why]
+  prompt: Complete the query-time RAG flow.
+  text: "Embed the question, [[1]] the most similar chunks from the index, then [[2]] an answer from the question plus those chunks."
+  blanks:
+    - { id: "1", accepted: [retrieve, search] }
+    - { id: "2", accepted: [generate] }
+
+- id: ai10.why.rag-vs-ft
+  type: choice
+  skill: apply
+  topics: [ai10.why]
+  prompt: You want the model to always respond in your company's specific tone and format. RAG or fine-tuning?
+  options:
+    - { id: a, text: "Fine-tuning — it teaches style and behaviour", explanation: "Correct: RAG for knowledge, fine-tuning for behaviour." }
+    - { id: b, text: "RAG — it changes the model's tone", explanation: "RAG supplies knowledge, not behaviour." }
+    - { id: c, text: "Neither is possible", explanation: "Fine-tuning does this well." }
+  correct: [a]
+
+- id: ai10.why.gigo
+  type: choice
+  skill: apply
+  topics: [ai10.why]
+  prompt: A RAG system gives a wrong answer. You find the correct passage was never retrieved. The root cause is…
+  options:
+    - { id: a, text: "Retrieval quality — the generator cannot use context it never received", explanation: "Correct: fix retrieval first." }
+    - { id: b, text: "The model is too small", explanation: "The model never saw the needed text." }
+    - { id: c, text: "The prompt is too short", explanation: "Length is not the issue; the right chunk was absent." }
+  correct: [a]
+
+- id: ai10.why.limit
+  type: long
+  skill: explain
+  topics: [ai10.why]
+  prompt: Explain why RAG reduces but does not eliminate hallucination.
+  minWords: 25
+  rubric:
+    - { id: ground, label: "It grounds answers in retrieved real text", keywords: [["ground", "retriev", "context", "source"]] }
+    - { id: fail, label: "But wrong/missing retrieval or misreading sources still cause errors", keywords: [["wrong", "missing", "misread", "stale", "retrieval"]] }
+  modelAnswer: >-
+    RAG puts real, relevant text in the prompt and asks the model to answer from it, so when the right passage is
+    retrieved the model has facts to ground on instead of guessing. But it can still hallucinate: if retrieval returns
+    the wrong or no passages the model may answer from memory anyway, the sources themselves may be stale or wrong, and
+    the model can misread a correct source. So RAG shifts much of the reliability onto retrieval quality and source
+    maintenance, and answers still need citations and checking.

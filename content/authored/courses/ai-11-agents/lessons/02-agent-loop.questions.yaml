@@ -1,0 +1,60 @@
+- id: ai11.loop.react
+  type: cloze
+  skill: recall
+  topics: [ai11.loop]
+  prompt: Name the agent loop pattern.
+  text: "The model [[1]] about what to do, [[2]] by calling a tool, [[3]] the result, and repeats until it gives a final answer."
+  blanks:
+    - { id: "1", accepted: [reasons, reason, thinks] }
+    - { id: "2", accepted: [acts, act] }
+    - { id: "3", accepted: [observes, observe] }
+
+- id: ai11.loop.error
+  type: choice
+  skill: apply
+  topics: [ai11.loop]
+  prompt: A tool returns an error mid-loop. What is the robust behaviour?
+  options:
+    - { id: a, text: "Feed the error back to the model as the tool result so it can adapt", explanation: "Correct: errors are part of the conversation." }
+    - { id: b, text: "Crash the whole agent", explanation: "Not robust." }
+    - { id: c, text: "Silently retry the same call forever", explanation: "Risks an infinite loop." }
+  correct: [a]
+
+- id: ai11.loop.chain-vs-agent
+  type: choice
+  skill: apply
+  topics: [ai11.loop]
+  prompt: The steps for a task are always "retrieve docs, then answer", in that fixed order. What design is best?
+  options:
+    - { id: a, text: "A fixed chain/pipeline — the path is known, so no agent loop is needed", explanation: "Correct: simplest thing that works." }
+    - { id: b, text: "A full agent with many tools", explanation: "Unnecessary cost and failure modes for a fixed path." }
+    - { id: c, text: "Fine-tuning", explanation: "Wrong tool entirely." }
+  correct: [a]
+
+- id: ai11.loop.code
+  type: code
+  skill: apply
+  topics: [ai11.loop]
+  language: python
+  prompt: >-
+    Implement a bounded agent loop against a fake model. `fake_model(messages)` returns a dict: either
+    `{"type": "tool", "name": ..., "args": ...}` or `{"type": "final", "content": ...}`. Write
+    `run_agent(fake_model, tools, messages, max_steps=10)` that loops: on a tool action, call `tools[name](**args)`,
+    append `{"role": "tool", "content": result}` to messages, and continue; on a final action, return its content.
+    If `max_steps` is reached, return the string `"error: step limit reached"`.
+  starterCode: |
+    def run_agent(fake_model, tools, messages, max_steps=10):
+        ...
+  tests:
+    - { kind: assert, name: "immediate final", code: "def m(msgs): return {'type': 'final', 'content': 'hi'}\nassert run_agent(m, {}, []) == 'hi'" }
+    - { kind: assert, name: "one tool then final", code: "calls = {'n': 0}\n\ndef m(msgs):\n    if calls['n'] == 0:\n        calls['n'] += 1\n        return {'type': 'tool', 'name': 'add', 'args': {'a': 2, 'b': 3}}\n    return {'type': 'final', 'content': f\"result is {msgs[-1]['content']}\"}\nout = run_agent(m, {'add': lambda a, b: a + b}, [])\nassert out == 'result is 5'" }
+    - { kind: assert, name: "step limit", code: "def m(msgs): return {'type': 'tool', 'name': 'noop', 'args': {}}\nassert run_agent(m, {'noop': lambda: None}, [], max_steps=3) == 'error: step limit reached'" }
+  solution: |
+    def run_agent(fake_model, tools, messages, max_steps=10):
+        for _ in range(max_steps):
+            action = fake_model(messages)
+            if action['type'] == 'final':
+                return action['content']
+            result = tools[action['name']](**action.get('args', {}))
+            messages = messages + [{'role': 'tool', 'content': result}]
+        return 'error: step limit reached'

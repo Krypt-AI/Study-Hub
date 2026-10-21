@@ -1,0 +1,54 @@
+- id: sec05.tls.binds
+  type: choice
+  skill: recognize
+  topics: [sec05.tls]
+  prompt: What does a website certificate fundamentally bind together?
+  options:
+    - { id: a, text: "A public key and an identity (domain name), vouched for by a CA's signature", explanation: "Correct." }
+    - { id: b, text: "A username and a password", explanation: "That is a credential, not a certificate." }
+    - { id: c, text: "A private key and an IP address", explanation: "Private keys are never in the certificate." }
+  correct: [a]
+
+- id: sec05.tls.phishing
+  type: choice
+  skill: apply
+  topics: [sec05.tls]
+  prompt: A phishing page at `bank-secure-login.example` shows a valid padlock. What does the valid certificate prove?
+  options:
+    - { id: a, text: "Only that the connection to that domain is encrypted and the domain owns the key — not that the site is honest.", explanation: "Correct: HTTPS authenticates the domain, not the intent." }
+    - { id: b, text: "That the site is the real bank.", explanation: "A look-alike domain can hold a valid certificate." }
+    - { id: c, text: "That the site cannot steal data.", explanation: "It can; TLS only secures the transport." }
+  correct: [a]
+
+- id: sec05.tls.chain
+  type: cloze
+  skill: recall
+  topics: [sec05.tls]
+  prompt: Complete the chain of trust a browser verifies.
+  text: "The server certificate is signed by an [[1]] CA, which chains up to a [[2]] CA held in the browser's [[3]] store."
+  blanks:
+    - { id: "1", accepted: [intermediate] }
+    - { id: "2", accepted: [root] }
+    - { id: "3", accepted: [trust] }
+
+- id: sec05.tls.at-rest
+  type: choice
+  skill: recognize
+  topics: [sec05.tls]
+  prompt: Which does HTTPS NOT provide?
+  options:
+    - { id: a, text: "Protection of the data once it is stored on the server", explanation: "Correct: TLS protects data in transit, not at rest." }
+    - { id: b, text: "Confidentiality of data in transit", explanation: "It does provide this." }
+    - { id: c, text: "Authentication of the server's domain", explanation: "It does provide this." }
+  correct: [a]
+
+- id: sec05.tls.warning
+  type: choice
+  skill: apply
+  topics: [sec05.tls]
+  prompt: A user reports a "name mismatch" certificate warning on an internal tool. What does it mean?
+  options:
+    - { id: a, text: "The certificate presented is not issued for the hostname the user requested.", explanation: "Correct: the SANs do not cover that name." }
+    - { id: b, text: "The user's password expired.", explanation: "Unrelated to certificates." }
+    - { id: c, text: "TLS 1.3 is disabled.", explanation: "That is a protocol-version issue, not a name mismatch." }
+  correct: [a]

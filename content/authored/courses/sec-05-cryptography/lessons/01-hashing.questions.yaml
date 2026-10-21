@@ -1,0 +1,88 @@
+- id: sec05.hashing.property
+  type: choice
+  skill: recognize
+  topics: [sec05.hashing]
+  prompt: "Finding any two different inputs with the same digest breaks which property?"
+  options:
+    - { id: a, text: "Collision resistance", explanation: "Correct." }
+    - { id: b, text: "Pre-image resistance", explanation: "That is recovering an input from a digest." }
+    - { id: c, text: "Confidentiality", explanation: "Hashes do not provide confidentiality." }
+  correct: [a]
+
+- id: sec05.hashing.md5
+  type: choice
+  skill: apply
+  topics: [sec05.hashing]
+  prompt: A colleague proposes MD5 to protect the integrity of signed firmware. What do you say?
+  options:
+    - { id: a, text: "No: MD5 has practical collisions and must not be used for security; use SHA-256.", explanation: "Correct." }
+    - { id: b, text: "Fine, MD5 is fast.", explanation: "Speed is irrelevant; MD5 is broken for collision resistance." }
+    - { id: c, text: "Only if we also Base64 it.", explanation: "Encoding adds no security." }
+  correct: [a]
+
+- id: sec05.hashing.compare
+  type: choice
+  skill: recognize
+  topics: [sec05.hashing]
+  prompt: "Why verify a MAC with `hmac.compare_digest(a, b)` instead of `a == b`?"
+  options:
+    - { id: a, text: "`==` can finish early and leak, through timing, how many bytes matched.", explanation: "Correct: constant-time comparison avoids the timing side channel." }
+    - { id: b, text: "`==` does not work on strings.", explanation: "It does; the issue is timing." }
+    - { id: c, text: "`compare_digest` is faster.", explanation: "It is deliberately constant-time, not faster." }
+  correct: [a]
+
+- id: sec05.hashing.hmac-code
+  type: code
+  skill: apply
+  topics: [sec05.hashing]
+  language: python
+  prompt: >-
+    Write `make_tag(key, message)` returning the hex HMAC-SHA256 of `message` (a str) under `key` (a str), and
+    `verify(key, message, tag)` returning True only if `tag` is the correct tag, compared in constant time. Use the
+    `hmac` and `hashlib` modules.
+  starterCode: |
+    import hmac, hashlib
+
+    def make_tag(key, message):
+        ...
+
+    def verify(key, message, tag):
+        ...
+  tests:
+    - { kind: assert, name: "round trip", code: "t = make_tag('k', 'pay alice')\nassert verify('k', 'pay alice', t)" }
+    - { kind: assert, name: "wrong key rejected", code: "assert not verify('other', 'pay alice', make_tag('k', 'pay alice'))" }
+    - { kind: assert, name: "tampered message rejected", code: "assert not verify('k', 'pay bob', make_tag('k', 'pay alice'))" }
+  solution: |
+    import hmac, hashlib
+
+    def make_tag(key, message):
+        return hmac.new(key.encode(), message.encode(), hashlib.sha256).hexdigest()
+
+    def verify(key, message, tag):
+        return hmac.compare_digest(make_tag(key, message), tag)
+
+- id: sec05.hashing.avalanche
+  type: code
+  skill: apply
+  topics: [sec05.hashing]
+  language: python
+  prompt: >-
+    Demonstrate the avalanche effect. Write `bit_diff(a, b)` returning the number of differing bits between the
+    SHA-256 digests of two byte strings `a` and `b`. (Digests are 256 bits, so the result is 0–256.)
+  starterCode: |
+    import hashlib
+
+    def bit_diff(a, b):
+        ...
+  tests:
+    - { kind: assert, name: "same input, zero diff", code: "assert bit_diff(b'hello', b'hello') == 0" }
+    - { kind: assert, name: "one-letter change flips many bits", code: "assert bit_diff(b'hello', b'hellp') > 90" }
+    - { kind: assert, name: "in range", code: "assert 0 <= bit_diff(b'a', b'b') <= 256" }
+  hints: ["XOR the two digests byte by byte, then count the 1 bits.", "`int.bit_count()` counts set bits."]
+  solution: |
+    import hashlib
+
+    def bit_diff(a, b):
+        da = hashlib.sha256(a).digest()
+        db = hashlib.sha256(b).digest()
+        return sum((x ^ y).bit_count() for x, y in zip(da, db))

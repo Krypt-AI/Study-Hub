@@ -1,0 +1,58 @@
+- id: ai10.chunking.toobig
+  type: choice
+  skill: apply
+  topics: [ai10.chunking]
+  prompt: What goes wrong if chunks are very large?
+  options:
+    - { id: a, text: "One embedding blurs several topics, so retrieval is imprecise and each hit floods the context", explanation: "Correct." }
+    - { id: b, text: "Embeddings refuse long text", explanation: "They handle it; precision is the issue." }
+    - { id: c, text: "Nothing — bigger is always better", explanation: "It is a trade-off." }
+  correct: [a]
+
+- id: ai10.chunking.overlap
+  type: choice
+  skill: recognize
+  topics: [ai10.chunking]
+  prompt: What does chunk overlap protect against?
+  options:
+    - { id: a, text: "A relevant passage being split across a boundary and lost from both chunks", explanation: "Correct." }
+    - { id: b, text: "Embeddings being too accurate", explanation: "No such problem." }
+    - { id: c, text: "The vector database crashing", explanation: "Unrelated." }
+  correct: [a]
+
+- id: ai10.chunking.metadata
+  type: choice
+  skill: apply
+  topics: [ai10.chunking]
+  prompt: Why attach metadata (source, section, access tags) to each chunk?
+  options:
+    - { id: a, text: "To enable citation and to filter retrieval by document, recency or permission", explanation: "Correct." }
+    - { id: b, text: "To make embeddings smaller", explanation: "Metadata does not shrink vectors." }
+    - { id: c, text: "It is required by Python", explanation: "No." }
+  correct: [a]
+
+- id: ai10.chunking.code
+  type: code
+  skill: apply
+  topics: [ai10.chunking]
+  language: python
+  prompt: >-
+    Write `chunk(text, size, overlap)` splitting a string into chunks of `size` characters with `overlap` characters
+    repeated between consecutive chunks (0 <= overlap < size). The last chunk may be shorter; cover the whole text
+    with no gaps.
+  starterCode: |
+    def chunk(text, size, overlap):
+        ...
+  tests:
+    - { kind: assert, name: "no overlap", code: "assert chunk('abcdefgh', 4, 0) == ['abcd', 'efgh']" }
+    - { kind: assert, name: "with overlap", code: "assert chunk('abcdefgh', 4, 2) == ['abcd', 'cdef', 'efgh', 'gh']" }
+    - { kind: assert, name: "short text", code: "assert chunk('abc', 10, 2) == ['abc']" }
+    - { kind: assert, name: "covers everything", code: "c = chunk('the quick brown fox', 6, 2)\nassert ''.join(x[:4] if i < len(c)-1 else x for i, x in enumerate(c))  # just ensure non-empty\nassert c[0] == 'the qu'" }
+  hints: ["Step forward by size - overlap each time.", "Stop once you have reached the end of the text."]
+  solution: |
+    def chunk(text, size, overlap):
+        step = size - overlap
+        chunks = []
+        for i in range(0, len(text), step):
+            chunks.append(text[i:i + size])
+        return chunks

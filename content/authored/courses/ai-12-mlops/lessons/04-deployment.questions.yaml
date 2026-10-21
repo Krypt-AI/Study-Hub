@@ -1,0 +1,48 @@
+- id: ai12.deploy.canary
+  type: choice
+  skill: recognize
+  topics: [ai12.deploy]
+  prompt: What defines a canary deployment?
+  options:
+    - { id: a, text: "Route a small percentage of traffic to the new version, watch metrics, then ramp up or roll back", explanation: "Correct." }
+    - { id: b, text: "Swap 100% of traffic at once", explanation: "That is big-bang." }
+    - { id: c, text: "Run the new version with no traffic ever", explanation: "That is closer to shadow mode." }
+  correct: [a]
+
+- id: ai12.deploy.shadow
+  type: choice
+  skill: apply
+  topics: [ai12.deploy]
+  prompt: You want real-world evidence a new model is good WITHOUT any user seeing its output yet. Which pattern?
+  options:
+    - { id: a, text: "Shadow mode — run it on real traffic in parallel and log/compare, serving only the old model", explanation: "Correct: zero user risk." }
+    - { id: b, text: "Big-bang deploy", explanation: "Maximum user risk." }
+    - { id: c, text: "Delete the old model first", explanation: "No fallback; reckless." }
+  correct: [a]
+
+- id: ai12.deploy.rollback
+  type: choice
+  skill: apply
+  topics: [ai12.deploy]
+  prompt: Which is the fastest rollback when a bad model is live and you used a registry alias?
+  options:
+    - { id: a, text: "Move the serving alias back to the previous model version", explanation: "Correct (lesson 3)." }
+    - { id: b, text: "Retrain the previous model from scratch", explanation: "Slow; the version still exists." }
+    - { id: c, text: "Rebuild the base OS image", explanation: "Irrelevant." }
+  correct: [a]
+
+- id: ai12.deploy.ab
+  type: long
+  skill: explain
+  topics: [ai12.deploy]
+  prompt: Why might a model that wins on offline metrics still need an A/B test or canary before full rollout?
+  minWords: 30
+  rubric:
+    - { id: gap, label: "Offline evaluation can differ from live traffic/behaviour", keywords: [["offline", "live", "production", "real traffic", "differ", "missed"]] }
+    - { id: impact, label: "A/B or canary measures real outcomes/impact with limited risk", keywords: [["a/b", "canary", "outcome", "impact", "limit", "risk"]] }
+  modelAnswer: >-
+    Offline metrics are measured on a fixed test set that may not match live traffic — the real data distribution,
+    user behaviour, latency under load, and downstream effects can all differ, and a model can look better offline yet
+    perform worse in production. A canary or A/B test exposes the new model to a limited slice of real traffic and
+    compares the outcome metrics that actually matter, so you learn its true impact while keeping the blast radius
+    small and keeping the ability to roll back.

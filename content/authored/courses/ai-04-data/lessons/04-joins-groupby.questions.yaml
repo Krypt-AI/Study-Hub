@@ -1,0 +1,70 @@
+- id: ai04.combine.inner-count
+  type: short
+  skill: apply
+  topics: [ai04.combine]
+  prompt: >-
+    `customers` has ids 1, 2, 3. `orders` has customer_id values 1, 1, 4. How many rows does an inner merge on
+    `customer_id` produce?
+  accepted: ["2"]
+  match: { mode: number }
+  explanation: "Only id 1 is in both tables, and it has two orders."
+
+- id: ai04.combine.validate
+  type: choice
+  skill: recognize
+  topics: [ai04.combine]
+  prompt: "What does `validate='one_to_many'` in `merge` protect against?"
+  options:
+    - { id: a, text: "Duplicate keys in the left table, which would multiply rows unexpectedly", explanation: "Correct." }
+    - { id: b, text: "Missing values in the right table", explanation: "Not checked by validate." }
+    - { id: c, text: "Columns with different names", explanation: "Use left_on and right_on for that." }
+  correct: [a]
+
+- id: ai04.combine.transform
+  type: choice
+  skill: apply
+  topics: [ai04.combine]
+  prompt: You want each row to carry its student's average score. Which call?
+  options:
+    - { id: a, text: "`df.groupby('student')['score'].transform('mean')`", explanation: "Correct: same length as df." }
+    - { id: b, text: "`df.groupby('student')['score'].mean()`", explanation: "One row per student, not per original row." }
+    - { id: c, text: "`df['score'].mean()`", explanation: "The overall mean." }
+  correct: [a]
+
+- id: ai04.combine.wide-long
+  type: cloze
+  skill: recall
+  topics: [ai04.combine]
+  prompt: Reshaping vocabulary.
+  text: "`pivot_table` turns long data into [[1]] format; `[[2]]` turns wide data back into long format."
+  blanks:
+    - { id: "1", accepted: [wide] }
+    - { id: "2", accepted: [melt] }
+
+- id: ai04.combine.summary
+  type: code
+  skill: apply
+  topics: [ai04.combine]
+  language: python
+  packages: [pandas]
+  prompt: >-
+    Write `topic_summary(sessions)` returning a DataFrame with one row per `topic`, sorted by topic, with columns
+    `topic`, `attempts` (number of rows), `mean_score` and `total_minutes`.
+  starterCode: |
+    import pandas as pd
+
+    def topic_summary(sessions):
+        ...
+  tests:
+    - { kind: assert, name: "summary", code: "import pandas as pd\ns = pd.DataFrame({'topic': ['b', 'a', 'a'], 'score': [0.5, 0.6, 1.0], 'minutes': [10, 20, 30]})\nout = topic_summary(s)\nassert out['topic'].tolist() == ['a', 'b']\nassert out['attempts'].tolist() == [2, 1]\nassert abs(out.loc[0, 'mean_score'] - 0.8) < 1e-9 and out['total_minutes'].tolist() == [50, 10]" }
+  solution: |
+    import pandas as pd
+
+    def topic_summary(sessions):
+        return (
+            sessions.groupby('topic')
+            .agg(attempts=('score', 'size'), mean_score=('score', 'mean'), total_minutes=('minutes', 'sum'))
+            .reset_index()
+            .sort_values('topic')
+            .reset_index(drop=True)
+        )

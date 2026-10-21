@@ -1,0 +1,66 @@
+- id: ai09.messages.stateless
+  type: choice
+  skill: apply
+  topics: [ai09.messages]
+  prompt: A chatbot forgets what the user said two turns ago. What is almost certainly missing?
+  options:
+    - { id: a, text: "The app is not resending the full conversation history each call — the model is stateless", explanation: "Correct." }
+    - { id: b, text: "The temperature is too low", explanation: "Unrelated to memory." }
+    - { id: c, text: "The API key expired", explanation: "That would stop calls entirely." }
+  correct: [a]
+
+- id: ai09.messages.system
+  type: choice
+  skill: recognize
+  topics: [ai09.messages]
+  prompt: Which message type is the main lever for setting the assistant's role and rules?
+  options:
+    - { id: a, text: "The system message", explanation: "Correct." }
+    - { id: b, text: "The user message", explanation: "That is the person's input." }
+    - { id: c, text: "The assistant message", explanation: "That is the model's output." }
+  correct: [a]
+
+- id: ai09.messages.temperature
+  type: choice
+  skill: apply
+  topics: [ai09.messages]
+  prompt: For a classification task that must give consistent labels, which setting is best?
+  options:
+    - { id: a, text: "Low temperature", explanation: "Correct: consistency over variety." }
+    - { id: b, text: "High temperature", explanation: "Adds unwanted variability." }
+    - { id: c, text: "Maximum top_k and high temperature", explanation: "More randomness, worse consistency." }
+  correct: [a]
+
+- id: ai09.messages.history-code
+  type: code
+  skill: apply
+  topics: [ai09.messages]
+  language: python
+  prompt: >-
+    Build conversation plumbing. Write `new_conversation(system)` returning a messages list with one system message;
+    `add(messages, role, content)` returning a new list with the message appended; and `trim(messages, max_msgs)`
+    that keeps the system message plus the most recent `max_msgs` non-system messages (to fit the context window).
+  starterCode: |
+    def new_conversation(system):
+        ...
+
+    def add(messages, role, content):
+        ...
+
+    def trim(messages, max_msgs):
+        ...
+  tests:
+    - { kind: assert, name: "new conversation", code: "assert new_conversation('S') == [{'role': 'system', 'content': 'S'}]" }
+    - { kind: assert, name: "add is non-mutating", code: "m = new_conversation('S')\nm2 = add(m, 'user', 'hi')\nassert len(m) == 1 and m2[-1] == {'role': 'user', 'content': 'hi'}" }
+    - { kind: assert, name: "trim keeps system + recent", code: "m = new_conversation('S')\nfor i in range(5):\n    m = add(m, 'user', str(i))\nt = trim(m, 2)\nassert t[0]['role'] == 'system' and [x['content'] for x in t[1:]] == ['3', '4']" }
+  solution: |
+    def new_conversation(system):
+        return [{'role': 'system', 'content': system}]
+
+    def add(messages, role, content):
+        return messages + [{'role': role, 'content': content}]
+
+    def trim(messages, max_msgs):
+        system = [m for m in messages if m['role'] == 'system'][:1]
+        rest = [m for m in messages if m['role'] != 'system']
+        return system + rest[-max_msgs:]

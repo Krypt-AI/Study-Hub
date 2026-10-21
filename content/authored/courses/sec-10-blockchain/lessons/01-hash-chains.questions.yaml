@@ -1,0 +1,80 @@
+- id: sec10.ledger.tamper
+  type: choice
+  skill: apply
+  topics: [sec10.ledger]
+  prompt: An attacker edits a transaction in block 50 of a 100-block chain. What happens?
+  options:
+    - { id: a, text: "Block 50's hash changes, so block 51's stored previous_hash no longer matches, invalidating blocks 51–100.", explanation: "Correct." }
+    - { id: b, text: "Only block 50 is affected.", explanation: "The break propagates to every later block." }
+    - { id: c, text: "Nothing, because blocks are encrypted.", explanation: "Blocks are hash-linked, not encrypted." }
+  correct: [a]
+
+- id: sec10.ledger.confidential
+  type: choice
+  skill: recognize
+  topics: [sec10.ledger]
+  prompt: Which property does a public blockchain NOT provide?
+  options:
+    - { id: a, text: "Confidentiality of the data in each block", explanation: "Correct: public chains are transparent; everyone can read every block." }
+    - { id: b, text: "Tamper-evidence", explanation: "It does provide this." }
+    - { id: c, text: "A shared, append-only history", explanation: "It does provide this." }
+  correct: [a]
+
+- id: sec10.ledger.vs-db
+  type: choice
+  skill: apply
+  topics: [sec10.ledger]
+  prompt: When is a plain database the better choice over a blockchain?
+  options:
+    - { id: a, text: "When one trusted party can own the record: it is faster, simpler and editable.", explanation: "Correct: blockchains pay a large cost for removing the trusted party." }
+    - { id: b, text: "Always; blockchains have no use.", explanation: "Too strong: chains suit no-single-trusted-party cases." }
+    - { id: c, text: "Never; blockchains are always better.", explanation: "They are slow, redundant and hard to change." }
+  correct: [a]
+
+- id: sec10.ledger.chain-code
+  type: code
+  skill: apply
+  topics: [sec10.ledger]
+  language: python
+  prompt: >-
+    Build a tiny chain. Write `block_hash(block)` (SHA-256 hex of the block dict, serialised with
+    `json.dumps(block, sort_keys=True, separators=(",", ":"))`), `make_chain(data_list)` returning a list of blocks
+    where block i has keys `index`, `data`, `prev` (the previous block's hash, or 64 zeros for the genesis block), and
+    `is_valid(chain)` returning True only if every `prev` link matches.
+  starterCode: |
+    import hashlib, json
+
+    def block_hash(block):
+        ...
+
+    def make_chain(data_list):
+        ...
+
+    def is_valid(chain):
+        ...
+  tests:
+    - { kind: assert, name: "genesis prev is zeros", code: "c = make_chain(['a', 'b', 'c'])\nassert c[0]['prev'] == '0' * 64 and len(c) == 3" }
+    - { kind: assert, name: "valid chain", code: "assert is_valid(make_chain(['a', 'b', 'c']))" }
+    - { kind: assert, name: "tampering breaks it", code: "c = make_chain(['a', 'b', 'c'])\nc[0]['data'] = 'hacked'\nassert not is_valid(c)" }
+  hints: ["Each block's `prev` is `block_hash` of the previous block.", "In is_valid, recompute each predecessor's hash and compare with the stored prev."]
+  solution: |
+    import hashlib, json
+
+    def block_hash(block):
+        body = json.dumps(block, sort_keys=True, separators=(",", ":")).encode()
+        return hashlib.sha256(body).hexdigest()
+
+    def make_chain(data_list):
+        chain = []
+        prev = "0" * 64
+        for i, data in enumerate(data_list):
+            block = {"index": i, "data": data, "prev": prev}
+            chain.append(block)
+            prev = block_hash(block)
+        return chain
+
+    def is_valid(chain):
+        for i in range(1, len(chain)):
+            if chain[i]["prev"] != block_hash(chain[i - 1]):
+                return False
+        return True

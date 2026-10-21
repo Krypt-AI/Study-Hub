@@ -1,0 +1,50 @@
+- id: ai13.eval.why-hard
+  type: choice
+  skill: recognize
+  topics: [ai13.eval]
+  prompt: Why does exact-match fail for evaluating most LLM outputs?
+  options:
+    - { id: a, text: "Outputs are open-ended text with many acceptable phrasings, so there is no single gold string", explanation: "Correct." }
+    - { id: b, text: "LLMs produce no text", explanation: "They do." }
+    - { id: c, text: "Exact match is too slow", explanation: "Speed is not the issue." }
+  correct: [a]
+
+- id: ai13.eval.judge-validate
+  type: choice
+  skill: apply
+  topics: [ai13.eval]
+  prompt: Before trusting an LLM-as-judge to score outputs at scale, what must you do?
+  options:
+    - { id: a, text: "Validate it against human judgement on a sample and use clear criteria", explanation: "Correct." }
+    - { id: b, text: "Assume it is correct because it is an LLM", explanation: "It has biases and needs validation." }
+    - { id: c, text: "Let the model judge with no criteria", explanation: "Unreliable." }
+  correct: [a]
+
+- id: ai13.eval.objective
+  type: choice
+  skill: apply
+  topics: [ai13.eval]
+  prompt: Your LLM extracts data that is then checked against a database record. What is the most trustworthy metric?
+  options:
+    - { id: a, text: "The objective downstream check: did the extracted data match the record?", explanation: "Correct: an objective check beats fuzzy text metrics." }
+    - { id: b, text: "The length of the output", explanation: "Irrelevant." }
+    - { id: c, text: "How confident the prose sounds", explanation: "Confidence is not correctness." }
+  correct: [a]
+
+- id: ai13.eval.grow-set
+  type: long
+  skill: explain
+  topics: [ai13.eval]
+  prompt: Describe how to build and maintain an evaluation set for an LLM system, and why it should include safety cases.
+  minWords: 35
+  rubric:
+    - { id: representative, label: "Representative inputs: common, edge, and known failure cases, versioned", keywords: [["representative", "edge", "failure", "version", "cases"]] }
+    - { id: grow, label: "Grow it: each new bug becomes a permanent test case", keywords: [["grow", "add", "regression", "new bug", "permanent"]] }
+    - { id: safety, label: "Include safety/robustness (injection, refusals, leakage, adversarial)", keywords: [["safety", "injection", "refuse", "leak", "adversarial", "robust"]] }
+  modelAnswer: >-
+    Start with a representative, versioned set of inputs covering common cases, edge cases and known failure modes,
+    each with a reference answer or the criteria a good output must meet. Grow it continuously: every real failure you
+    find becomes a permanent test case so it cannot regress. Include safety and robustness cases, not just quality —
+    prompt-injection attempts, requests that should be refused, inputs that could leak data, and adversarial or
+    out-of-distribution inputs — because a system that is accurate but unsafe is not acceptable, and you run the whole
+    set on every meaningful change to see what actually improved.

@@ -1,0 +1,47 @@
+- id: sec07.hardening.subtraction
+  type: choice
+  skill: recognize
+  topics: [sec07.hardening]
+  prompt: What is the core idea of hardening?
+  options:
+    - { id: a, text: "Subtraction: remove or disable unneeded services, accounts, features and privileges", explanation: "Correct." }
+    - { id: b, text: "Addition: install as much security software as possible", explanation: "More software can add attack surface." }
+    - { id: c, text: "Hiding the server's hostname", explanation: "Obscurity is not hardening." }
+  correct: [a]
+
+- id: sec07.hardening.ssh
+  type: choice
+  skill: apply
+  topics: [sec07.hardening]
+  prompt: Which is the best SSH hardening combination?
+  options:
+    - { id: a, text: "Key-based auth, no root login, restricted users, exposed only to trusted networks", explanation: "Correct." }
+    - { id: b, text: "Password login open to the whole internet", explanation: "Prime target for guessing." }
+    - { id: c, text: "Root login with a shared password", explanation: "Worst case." }
+  correct: [a]
+
+- id: sec07.hardening.baseline
+  type: choice
+  skill: recognize
+  topics: [sec07.hardening]
+  prompt: What are CIS Benchmarks?
+  options:
+    - { id: a, text: "Free, consensus secure-configuration guides with specific settings for OSes, cloud and apps", explanation: "Correct." }
+    - { id: b, text: "A brand of firewall", explanation: "No." }
+    - { id: c, text: "A password manager", explanation: "No." }
+  correct: [a]
+
+- id: sec07.hardening.repeatable
+  type: long
+  skill: explain
+  topics: [sec07.hardening]
+  prompt: Why is hardening machines by hand insufficient at scale, and what is the better approach?
+  minWords: 25
+  rubric:
+    - { id: drift, label: "Manual hardening does not scale and drifts over time", keywords: [["drift", "scale", "inconsistent", "by hand", "manual"]] }
+    - { id: iac, label: "Define hardened state as code so machines are built the same and re-converge", keywords: [["as code", "ansible", "automation", "config", "repeatable", "group policy"]] }
+  modelAnswer: >-
+    Hardening each machine by hand is slow, error-prone and inconsistent, and configurations drift as people make
+    changes, so the fleet stops matching the intended baseline. The better approach is configuration as code: define
+    the hardened state in a tool such as Ansible or Group Policy or cloud config, apply it to every machine of a type,
+    and have systems re-converge to that state automatically, with assessment tooling flagging any drift.

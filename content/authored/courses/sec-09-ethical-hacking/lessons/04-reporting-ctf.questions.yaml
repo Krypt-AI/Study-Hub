@@ -1,0 +1,43 @@
+- id: sec09.reporting.finding
+  type: choice
+  skill: apply
+  topics: [sec09.reporting]
+  prompt: Which element makes a penetration-test finding actionable for the client?
+  options:
+    - { id: a, text: "Concrete remediation steps plus a risk-based severity, affected assets and reproduction", explanation: "Correct." }
+    - { id: b, text: "A screenshot of the tester's terminal only", explanation: "Not actionable on its own." }
+    - { id: c, text: "The number of tools used", explanation: "Irrelevant to fixing the issue." }
+  correct: [a]
+
+- id: sec09.reporting.ctf
+  type: choice
+  skill: recognize
+  topics: [sec09.reporting]
+  prompt: Why are CTF events a legal way to practise offensive skills?
+  options:
+    - { id: a, text: "You act only on infrastructure the organisers provide and authorise, under their rules", explanation: "Correct: authorisation is built in." }
+    - { id: b, text: "Because they are online", explanation: "Being online does not grant authorisation." }
+    - { id: c, text: "Because flags are harmless", explanation: "The legality comes from authorised, provided targets." }
+  correct: [a]
+
+- id: sec09.reporting.exec-summary
+  type: choice
+  skill: apply
+  topics: [sec09.reporting]
+  prompt: Who is the executive summary of a pentest report written for?
+  options:
+    - { id: a, text: "Management: plain-language risk and priorities to drive decisions", explanation: "Correct (engineers get the technical appendix)." }
+    - { id: b, text: "Other hackers, to show off", explanation: "No." }
+    - { id: c, text: "No one; it is filler", explanation: "It is the part leadership reads." }
+  correct: [a]
+
+- id: sec09.reporting.certs
+  type: choice
+  skill: recognize
+  topics: [sec09.reporting]
+  prompt: Which certifications specifically validate ethical-hacking knowledge and methodology?
+  options:
+    - { id: a, text: "CEH (EC-Council) and CompTIA PenTest+", explanation: "Correct." }
+    - { id: b, text: "JLPT and HSK", explanation: "Those are language certifications." }
+    - { id: c, text: "A driving licence", explanation: "No." }
+  correct: [a]

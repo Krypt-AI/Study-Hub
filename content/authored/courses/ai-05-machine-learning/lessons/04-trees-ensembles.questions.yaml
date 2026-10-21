@@ -1,0 +1,77 @@
+- id: ai05.trees.gini
+  type: short
+  skill: apply
+  topics: [ai05.trees]
+  prompt: "A node holds 8 positives and 2 negatives. What is its Gini impurity? (decimal)"
+  accepted: ["0.32"]
+  match: { mode: number, tolerance: 0.001 }
+  explanation: "1 − (0.8² + 0.2²) = 1 − 0.68 = 0.32."
+
+- id: ai05.trees.deep-tree
+  type: choice
+  skill: apply
+  topics: [ai05.trees]
+  prompt: An unrestricted decision tree scores 100% on training data and 75% on validation. Which change helps most directly?
+  options:
+    - { id: a, text: "Limit `max_depth` or raise `min_samples_leaf`", explanation: "Correct: restrain the tree from memorising." }
+    - { id: b, text: "Standardise the features", explanation: "Trees are insensitive to scaling." }
+    - { id: c, text: "Add more depth", explanation: "That increases overfitting." }
+  correct: [a]
+
+- id: ai05.trees.boosting
+  type: choice
+  skill: recognize
+  topics: [ai05.trees]
+  prompt: Which describes gradient boosting?
+  options:
+    - { id: a, text: "Trees are added one at a time, each correcting the errors of the current ensemble.", explanation: "Correct." }
+    - { id: b, text: "Trees are trained independently on bootstrap samples and averaged.", explanation: "That is bagging." }
+    - { id: c, text: "One tree is trained with a boosted learning rate.", explanation: "Not a real technique." }
+  correct: [a]
+
+- id: ai05.trees.permutation
+  type: long
+  skill: explain
+  topics: [ai05.trees]
+  prompt: Explain how permutation importance works and why it is often preferred to impurity-based importance.
+  minWords: 30
+  rubric:
+    - { id: shuffle, label: "Shuffle one feature's values on held-out data", keywords: [["shuffle", "permut"]] }
+    - { id: drop, label: "Measure the drop in score; a large drop means important", keywords: [["drop", "decrease", "worse"]] }
+    - { id: bias, label: "Impurity importance is biased (e.g. to high-cardinality features) and computed on training data", keywords: [["bias", "cardinality", "training data", "many values"]] }
+  modelAnswer: >-
+    Permutation importance takes a fitted model and validation data, randomly shuffles one feature's column to break its
+    relationship with the target, and measures how much the score drops. A big drop means the model relies on that
+    feature. It works for any model and is measured on held-out data, whereas impurity-based importance is computed
+    from training splits and is biased towards features with many unique values.
+
+- id: ai05.trees.compare
+  type: code
+  skill: apply
+  topics: [ai05.trees]
+  language: python
+  packages: [scikit-learn]
+  prompt: >-
+    Write `compare_models(X, y)` returning a dict with the mean 5-fold cross-validated accuracy of a
+    `DecisionTreeClassifier(random_state=0)` under key `tree` and a `RandomForestClassifier(n_estimators=100,
+    random_state=0)` under key `forest`.
+  starterCode: |
+    from sklearn.ensemble import RandomForestClassifier
+    from sklearn.model_selection import cross_val_score
+    from sklearn.tree import DecisionTreeClassifier
+
+    def compare_models(X, y):
+        ...
+  tests:
+    - { kind: assert, name: "forest wins", code: "from sklearn.datasets import load_wine\nX, y = load_wine(return_X_y=True)\nr = compare_models(X, y)\nassert set(r) == {'tree', 'forest'} and r['forest'] > r['tree'] and r['forest'] > 0.9" }
+  solution: |
+    from sklearn.ensemble import RandomForestClassifier
+    from sklearn.model_selection import cross_val_score
+    from sklearn.tree import DecisionTreeClassifier
+
+    def compare_models(X, y):
+        models = {
+            'tree': DecisionTreeClassifier(random_state=0),
+            'forest': RandomForestClassifier(n_estimators=100, random_state=0),
+        }
+        return {name: cross_val_score(m, X, y, cv=5).mean() for name, m in models.items()}

@@ -46,8 +46,9 @@ test('courses open on their areas, and the UNITEN area asks for a semester, then
   await page.goto('/courses');
   const areas = page.getByRole('navigation', { name: 'Course areas' });
   await expect(areas.getByRole('link', { name: /Japanese \(JLPT\)/u })).toBeVisible();
-  // Roadmaps are not a course area: they have their own item in the rail.
-  await expect(areas.getByRole('link', { name: /Roadmap/u })).toHaveCount(0);
+  // The Study-Hub-authored courses are course areas too; the Roadmaps path keeps its own rail item.
+  await expect(areas.getByRole('link', { name: /AI Engineering/u })).toBeVisible();
+  await expect(areas.getByRole('link', { name: /Cybersecurity and IT/u })).toBeVisible();
   await expect(page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Roadmaps' })).toBeVisible();
   await areas.getByRole('link', { name: /^UNITEN/u }).click();
   await expect(page.getByRole('heading', { level: 1, name: 'UNITEN' })).toBeVisible();

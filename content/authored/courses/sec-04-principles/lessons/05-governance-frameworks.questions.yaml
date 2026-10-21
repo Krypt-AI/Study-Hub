@@ -1,0 +1,48 @@
+- id: sec04.governance.hierarchy
+  type: choice
+  skill: recognize
+  topics: [sec04.governance]
+  prompt: '"All laptops must use full-disk encryption" is an example of a…'
+  options:
+    - { id: a, text: "standard (a specific mandatory requirement)", explanation: "Correct." }
+    - { id: b, text: "guideline (optional advice)", explanation: "It is mandatory, not optional." }
+    - { id: c, text: "procedure (step-by-step how-to)", explanation: "It states the requirement, not the steps." }
+  correct: [a]
+
+- id: sec04.governance.csf
+  type: choice
+  skill: recall
+  topics: [sec04.governance]
+  prompt: Which are functions of the NIST Cybersecurity Framework 2.0?
+  options:
+    - { id: a, text: "Govern, Identify, Protect, Detect, Respond, Recover", explanation: "Correct." }
+    - { id: b, text: "Plan, Do, Check, Act", explanation: "That is the generic PDCA cycle, not the CSF functions." }
+    - { id: c, text: "Red, Blue, Purple", explanation: "Those are team colours, not CSF functions." }
+  correct: [a]
+
+- id: sec04.governance.compliance
+  type: long
+  skill: explain
+  topics: [sec04.governance]
+  prompt: Explain why being compliant with a regulation does not automatically mean being secure.
+  minWords: 30
+  rubric:
+    - { id: floor, label: "Compliance is a minimum/checklist, a floor not a ceiling", keywords: [["minimum", "floor", "checklist", "baseline"]] }
+    - { id: gaps, label: "Real risks can exist outside the regulation's scope", keywords: [["real risk", "outside", "miss", "not cover", "gap"]] }
+  modelAnswer: >-
+    Compliance means meeting a regulation's specified requirements, which are a minimum baseline written for many
+    organisations, not a complete picture of your particular risks. You can tick every box on a standard and still be
+    insecure — for example by meeting a password rule while leaving an unmonitored internet-facing service exposed,
+    or by protecting the regulated data type while ignoring equally sensitive data the law does not name. Compliance
+    is a floor to build on, not the goal.
+
+- id: sec04.governance.cis
+  type: choice
+  skill: recognize
+  topics: [sec04.governance]
+  prompt: What are the CIS Critical Security Controls best used for?
+  options:
+    - { id: a, text: "A prioritised, practical list of safeguards to implement first", explanation: "Correct." }
+    - { id: b, text: "A legal contract", explanation: "No." }
+    - { id: c, text: "A programming language", explanation: "No." }
+  correct: [a]

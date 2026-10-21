@@ -48,7 +48,7 @@ export function Dialog({ open, onClose, title, children, footer, className, hide
     >
       {open && (
         <div className="flex max-h-[80dvh] flex-col">
-          <header className={cn('flex items-center justify-between gap-3 border-b border-print-line px-4 py-2.5', hideTitle && 'sr-only')}>
+          <header className={cn('flex items-center justify-between gap-3 border-b border-rule px-5 py-3', hideTitle && 'sr-only')}>
             <h2 id={titleId} className="text-lg font-semibold">
               {title}
             </h2>

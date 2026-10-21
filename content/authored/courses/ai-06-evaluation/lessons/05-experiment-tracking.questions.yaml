@@ -1,0 +1,42 @@
+- id: ai06.tracking.record
+  type: choice
+  skill: apply
+  topics: [ai06.tracking]
+  multiple: true
+  prompt: Which should be recorded with every training run? Choose all that apply.
+  options:
+    - { id: a, text: "The Git commit hash", explanation: "Ties results to code." }
+    - { id: b, text: "The data snapshot or version", explanation: "Ties results to data." }
+    - { id: c, text: "The random seed", explanation: "Needed to reproduce." }
+    - { id: d, text: "The cloud provider's API key", explanation: "Never log secrets." }
+  correct: [a, b, c]
+
+- id: ai06.tracking.alias
+  type: choice
+  skill: recognize
+  topics: [ai06.tracking]
+  prompt: "Serving code loads `models:/churn-classifier@champion`. What is `champion`?"
+  options:
+    - { id: a, text: "A registry alias pointing at a specific model version", explanation: "Correct: move the alias to promote a new version." }
+    - { id: b, text: "The run name", explanation: "Runs are not addressed this way." }
+    - { id: c, text: "A Git branch", explanation: "Unrelated." }
+  correct: [a]
+
+- id: ai06.tracking.seeds
+  type: choice
+  skill: apply
+  topics: [ai06.tracking]
+  prompt: Your new configuration beats the old one by 0.4 points. What should you do before claiming an improvement?
+  options:
+    - { id: a, text: "Re-run both with several seeds or folds and compare the spread.", explanation: "Correct: the gap may be noise." }
+    - { id: b, text: "Evaluate both on the test set repeatedly and keep the better.", explanation: "That tunes on the test set." }
+    - { id: c, text: "Nothing; 0.4 is an improvement.", explanation: "Maybe, maybe not." }
+  correct: [a]
+
+- id: ai06.tracking.autolog
+  type: short
+  skill: recall
+  topics: [ai06.tracking]
+  prompt: "Which MLflow call turns on automatic logging for supported libraries?"
+  accepted: ["mlflow.autolog()", "mlflow.autolog", "mlflow.sklearn.autolog()"]
+  match: { mode: exact }

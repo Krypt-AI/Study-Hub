@@ -1,0 +1,76 @@
+- id: ai04.eda.chart-relationship
+  type: choice
+  skill: apply
+  topics: [ai04.eda]
+  prompt: You want to see whether house area relates to price. Which chart?
+  options:
+    - { id: a, text: "Scatter plot", explanation: "Correct: two numeric variables." }
+    - { id: b, text: "Pie chart", explanation: "Shows parts of a whole." }
+    - { id: c, text: "Histogram of price", explanation: "Shows one variable only." }
+  correct: [a]
+
+- id: ai04.eda.imbalance
+  type: choice
+  skill: apply
+  topics: [ai04.eda]
+  prompt: "`y.value_counts(normalize=True)` shows 0.97 for class 0 and 0.03 for class 1. What does EDA tell you?"
+  options:
+    - { id: a, text: "The classes are imbalanced: a model predicting 0 always scores 97% accuracy, so use other metrics.", explanation: "Correct." }
+    - { id: b, text: "The data is broken and should be discarded.", explanation: "Imbalance is common and manageable." }
+    - { id: c, text: "Accuracy will be a reliable metric.", explanation: "The opposite." }
+  correct: [a]
+
+- id: ai04.eda.leak
+  type: choice
+  skill: apply
+  topics: [ai04.eda]
+  prompt: Predicting customer churn, the column `cancellation_reason` predicts churn with 100% accuracy. Why?
+  options:
+    - { id: a, text: "It is only filled after a customer churns: target leakage; drop it.", explanation: "Correct." }
+    - { id: b, text: "It is an excellent feature; keep it.", explanation: "It will not be known at prediction time." }
+    - { id: c, text: "It needs scaling.", explanation: "Scaling does not fix leakage." }
+  correct: [a]
+
+- id: ai04.eda.zero-correlation
+  type: long
+  skill: explain
+  topics: [ai04.eda]
+  prompt: Two variables have a Pearson correlation of 0.02. Can you conclude they are unrelated? Explain.
+  minWords: 25
+  rubric:
+    - { id: linear, label: "Pearson only measures linear association", keywords: [["linear"]] }
+    - { id: nonlinear, label: "A non-linear (for example U-shaped) relationship can have near-zero correlation", keywords: [["non-linear", "nonlinear", "u-shape", "curve", "quadratic"]] }
+    - { id: plot, label: "Look at a scatter plot (or use another measure)", keywords: [["scatter", "plot", "spearman", "mutual information"]] }
+  modelAnswer: >-
+    No. Pearson correlation only measures linear association. A strong non-linear relationship, such as a U shape
+    where y rises on both sides of a minimum, can give a correlation near 0. Plot the variables in a scatter plot, and
+    consider rank correlation or mutual information, before concluding they are unrelated.
+
+- id: ai04.eda.class-balance
+  type: code
+  skill: apply
+  topics: [ai04.eda]
+  language: python
+  packages: [pandas]
+  prompt: >-
+    Write `class_report(y)` for a pandas Series of labels. Return a dict with `shares` (a dict label → share rounded to
+    3 places), `majority` (the most common label) and `baseline_accuracy` (the share of the majority class, rounded
+    to 3 places).
+  starterCode: |
+    import pandas as pd
+
+    def class_report(y):
+        ...
+  tests:
+    - { kind: assert, name: "imbalanced", code: "import pandas as pd\nr = class_report(pd.Series([0] * 97 + [1] * 3))\nassert r == {'shares': {0: 0.97, 1: 0.03}, 'majority': 0, 'baseline_accuracy': 0.97}" }
+    - { kind: assert, name: "text labels", code: "import pandas as pd\nr = class_report(pd.Series(['spam', 'ham', 'ham']))\nassert r['majority'] == 'ham' and r['baseline_accuracy'] == 0.667" }
+  solution: |
+    import pandas as pd
+
+    def class_report(y):
+        shares = y.value_counts(normalize=True)
+        return {
+            'shares': {label: round(float(share), 3) for label, share in shares.items()},
+            'majority': shares.idxmax(),
+            'baseline_accuracy': round(float(shares.max()), 3),
+        }

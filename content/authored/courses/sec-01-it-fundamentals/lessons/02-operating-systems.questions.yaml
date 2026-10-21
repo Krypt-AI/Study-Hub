@@ -1,0 +1,43 @@
+- id: sec01.os.syscall
+  type: choice
+  skill: recognize
+  topics: [sec01.os]
+  prompt: How does a user-mode program open a file or send network data?
+  options:
+    - { id: a, text: "It makes a system call into the kernel, which checks permissions and performs the operation.", explanation: "Correct." }
+    - { id: b, text: "It accesses the hardware directly.", explanation: "User mode cannot; that is the kernel's job." }
+    - { id: c, text: "It reboots into kernel mode.", explanation: "No reboot is involved." }
+  correct: [a]
+
+- id: sec01.os.config
+  type: choice
+  skill: recall
+  topics: [sec01.os]
+  prompt: Where does Linux typically keep system configuration?
+  options:
+    - { id: a, text: "Plain-text files under `/etc`", explanation: "Correct." }
+    - { id: b, text: "The Windows Registry", explanation: "That is Windows." }
+    - { id: c, text: "In RAM only", explanation: "Config persists on disk." }
+  correct: [a]
+
+- id: sec01.os.attack-surface
+  type: choice
+  skill: apply
+  topics: [sec01.os]
+  prompt: Disabling network services a server does not need reduces its…
+  options:
+    - { id: a, text: "attack surface", explanation: "Correct: fewer listening services, fewer ways in." }
+    - { id: b, text: "disk size", explanation: "Not the point." }
+    - { id: c, text: "clock speed", explanation: "Unrelated." }
+  correct: [a]
+
+- id: sec01.os.logs
+  type: cloze
+  skill: recall
+  topics: [sec01.os]
+  prompt: Name where each platform records events.
+  text: "Windows uses the [[1]] Log (via Event Viewer); Linux uses the journal (`[[2]]`) and files under /var/[[3]]."
+  blanks:
+    - { id: "1", accepted: [Event, event] }
+    - { id: "2", accepted: [journalctl] }
+    - { id: "3", accepted: [log] }

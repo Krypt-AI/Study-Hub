@@ -1,0 +1,66 @@
+- id: ai13.fairness.source
+  type: choice
+  skill: recognize
+  topics: [ai13.fairness]
+  prompt: A hiring model trained on past decisions favours the group historically hired. This is…
+  options:
+    - { id: a, text: "Historical bias — the data reflects past inequity, which the model reproduces", explanation: "Correct." }
+    - { id: b, text: "A random glitch", explanation: "It is systematic, from the data." }
+    - { id: c, text: "Impossible if accuracy is high", explanation: "High overall accuracy can hide group harm." }
+  correct: [a]
+
+- id: ai13.fairness.measure
+  type: choice
+  skill: apply
+  topics: [ai13.fairness]
+  prompt: How do you check a model for unfairness across groups?
+  options:
+    - { id: a, text: "Evaluate metrics disaggregated by group, not just overall", explanation: "Correct: overall numbers hide subgroup harm." }
+    - { id: b, text: "Look only at total accuracy", explanation: "Hides disparities." }
+    - { id: c, text: "Assume it is fair if it is a big model", explanation: "No basis." }
+  correct: [a]
+
+- id: ai13.fairness.incompatible
+  type: choice
+  skill: recognize
+  topics: [ai13.fairness]
+  prompt: Which statement about fairness criteria is true?
+  options:
+    - { id: a, text: "Different fairness definitions can be mutually incompatible; you must choose which fits the context", explanation: "Correct: there is no single 'fair'." }
+    - { id: b, text: "All fairness definitions can always be satisfied together", explanation: "An impossibility result says otherwise." }
+    - { id: c, text: "Fairness is a single fixed number", explanation: "It is contextual." }
+  correct: [a]
+
+- id: ai13.fairness.group-metric
+  type: code
+  skill: apply
+  topics: [ai13.fairness]
+  language: python
+  prompt: >-
+    Write `group_rates(records)` where each record is `(group, outcome)` with outcome 0/1. Return a dict mapping each
+    group to its positive rate (mean outcome), and `max_gap(records)` returning the difference between the highest and
+    lowest group positive rates (0.0 if fewer than two groups).
+  starterCode: |
+    def group_rates(records):
+        ...
+
+    def max_gap(records):
+        ...
+  tests:
+    - { kind: assert, name: "rates", code: "r = group_rates([('a', 1), ('a', 0), ('b', 1), ('b', 1)])\nassert r == {'a': 0.5, 'b': 1.0}" }
+    - { kind: assert, name: "gap", code: "assert max_gap([('a', 1), ('a', 0), ('b', 1), ('b', 1)]) == 0.5" }
+    - { kind: assert, name: "single group gap zero", code: "assert max_gap([('a', 1), ('a', 0)]) == 0.0" }
+  solution: |
+    def group_rates(records):
+        totals = {}
+        counts = {}
+        for group, outcome in records:
+            totals[group] = totals.get(group, 0) + outcome
+            counts[group] = counts.get(group, 0) + 1
+        return {g: totals[g] / counts[g] for g in totals}
+
+    def max_gap(records):
+        rates = list(group_rates(records).values())
+        if len(rates) < 2:
+            return 0.0
+        return max(rates) - min(rates)

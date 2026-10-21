@@ -1,0 +1,29 @@
+- id: sec02.setup.scope
+  type: choice
+  skill: recognize
+  topics: [sec02.setup]
+  prompt: Where is it appropriate to run an Nmap port scan?
+  options:
+    - { id: a, text: "Against hosts in your own lab, or systems you are authorised to test", explanation: "Correct." }
+    - { id: b, text: "Against any public website to practise", explanation: "Scanning without authorisation can be unlawful." }
+    - { id: c, text: "Against your ISP to test their security", explanation: "Not authorised." }
+  correct: [a]
+
+- id: sec02.setup.wireshark-filter
+  type: short
+  skill: recall
+  topics: [sec02.setup]
+  prompt: "Which Wireshark display filter shows only DNS packets? (one word)"
+  accepted: ["dns"]
+  match: { mode: exact }
+
+- id: sec02.setup.nmap-open-port
+  type: choice
+  skill: apply
+  topics: [sec02.setup]
+  prompt: Nmap reports port 22 open on your lab server. How should a defender read that?
+  options:
+    - { id: a, text: "SSH is listening and reachable; confirm it is needed and hardened, or close it.", explanation: "Correct: each open port is a service to justify." }
+    - { id: b, text: "The host is offline.", explanation: "An open port means it is up and listening." }
+    - { id: c, text: "The disk is full.", explanation: "Unrelated." }
+  correct: [a]

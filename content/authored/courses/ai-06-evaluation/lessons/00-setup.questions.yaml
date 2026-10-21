@@ -1,0 +1,29 @@
+- id: ai06.setup.ui-command
+  type: short
+  skill: recall
+  topics: [ai06.setup]
+  prompt: "Which command starts the MLflow tracking UI (without uv run)?"
+  accepted: ["mlflow ui", "mlflow ui --port 5000", "mlflow server"]
+  match: { mode: exact }
+
+- id: ai06.setup.gitignore
+  type: choice
+  skill: apply
+  topics: [ai06.setup]
+  prompt: Should the `mlruns/` folder be committed?
+  options:
+    - { id: a, text: "No: it holds local run data and model artifacts; ignore it.", explanation: "Correct." }
+    - { id: b, text: "Yes: commit every run.", explanation: "It grows quickly and can contain large artifacts." }
+    - { id: c, text: "Only on Fridays.", explanation: "No." }
+  correct: [a]
+
+- id: ai06.setup.expose
+  type: choice
+  skill: recognize
+  topics: [ai06.setup]
+  prompt: Why keep the local MLflow UI bound to 127.0.0.1?
+  options:
+    - { id: a, text: "It has no authentication by default, so anyone on the network could read or change runs.", explanation: "Correct." }
+    - { id: b, text: "It is faster.", explanation: "Not the reason." }
+    - { id: c, text: "Port 5000 only works on localhost.", explanation: "Any interface can use it." }
+  correct: [a]

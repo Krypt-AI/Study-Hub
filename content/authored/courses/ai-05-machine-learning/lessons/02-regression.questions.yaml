@@ -1,0 +1,88 @@
+- id: ai05.regression.r2-zero
+  type: choice
+  skill: recognize
+  topics: [ai05.regression]
+  prompt: A model has R² = 0 on the test set. What does that mean?
+  options:
+    - { id: a, text: "It does no better than always predicting the mean of the target.", explanation: "Correct." }
+    - { id: b, text: "It makes no errors.", explanation: "That is R² = 1." }
+    - { id: c, text: "It cannot be evaluated.", explanation: "It can; it is just uninformative." }
+  correct: [a]
+
+- id: ai05.regression.lasso
+  type: choice
+  skill: recognize
+  topics: [ai05.regression]
+  prompt: Which regularisation can set some coefficients exactly to zero, effectively selecting features?
+  options:
+    - { id: a, text: "Lasso (L1)", explanation: "Correct." }
+    - { id: b, text: "Ridge (L2)", explanation: "Shrinks weights but rarely to exactly zero." }
+    - { id: c, text: "Neither", explanation: "L1 does." }
+  correct: [a]
+
+- id: ai05.regression.alpha
+  type: choice
+  skill: apply
+  topics: [ai05.regression]
+  prompt: A Ridge model overfits. What should you do with alpha?
+  options:
+    - { id: a, text: "Increase it", explanation: "Correct: a stronger penalty, a simpler model." }
+    - { id: b, text: "Decrease it", explanation: "That weakens regularisation." }
+    - { id: c, text: "Set it to a negative value", explanation: "Not allowed." }
+  correct: [a]
+
+- id: ai05.regression.mae
+  type: short
+  skill: apply
+  topics: [ai05.regression]
+  prompt: "True values 10, 20, 30; predictions 12, 18, 33. What is the MAE?"
+  accepted: ["2.333", "2.33", "7/3"]
+  match: { mode: number, tolerance: 0.01 }
+  explanation: "(2 + 2 + 3) / 3 = 7/3 ≈ 2.33."
+
+- id: ai05.regression.coef
+  type: long
+  skill: explain
+  topics: [ai05.regression]
+  prompt: "A house-price model gives a negative coefficient for `bedrooms`. Does adding a bedroom lower a house's value? Explain."
+  minWords: 30
+  rubric:
+    - { id: fixed, label: "Coefficients are interpreted holding the other features fixed (for example area)", keywords: [["holding", "fixed", "constant", "same area", "other features"]] }
+    - { id: collinear, label: "Correlated features (multicollinearity) make individual coefficients unreliable", keywords: [["correlat", "collinear"]] }
+    - { id: cause, label: "It is an association, not a causal effect", keywords: [["causal", "cause", "association"]] }
+  modelAnswer: >-
+    Not necessarily. The coefficient describes the effect of one more bedroom while holding area and the other
+    features fixed, so it compares a house with more, smaller rooms to one of the same size with fewer rooms. Bedrooms
+    and area are also strongly correlated, which makes individual coefficients unstable. And the model learns
+    associations in the data, not causal effects, so it cannot say what renovating would do.
+
+- id: ai05.regression.ridge-code
+  type: code
+  skill: apply
+  topics: [ai05.regression]
+  language: python
+  packages: [scikit-learn]
+  prompt: >-
+    Write `best_alpha(X, y, alphas)` that returns the alpha from `alphas` giving the highest mean 5-fold
+    cross-validated R² for a pipeline of `StandardScaler` and `Ridge(alpha=...)`. Use `cross_val_score`.
+  starterCode: |
+    from sklearn.linear_model import Ridge
+    from sklearn.model_selection import cross_val_score
+    from sklearn.pipeline import make_pipeline
+    from sklearn.preprocessing import StandardScaler
+
+    def best_alpha(X, y, alphas):
+        ...
+  tests:
+    - { kind: assert, name: "diabetes", code: "from sklearn.datasets import load_diabetes\nX, y = load_diabetes(return_X_y=True)\nassert best_alpha(X, y, [1000.0, 0.01, 100000.0]) == 0.01" }
+  solution: |
+    from sklearn.linear_model import Ridge
+    from sklearn.model_selection import cross_val_score
+    from sklearn.pipeline import make_pipeline
+    from sklearn.preprocessing import StandardScaler
+
+    def best_alpha(X, y, alphas):
+        def score(alpha):
+            model = make_pipeline(StandardScaler(), Ridge(alpha=alpha))
+            return cross_val_score(model, X, y, cv=5, scoring='r2').mean()
+        return max(alphas, key=score)

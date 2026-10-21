@@ -1,0 +1,49 @@
+- id: sec08.forensics.volatility
+  type: choice
+  skill: apply
+  topics: [sec08.forensics]
+  prompt: Following the order of volatility, what do you collect before powering a machine off?
+  options:
+    - { id: a, text: "A memory image (RAM and running state), which is lost at power-off", explanation: "Correct." }
+    - { id: b, text: "The disk image only", explanation: "RAM would be lost first." }
+    - { id: c, text: "The printed manual", explanation: "Not evidence." }
+  correct: [a]
+
+- id: sec08.forensics.hash
+  type: choice
+  skill: apply
+  topics: [sec08.forensics]
+  prompt: You imaged a disk and recorded its SHA-256. A week later the hash of the image differs. What does that mean?
+  options:
+    - { id: a, text: "The evidence integrity is broken — the image was altered and cannot be trusted as-is", explanation: "Correct." }
+    - { id: b, text: "The disk got bigger", explanation: "Not how hashes work." }
+    - { id: c, text: "Nothing; hashes change over time", explanation: "A hash of unchanged data is constant." }
+  correct: [a]
+
+- id: sec08.forensics.custody
+  type: choice
+  skill: recognize
+  topics: [sec08.forensics]
+  prompt: Why maintain a chain of custody?
+  options:
+    - { id: a, text: "An unbroken, documented handling record keeps evidence trustworthy and admissible", explanation: "Correct." }
+    - { id: b, text: "It compresses the evidence", explanation: "No." }
+    - { id: c, text: "It speeds up the network", explanation: "No." }
+  correct: [a]
+
+- id: sec08.forensics.limits
+  type: long
+  skill: explain
+  topics: [sec08.forensics]
+  prompt: An incident may lead to prosecution of an insider. What should a first responder do, and not do?
+  minWords: 30
+  rubric:
+    - { id: preserve, label: "Preserve the scene and evidence (capture volatile data if trained, isolate, document)", keywords: [["preserve", "isolate", "document", "capture", "do not wipe"]] }
+    - { id: specialist, label: "Bring in qualified forensic specialists and legal counsel early", keywords: [["specialist", "forensic", "legal", "counsel", "expert"]] }
+  modelAnswer: >-
+    Preserve rather than trample the evidence: do not wipe, reboot casually, or poke around in ways that change
+    timestamps and state. If trained, capture volatile data (memory, running connections) following the order of
+    volatility; otherwise isolate the system from the network, leave it as found, and document everything with times.
+    Then bring in qualified forensic specialists and legal counsel early, because mishandling the first response can
+    destroy an otherwise strong case, and recognise when the incident has crossed into territory that needs that
+    expertise.

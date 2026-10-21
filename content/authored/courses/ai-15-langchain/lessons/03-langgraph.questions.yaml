@@ -1,0 +1,43 @@
+- id: ai15.graph.when
+  type: choice
+  skill: apply
+  topics: [ai15.graph]
+  prompt: Which situation calls for LangGraph rather than create_agent?
+  options:
+    - { id: a, text: "You need custom control flow — branching on a classification, bounded loops, or a human-approval step", explanation: "Correct." }
+    - { id: b, text: "A single standard tool-using agent", explanation: "create_agent already covers that." }
+    - { id: c, text: "You want a cheaper model", explanation: "Unrelated to the framework level." }
+  correct: [a]
+
+- id: ai15.graph.state
+  type: choice
+  skill: recognize
+  topics: [ai15.graph]
+  prompt: In a StateGraph, what does a reducer on a state field (e.g. messages) do?
+  options:
+    - { id: a, text: "Defines how updates to that field combine — e.g. append new messages instead of overwriting", explanation: "Correct." }
+    - { id: b, text: "Encrypts the field", explanation: "No." }
+    - { id: c, text: "Deletes the field after each node", explanation: "No." }
+  correct: [a]
+
+- id: ai15.graph.conditional
+  type: choice
+  skill: apply
+  topics: [ai15.graph]
+  prompt: How do you make a graph loop back to the model only when the last message requested a tool?
+  options:
+    - { id: a, text: "A conditional edge whose routing function returns the tool node or END based on the state", explanation: "Correct." }
+    - { id: b, text: "A fixed edge that always goes to the tool node", explanation: "That would loop unconditionally." }
+    - { id: c, text: "Raising the temperature", explanation: "Unrelated." }
+  correct: [a]
+
+- id: ai15.graph.hitl
+  type: choice
+  skill: apply
+  topics: [ai15.graph]
+  prompt: Compiling a graph with a checkpointer enables which safety-relevant capability?
+  options:
+    - { id: a, text: "Human-in-the-loop: interrupt before a sensitive node, wait for approval, then resume", explanation: "Correct (Stage 11 safety)." }
+    - { id: b, text: "Automatic model training", explanation: "No." }
+    - { id: c, text: "Removing the need for tools", explanation: "No." }
+  correct: [a]

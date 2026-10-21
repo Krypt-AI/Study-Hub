@@ -1,0 +1,56 @@
+- id: sec02.addressing.hosts
+  type: short
+  skill: apply
+  topics: [sec02.addressing]
+  prompt: "How many usable host addresses does a /26 subnet provide?"
+  accepted: ["62"]
+  match: { mode: number }
+  explanation: "2^(32−26) − 2 = 64 − 2 = 62."
+
+- id: sec02.addressing.nat
+  type: choice
+  skill: apply
+  topics: [sec02.addressing]
+  prompt: Is NAT a security control?
+  options:
+    - { id: a, text: "No: it hides internal addresses as a side effect but does not filter or authorise traffic; use a firewall.", explanation: "Correct." }
+    - { id: b, text: "Yes, it is a full firewall.", explanation: "NAT does not enforce a security policy." }
+    - { id: c, text: "Yes, it encrypts traffic.", explanation: "NAT does not encrypt anything." }
+  correct: [a]
+
+- id: sec02.addressing.private
+  type: choice
+  skill: recognize
+  topics: [sec02.addressing]
+  prompt: Which range is private (not routed on the public internet)?
+  options:
+    - { id: a, text: "10.0.0.0/8", explanation: "Correct (RFC 1918)." }
+    - { id: b, text: "1.1.1.1/32", explanation: "Public (a public DNS resolver)." }
+    - { id: c, text: "203.0.113.0/24", explanation: "A documentation range, but not RFC 1918 private." }
+  correct: [a]
+
+- id: sec02.addressing.segmentation
+  type: long
+  skill: explain
+  topics: [sec02.addressing]
+  prompt: Explain how network segmentation limits the damage from a compromised workstation.
+  minWords: 25
+  rubric:
+    - { id: split, label: "The network is split into segments/subnets (e.g. users, servers, DMZ)", keywords: [["segment", "subnet", "vlan", "separate"]] }
+    - { id: control, label: "Traffic between segments is controlled/filtered", keywords: [["control", "filter", "firewall", "rules", "between"]] }
+    - { id: contain, label: "A breach in one segment cannot freely reach the others", keywords: [["contain", "cannot reach", "limit", "spread", "lateral"]] }
+  modelAnswer: >-
+    Segmentation splits the network into subnets or VLANs — for example user workstations, servers, and an
+    internet-facing DMZ — and places controls (firewall rules) on traffic crossing between them. If a workstation is
+    compromised, the attacker is confined to the user segment and must get past those controls to reach servers or
+    sensitive systems, which slows them down, creates detection opportunities, and limits lateral movement.
+
+- id: sec02.addressing.network-broadcast
+  type: cloze
+  skill: recall
+  topics: [sec02.addressing]
+  prompt: "For 192.168.1.0/24, name the reserved addresses."
+  text: "192.168.1.[[1]] is the network address and 192.168.1.[[2]] is the broadcast address."
+  blanks:
+    - { id: "1", accepted: ["0"] }
+    - { id: "2", accepted: ["255"] }
