@@ -19,6 +19,7 @@ topics:
   - { id: sec07.patch, title: Patch and configuration management }
   - { id: sec07.monitoring, title: Logging and monitoring }
   - { id: sec07.endpoint, title: Endpoint and email defence }
+  - { id: sec07.lab, title: "Practical lab" }
 units:
   - id: sec-07-defence.u1
     title: Making systems hard to break
@@ -26,6 +27,9 @@ units:
   - id: sec-07-defence.u2
     title: Seeing and stopping attacks
     lessons: [04-logging-monitoring, 05-endpoint-email]
+  - id: sec-07-defence.lab
+    title: "Practical lab · the real tools"
+    lessons: [90-practical-lab]
 assessments:
   - id: sec-07-defence.quiz
     title: "Stage 7 quiz: defence"

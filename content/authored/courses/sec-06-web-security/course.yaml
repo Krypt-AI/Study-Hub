@@ -18,6 +18,7 @@ topics:
   - { id: sec06.access, title: Broken access control }
   - { id: sec06.injection, title: Injection and XSS }
   - { id: sec06.owasp, title: The OWASP Top 10 }
+  - { id: sec06.lab, title: "Practical lab" }
 units:
   - id: sec-06-web-security.u1
     title: The web and its weak points
@@ -25,6 +26,9 @@ units:
   - id: sec-06-web-security.u2
     title: Injection and the big picture
     lessons: [03-injection-xss, 04-owasp-top-10]
+  - id: sec-06-web-security.lab
+    title: "Practical lab · the real tools"
+    lessons: [90-practical-lab]
 assessments:
   - id: sec-06-web-security.quiz
     title: "Stage 6 quiz: web application security"

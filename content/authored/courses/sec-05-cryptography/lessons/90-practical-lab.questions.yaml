@@ -1,0 +1,101 @@
+- id: sec05.lab.hello-hash
+  type: short
+  skill: recall
+  topics: [sec05.lab]
+  prompt: "The SHA-256 of the five bytes `hello` begins with which first 8 hex characters? (as printed by sha256sum)"
+  accepted: ["2cf24dba"]
+  match: { mode: exact }
+  explanation: "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824."
+
+- id: sec05.lab.printf-newline
+  type: choice
+  skill: apply
+  topics: [sec05.lab]
+  prompt: "`echo hello | sha256sum` gives a different digest from `printf 'hello' | sha256sum`. Why?"
+  options:
+    - { id: a, text: "echo adds a trailing newline, so the input is six bytes, not five, and any change to the input changes the whole digest", explanation: "Correct: the avalanche effect applies to a single added byte." }
+    - { id: b, text: "echo uses a different hash algorithm", explanation: "Both pipe into the same sha256sum." }
+    - { id: c, text: "printf encrypts the text first", explanation: "printf only prints." }
+  correct: [a]
+
+- id: sec05.lab.checksum
+  type: choice
+  skill: apply
+  topics: [sec05.lab]
+  prompt: "You ran `sha256sum -c hello.sha256` and it printed `hello.txt: FAILED`. What does that tell you?"
+  options:
+    - { id: a, text: "The file's current contents no longer match the recorded digest: it was changed or corrupted", explanation: "Correct." }
+    - { id: b, text: "The checksum file was encrypted", explanation: "A checksum file is plain text." }
+    - { id: c, text: "The file is safe but the tool is outdated", explanation: "FAILED means a mismatch." }
+  correct: [a]
+
+- id: sec05.lab.salted
+  type: choice
+  skill: apply
+  topics: [sec05.lab]
+  prompt: "You encrypt the same file twice with `openssl enc -aes-256-cbc -pbkdf2 -salt` and the two output files differ. Why?"
+  options:
+    - { id: a, text: "Each run uses a fresh random salt, which feeds the key derivation and appears after the `Salted__` header", explanation: "Correct." }
+    - { id: b, text: "OpenSSL is broken", explanation: "This is expected behaviour." }
+    - { id: c, text: "The file changed between runs", explanation: "It did not; the salt differs." }
+  correct: [a]
+
+- id: sec05.lab.passphrase
+  type: choice
+  skill: apply
+  topics: [sec05.lab]
+  prompt: "Why is `-pass pass:demo` fine for the lab but poor practice for real secrets?"
+  options:
+    - { id: a, text: "The passphrase appears on the command line, so it is visible in shell history and process lists", explanation: "Correct: prefer `-pass stdin` or a key file." }
+    - { id: b, text: "It makes the encryption weaker mathematically", explanation: "The cipher is unchanged; the exposure is the problem." }
+    - { id: c, text: "OpenSSL ignores it", explanation: "It is used." }
+  correct: [a]
+
+- id: sec05.lab.sign-fail
+  type: long
+  skill: explain
+  topics: [sec05.lab]
+  prompt: "You signed `pay alice 100` with an Ed25519 key. Verifying the same signature against `pay alice 900` printed `Signature Verification Failure` and exited non-zero. Explain what this shows and which two properties are involved."
+  minWords: 30
+  rubric:
+    - { id: integrity, label: "The message was altered, so the signature no longer matches (integrity)", keywords: [["integrity", "altered", "changed", "tamper", "modified"]] }
+    - { id: authenticity, label: "Only the holder of the private key could produce a valid signature (authenticity / non-repudiation)", keywords: [["authentic", "private key", "non-repudiation", "who signed", "signer"]] }
+    - { id: script, label: "The non-zero exit status lets a script detect the failure", keywords: [["exit", "status", "script", "non-zero", "automat"]] }
+  modelAnswer: >-
+    The signature was computed over the original message, so verifying it against a different message fails: this shows
+    integrity, because any change to the message is detected. A valid signature can only be produced with the private key, so
+    a successful verification also shows authenticity and non-repudiation of the signer. The non-zero exit status means a script
+    or pipeline can reject the tampered message automatically.
+
+- id: sec05.lab.s-client
+  type: choice
+  skill: recognize
+  topics: [sec05.lab]
+  prompt: "In `openssl s_client` output, which line tells you whether your system trusted the server's certificate chain?"
+  options:
+    - { id: a, text: "The `Verification` line (for example `Verification: OK`)", explanation: "Correct: it reports the result of validating the chain against the trust store." }
+    - { id: b, text: "The `Protocol` line", explanation: "That reports the TLS version." }
+    - { id: c, text: "The `Cipher` line", explanation: "That reports the negotiated cipher suite." }
+  correct: [a]
+
+- id: sec05.lab.hmac-code
+  type: code
+  skill: apply
+  topics: [sec05.lab]
+  language: python
+  prompt: >-
+    Reproduce the lab's HMAC in Python. Write `hmac_hex(key, message)` returning the hex HMAC-SHA256 of the string `message`
+    under the string `key`. It must equal what `printf 'pay alice' | openssl dgst -sha256 -hmac "k"` printed in Part 2.
+  starterCode: |
+    import hmac, hashlib
+
+    def hmac_hex(key, message):
+        ...
+  tests:
+    - { kind: assert, name: "matches the openssl output", code: "assert hmac_hex('k', 'pay alice') == 'de4cc5dcc384d35bc805cf7b33af5906b3076c11b1748bdbda7f75b9aedd76db'" }
+    - { kind: assert, name: "different key differs", code: "assert hmac_hex('other', 'pay alice') != hmac_hex('k', 'pay alice')" }
+  solution: |
+    import hmac, hashlib
+
+    def hmac_hex(key, message):
+        return hmac.new(key.encode(), message.encode(), hashlib.sha256).hexdigest()

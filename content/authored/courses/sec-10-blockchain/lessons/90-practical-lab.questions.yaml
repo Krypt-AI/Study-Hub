@@ -1,0 +1,93 @@
+- id: sec10.lab.double-sha
+  type: choice
+  skill: recall
+  topics: [sec10.lab]
+  prompt: How is a Bitcoin block's hash computed from its header?
+  options:
+    - { id: a, text: "SHA-256 applied twice to the 80-byte header", explanation: "Correct." }
+    - { id: b, text: "It is stored inside the block and read back", explanation: "The block hash is computed, not stored in the block." }
+    - { id: c, text: "MD5 of the transaction list", explanation: "Not what Bitcoin uses." }
+  correct: [a]
+
+- id: sec10.lab.endian
+  type: choice
+  skill: apply
+  topics: [sec10.lab]
+  prompt: "Your Python reproduction of the genesis hash comes out wrong, though the values look right. What is the most likely cause?"
+  options:
+    - { id: a, text: "Byte order: Bitcoin stores integers little-endian and the displayed hash is the reverse of the internal bytes", explanation: "Correct." }
+    - { id: b, text: "SHA-256 is not available in Python", explanation: "It is, in hashlib." }
+    - { id: c, text: "The nonce is encrypted", explanation: "Nothing in the header is encrypted." }
+  correct: [a]
+
+- id: sec10.lab.zeros
+  type: choice
+  skill: apply
+  topics: [sec10.lab]
+  prompt: "You change the genesis nonce by one and recompute. What happens to the hash?"
+  options:
+    - { id: a, text: "It becomes completely different and no longer has the leading zeros, so the block would be invalid", explanation: "Correct: the avalanche effect." }
+    - { id: b, text: "It changes by one in the last digit", explanation: "Hashes do not change smoothly." }
+    - { id: c, text: "Nothing, the nonce is ignored", explanation: "The nonce is hashed with the rest of the header." }
+  correct: [a]
+
+- id: sec10.lab.verify-cheap
+  type: long
+  skill: explain
+  topics: [sec10.lab]
+  prompt: "Why is it cheap to verify the genesis block's hash but expensive to find a nonce that produces such a hash?"
+  minWords: 30
+  rubric:
+    - { id: verify, label: "Verifying is one (double) hash of the header", keywords: [["one hash", "single", "twice", "once", "recompute", "cheap"]] }
+    - { id: search, label: "Finding a nonce is brute force: try many values until the hash is below the target", keywords: [["brute", "try", "search", "many", "guess", "trial"]] }
+    - { id: pow, label: "That asymmetry is what proof-of-work relies on", keywords: [["proof-of-work", "proof of work", "asymmetr", "work"]] }
+  modelAnswer: >-
+    Verifying needs just one computation: hash the 80-byte header twice and compare the result. Finding a valid nonce has no
+    shortcut, because the hash behaves unpredictably, so a miner must try enormous numbers of nonces until one gives a hash
+    below the difficulty target. That asymmetry, hard to produce and trivial to check, is exactly what proof-of-work relies on,
+    and it lets anyone verify a block without trusting the miner.
+
+- id: sec10.lab.prev-hash
+  type: choice
+  skill: apply
+  topics: [sec10.lab]
+  prompt: "In a block explorer, how can you confirm two consecutive blocks are properly chained?"
+  options:
+    - { id: a, text: "The later block's Previous block hash equals the earlier block's Hash", explanation: "Correct: that link is what makes the chain tamper-evident." }
+    - { id: b, text: "They have the same nonce", explanation: "Each block has its own nonce." }
+    - { id: c, text: "They contain the same transactions", explanation: "Each block has different transactions." }
+  correct: [a]
+
+- id: sec10.lab.genesis-code
+  type: code
+  skill: apply
+  topics: [sec10.lab]
+  language: python
+  prompt: >-
+    Write `block_hash(version, previous_hex, merkle_hex, timestamp, bits, nonce)` that builds the 80-byte Bitcoin header
+    (little-endian integers; `previous_hex` and `merkle_hex` are 64-character hex strings as displayed, so reverse their bytes)
+    and returns the block hash as displayed (hex, bytes reversed) after applying SHA-256 twice. It must reproduce the real
+    genesis block hash.
+  starterCode: |
+    import hashlib
+    import struct
+
+    def block_hash(version, previous_hex, merkle_hex, timestamp, bits, nonce):
+        ...
+  tests:
+    - { kind: assert, name: "genesis block", code: "h = block_hash(1, '00' * 32, '4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b', 1231006505, 0x1D00FFFF, 2083236893)\nassert h == '000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f'" }
+    - { kind: assert, name: "one changed nonce breaks it", code: "h = block_hash(1, '00' * 32, '4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b', 1231006505, 0x1D00FFFF, 2083236894)\nassert h != '000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f' and not h.startswith('00000000')" }
+  hints: ["Pack with struct: `'<L'` for 4-byte little-endian integers.", "Reverse the bytes of the two 32-byte hashes going in, and reverse the final digest coming out."]
+  solution: |
+    import hashlib
+    import struct
+
+    def block_hash(version, previous_hex, merkle_hex, timestamp, bits, nonce):
+        header = (
+            struct.pack('<L', version)
+            + bytes.fromhex(previous_hex)[::-1]
+            + bytes.fromhex(merkle_hex)[::-1]
+            + struct.pack('<LLL', timestamp, bits, nonce)
+        )
+        digest = hashlib.sha256(hashlib.sha256(header).digest()).digest()
+        return digest[::-1].hex()

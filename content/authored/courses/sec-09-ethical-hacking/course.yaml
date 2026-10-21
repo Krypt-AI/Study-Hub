@@ -19,6 +19,7 @@ topics:
   - { id: sec09.methodology, title: The penetration-testing methodology }
   - { id: sec09.techniques, title: Techniques and how to defend them }
   - { id: sec09.reporting, title: Reporting, CTFs and careers }
+  - { id: sec09.lab, title: "Practical lab" }
 units:
   - id: sec-09-ethical-hacking.u1
     title: The rules and the method
@@ -26,6 +27,9 @@ units:
   - id: sec-09-ethical-hacking.u2
     title: Techniques, defence and delivery
     lessons: [03-techniques-defence, 04-reporting-ctf]
+  - id: sec-09-ethical-hacking.lab
+    title: "Practical lab · the real tools"
+    lessons: [90-practical-lab]
 assessments:
   - id: sec-09-ethical-hacking.quiz
     title: "Stage 9 quiz: ethical hacking"

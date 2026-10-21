@@ -21,6 +21,12 @@ Last updated 2026-10-21.
 - **UI**: softened the Answer Sheet design (Nunito display face, rounded corners, quieter rules, pill tags), a
   collapsible icon rail (Ctrl+B, remembered), and the Study-Hub-authored courses surfaced as icon-tiled areas in the
   Courses page. DESIGN.md updated.
+- **Navigation and practical labs (2026-10-21, later)**: "In this lesson" outline with jump links on every lesson with three
+  or more sections, "Expand all / Collapse all" on course pages, chapter-by-chapter units and slide-source subtitles for
+  CMPD363, and CMPD2143 Chapter 4 Part 1 (three lessons and a revision page, both in git-ignored `content/private`). Ten
+  practical-lab lessons (`sec-01`, `sec-02`, `sec-05`, `sec-06`, `sec-07`, `sec-08`, `sec-09`, `sec-10`, `ai-12`, `ai-15`) guide
+  the learner through the real tools on published samples. `content:verify` now runs 122 exercises (0 failures); 215 unit
+  tests; lesson, navigation and levels e2e (35) pass.
 - Verified 2026-10-21: `content:build` 63 courses / 29,302 questions / 55 certifications / 4 roadmaps (11 warnings,
   all for the still-planned advanced Linux and it-cloud courses); `content:verify` 117 exercises pass, 0 failures
   (run with a venv providing numpy/pandas/scikit-learn); `tsc -b` and `eslint .` clean; navigation + levels e2e

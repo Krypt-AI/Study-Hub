@@ -1,0 +1,78 @@
+- id: sec02.lab.filter-handshake
+  type: choice
+  skill: apply
+  topics: [sec02.lab]
+  prompt: Which Wireshark display filter shows only the FIRST packet of each TCP handshake (SYN, not SYN-ACK)?
+  options:
+    - { id: a, text: "`tcp.flags.syn == 1 && tcp.flags.ack == 0`", explanation: "Correct: SYN set and ACK not set." }
+    - { id: b, text: "`tcp.flags.syn == 1`", explanation: "That also matches the SYN-ACK reply." }
+    - { id: c, text: "`http`", explanation: "That filters on the application protocol." }
+  correct: [a]
+
+- id: sec02.lab.follow-stream
+  type: choice
+  skill: apply
+  topics: [sec02.lab]
+  prompt: In Wireshark you use Follow, then TCP Stream on an HTTP conversation and can read a login form's password. What does this demonstrate?
+  options:
+    - { id: a, text: "HTTP is cleartext, so anyone who can capture the traffic can read it; HTTPS would show only unreadable bytes", explanation: "Correct." }
+    - { id: b, text: "Wireshark breaks encryption", explanation: "The traffic was never encrypted." }
+    - { id: c, text: "TCP is insecure by design", explanation: "The problem is the cleartext application protocol." }
+  correct: [a]
+
+- id: sec02.lab.read-state
+  type: choice
+  skill: apply
+  topics: [sec02.lab]
+  prompt: "An Nmap table shows `25/tcp closed smtp` and `Not shown: 994 filtered ports`. What is the difference between closed and filtered?"
+  options:
+    - { id: a, text: "Closed: the host answered and nothing listens there. Filtered: no answer came back, usually because a firewall dropped the packets, so Nmap cannot tell.", explanation: "Correct." }
+    - { id: b, text: "Closed means blocked by a firewall; filtered means no service", explanation: "Reversed." }
+    - { id: c, text: "They mean the same thing", explanation: "They are different states." }
+  correct: [a]
+
+- id: sec02.lab.scope
+  type: choice
+  skill: apply
+  topics: [sec02.lab]
+  prompt: Which scan is within the Nmap Project's stated permission?
+  options:
+    - { id: a, text: "A light Nmap scan of scanme.nmap.org, a few times a day at most", explanation: "Correct: Nmap only, kept light, on their own test host." }
+    - { id: b, text: "Running an exploit against scanme.nmap.org", explanation: "The permission covers Nmap scanning, not exploits or denial of service." }
+    - { id: c, text: "Scanning a random company's server to practise", explanation: "Not authorised." }
+  correct: [a]
+
+- id: sec02.lab.sn
+  type: short
+  skill: recall
+  topics: [sec02.lab]
+  prompt: "Which Nmap option does host discovery only (which hosts are up) with no port scan? Write the option."
+  accepted: ["-sn"]
+  match: { mode: exact }
+
+- id: sec02.lab.sv
+  type: choice
+  skill: apply
+  topics: [sec02.lab]
+  prompt: You want to know which software and version is behind each open port on your own lab VM. Which option?
+  options:
+    - { id: a, text: "`-sV` (service and version detection)", explanation: "Correct." }
+    - { id: b, text: "`-oN` (save a report)", explanation: "That saves output; it does not detect versions." }
+    - { id: c, text: "`-p 22` (scan one port)", explanation: "That limits the ports; it does not add version detection." }
+  correct: [a]
+
+- id: sec02.lab.defender
+  type: long
+  skill: explain
+  topics: [sec02.lab]
+  prompt: After an Nmap scan of your own server shows six open ports, what should a defender do with that list?
+  minWords: 30
+  rubric:
+    - { id: justify, label: "For each open port ask whether the service is needed", keywords: [["need", "justify", "required", "necessary"]] }
+    - { id: patched, label: "Check it is patched and up to date", keywords: [["patch", "version", "update", "vulnerab"]] }
+    - { id: close, label: "Close or firewall what cannot be justified, reducing attack surface", keywords: [["close", "firewall", "disable", "attack surface", "restrict"]] }
+  modelAnswer: >-
+    Treat each open port as a door. For every one ask whether the service is genuinely needed and whether it should be
+    reachable from where it is. For the ones that stay, check the version Nmap reported against known vulnerabilities and
+    make sure it is patched. Close or firewall anything that cannot be justified, which reduces the attack surface, and keep
+    the scan output in your notes as the baseline to compare against next time.

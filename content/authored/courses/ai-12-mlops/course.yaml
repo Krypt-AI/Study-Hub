@@ -19,6 +19,7 @@ topics:
   - { id: ai12.cicd, title: CI/CD and versioning }
   - { id: ai12.deploy, title: Deployment strategies }
   - { id: ai12.monitoring, title: Monitoring and drift }
+  - { id: ai12.lab, title: "Practical lab" }
 units:
   - id: ai-12-mlops.u1
     title: Packaging and shipping
@@ -26,6 +27,9 @@ units:
   - id: ai-12-mlops.u2
     title: Releasing and operating
     lessons: [04-deployment, 05-monitoring-drift]
+  - id: ai-12-mlops.lab
+    title: "Practical lab · the real tools"
+    lessons: [90-practical-lab]
 assessments:
   - id: ai-12-mlops.quiz
     title: "Stage 12 quiz: MLOps"

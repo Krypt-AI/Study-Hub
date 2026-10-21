@@ -18,6 +18,7 @@ topics:
   - { id: sec10.tx, title: Transactions and signatures }
   - { id: sec10.consensus, title: Consensus }
   - { id: sec10.security, title: Smart contracts and security }
+  - { id: sec10.lab, title: "Practical lab" }
 units:
   - id: sec-10-blockchain.u1
     title: The data structure
@@ -25,6 +26,9 @@ units:
   - id: sec-10-blockchain.u2
     title: Agreement and risk
     lessons: [04-consensus, 05-smart-contracts-security]
+  - id: sec-10-blockchain.lab
+    title: "Practical lab · the real tools"
+    lessons: [90-practical-lab]
 assessments:
   - id: sec-10-blockchain.quiz
     title: "Quiz: blockchain and applied cryptography"

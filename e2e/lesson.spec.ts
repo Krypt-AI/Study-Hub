@@ -102,3 +102,34 @@ test('the next lesson opens from its top', async ({ page }) => {
   await expect(page).toHaveURL(/ai-01-python\.l02$/u);
   await expect.poll(() => page.evaluate<number>('window.scrollY')).toBe(0);
 });
+
+test('a lesson with several sections has an outline that jumps to them', async ({ page }) => {
+  // Functions has four sections, so it gets an outline (three or more sections do).
+  await page.goto('/courses/ai-01-python/lessons/ai-01-python.l03');
+  const outline = page.getByText('In this lesson').first();
+  await expect(outline).toBeVisible();
+  await outline.click();
+
+  const nav = page.getByRole('navigation', { name: 'In this lesson' });
+  await expect(nav.getByRole('link', { name: 'Scope' })).toBeVisible();
+  await expect(nav.getByRole('link', { name: /^Practice · \d+ questions$/u })).toBeVisible();
+
+  // Jumping lands on the section heading, moves focus there, and leaves the URL alone.
+  await nav.getByRole('link', { name: 'Scope' }).click();
+  const heading = page.getByRole('heading', { level: 2, name: 'Scope' });
+  await expect(heading).toBeInViewport();
+  await expect(heading).toBeFocused();
+  expect(new URL(page.url()).hash).toBe('');
+});
+
+test('a course with many modules can open and close them all', async ({ page }) => {
+  await page.goto('/courses/linux-fundamentals');
+  const modules = page.locator('details[id^="linux-fundamentals."]');
+  const open = () => modules.evaluateAll((elements) => elements.filter((element) => element.hasAttribute('open')).length);
+
+  await page.getByRole('button', { name: 'Expand all modules' }).click();
+  expect(await open()).toBe(await modules.count());
+
+  await page.getByRole('button', { name: 'Collapse all modules' }).click();
+  expect(await open()).toBe(0);
+});
