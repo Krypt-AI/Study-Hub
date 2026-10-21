@@ -1,0 +1,81 @@
+- id: sec06.lab.contain
+  type: choice
+  skill: apply
+  topics: [sec06.lab]
+  prompt: "Why start Juice Shop with `-p 127.0.0.1:3000:3000` and keep the scanner on a private Docker network?"
+  options:
+    - { id: a, text: "So the deliberately vulnerable app is reachable only from your own machine and the scanner, not from anyone else on the network", explanation: "Correct: contain the weak target." }
+    - { id: b, text: "To make the app faster", explanation: "Not the reason." }
+    - { id: c, text: "Because Docker refuses other settings", explanation: "Other settings work; they are just unsafe." }
+  correct: [a]
+
+- id: sec06.lab.passive
+  type: choice
+  skill: recognize
+  topics: [sec06.lab]
+  prompt: "Per ZAP's documentation, what does the baseline scan do?"
+  options:
+    - { id: a, text: "It spiders the target for a short time and reports passive findings; it performs no actual attacks", explanation: "Correct." }
+    - { id: b, text: "It attempts to exploit every vulnerability it finds", explanation: "That would be an active scan." }
+    - { id: c, text: "It only checks whether the server is on", explanation: "It crawls and analyses responses." }
+  correct: [a]
+
+- id: sec06.lab.curl-headers
+  type: choice
+  skill: apply
+  topics: [sec06.lab]
+  prompt: "`curl -I http://localhost:3000` prints `Access-Control-Allow-Origin: *`. What should a defender ask?"
+  options:
+    - { id: a, text: "Should ANY website be allowed to read this app's responses? If not, restrict it to trusted origins", explanation: "Correct: a wildcard CORS setting deserves scrutiny." }
+    - { id: b, text: "Nothing: `*` is the secure default", explanation: "It is the most permissive value." }
+    - { id: c, text: "Whether the response is gzip-compressed", explanation: "Unrelated to the header." }
+  correct: [a]
+
+- id: sec06.lab.tool-limit
+  type: long
+  skill: explain
+  topics: [sec06.lab]
+  prompt: "A passive scan of your app comes back with only low-risk alerts. A colleague says the app is therefore secure. How do you respond?"
+  minWords: 35
+  rubric:
+    - { id: scope, label: "A passive scan finds misconfigurations and missing defences, not everything", keywords: [["passive", "misconfigur", "headers", "missing defence", "missing defense"]] }
+    - { id: logic, label: "It cannot find logic flaws such as broken access control", keywords: [["logic", "access control", "authoriz", "authoris", "idor"]] }
+    - { id: human, label: "Those need manual testing with intent plus code review", keywords: [["manual", "human", "test", "review", "threat model"]] }
+  modelAnswer: >-
+    A passive baseline scan only observes responses, so it finds misconfigurations and missing defences such as absent headers,
+    cookie flags and risky CORS settings. It cannot reliably find logic flaws, above all broken access control, where the server
+    simply fails to check that a user is allowed to do something. Those need a person testing with intent, plus design and code
+    review. Clean passive results mean the easy problems are addressed, not that the application is secure.
+
+- id: sec06.lab.cookie
+  type: cloze
+  skill: recall
+  topics: [sec06.lab]
+  prompt: "Reading `Set-Cookie` in the proxy, you look for three flags."
+  text: "`[[1]]` hides the cookie from JavaScript, `[[2]]` sends it only over HTTPS, and `[[3]]` limits it on cross-site requests."
+  blanks:
+    - { id: "1", accepted: [HttpOnly, httponly] }
+    - { id: "2", accepted: [Secure, secure] }
+    - { id: "3", accepted: [SameSite, samesite] }
+
+- id: sec06.lab.localhost-container
+  type: choice
+  skill: apply
+  topics: [sec06.lab]
+  prompt: "The ZAP container cannot reach Juice Shop at `http://localhost:3000`, but `http://juice:3000` works on the shared network. Why?"
+  options:
+    - { id: a, text: "Inside a container, localhost is the container itself; on a shared Docker network containers reach each other by name", explanation: "Correct." }
+    - { id: b, text: "localhost is blocked by Windows", explanation: "It is a Docker networking matter." }
+    - { id: c, text: "ZAP can only scan names, not numbers", explanation: "It scans whatever address it can reach." }
+  correct: [a]
+
+- id: sec06.lab.scope
+  type: choice
+  skill: apply
+  topics: [sec06.lab]
+  prompt: Which target may you run ZAP or Burp against in this lab?
+  options:
+    - { id: a, text: "Only the Juice Shop container you started yourself", explanation: "Correct: authorised, contained, yours." }
+    - { id: b, text: "Any site that looks outdated", explanation: "Not authorised." }
+    - { id: c, text: "Your university's web portal", explanation: "Not authorised without written permission." }
+  correct: [a]

@@ -1,0 +1,92 @@
+- id: sec08.lab.pipeline
+  type: choice
+  skill: apply
+  topics: [sec08.lab]
+  prompt: "In `grep 'Failed password' auth.log | awk '{print $(NF-3)}' | sort | uniq -c | sort -rn`, what does `uniq -c` do?"
+  options:
+    - { id: a, text: "Counts how many times each distinct line appears, which is why the input is sorted first", explanation: "Correct: `uniq` only collapses adjacent duplicates, so `sort` comes before it." }
+    - { id: b, text: "Deletes duplicate lines without counting", explanation: "That is plain `uniq`; `-c` adds the counts." }
+    - { id: c, text: "Sorts the lines by size", explanation: "That is the last `sort -rn`." }
+  correct: [a]
+
+- id: sec08.lab.escalate
+  type: choice
+  skill: apply
+  topics: [sec08.lab]
+  prompt: "The log shows four failed logins for admin, test and root from 203.0.113.50, none accepted; and later an accepted login for `aina` followed by `sudo cat /etc/shadow`. Which is the stronger reason to declare an incident?"
+  options:
+    - { id: a, text: "A successful session performing a privileged read of the password hashes: possible account compromise", explanation: "Correct: quiet privileged action after a successful login." }
+    - { id: b, text: "The failed attempts, because they were repetitive", explanation: "They were noisy but failed; block and monitor, but nothing was gained." }
+    - { id: c, text: "Neither; failures and sudo are always normal", explanation: "Reading /etc/shadow is not what an ordinary session does." }
+  correct: [a]
+
+- id: sec08.lab.hash-copy
+  type: choice
+  skill: apply
+  topics: [sec08.lab]
+  prompt: "Why copy the log into an `evidence` folder and hash the copy, rather than analysing the original in place?"
+  options:
+    - { id: a, text: "To preserve the original unchanged, and to be able to prove later the evidence was not altered by comparing hashes", explanation: "Correct." }
+    - { id: b, text: "Because grep cannot read files in /var/log", explanation: "It can, with the right permissions." }
+    - { id: c, text: "To make the file smaller", explanation: "Copying does not shrink it." }
+  correct: [a]
+
+- id: sec08.lab.custody
+  type: choice
+  skill: recognize
+  topics: [sec08.lab]
+  multiple: true
+  prompt: "Which belong in a chain-of-custody record? Choose all that apply."
+  options:
+    - { id: a, text: "What the item is and its hash", explanation: "Identifies the evidence and proves integrity." }
+    - { id: b, text: "Who collected it, when and from where", explanation: "The who, when and where of collection." }
+    - { id: c, text: "Every person it was handed to, and why", explanation: "Each transfer is a row; a gap breaks the chain." }
+    - { id: d, text: "The investigator's opinion of the suspect", explanation: "Opinions do not belong in the custody record." }
+  correct: [a, b, c]
+
+- id: sec08.lab.practice-image
+  type: choice
+  skill: apply
+  topics: [sec08.lab]
+  prompt: "Why practise Autopsy on the NPS test disk images rather than on a colleague's laptop image?"
+  options:
+    - { id: a, text: "The NPS images are published for practice and free of non-public personal data; examining someone's real data needs authorisation", explanation: "Correct." }
+    - { id: b, text: "Real images cannot be opened by Autopsy", explanation: "It can; the issue is authorisation and privacy." }
+    - { id: c, text: "Test images contain no files", explanation: "They contain files to find." }
+  correct: [a]
+
+- id: sec08.lab.failed-by-source
+  type: code
+  skill: apply
+  topics: [sec08.lab]
+  language: python
+  prompt: >-
+    Write `failed_by_source(lines)` taking a list of SSH log lines and returning a dict mapping each source address to its
+    number of `Failed password` lines (ignore all other lines). Then `top_offender(lines)` returning the address with the most
+    failures, or `None` when there are none. The address is the word after `from`.
+  starterCode: |
+    import re
+
+    def failed_by_source(lines):
+        ...
+
+    def top_offender(lines):
+        ...
+  tests:
+    - { kind: assert, name: "counts the sample", code: "log = ['Oct 21 02:14:01 web01 sshd[2211]: Failed password for invalid user admin from 203.0.113.50 port 51234 ssh2', 'Oct 21 02:14:03 web01 sshd[2211]: Failed password for invalid user admin from 203.0.113.50 port 51234 ssh2', 'Oct 21 02:14:05 web01 sshd[2213]: Failed password for invalid user test from 203.0.113.50 port 51240 ssh2', 'Oct 21 02:14:09 web01 sshd[2215]: Failed password for root from 203.0.113.50 port 51251 ssh2', 'Oct 21 02:15:41 web01 sshd[2230]: Failed password for aina from 198.51.100.7 port 40122 ssh2', 'Oct 21 02:16:02 web01 sshd[2236]: Accepted password for aina from 198.51.100.7 port 40130 ssh2']\nassert failed_by_source(log) == {'203.0.113.50': 4, '198.51.100.7': 1}" }
+    - { kind: assert, name: "top offender", code: "log = ['x sshd: Failed password for a from 10.0.0.1 port 1 ssh2', 'x sshd: Failed password for b from 10.0.0.2 port 2 ssh2', 'x sshd: Failed password for c from 10.0.0.2 port 3 ssh2']\nassert top_offender(log) == '10.0.0.2'" }
+    - { kind: assert, name: "none", code: "assert top_offender(['x sshd: Accepted password for a from 10.0.0.1 port 1 ssh2']) is None" }
+  solution: |
+    import re
+
+    def failed_by_source(lines):
+        counts = {}
+        for line in lines:
+            match = re.search(r'Failed password for .* from (\S+) port \d+', line)
+            if match:
+                counts[match.group(1)] = counts.get(match.group(1), 0) + 1
+        return counts
+
+    def top_offender(lines):
+        counts = failed_by_source(lines)
+        return max(counts, key=counts.get) if counts else None

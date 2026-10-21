@@ -1,0 +1,106 @@
+- id: ai12.lab.image-container
+  type: choice
+  skill: recognize
+  topics: [ai12.lab]
+  prompt: "After `docker run hello-world`, `docker images` lists `hello-world` and `docker ps -a` lists a stopped container. What is the difference?"
+  options:
+    - { id: a, text: "An image is the read-only template; a container is a running or finished instance made from it", explanation: "Correct." }
+    - { id: b, text: "They are two names for the same thing", explanation: "They are different objects." }
+    - { id: c, text: "A container is the file you download", explanation: "That is the image." }
+  correct: [a]
+
+- id: ai12.lab.publish
+  type: choice
+  skill: apply
+  topics: [ai12.lab]
+  prompt: "Why run the service with `-p 127.0.0.1:8000:8000` rather than `-p 8000:8000`?"
+  options:
+    - { id: a, text: "It publishes the port to your own machine only, so nothing else on the network can reach a service you are still testing", explanation: "Correct." }
+    - { id: b, text: "It makes requests faster", explanation: "Not the reason." }
+    - { id: c, text: "Docker requires the 127.0.0.1 form", explanation: "Both forms work; they differ in who can connect." }
+  correct: [a]
+
+- id: ai12.lab.predict
+  type: short
+  skill: apply
+  topics: [ai12.lab]
+  prompt: "With the lab's `predict` function (2 * x + 1), what JSON value does `curl \"http://127.0.0.1:8000/predict?x=5\"` return for `prediction`?"
+  accepted: ["11", "11.0"]
+  match: { mode: number }
+
+- id: ai12.lab.422
+  type: choice
+  skill: apply
+  topics: [ai12.lab]
+  prompt: "`curl \"http://127.0.0.1:8000/predict?x=abc\"` returns a 422 error and the service stays up. What does that show?"
+  options:
+    - { id: a, text: "FastAPI validated the input against the declared type and rejected it with a clear error instead of crashing", explanation: "Correct: the validation habit from the serving lesson." }
+    - { id: b, text: "The model is broken", explanation: "The model was never called." }
+    - { id: c, text: "Docker blocked the request", explanation: "The application rejected it." }
+  correct: [a]
+
+- id: ai12.lab.nonroot
+  type: choice
+  skill: apply
+  topics: [ai12.lab]
+  prompt: "`docker exec -it demo sh -c \"whoami\"` prints `appuser`. Why does the Dockerfile create and switch to that user?"
+  options:
+    - { id: a, text: "If the service is compromised, the attacker has the limited rights of appuser rather than root inside the container", explanation: "Correct: least privilege." }
+    - { id: b, text: "Python requires a user named appuser", explanation: "Any non-root name works." }
+    - { id: c, text: "It makes the image smaller", explanation: "It does not change the size meaningfully." }
+  correct: [a]
+
+- id: ai12.lab.secrets
+  type: long
+  skill: explain
+  topics: [ai12.lab]
+  prompt: "A teammate puts `ENV API_KEY=sk-live-123` in the Dockerfile \"so it just works\". Explain the problem and the correct way to supply the key."
+  minWords: 30
+  rubric:
+    - { id: baked, label: "The key is baked into the image layers, so anyone who has or pulls the image can read it", keywords: [["image", "layer", "baked", "anyone", "pull", "read", "history"]] }
+    - { id: runtime, label: "Supply it at run time through an environment variable or secret store, not in the image", keywords: [["runtime", "run time", "-e", "env", "secret", "store", "inject"]] }
+    - { id: rotate, label: "Treat the key as leaked: rotate it", keywords: [["rotate", "revoke", "leak", "regenerate"]] }
+  modelAnswer: >-
+    Anything in a Dockerfile is baked into the image's layers, so anyone who has or pulls the image can read the key, even if
+    it is later overwritten, because the layer history keeps it. Secrets must be supplied at run time, for example with an
+    environment variable passed to docker run or from the platform's secret store, and never committed or copied into the image.
+    If a key was already built into an image that was shared, treat it as leaked and rotate it.
+
+- id: ai12.lab.lint
+  type: code
+  skill: apply
+  topics: [ai12.lab]
+  language: python
+  prompt: >-
+    Write `lint_dockerfile(text)` that returns a sorted list of issue codes found in a Dockerfile: `unpinned-base` when a `FROM`
+    image has no tag or uses `latest`; `runs-as-root` when there is no `USER` instruction; `cache-order` when a `COPY . .` line
+    appears before a line containing `pip install`; and `secret-in-image` when an `ENV` or `ARG` line names a variable containing
+    `KEY`, `SECRET`, `PASSWORD` or `TOKEN` (case-insensitive). A good Dockerfile returns an empty list.
+  starterCode: |
+    def lint_dockerfile(text):
+        ...
+  tests:
+    - { kind: assert, name: "the lab's Dockerfile is clean", code: "good = 'FROM python:3.12-slim\\nWORKDIR /app\\nCOPY requirements.txt .\\nRUN pip install --no-cache-dir -r requirements.txt\\nCOPY app.py .\\nUSER appuser\\nCMD [\"uvicorn\", \"app:app\"]'\nassert lint_dockerfile(good) == []" }
+    - { kind: assert, name: "finds the classic problems", code: "bad = 'FROM python:latest\\nCOPY . .\\nRUN pip install -r requirements.txt\\nENV API_KEY=abc\\nCMD [\"python\", \"app.py\"]'\nassert lint_dockerfile(bad) == ['cache-order', 'runs-as-root', 'secret-in-image', 'unpinned-base']" }
+    - { kind: assert, name: "untagged base", code: "assert 'unpinned-base' in lint_dockerfile('FROM python\\nUSER app')" }
+  solution: |
+    import re
+
+    def lint_dockerfile(text):
+        lines = [line.strip() for line in text.splitlines() if line.strip() and not line.strip().startswith('#')]
+        issues = set()
+        for line in lines:
+            if line.upper().startswith('FROM '):
+                image = line.split()[1]
+                tag = image.split(':', 1)[1] if ':' in image else None
+                if tag is None or tag == 'latest':
+                    issues.add('unpinned-base')
+            if re.match(r'(ENV|ARG)\s+\S*(KEY|SECRET|PASSWORD|TOKEN)', line, re.IGNORECASE):
+                issues.add('secret-in-image')
+        if not any(line.upper().startswith('USER ') for line in lines):
+            issues.add('runs-as-root')
+        copy_all = next((i for i, line in enumerate(lines) if line.replace('  ', ' ') == 'COPY . .'), None)
+        install = next((i for i, line in enumerate(lines) if 'pip install' in line), None)
+        if copy_all is not None and install is not None and copy_all < install:
+            issues.add('cache-order')
+        return sorted(issues)

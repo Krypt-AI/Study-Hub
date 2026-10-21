@@ -19,6 +19,7 @@ topics:
   - { id: sec05.asymmetric, title: Public-key cryptography }
   - { id: sec05.tls, title: Certificates and TLS }
   - { id: sec05.auth, title: Passwords and authentication }
+  - { id: sec05.lab, title: "Practical lab" }
 units:
   - id: sec-05-cryptography.u1
     title: Keeping data secret and intact
@@ -26,6 +27,9 @@ units:
   - id: sec-05-cryptography.u2
     title: Trust and identity
     lessons: [04-tls-certificates, 05-passwords-authentication]
+  - id: sec-05-cryptography.lab
+    title: "Practical lab · the real tools"
+    lessons: [90-practical-lab]
 assessments:
   - id: sec-05-cryptography.quiz
     title: "Stage 5 quiz: cryptography"

@@ -17,6 +17,7 @@ topics:
   - { id: sec01.os, title: Operating systems }
   - { id: sec01.files, title: Files, users and permissions }
   - { id: sec01.processes, title: Processes, memory and the CLI }
+  - { id: sec01.lab, title: "Practical lab" }
 units:
   - id: sec-01-it-fundamentals.u1
     title: Machines and operating systems
@@ -24,6 +25,9 @@ units:
   - id: sec-01-it-fundamentals.u2
     title: How systems are organised
     lessons: [03-files-users-permissions, 04-processes-cli]
+  - id: sec-01-it-fundamentals.lab
+    title: "Practical lab · the real tools"
+    lessons: [90-practical-lab]
 assessments:
   - id: sec-01-it-fundamentals.quiz
     title: "Stage 1 quiz: IT fundamentals"

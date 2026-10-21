@@ -1,11 +1,14 @@
 /**
  * A course's modules (its units) in one sheet: each a collapsible row with its lesson progress,
  * opening onto its lessons. The module holding the next lesson starts open, as does one linked to
- * by "#<unit id>" (certifications and roadmaps link to modules this way).
+ * by "#<unit id>" (certifications and roadmaps link to modules this way). A course with several
+ * modules can open or close them all at once, to scan the whole outline or to tidy it away.
  */
-import { useEffect } from 'react';
+import { ChevronsDownUp, ChevronsUpDown } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router';
 import { Bubble, BubbleStrip, type BubbleState } from '@/components/ui/Bubble';
+import { Button } from '@/components/ui/Button';
 import { Sheet } from '@/components/ui/Sheet';
 import type { LessonProgressRecord } from '@/data/records';
 import { contentLanguage } from '@/domain/content/language';
@@ -23,6 +26,8 @@ interface CourseModulesProps {
 
 export function CourseModules({ course, lessonOrder, records, nextLessonId }: CourseModulesProps) {
   const linkedUnitId = decodeURIComponent(useLocation().hash.slice(1));
+  // undefined: each module opens by its own rule; true or false: the learner opened or closed them all.
+  const [allOpen, setAllOpen] = useState<boolean>();
 
   // The page renders after its data loads, so the browser's own jump to "#id" found nothing yet.
   useEffect(() => {
@@ -31,12 +36,31 @@ export function CourseModules({ course, lessonOrder, records, nextLessonId }: Co
 
   if (course.units.length === 0) return null;
   return (
-    <Sheet title="Modules" aside={<span className="tabular">{course.units.length}</span>} padded={false}>
+    <Sheet
+      title="Modules"
+      aside={
+        <>
+          {course.units.length > 2 && (
+            <Button
+              size="sm"
+              variant="ghost"
+              icon={allOpen ? <ChevronsDownUp className="size-4" /> : <ChevronsUpDown className="size-4" />}
+              onClick={() => setAllOpen(!allOpen)}
+              aria-label={allOpen ? 'Collapse all modules' : 'Expand all modules'}
+            >
+              {allOpen ? 'Collapse all' : 'Expand all'}
+            </Button>
+          )}
+          <span className="tabular">{course.units.length}</span>
+        </>
+      }
+      padded={false}
+    >
       <div className="divide-y divide-rule">
         {course.units.map((unit) => {
           const states = unit.lessons.map((lesson) => lessonState(records.get(lesson.id)));
           const completed = states.filter((state) => state === 'filled').length;
-          const open = unit.id === linkedUnitId || unit.lessons.some((lesson) => lesson.id === nextLessonId);
+          const open = allOpen ?? (unit.id === linkedUnitId || unit.lessons.some((lesson) => lesson.id === nextLessonId));
           return (
             <details key={unit.id} id={unit.id} open={open} className="group scroll-mt-4">
               <summary className="flex cursor-pointer flex-wrap items-center gap-x-3 gap-y-1 px-4 py-3 hover:bg-sheet-2">

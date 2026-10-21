@@ -1,0 +1,106 @@
+- id: ai15.lab.trace-read
+  type: choice
+  skill: apply
+  topics: [ai15.lab]
+  prompt: "You ask an agent a question and its trace shows model call, tool call, then a second model call. What happened?"
+  options:
+    - { id: a, text: "The model requested a tool, your code ran it, and the model read the result to write the final answer", explanation: "Correct: the agent loop visible in a trace." }
+    - { id: b, text: "The model called itself twice by mistake", explanation: "The middle step is the tool." }
+    - { id: c, text: "The tool trained the model", explanation: "Tools do not train models." }
+  correct: [a]
+
+- id: ai15.lab.no-tool
+  type: choice
+  skill: apply
+  topics: [ai15.lab]
+  prompt: "For \"Say hello in one word.\" the trace has one model call and no tool step. What does this tell you?"
+  options:
+    - { id: a, text: "The model decided no tool was needed and answered directly; the agent chooses at run time", explanation: "Correct." }
+    - { id: b, text: "The tool is broken", explanation: "It simply was not needed." }
+    - { id: c, text: "Tracing failed to record it", explanation: "The trace shows exactly what ran." }
+  correct: [a]
+
+- id: ai15.lab.dataset
+  type: choice
+  skill: apply
+  topics: [ai15.lab]
+  prompt: "Which dataset best tests an agent?"
+  options:
+    - { id: a, text: "Typical cases plus edge cases and an out-of-scope question it should decline", explanation: "Correct (Stage 13)." }
+    - { id: b, text: "Only the easiest questions, so it scores 100%", explanation: "Proves nothing about failures." }
+    - { id: c, text: "A single question", explanation: "Far too little to measure anything." }
+  correct: [a]
+
+- id: ai15.lab.compare
+  type: long
+  skill: explain
+  topics: [ai15.lab]
+  prompt: "Experiment B scores 4 of 5 examples correct versus 3 of 5 for experiment A after you tightened the prompt. Should you ship B? Explain."
+  minWords: 35
+  rubric:
+    - { id: small, label: "Five examples is too few; a one-example difference could be noise", keywords: [["five", "few", "small", "noise", "chance", "one example"]] }
+    - { id: look, label: "Look per example at what got better or worse, and read the traces", keywords: [["per example", "which", "worse", "trace", "regress", "broke"]] }
+    - { id: more, label: "Add more examples (including edge and safety cases) before deciding", keywords: [["more examples", "add", "larger", "edge", "safety"]] }
+  modelAnswer: >-
+    Not yet. With only five examples a difference of one is easily noise, so the result does not prove B is better. I would
+    compare the two experiments example by example to see what improved and whether B broke anything A handled, reading the
+    traces behind the changes. Then I would add more examples, including edge and safety cases, and rerun both before deciding,
+    since shipping on a one-example gain risks a regression nobody measured.
+
+- id: ai15.lab.evaluator-shape
+  type: choice
+  skill: recall
+  topics: [ai15.lab]
+  prompt: "A LangSmith evaluator function receives which three things from the evaluation run?"
+  options:
+    - { id: a, text: "The run's inputs, its outputs, and the example's reference outputs", explanation: "Correct." }
+    - { id: b, text: "Only the API key", explanation: "Evaluators never need your key." }
+    - { id: c, text: "The model's weights", explanation: "Not exposed to evaluators." }
+  correct: [a]
+
+- id: ai15.lab.privacy
+  type: choice
+  skill: apply
+  topics: [ai15.lab]
+  prompt: "Why must you avoid sending real personal data or secrets through a traced run?"
+  options:
+    - { id: a, text: "Traces store inputs and outputs in LangSmith, so sensitive data would be stored and visible there", explanation: "Correct (Stage 13 privacy)." }
+    - { id: b, text: "Tracing deletes data automatically", explanation: "It records it." }
+    - { id: c, text: "Tracing only works with fake data", explanation: "It records whatever you send." }
+  correct: [a]
+
+- id: ai15.lab.mini-eval
+  type: code
+  skill: apply
+  topics: [ai15.lab]
+  language: python
+  prompt: >-
+    Model the evaluation loop in plain Python. Write `contains_evaluator(inputs, outputs, reference_outputs)` returning
+    `{"key": "contains", "score": 1}` when `reference_outputs["must_mention"]` appears (case-insensitive) in
+    `outputs["answer"]`, else score 0. Write `evaluate(target, dataset, evaluators)` that runs `target(example["inputs"])` for each
+    example in `dataset` (a list of `{"inputs": ..., "outputs": ...}`) and returns a dict mapping each evaluator key to the mean
+    score over the dataset.
+  starterCode: |
+    def contains_evaluator(inputs, outputs, reference_outputs):
+        ...
+
+    def evaluate(target, dataset, evaluators):
+        ...
+  tests:
+    - { kind: assert, name: "evaluator scores a match", code: "assert contains_evaluator({}, {'answer': 'It is Sunny today'}, {'must_mention': 'sunny'}) == {'key': 'contains', 'score': 1}" }
+    - { kind: assert, name: "evaluator scores a miss", code: "assert contains_evaluator({}, {'answer': 'Rain'}, {'must_mention': 'sunny'})['score'] == 0" }
+    - { kind: assert, name: "mean over the dataset", code: "data = [{'inputs': {'q': 'a'}, 'outputs': {'must_mention': 'sunny'}}, {'inputs': {'q': 'b'}, 'outputs': {'must_mention': 'sunny'}}]\nresults = evaluate(lambda i: {'answer': 'sunny' if i['q'] == 'a' else 'rain'}, data, [contains_evaluator])\nassert results == {'contains': 0.5}" }
+  solution: |
+    def contains_evaluator(inputs, outputs, reference_outputs):
+        needle = reference_outputs['must_mention'].lower()
+        hit = needle in outputs['answer'].lower()
+        return {'key': 'contains', 'score': 1 if hit else 0}
+
+    def evaluate(target, dataset, evaluators):
+        scores = {}
+        for example in dataset:
+            outputs = target(example['inputs'])
+            for evaluator in evaluators:
+                result = evaluator(example['inputs'], outputs, example['outputs'])
+                scores.setdefault(result['key'], []).append(result['score'])
+        return {key: sum(values) / len(values) for key, values in scores.items()}

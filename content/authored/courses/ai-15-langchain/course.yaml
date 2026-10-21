@@ -20,6 +20,7 @@ topics:
   - { id: ai15.agents, title: Agents with create_agent }
   - { id: ai15.graph, title: LangGraph }
   - { id: ai15.langsmith, title: Testing and monitoring with LangSmith }
+  - { id: ai15.lab, title: "Practical lab" }
 units:
   - id: ai-15-langchain.u1
     title: LangChain core and agents
@@ -27,6 +28,9 @@ units:
   - id: ai-15-langchain.u2
     title: Orchestration and the agent lifecycle
     lessons: [03-langgraph, 04-langsmith]
+  - id: ai-15-langchain.lab
+    title: "Practical lab · the real tools"
+    lessons: [90-practical-lab]
 assessments:
   - id: ai-15-langchain.quiz
     title: "Quiz: building with LangChain"

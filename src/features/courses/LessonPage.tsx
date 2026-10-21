@@ -16,6 +16,7 @@ import type { LessonProgressRecord } from '@/data/records';
 import { useRepository } from '@/data/useRepository';
 import { contentLanguage } from '@/domain/content/language';
 import { useCourse } from '@/domain/content/load';
+import { lessonHeadings } from '@/domain/content/headings';
 import { adjacentLessons, findLesson } from '@/domain/content/navigation';
 import type { Course, Lesson } from '@/domain/content/types';
 import { courseUrl, lessonUrl } from '@/domain/content/urls';
@@ -23,6 +24,7 @@ import { completeLesson, reopenLesson } from '@/domain/learning/lessonProgress';
 import { QuestionCard } from '@/features/practice/QuestionCard';
 import { type SessionItem, usePracticeSession } from '@/features/practice/session/usePracticeSession';
 import { LessonBlock } from './blocks/LessonBlocks';
+import { LessonOutline, PRACTICE_ANCHOR } from './LessonOutline';
 import { CourseLoadError } from '@/features/auth/LockedContent';
 
 export default function LessonPage() {
@@ -79,6 +81,7 @@ function LessonView({ course, lesson, unitTitle, progress }: { course: Course; l
   });
 
   const completed = progress?.status === 'completed';
+  const headings = useMemo(() => lessonHeadings(lesson.blocks), [lesson]);
 
   return (
     <div className="mx-auto flex max-w-4xl min-w-0 flex-col gap-8 pb-10">
@@ -131,12 +134,16 @@ function LessonView({ course, lesson, unitTitle, progress }: { course: Course; l
         )}
       </header>
 
+      <LessonOutline headings={headings} questionCount={items.length} />
+
       {lesson.blocks.map((block, index) => (
         <LessonBlock key={index} block={block} sourceTitle={lesson.source.title} />
       ))}
 
       {items.length > 0 && (
         <Sheet
+          id={PRACTICE_ANCHOR}
+          className="scroll-mt-4"
           title="Practice"
           aside={
             <span className="tabular">

@@ -1,0 +1,75 @@
+- id: sec01.lab.id-read
+  type: choice
+  skill: apply
+  topics: [sec01.lab]
+  prompt: "`id` prints `uid=1000(aina) gid=1000(aina) groups=1000(aina),4(adm),27(sudo)`. What does it tell you?"
+  options:
+    - { id: a, text: "An ordinary user (not root, uid 0) who can elevate privileges through the sudo group", explanation: "Correct: least privilege in practice." }
+    - { id: b, text: "The root account", explanation: "Root's uid is 0." }
+    - { id: c, text: "A user with no privileges at all and no way to elevate", explanation: "The sudo group allows elevation." }
+  correct: [a]
+
+- id: sec01.lab.ls-read
+  type: choice
+  skill: apply
+  topics: [sec01.lab]
+  prompt: "After `chmod 600 report.txt`, `ls -l` shows `-rw-------`. Who can read the file?"
+  options:
+    - { id: a, text: "Only the owner (and root)", explanation: "Correct: 600 is read and write for the owner, nothing for group or others." }
+    - { id: b, text: "The owner and the group", explanation: "That would be 660 (`rw-rw----`)." }
+    - { id: c, text: "Everyone", explanation: "That would include `r--` in the last three characters." }
+  correct: [a]
+
+- id: sec01.lab.ss-read
+  type: choice
+  skill: apply
+  topics: [sec01.lab]
+  prompt: "In `ss -tulpn` output a row shows `0.0.0.0:22` with process `sshd`, and another shows `127.0.0.53:53`. What is the difference in exposure?"
+  options:
+    - { id: a, text: "0.0.0.0:22 accepts connections on every interface (network-reachable); 127.0.0.53 is loopback, reachable only from the machine itself", explanation: "Correct." }
+    - { id: b, text: "Both are reachable from the internet", explanation: "Loopback addresses are not reachable from other machines." }
+    - { id: c, text: "Neither can be reached by anyone", explanation: "SSH on 0.0.0.0 is network-reachable." }
+  correct: [a]
+
+- id: sec01.lab.baseline
+  type: choice
+  skill: apply
+  topics: [sec01.lab]
+  prompt: Why save the output of `ss -tulpn` and the process list when the system is healthy?
+  options:
+    - { id: a, text: "It is a baseline: later you ask what changed, which is how you spot something that should not be running or listening", explanation: "Correct." }
+    - { id: b, text: "To make the commands run faster next time", explanation: "Saving output does not affect speed." }
+    - { id: c, text: "Because the commands only work once", explanation: "They work any time." }
+  correct: [a]
+
+- id: sec01.lab.event-ids
+  type: cloze
+  skill: recall
+  topics: [sec01.lab]
+  prompt: Windows logon events.
+  text: "Event id [[1]] means an account successfully logged on; event id [[2]] means a logon failed."
+  blanks:
+    - { id: "1", accepted: ["4624"], match: { mode: number } }
+    - { id: "2", accepted: ["4625"], match: { mode: number } }
+
+- id: sec01.lab.smb
+  type: choice
+  skill: recognize
+  topics: [sec01.lab]
+  prompt: "`Get-NetTCPConnection -State Listen` shows port 445 listening on 0.0.0.0. What service is that, and why does Stage 7 care?"
+  options:
+    - { id: a, text: "SMB file sharing: a frequent attack route, so exposure should be restricted by the firewall", explanation: "Correct." }
+    - { id: b, text: "SSH remote login, which is always safe", explanation: "SSH is port 22." }
+    - { id: c, text: "Web traffic, which is irrelevant to hardening", explanation: "Web is 80 and 443." }
+  correct: [a]
+
+- id: sec01.lab.journal
+  type: choice
+  skill: apply
+  topics: [sec01.lab]
+  prompt: "You want the last hour of SSH service messages on Ubuntu. Which command?"
+  options:
+    - { id: a, text: "`journalctl -u ssh --since \"1 hour ago\"`", explanation: "Correct (the unit is `sshd` on Red Hat family systems)." }
+    - { id: b, text: "`ls -l /var/log`", explanation: "That lists log files; it does not read them." }
+    - { id: c, text: "`chmod 600 auth.log`", explanation: "That changes permissions." }
+  correct: [a]

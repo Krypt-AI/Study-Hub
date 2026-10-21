@@ -1,0 +1,83 @@
+- id: sec09.lab.password
+  type: choice
+  skill: apply
+  topics: [sec09.lab]
+  prompt: Why change the password on a prebuilt Kali VM before using it?
+  options:
+    - { id: a, text: "Prebuilt images ship with a publicly known default username and password", explanation: "Correct: a security distribution should be hardened like any server." }
+    - { id: b, text: "Kali will not start with the default password", explanation: "It starts fine; the issue is that the default is public." }
+    - { id: c, text: "It makes the tools run faster", explanation: "Unrelated." }
+  correct: [a]
+
+- id: sec09.lab.ask-first
+  type: choice
+  skill: apply
+  topics: [sec09.lab]
+  prompt: "Before running any scan or test, what question must you be able to answer?"
+  options:
+    - { id: a, text: "Whose system is this, and who authorised me to test it?", explanation: "Correct: authorisation and scope come before technique." }
+    - { id: b, text: "Which tool is fastest?", explanation: "Speed is irrelevant if you are not authorised." }
+    - { id: c, text: "Will the owner notice?", explanation: "Being unnoticed is not permission." }
+  correct: [a]
+
+- id: sec09.lab.help
+  type: choice
+  skill: recognize
+  topics: [sec09.lab]
+  prompt: "You meet a tool in Kali you have never used. What is the right order of approach?"
+  options:
+    - { id: a, text: "Read its purpose and manual or catalogue entry first, then usage, and confirm authorisation before running it", explanation: "Correct." }
+    - { id: b, text: "Run it against the nearest target to see what happens", explanation: "Never experiment against targets you are not authorised to test." }
+    - { id: c, text: "Skip the documentation; memorise the options", explanation: "Nobody memorises every option; look them up." }
+  correct: [a]
+
+- id: sec09.lab.scanme-scope
+  type: choice
+  skill: apply
+  topics: [sec09.lab]
+  prompt: "Your Kali lab VM is isolated and cannot reach the internet. How do you do the authorised `scanme.nmap.org` scan?"
+  options:
+    - { id: a, text: "Run it from your host machine, where Nmap is installed and which has internet access, keeping the scan light", explanation: "Correct: keep the lab isolated; scan the permitted host from the host." }
+    - { id: b, text: "Bridge the Kali VM to your home network permanently", explanation: "That removes the isolation that keeps the lab safe." }
+    - { id: c, text: "Scan a different, unrelated public server instead", explanation: "Only the Nmap Project's host is permitted." }
+  correct: [a]
+
+- id: sec09.lab.notes
+  type: choice
+  skill: apply
+  topics: [sec09.lab]
+  prompt: "Which entries make a tester's note useful as the basis of a report later?"
+  options:
+    - { id: a, text: "Date and time, target and authorisation, tool and version, commands in order, evidence and the result", explanation: "Correct." }
+    - { id: b, text: "Only the final result", explanation: "Nothing to reproduce it from." }
+    - { id: c, text: "Screenshots with no dates or context", explanation: "Evidence needs context." }
+  correct: [a]
+
+- id: sec09.lab.finding
+  type: long
+  skill: explain
+  topics: [sec09.lab]
+  prompt: "A reviewer reads your write-up of a missing cookie flag. List the parts of a finding that let them verify and fix it without contacting you."
+  minWords: 40
+  rubric:
+    - { id: asset, label: "Title, severity and the affected asset", keywords: [["title", "severity", "affected", "asset"]] }
+    - { id: evidence, label: "Evidence they can reproduce (command output or request/response)", keywords: [["evidence", "reproduc", "output", "screenshot", "command"]] }
+    - { id: impact, label: "Business impact explaining why it matters", keywords: [["impact", "risk", "matters", "consequence"]] }
+    - { id: remediation, label: "Concrete remediation steps", keywords: [["remediation", "fix", "set httponly", "recommend", "steps"]] }
+  modelAnswer: >-
+    A good finding has a clear title, a severity rated by likelihood and impact, and the affected asset. It includes evidence the
+    reviewer can reproduce, such as the curl output showing the Set-Cookie header and the date it was captured. It explains the
+    business impact, that an XSS flaw elsewhere would let an attacker take over a session. And it gives concrete remediation:
+    set HttpOnly, Secure and SameSite on the cookie and add a Content-Security-Policy, with references. With those parts the
+    reviewer can confirm the problem and apply the fix without asking the author anything.
+
+- id: sec09.lab.platform-rules
+  type: choice
+  skill: recognize
+  topics: [sec09.lab]
+  prompt: "Why read a practice platform's rules before starting a lab on it?"
+  options:
+    - { id: a, text: "They are the rules of engagement for that range: what is in scope and how you may connect and behave", explanation: "Correct." }
+    - { id: b, text: "They are only marketing text", explanation: "They define what is permitted." }
+    - { id: c, text: "They do not apply once you pay", explanation: "Rules apply to every account." }
+  correct: [a]

@@ -1,0 +1,78 @@
+- id: sec07.lab.order
+  type: choice
+  skill: apply
+  topics: [sec07.lab]
+  prompt: "You are connected to a server by SSH and want to enable ufw with default deny incoming. What must you do first, and why?"
+  options:
+    - { id: a, text: "Add a rule allowing SSH (`ufw allow OpenSSH`) before enabling, otherwise the firewall cuts off your own session", explanation: "Correct." }
+    - { id: b, text: "Enable ufw first, then add SSH later", explanation: "You would lose your connection as soon as it is enabled." }
+    - { id: c, text: "Disable SSH entirely", explanation: "That removes your way in." }
+  correct: [a]
+
+- id: sec07.lab.ufw-read
+  type: choice
+  skill: apply
+  topics: [sec07.lab]
+  prompt: "`ufw status verbose` prints `Default: deny (incoming), allow (outgoing)` and one rule, `22/tcp ALLOW IN Anywhere`. What can reach this server from outside?"
+  options:
+    - { id: a, text: "Only SSH on port 22; everything else inbound is denied by default", explanation: "Correct: default-deny plus one explicit allow." }
+    - { id: b, text: "Everything, because outgoing is allowed", explanation: "Outgoing and incoming are separate." }
+    - { id: c, text: "Nothing at all, including SSH", explanation: "The rule allows SSH." }
+  correct: [a]
+
+- id: sec07.lab.sshd-effective
+  type: choice
+  skill: apply
+  topics: [sec07.lab]
+  prompt: "`sudo sshd -T` shows `passwordauthentication yes` and `permitrootlogin yes`. Which hardening change does a defender make?"
+  options:
+    - { id: a, text: "Use key-based login, disable password authentication and root login, and limit authentication attempts", explanation: "Correct." }
+    - { id: b, text: "Leave both on, because SSH is encrypted", explanation: "Encryption does not stop password guessing." }
+    - { id: c, text: "Change the colour of the prompt", explanation: "Not a control." }
+  correct: [a]
+
+- id: sec07.lab.sshd-t
+  type: short
+  skill: recall
+  topics: [sec07.lab]
+  prompt: "Which command checks the SSH server configuration for errors BEFORE you reload it? Write the command with its option."
+  accepted: ["sshd -t", "sudo sshd -t"]
+  match: { mode: exact }
+
+- id: sec07.lab.lynis
+  type: choice
+  skill: recognize
+  topics: [sec07.lab]
+  prompt: "What does `sudo lynis audit system` do?"
+  options:
+    - { id: a, text: "Runs many security tests on the local system and reports warnings, suggestions and a summary of how hardened it is", explanation: "Correct." }
+    - { id: b, text: "Automatically fixes every issue it finds", explanation: "Lynis audits and suggests; you decide what to change." }
+    - { id: c, text: "Scans other machines on the network", explanation: "It audits the local system." }
+  correct: [a]
+
+- id: sec07.lab.triage
+  type: long
+  skill: explain
+  topics: [sec07.lab]
+  prompt: "Lynis lists 40 suggestions. Explain how you decide which to do first and why you do not simply apply them all."
+  minWords: 35
+  rubric:
+    - { id: priority, label: "Start with warnings and the highest-risk items relevant to this server", keywords: [["warning", "risk", "priorit", "first", "important"]] }
+    - { id: relevance, label: "Judge each suggestion against what this server does and its cost/impact", keywords: [["relevan", "needed", "purpose", "impact", "break", "cost", "this server"]] }
+    - { id: retest, label: "Change a few safely, snapshot or test, and rerun the audit to confirm", keywords: [["rerun", "retest", "again", "snapshot", "test", "measure"]] }
+  modelAnswer: >-
+    I start with the warnings and the suggestions that address the highest risk for what this server actually does, such as
+    exposed services and weak authentication. Each suggestion has a cost and some can break functionality or are irrelevant
+    to this machine's role, so applying all of them blindly is risky. I make a few changes at a time, with a snapshot or a
+    second session as a safety net, rerun Lynis to confirm the improvement, and record what I changed and why.
+
+- id: sec07.lab.baseline-diff
+  type: choice
+  skill: apply
+  topics: [sec07.lab]
+  prompt: "You saved `ss -tulpn` before hardening and again after. What is the best way to see exactly what changed?"
+  options:
+    - { id: a, text: "`diff before-ports.txt after-ports.txt`", explanation: "Correct: a baseline is only useful if you compare against it." }
+    - { id: b, text: "Read both files from memory", explanation: "Error-prone." }
+    - { id: c, text: "Delete the first file", explanation: "That discards the baseline." }
+  correct: [a]

@@ -19,6 +19,7 @@ topics:
   - { id: sec02.addressing, title: Addressing and subnets }
   - { id: sec02.dns, title: DNS, DHCP and routing }
   - { id: sec02.protocols, title: Core protocols and ports }
+  - { id: sec02.lab, title: "Practical lab" }
 units:
   - id: sec-02-networking.u1
     title: How networks move data
@@ -26,6 +27,9 @@ units:
   - id: sec-02-networking.u2
     title: Names, routes and protocols
     lessons: [03-dns-dhcp-routing, 04-protocols-ports]
+  - id: sec-02-networking.lab
+    title: "Practical lab · the real tools"
+    lessons: [90-practical-lab]
 assessments:
   - id: sec-02-networking.quiz
     title: "Stage 2 quiz: networking"

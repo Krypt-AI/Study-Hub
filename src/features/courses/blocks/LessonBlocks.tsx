@@ -15,7 +15,7 @@ import { LANGUAGE_TAGS } from '@/domain/content/language';
 export function LessonBlock({ block, sourceTitle }: { block: Block; sourceTitle?: string }) {
   switch (block.kind) {
     case 'markdown':
-      return <Markdown>{block.body}</Markdown>;
+      return <Markdown headingIds>{block.body}</Markdown>;
     case 'callout':
       return <Callout tone={block.tone} title={block.title} body={block.body} />;
     case 'vocab':
