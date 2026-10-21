@@ -1,0 +1,49 @@
+- id: ai14.harden.limitations
+  type: choice
+  skill: recognize
+  topics: [ai14.harden]
+  prompt: Why state your project's limitations and failure cases?
+  options:
+    - { id: a, text: "It makes the work credible and trustworthy; honest evaluation distinguishes an engineer from hype", explanation: "Correct." }
+    - { id: b, text: "It weakens the project, so avoid it", explanation: "Reviewers trust honesty more." }
+    - { id: c, text: "Limitations never exist in good projects", explanation: "Every system has them." }
+  correct: [a]
+
+- id: ai14.harden.uncertainty
+  type: choice
+  skill: apply
+  topics: [ai14.harden]
+  prompt: How should you report your headline metric?
+  options:
+    - { id: a, text: "With its uncertainty and a baseline, e.g. \"0.90 ± 0.03 vs 0.78 baseline\"", explanation: "Correct (Stage 3)." }
+    - { id: b, text: "As a bare \"0.90\" with no baseline", explanation: "Lacks context and uncertainty." }
+    - { id: c, text: "Rounded up to 1.0", explanation: "Dishonest." }
+  correct: [a]
+
+- id: ai14.harden.clone
+  type: choice
+  skill: apply
+  topics: [ai14.harden]
+  prompt: What is the classic reproducibility failure to avoid?
+  options:
+    - { id: a, text: "A project that only runs on the author's machine; test the setup in a clean environment", explanation: "Correct." }
+    - { id: b, text: "Having a README", explanation: "That helps, not hurts." }
+    - { id: c, text: "Pinning dependencies", explanation: "That aids reproducibility." }
+  correct: [a]
+
+- id: ai14.harden.unhappy
+  type: long
+  skill: explain
+  topics: [ai14.harden]
+  prompt: List things that move a capstone from "works in the happy path" to "solid", and why they matter for a portfolio.
+  minWords: 30
+  rubric:
+    - { id: robust, label: "Input validation, edge/empty/OOD handling, API failure/timeout handling, tests", keywords: [["validation", "edge", "error", "timeout", "test", "fail"]] }
+    - { id: secpriv, label: "No secrets in repo; privacy/safety basics for data and LLM apps", keywords: [["secret", "privacy", "injection", "redact", "least privilege"]] }
+  modelAnswer: >-
+    Validate inputs and return clear errors rather than crashing; handle empty, malformed and out-of-distribution
+    inputs sensibly (e.g. a RAG system that declines with no good context); handle API failures, timeouts and rate
+    limits; and add tests for the core logic. Keep secrets out of the repo with environment variables and a
+    git-ignored .env, minimise and redact any personal data, and treat LLM inputs/outputs as untrusted with
+    least-privileged tools. These matter because reviewers judge robustness and basic security as much as accuracy, and
+    their absence is immediately visible in the code.

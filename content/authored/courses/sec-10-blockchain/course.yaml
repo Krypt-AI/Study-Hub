@@ -1,0 +1,114 @@
+id: sec-10-blockchain
+title: Blockchain and Applied Cryptography
+subtitle: Cybersecurity · Applied cryptography
+description: >-
+  How the cryptography of the previous course builds a tamper-evident, decentralised ledger: hash-linked blocks,
+  Merkle trees, digital-signature transactions, proof-of-work and proof-of-stake consensus, and the security model
+  and real risks of blockchains, smart contracts and wallets. Exercises build the core structures in plain Python.
+category: it
+subject: cybersecurity
+level: Applied
+difficulty: intermediate
+tags: [blockchain, cryptography, hashing, consensus, smart-contracts, security]
+prerequisites: [sec-05-cryptography]
+estimatedHours: 12
+topics:
+  - { id: sec10.ledger, title: Hash-linked ledgers }
+  - { id: sec10.merkle, title: Merkle trees }
+  - { id: sec10.tx, title: Transactions and signatures }
+  - { id: sec10.consensus, title: Consensus }
+  - { id: sec10.security, title: Smart contracts and security }
+units:
+  - id: sec-10-blockchain.u1
+    title: The data structure
+    lessons: [01-hash-chains, 02-merkle-trees, 03-transactions]
+  - id: sec-10-blockchain.u2
+    title: Agreement and risk
+    lessons: [04-consensus, 05-smart-contracts-security]
+assessments:
+  - id: sec-10-blockchain.quiz
+    title: "Quiz: blockchain and applied cryptography"
+    kind: quiz
+    passMark: 0.7
+    description: Eight questions across the whole course.
+    sections:
+      - id: sec-10-blockchain.quiz.s1
+        title: Blockchain
+        questions:
+          - id: sec10.quiz.link
+            type: choice
+            skill: recognize
+            topics: [sec10.ledger]
+            prompt: What makes a blockchain tamper-evident?
+            options:
+              - { id: a, text: "Each block stores the hash of the previous block, so changing an old block breaks every hash after it.", explanation: "Correct." }
+              - { id: b, text: "Blocks are encrypted with the miner's private key.", explanation: "Blocks are not secret; they are hash-linked." }
+              - { id: c, text: "A central server signs each block.", explanation: "There is no central server in a decentralised chain." }
+            correct: [a]
+          - id: sec10.quiz.merkle
+            type: choice
+            skill: apply
+            topics: [sec10.merkle]
+            prompt: A Merkle tree lets a light client verify that one transaction is in a block by checking…
+            options:
+              - { id: a, text: "a short path of sibling hashes up to the known Merkle root", explanation: "Correct: O(log n) proof, not the whole block." }
+              - { id: b, text: "every transaction in the block", explanation: "That defeats the purpose of the proof." }
+              - { id: c, text: "the miner's signature only", explanation: "Signatures do not prove membership." }
+            correct: [a]
+          - id: sec10.quiz.sign
+            type: choice
+            skill: recognize
+            topics: [sec10.tx]
+            prompt: What stops someone spending coins from an address they do not control?
+            options:
+              - { id: a, text: "Each transaction must be signed by the private key for that address, and the signature is verified against the address's public key.", explanation: "Correct." }
+              - { id: b, text: "Miners personally know every user.", explanation: "No identity is needed." }
+              - { id: c, text: "The amount is encrypted.", explanation: "Signatures, not encryption, authorise spending." }
+            correct: [a]
+          - id: sec10.quiz.pow
+            type: choice
+            skill: recognize
+            topics: [sec10.consensus]
+            prompt: In proof-of-work, what are miners actually doing?
+            options:
+              - { id: a, text: "Repeatedly hashing the block with different nonces until the digest meets a difficulty target.", explanation: "Correct: brute-force search for a qualifying hash." }
+              - { id: b, text: "Decrypting the previous block.", explanation: "Blocks are not encrypted." }
+              - { id: c, text: "Voting with their account balance.", explanation: "That is proof-of-stake." }
+            correct: [a]
+          - id: sec10.quiz.51
+            type: choice
+            skill: apply
+            topics: [sec10.consensus]
+            prompt: A 51% attack on a proof-of-work chain lets an attacker…
+            options:
+              - { id: a, text: "rewrite recent history and double-spend, by controlling most of the hashing power", explanation: "Correct." }
+              - { id: b, text: "read everyone's private keys", explanation: "Hash power does not reveal keys." }
+              - { id: c, text: "mint unlimited coins out of thin air", explanation: "Consensus rules still reject invalid issuance." }
+            correct: [a]
+          - id: sec10.quiz.pos
+            type: short
+            skill: recall
+            topics: [sec10.consensus]
+            prompt: "Which consensus mechanism chooses block proposers by the stake they lock up, instead of by hashing power? (one word, or 'proof of stake')"
+            accepted: ["proof of stake", "proof-of-stake", "pos"]
+            match: { mode: text }
+          - id: sec10.quiz.immutable
+            type: choice
+            skill: apply
+            topics: [sec10.security]
+            prompt: A smart contract has a bug that drains its funds. Why is it often hard to fix?
+            options:
+              - { id: a, text: "Deployed contract code is immutable by default; without an upgrade mechanism it cannot simply be patched.", explanation: "Correct: immutability is a double-edged property." }
+              - { id: b, text: "The blockchain is encrypted.", explanation: "Contract code is public, not encrypted." }
+              - { id: c, text: "Only the government can edit it.", explanation: "There is no such authority." }
+            correct: [a]
+          - id: sec10.quiz.key
+            type: choice
+            skill: recognize
+            topics: [sec10.security]
+            prompt: In most blockchains, "not your keys, not your coins" means…
+            options:
+              - { id: a, text: "whoever holds the private key controls the funds, and a lost key usually means permanently lost funds", explanation: "Correct: there is no password reset." }
+              - { id: b, text: "the exchange can always recover your funds", explanation: "Custodial recovery is not guaranteed and defeats self-custody." }
+              - { id: c, text: "keys are optional", explanation: "Keys authorise all spending." }
+            correct: [a]

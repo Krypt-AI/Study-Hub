@@ -128,7 +128,7 @@ function VocabularyTable({ block }: { block: Extract<Block, { kind: 'vocab' }> }
       <div className="overflow-x-auto rounded-md border border-rule">
         <table className="w-full text-left text-sm">
           <thead>
-            <tr className="border-b border-print-line text-ink-muted">
+            <tr className="border-b border-rule-strong text-ink-muted">
               <th className="w-10 px-3 py-2 font-display font-semibold">#</th>
               <th className="px-3 py-2 font-display font-semibold">Word</th>
               <th className="px-3 py-2 font-display font-semibold">Reading</th>

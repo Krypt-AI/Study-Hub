@@ -1,0 +1,32 @@
+- id: ai14.build.baseline-first
+  type: choice
+  skill: apply
+  topics: [ai14.build]
+  prompt: Why build a weak end-to-end baseline before optimising?
+  options:
+    - { id: a, text: "It proves the pipeline connects, gives a number to beat, and surfaces real problems early", explanation: "Correct." }
+    - { id: b, text: "Because baselines are the final product", explanation: "They are a starting point." }
+    - { id: c, text: "To avoid ever measuring", explanation: "The baseline is the measurement anchor." }
+  correct: [a]
+
+- id: ai14.build.one-change
+  type: choice
+  skill: apply
+  topics: [ai14.build]
+  prompt: You want to know whether a change improved your project. What do you do?
+  options:
+    - { id: a, text: "Change one thing, measure it against the baseline on the eval set, and record the run", explanation: "Correct (Stage 6)." }
+    - { id: b, text: "Change many things and eyeball one example", explanation: "You cannot attribute the effect." }
+    - { id: c, text: "Trust that newer is better", explanation: "Measure, do not assume." }
+  correct: [a]
+
+- id: ai14.build.reproducible
+  type: choice
+  skill: apply
+  topics: [ai14.build]
+  prompt: Which belongs in the project from the first commit, not as a cleanup at the end?
+  options:
+    - { id: a, text: "Git, a virtual environment with locked deps, a .gitignore for data/secrets, and a README", explanation: "Correct (Stage 2)." }
+    - { id: b, text: "Committed API keys so it just works", explanation: "Never commit secrets." }
+    - { id: c, text: "A single giant notebook with everything", explanation: "Hard to run, review or reproduce." }
+  correct: [a]

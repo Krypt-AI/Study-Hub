@@ -1,0 +1,43 @@
+- id: sec02.model.encapsulation
+  type: choice
+  skill: recognize
+  topics: [sec02.model]
+  prompt: What does each layer do to data as it travels down the sending stack?
+  options:
+    - { id: a, text: "Wraps it with its own header (encapsulation)", explanation: "Correct; the receiver strips each header on the way up." }
+    - { id: b, text: "Encrypts it", explanation: "Only TLS encrypts, and only the application data." }
+    - { id: c, text: "Deletes the previous layer's data", explanation: "It wraps, not deletes." }
+  correct: [a]
+
+- id: sec02.model.handshake
+  type: cloze
+  skill: recall
+  topics: [sec02.model]
+  prompt: Complete the TCP three-way handshake.
+  text: "The client sends [[1]], the server replies [[2]], and the client finishes with [[3]]."
+  blanks:
+    - { id: "1", accepted: [SYN, syn] }
+    - { id: "2", accepted: ["SYN,ACK", "SYN-ACK", "SYN ACK", "syn,ack", "synack"] }
+    - { id: "3", accepted: [ACK, ack] }
+
+- id: sec02.model.layer
+  type: choice
+  skill: apply
+  topics: [sec02.model]
+  prompt: A firewall rule that blocks a source IP address operates mainly at which layer?
+  options:
+    - { id: a, text: "The internet/network layer (IP, layer 3)", explanation: "Correct." }
+    - { id: b, text: "The application layer (layer 7)", explanation: "That inspects content, not just IPs." }
+    - { id: c, text: "The link layer", explanation: "That is one physical hop (MAC)." }
+  correct: [a]
+
+- id: sec02.model.tls-metadata
+  type: choice
+  skill: apply
+  topics: [sec02.model]
+  prompt: TLS encrypts the application data. What can a network observer still see?
+  options:
+    - { id: a, text: "The IP addresses and ports (lower-layer metadata)", explanation: "Correct: TLS does not hide who talks to whom." }
+    - { id: b, text: "Nothing at all", explanation: "Metadata remains visible." }
+    - { id: c, text: "The decrypted passwords", explanation: "Those are protected by TLS." }
+  correct: [a]

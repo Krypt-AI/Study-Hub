@@ -1,0 +1,66 @@
+- id: ai08.tokens.subword
+  type: choice
+  skill: recognize
+  topics: [ai08.tokens]
+  prompt: Why do LLMs use subword tokens rather than whole words?
+  options:
+    - { id: a, text: "They keep the vocabulary bounded while still representing any word, including unseen ones, by composing pieces", explanation: "Correct." }
+    - { id: b, text: "Subwords are easier for humans to read", explanation: "Not the reason." }
+    - { id: c, text: "They avoid needing training data", explanation: "False." }
+  correct: [a]
+
+- id: ai08.tokens.estimate
+  type: short
+  skill: apply
+  topics: [ai08.tokens]
+  prompt: "Using the rule ~1 token ≈ 4 characters, roughly how many tokens is a 400-character prompt?"
+  accepted: ["100"]
+  match: { mode: number, tolerance: 10 }
+
+- id: ai08.tokens.same-tokenizer
+  type: choice
+  skill: apply
+  topics: [ai08.tokens]
+  prompt: Why must you use the tokenizer that a model was trained with?
+  options:
+    - { id: a, text: "The token ids must match what the model learned; a different tokenizer maps text to different ids and produces nonsense", explanation: "Correct." }
+    - { id: b, text: "It is a licensing rule only", explanation: "It is a correctness requirement." }
+    - { id: c, text: "Any tokenizer works equally", explanation: "They do not." }
+  correct: [a]
+
+- id: ai08.tokens.count-code
+  type: code
+  skill: apply
+  topics: [ai08.tokens]
+  language: python
+  prompt: >-
+    Implement a tiny whitespace/punct tokenizer and a vocabulary. Write `tokenize(text)` returning a list of lowercase
+    word tokens (split on non-alphanumeric, drop empties), `build_vocab(texts)` mapping each distinct token to a stable
+    id (sorted order, starting at 0), and `encode(text, vocab)` returning the list of ids (unknown tokens map to -1).
+  starterCode: |
+    import re
+
+    def tokenize(text):
+        ...
+
+    def build_vocab(texts):
+        ...
+
+    def encode(text, vocab):
+        ...
+  tests:
+    - { kind: assert, name: "tokenize", code: "assert tokenize('Hello, world! Hello.') == ['hello', 'world', 'hello']" }
+    - { kind: assert, name: "vocab stable ids", code: "v = build_vocab(['b a', 'a c'])\nassert v == {'a': 0, 'b': 1, 'c': 2}" }
+    - { kind: assert, name: "encode with unknown", code: "v = build_vocab(['a b'])\nassert encode('a b a z', v) == [0, 1, 0, -1]" }
+  solution: |
+    import re
+
+    def tokenize(text):
+        return [t for t in re.split(r'[^a-z0-9]+', text.lower()) if t]
+
+    def build_vocab(texts):
+        tokens = sorted({t for text in texts for t in tokenize(text)})
+        return {t: i for i, t in enumerate(tokens)}
+
+    def encode(text, vocab):
+        return [vocab.get(t, -1) for t in tokenize(text)]

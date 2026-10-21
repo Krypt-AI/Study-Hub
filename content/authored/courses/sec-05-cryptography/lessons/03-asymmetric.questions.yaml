@@ -1,0 +1,75 @@
+- id: sec05.asymmetric.encrypt-key
+  type: choice
+  skill: apply
+  topics: [sec05.asymmetric]
+  prompt: To send a confidential message that only Alice can read, which key do you encrypt with?
+  options:
+    - { id: a, text: "Alice's public key", explanation: "Correct: only her private key can decrypt it." }
+    - { id: b, text: "Alice's private key", explanation: "She keeps that secret; you do not have it." }
+    - { id: c, text: "Your own private key", explanation: "That would be signing, not encrypting for her." }
+  correct: [a]
+
+- id: sec05.asymmetric.nonrepudiation
+  type: choice
+  skill: recognize
+  topics: [sec05.asymmetric]
+  prompt: Which property does a digital signature add that a shared-key MAC cannot?
+  options:
+    - { id: a, text: "Non-repudiation: only the private-key holder could have produced it", explanation: "Correct: both MAC parties share the key, so a MAC cannot single out one signer." }
+    - { id: b, text: "Faster verification", explanation: "Signatures are generally slower." }
+    - { id: c, text: "Confidentiality", explanation: "Signing does not hide the message." }
+  correct: [a]
+
+- id: sec05.asymmetric.forward-secrecy
+  type: long
+  skill: explain
+  topics: [sec05.asymmetric]
+  prompt: What is forward secrecy, and how does an ephemeral key exchange provide it?
+  minWords: 30
+  rubric:
+    - { id: fresh, label: "Each session uses a fresh, ephemeral key agreed by Diffie-Hellman", keywords: [["ephemeral", "fresh", "per-session", "diffie"]] }
+    - { id: past, label: "Compromising the long-term private key later does not decrypt past sessions", keywords: [["past", "recorded", "later", "previous"]] }
+  modelAnswer: >-
+    Forward secrecy means that recording encrypted traffic now and stealing the server's long-term private key later
+    still does not reveal those past sessions. An ephemeral Diffie-Hellman exchange (ECDHE) generates a new shared key
+    for every session and discards it afterwards, and the long-term key is used only to authenticate the exchange, not
+    to derive the session key, so there is nothing stored that can decrypt old traffic.
+
+- id: sec05.asymmetric.speed
+  type: choice
+  skill: recognize
+  topics: [sec05.asymmetric]
+  prompt: Why does TLS use public-key cryptography only to set up the connection, then switch to symmetric encryption?
+  options:
+    - { id: a, text: "Asymmetric operations are slow; symmetric ciphers carry bulk data far faster.", explanation: "Correct." }
+    - { id: b, text: "Symmetric encryption is more secure.", explanation: "Neither is simply 'more secure'; they do different jobs." }
+    - { id: c, text: "Public keys cannot encrypt data at all.", explanation: "They can, but slowly and with size limits." }
+  correct: [a]
+
+- id: sec05.asymmetric.modexp
+  type: code
+  skill: apply
+  topics: [sec05.asymmetric]
+  language: python
+  prompt: >-
+    Modular exponentiation is the core of RSA and Diffie-Hellman. Write `modexp(base, exp, mod)` computing
+    (base ** exp) % mod efficiently with square-and-multiply (do not build the huge intermediate power). Then
+    `rsa_roundtrip` should hold for the toy key below.
+  starterCode: |
+    def modexp(base, exp, mod):
+        ...
+  tests:
+    - { kind: assert, name: "basic", code: "assert modexp(4, 13, 497) == 445" }
+    - { kind: assert, name: "toy RSA round trip", code: "n, e, d = 3233, 17, 2753\nassert modexp(modexp(65, e, n), d, n) == 65" }
+    - { kind: assert, name: "handles large exponent fast", code: "assert modexp(7, 10**6, 1000003) == pow(7, 10**6, 1000003)" }
+  hints: ["Loop while exp: if the low bit is set, multiply it into the result; then square the base and shift exp right."]
+  solution: |
+    def modexp(base, exp, mod):
+        result = 1
+        base %= mod
+        while exp:
+            if exp & 1:
+                result = result * base % mod
+            base = base * base % mod
+            exp >>= 1
+        return result

@@ -1,0 +1,91 @@
+- id: ai02.env.compatible-release
+  type: choice
+  skill: recall
+  topics: [ai02.env]
+  prompt: "Which versions does the specifier `pandas~=2.2` allow?"
+  options:
+    - { id: a, text: "2.2 and any later 2.x release, but not 3.0", explanation: "Correct: `~=2.2` means `>=2.2, ==2.*`." }
+    - { id: b, text: "Exactly 2.2", explanation: "That is `==2.2`." }
+    - { id: c, text: "Any version 2.2 or newer, including 3.0", explanation: "That is `>=2.2`." }
+  correct: [a]
+
+- id: ai02.env.pip-module
+  type: choice
+  skill: recognize
+  topics: [ai02.env]
+  prompt: Why is `python -m pip install ...` preferred to `pip install ...`?
+  options:
+    - { id: a, text: "It installs into the interpreter you name, so packages cannot land in the wrong Python.", explanation: "Correct." }
+    - { id: b, text: "It downloads packages faster.", explanation: "Speed is the same." }
+    - { id: c, text: "It skips the dependency resolver.", explanation: "It uses the same resolver." }
+  correct: [a]
+
+- id: ai02.env.lock-vs-declare
+  type: long
+  skill: explain
+  topics: [ai02.env]
+  prompt: Explain the difference between the dependencies in `pyproject.toml` and a lock file, and why an ML project commits both.
+  minWords: 30
+  rubric:
+    - { id: declare, label: "pyproject.toml declares acceptable version ranges (direct dependencies)", keywords: [["range", "accept", "declare", "constraint", ">="]] }
+    - { id: lock, label: "The lock file records exact resolved versions of every package, including indirect ones", keywords: [["exact", "pinned", "resolved"]], weight: 1 }
+    - { id: why, label: "Reproducibility: the same environment and results on another machine or later", keywords: [["reproduc", "same result", "same environment", "another machine", "later"]] }
+  modelAnswer: >-
+    `pyproject.toml` lists the project's direct dependencies with the ranges it accepts, such as `scikit-learn>=1.5,<2`.
+    A lock file (uv.lock, or a frozen requirements.txt) records the exact version, and usually the hash, of every
+    package that was resolved, including indirect dependencies. ML results can change with library versions, so
+    committing the lock file lets anyone rebuild the identical environment and reproduce a result, while the ranges
+    in pyproject.toml document what upgrades are allowed.
+
+- id: ai02.env.uv-sync
+  type: choice
+  skill: apply
+  topics: [ai02.env]
+  prompt: You cloned a teammate's uv project on a new laptop. Which command creates the exact environment they locked?
+  options:
+    - { id: a, text: "`uv sync`", explanation: "Correct: it installs exactly what `uv.lock` records into `.venv`." }
+    - { id: b, text: "`uv add numpy`", explanation: "That adds a new dependency." }
+    - { id: c, text: "`pip install uv.lock`", explanation: "pip does not read uv's lock file that way." }
+  correct: [a]
+
+- id: ai02.env.satisfies
+  type: code
+  skill: apply
+  topics: [ai02.env]
+  language: python
+  prompt: >-
+    Write `satisfies(version, spec)` for simple specifiers. `version` is like `"2.1.3"`; `spec` is a comma-separated
+    list of conditions using `==`, `>=`, `<` or `<=` (for example `">=1.5,<2"`). Compare versions numerically part by
+    part (so 1.10 is newer than 1.9). Missing parts count as 0.
+  starterCode: |
+    def satisfies(version, spec):
+        ...
+  tests:
+    - { kind: assert, name: "range", code: "assert satisfies('1.7.2', '>=1.5,<2')" }
+    - { kind: assert, name: "upper bound", code: "assert not satisfies('2.0', '>=1.5,<2')" }
+    - { kind: assert, name: "numeric not text", code: "assert satisfies('1.10', '>=1.9')" }
+    - { kind: assert, name: "exact with missing parts", code: "assert satisfies('2.2', '==2.2.0')" }
+    - { kind: assert, name: "less or equal", code: "assert satisfies('3.11', '<=3.11') and not satisfies('3.12', '<=3.11')" }
+  hints: ["Turn '1.10.0' into a tuple of ints and pad with zeros.", "Check two-character operators before one-character ones."]
+  solution: |
+    def _parse(v, width=4):
+        parts = [int(p) for p in v.split('.')]
+        return tuple(parts + [0] * (width - len(parts)))
+
+    def satisfies(version, spec):
+        current = _parse(version)
+        for condition in spec.split(','):
+            condition = condition.strip()
+            for op in ('==', '>=', '<=', '<'):
+                if condition.startswith(op):
+                    target = _parse(condition[len(op):].strip())
+                    break
+            ok = {
+                '==': current == target,
+                '>=': current >= target,
+                '<=': current <= target,
+                '<': current < target,
+            }[op]
+            if not ok:
+                return False
+        return True

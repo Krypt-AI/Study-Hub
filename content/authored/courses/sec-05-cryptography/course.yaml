@@ -1,0 +1,115 @@
+id: sec-05-cryptography
+title: Cryptography and Identity
+subtitle: Cybersecurity · Stage 5
+description: >-
+  How confidentiality, integrity and authenticity are actually achieved: hashing, symmetric and public-key
+  encryption, key exchange, digital signatures, certificates and TLS, and how passwords and authentication are
+  protected. Exercises implement the core ideas in Python so the maths becomes concrete; you always use vetted
+  libraries in real systems, never your own crypto.
+category: it
+subject: cybersecurity
+level: Stage 5
+difficulty: intermediate
+tags: [cryptography, hashing, encryption, pki, tls, authentication]
+prerequisites: [sec-04-principles]
+estimatedHours: 12
+topics:
+  - { id: sec05.hashing, title: Hashing and integrity }
+  - { id: sec05.symmetric, title: Symmetric encryption }
+  - { id: sec05.asymmetric, title: Public-key cryptography }
+  - { id: sec05.tls, title: Certificates and TLS }
+  - { id: sec05.auth, title: Passwords and authentication }
+units:
+  - id: sec-05-cryptography.u1
+    title: Keeping data secret and intact
+    lessons: [01-hashing, 02-symmetric, 03-asymmetric]
+  - id: sec-05-cryptography.u2
+    title: Trust and identity
+    lessons: [04-tls-certificates, 05-passwords-authentication]
+assessments:
+  - id: sec-05-cryptography.quiz
+    title: "Stage 5 quiz: cryptography"
+    kind: quiz
+    passMark: 0.7
+    description: Eight questions across the whole course.
+    sections:
+      - id: sec-05-cryptography.quiz.s1
+        title: Cryptography
+        questions:
+          - id: sec05.quiz.cia
+            type: choice
+            skill: recognize
+            topics: [sec05.hashing]
+            prompt: Which property does a cryptographic hash most directly protect?
+            options:
+              - { id: a, text: Integrity, explanation: "Correct: any change to the input changes the digest." }
+              - { id: b, text: Confidentiality, explanation: "Hashing does not hide data; encryption does." }
+              - { id: c, text: Availability, explanation: "Unrelated to hashing." }
+            correct: [a]
+          - id: sec05.quiz.salt
+            type: choice
+            skill: apply
+            topics: [sec05.auth]
+            prompt: Why is a unique random salt stored with each password hash?
+            options:
+              - { id: a, text: "So identical passwords hash differently and precomputed tables (rainbow tables) do not work", explanation: "Correct." }
+              - { id: b, text: "To make the hash shorter", explanation: "Salts do not shorten hashes." }
+              - { id: c, text: "So the password can be decrypted later", explanation: "Password hashes are not reversible." }
+            correct: [a]
+          - id: sec05.quiz.symmetric-asymmetric
+            type: choice
+            skill: recognize
+            topics: [sec05.asymmetric]
+            prompt: In TLS, what is public-key cryptography mainly used for?
+            options:
+              - { id: a, text: "Authenticating the server and agreeing a shared symmetric key", explanation: "Correct: then fast symmetric encryption carries the data." }
+              - { id: b, text: "Encrypting all of the application data directly", explanation: "Too slow; symmetric ciphers do the bulk work." }
+              - { id: c, text: "Compressing the data", explanation: "Not a cryptographic function." }
+            correct: [a]
+          - id: sec05.quiz.kerckhoffs
+            type: choice
+            skill: recognize
+            topics: [sec05.symmetric]
+            prompt: Kerckhoffs's principle says a system should stay secure even when…
+            options:
+              - { id: a, text: "everything about it except the key is public knowledge", explanation: "Correct: security rests on the key, not on secrecy of the design." }
+              - { id: b, text: "the key is published", explanation: "The key must stay secret." }
+              - { id: c, text: "the algorithm is kept secret", explanation: "Security through obscurity is the opposite idea." }
+            correct: [a]
+          - id: sec05.quiz.signature
+            type: choice
+            skill: apply
+            topics: [sec05.asymmetric]
+            prompt: To create a digital signature over a document, which key does the signer use?
+            options:
+              - { id: a, text: "Their own private key; verifiers use the signer's public key", explanation: "Correct." }
+              - { id: b, text: "The verifier's public key", explanation: "That is encryption, not signing." }
+              - { id: c, text: "A shared symmetric key", explanation: "That gives a MAC, not a signature with non-repudiation." }
+            correct: [a]
+          - id: sec05.quiz.tls-cert
+            type: short
+            skill: recall
+            topics: [sec05.tls]
+            prompt: "What kind of organisation issues the certificate that lets a browser trust a website's public key? (two words, abbreviation accepted)"
+            accepted: ["certificate authority", "CA"]
+            match: { mode: text }
+          - id: sec05.quiz.kdf
+            type: choice
+            skill: apply
+            topics: [sec05.auth]
+            prompt: Which algorithm is designed for storing passwords?
+            options:
+              - { id: a, text: "Argon2 (or bcrypt / scrypt / PBKDF2)", explanation: "Correct: deliberately slow, memory-hard password hashes." }
+              - { id: b, text: "SHA-256 used once", explanation: "Far too fast; brute force is cheap." }
+              - { id: c, text: "Base64", explanation: "Encoding, not hashing." }
+            correct: [a]
+          - id: sec05.quiz.mfa
+            type: choice
+            skill: recognize
+            topics: [sec05.auth]
+            prompt: Which pair are two different authentication factors?
+            options:
+              - { id: a, text: "A password (something you know) and a phone authenticator code (something you have)", explanation: "Correct: two distinct factor types." }
+              - { id: b, text: "A password and a PIN", explanation: "Both are 'something you know'." }
+              - { id: c, text: "Two different passwords", explanation: "Same factor type twice." }
+            correct: [a]

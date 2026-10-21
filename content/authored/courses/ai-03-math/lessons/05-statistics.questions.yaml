@@ -1,0 +1,92 @@
+- id: ai03.stats.median
+  type: choice
+  skill: apply
+  topics: [ai03.stats]
+  prompt: "API response times (ms): 40, 42, 45, 41, 3000. Which statistic best describes a typical request?"
+  options:
+    - { id: a, text: "The median, 42 ms", explanation: "Correct: one outlier barely moves it." }
+    - { id: b, text: "The mean, about 634 ms", explanation: "Dragged up by the single 3000 ms request." }
+    - { id: c, text: "The maximum", explanation: "That is the worst case, not the typical one." }
+  correct: [a]
+
+- id: ai03.stats.normal-rule
+  type: short
+  skill: recall
+  topics: [ai03.stats]
+  prompt: "About what percentage of a normal distribution lies within one standard deviation of the mean?"
+  accepted: ["68", "68%"]
+  match: { mode: text }
+
+- id: ai03.stats.binomial
+  type: short
+  skill: apply
+  topics: [ai03.stats]
+  prompt: "A model is correct 80% of the time. Over 50 independent questions, what is the expected number correct?"
+  accepted: ["40"]
+  match: { mode: number }
+
+- id: ai03.stats.ci-overlap
+  type: long
+  skill: explain
+  topics: [ai03.stats]
+  prompt: >-
+    Model A scores 90% accuracy and model B 91% on the same 400-example test set. Your manager wants to ship B because
+    it is "better". What would you say?
+  minWords: 35
+  rubric:
+    - { id: se, label: "Computes or mentions the uncertainty (standard error about 1.5 points, interval about ±3)", keywords: [["standard error", "confidence interval", "±", "uncertainty", "margin"]] }
+    - { id: overlap, label: "A 1-point difference is within that uncertainty, so it may be noise", keywords: [["noise", "not significant", "overlap", "chance", "within"]] }
+    - { id: more, label: "Suggests a paired test, more data, cross-validation or considering other criteria", keywords: [["paired", "more data", "cross-validation", "bootstrap", "latency", "cost"]] }
+  modelAnswer: >-
+    With 400 examples the standard error of a 90% accuracy is about √(0.9·0.1/400) ≈ 1.5 points, so each 95% interval
+    is roughly ±3 points. A 1-point gap is well within that, so it may be noise. I would run a paired comparison on the
+    same examples (or bootstrap / cross-validate), gather a larger test set if possible, and also weigh cost, latency
+    and failure types before choosing.
+
+- id: ai03.stats.pvalue-myth
+  type: choice
+  skill: recognize
+  topics: [ai03.stats]
+  prompt: Which statement about statistical significance is correct?
+  options:
+    - { id: a, text: "A significant result can still be too small to matter in practice.", explanation: "Correct: report effect sizes too." }
+    - { id: b, text: "p = 0.01 means a 1% chance the null hypothesis is true.", explanation: "A classic misinterpretation." }
+    - { id: c, text: "Trying 20 variants and reporting the one with p < 0.05 is sound.", explanation: "Multiple comparisons make a false positive likely." }
+  correct: [a]
+
+- id: ai03.stats.describe
+  type: code
+  skill: apply
+  topics: [ai03.stats]
+  language: python
+  prompt: >-
+    Write `describe(xs)` returning a dict with `mean`, `median`, `std` (sample standard deviation, n − 1) and
+    `accuracy_ci(p, n)` returning the 95% interval `(low, high)` for an accuracy p measured on n examples
+    (p ± 1.96·√(p(1 − p)/n)). Do not use the statistics module.
+  starterCode: |
+    import math
+
+    def describe(xs):
+        ...
+
+    def accuracy_ci(p, n):
+        ...
+  tests:
+    - { kind: assert, name: "describe", code: "d = describe([2, 4, 4, 4, 5, 5, 7, 9])\nassert d['mean'] == 5 and d['median'] == 4.5 and abs(d['std'] - 2.1380899) < 1e-6" }
+    - { kind: assert, name: "odd median", code: "assert describe([3, 1, 2])['median'] == 2" }
+    - { kind: assert, name: "interval", code: "lo, hi = accuracy_ci(0.9, 400)\nassert abs(lo - 0.8706) < 1e-4 and abs(hi - 0.9294) < 1e-4" }
+  solution: |
+    import math
+
+    def describe(xs):
+        n = len(xs)
+        mean = sum(xs) / n
+        s = sorted(xs)
+        mid = n // 2
+        median = s[mid] if n % 2 else (s[mid - 1] + s[mid]) / 2
+        std = math.sqrt(sum((x - mean) ** 2 for x in xs) / (n - 1))
+        return {'mean': mean, 'median': median, 'std': std}
+
+    def accuracy_ci(p, n):
+        margin = 1.96 * math.sqrt(p * (1 - p) / n)
+        return (p - margin, p + margin)

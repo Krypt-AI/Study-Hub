@@ -1,0 +1,51 @@
+- id: sec01.files.octal
+  type: short
+  skill: apply
+  topics: [sec01.files]
+  prompt: "Write the octal permission for: owner read+write, group read, others read."
+  accepted: ["644"]
+  match: { mode: exact }
+  explanation: "rw- = 6, r-- = 4, r-- = 4 → 644."
+
+- id: sec01.files.keyperm
+  type: choice
+  skill: apply
+  topics: [sec01.files]
+  prompt: SSH refuses to use your private key, warning its permissions are too open. Which fixes it?
+  options:
+    - { id: a, text: "`chmod 600 id_ed25519` (owner read/write only)", explanation: "Correct: the key must not be readable by group or others." }
+    - { id: b, text: "`chmod 777 id_ed25519`", explanation: "That makes it readable and writable by everyone — worse." }
+    - { id: c, text: "`chown root id_ed25519`", explanation: "Changing owner does not fix the open permissions, and you would lose access." }
+  correct: [a]
+
+- id: sec01.files.least-priv-service
+  type: choice
+  skill: apply
+  topics: [sec01.files]
+  prompt: Why run a web server under its own low-privilege account rather than as root?
+  options:
+    - { id: a, text: "If the service is compromised, the attacker gets only its limited rights, not the whole machine.", explanation: "Correct: least privilege limits the blast radius." }
+    - { id: b, text: "It makes the server faster.", explanation: "Not the reason." }
+    - { id: c, text: "Root accounts cannot run web servers.", explanation: "They can; the point is you should not." }
+  correct: [a]
+
+- id: sec01.files.elevate
+  type: cloze
+  skill: recall
+  topics: [sec01.files]
+  prompt: Name how each OS elevates privilege temporarily.
+  text: "On Linux you elevate a command with `[[1]]`; on Windows elevation prompts come from [[2]]."
+  blanks:
+    - { id: "1", accepted: [sudo] }
+    - { id: "2", accepted: [UAC, "User Account Control"] }
+
+- id: sec01.files.acl
+  type: choice
+  skill: recognize
+  topics: [sec01.files]
+  prompt: How does Windows' permission model differ from Linux's traditional one?
+  options:
+    - { id: a, text: "Windows ACLs list specific rights for specific users/groups per file; Linux's base model has just owner/group/other rwx.", explanation: "Correct." }
+    - { id: b, text: "Windows has no permissions.", explanation: "It does, via ACLs." }
+    - { id: c, text: "Linux cannot restrict files.", explanation: "It can, with rwx and ACLs." }
+  correct: [a]

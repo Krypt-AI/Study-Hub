@@ -1,0 +1,111 @@
+id: ai-07-deep-learning
+title: Deep Learning with PyTorch
+subtitle: AI Engineering · Stage 7
+description: >-
+  Neural networks from the ground up and then in PyTorch: tensors and autograd, building a network from scratch,
+  the training loop, convolutional networks for images, and the techniques that make training work in practice
+  (regularisation, normalisation, schedules and transfer learning). Browser exercises implement the core ideas in
+  NumPy; the setup lesson gets PyTorch running in VS Code, with or without a GPU.
+category: ai-engineering
+subject: deep-learning
+level: Stage 7
+difficulty: intermediate
+tags: [pytorch, neural-networks, autograd, cnn, transfer-learning]
+prerequisites: [ai-03-math, ai-05-machine-learning]
+certifications: [pytorch-certified-associate, ibm-ai-engineering]
+estimatedHours: 18
+topics:
+  - { id: ai07.setup, title: "Setup: PyTorch in VS Code" }
+  - { id: ai07.tensors, title: Tensors and autograd }
+  - { id: ai07.networks, title: Neural networks from scratch }
+  - { id: ai07.training, title: The PyTorch training loop }
+  - { id: ai07.cnn, title: Convolutional networks }
+  - { id: ai07.practice, title: Making training work }
+units:
+  - id: ai-07-deep-learning.u1
+    title: Foundations
+    lessons: [00-setup, 01-tensors-autograd, 02-networks-from-scratch, 03-training-loop]
+  - id: ai-07-deep-learning.u2
+    title: Architectures and practice
+    lessons: [04-cnns, 05-training-in-practice]
+assessments:
+  - id: ai-07-deep-learning.quiz
+    title: "Stage 7 quiz: deep learning"
+    kind: quiz
+    passMark: 0.7
+    description: Eight questions across the whole course.
+    sections:
+      - id: ai-07-deep-learning.quiz.s1
+        title: Deep learning
+        questions:
+          - id: ai07.quiz.zero-grad
+            type: choice
+            skill: recognize
+            topics: [ai07.training]
+            prompt: "Why does a PyTorch training loop call `optimizer.zero_grad()` every step?"
+            options:
+              - { id: a, text: "Gradients accumulate in `.grad` by default, so old ones must be cleared.", explanation: "Correct." }
+              - { id: b, text: "It resets the weights to zero.", explanation: "It only clears gradients." }
+              - { id: c, text: "It lowers the learning rate.", explanation: "That is a scheduler's job." }
+            correct: [a]
+          - id: ai07.quiz.relu
+            type: short
+            skill: recall
+            topics: [ai07.networks]
+            prompt: "What is ReLU(−3)?"
+            accepted: ["0"]
+            match: { mode: number }
+          - id: ai07.quiz.eval-mode
+            type: choice
+            skill: apply
+            topics: [ai07.training]
+            prompt: Before measuring validation accuracy of a model with dropout and batch norm, you must…
+            options:
+              - { id: a, text: "Call `model.eval()` and wrap the loop in `torch.no_grad()`", explanation: "Correct." }
+              - { id: b, text: "Call `model.train()`", explanation: "That keeps dropout on." }
+              - { id: c, text: "Delete the dropout layers", explanation: "eval() disables them." }
+            correct: [a]
+          - id: ai07.quiz.conv-out
+            type: short
+            skill: apply
+            topics: [ai07.cnn]
+            prompt: "A 32×32 image, 3×3 convolution, stride 1, no padding. What is the output width?"
+            accepted: ["30"]
+            match: { mode: number }
+          - id: ai07.quiz.transfer
+            type: choice
+            skill: apply
+            topics: [ai07.practice]
+            prompt: You have 800 labelled photos of plant diseases. What is the best starting point?
+            options:
+              - { id: a, text: "Fine-tune a network pretrained on ImageNet", explanation: "Correct: transfer learning needs far less data." }
+              - { id: b, text: "Train a ResNet-50 from random weights", explanation: "Far too little data." }
+              - { id: c, text: "A linear model on raw pixels", explanation: "Weak for images." }
+            correct: [a]
+          - id: ai07.quiz.dropout
+            type: choice
+            skill: recognize
+            topics: [ai07.practice]
+            prompt: What does dropout do during training?
+            options:
+              - { id: a, text: "Randomly zeroes a fraction of activations so the network cannot rely on any single unit", explanation: "Correct." }
+              - { id: b, text: "Removes training examples", explanation: "No." }
+              - { id: c, text: "Lowers the learning rate when loss plateaus", explanation: "That is a scheduler." }
+            correct: [a]
+          - id: ai07.quiz.device
+            type: choice
+            skill: apply
+            topics: [ai07.training]
+            prompt: "`RuntimeError: Expected all tensors to be on the same device`. What is the fix?"
+            options:
+              - { id: a, text: "Move the model and every batch to the same device with `.to(device)`", explanation: "Correct." }
+              - { id: b, text: "Reinstall PyTorch", explanation: "Not an installation problem." }
+              - { id: c, text: "Use a larger batch", explanation: "Unrelated." }
+            correct: [a]
+          - id: ai07.quiz.params
+            type: short
+            skill: apply
+            topics: [ai07.networks]
+            prompt: "How many parameters (weights + biases) does `nn.Linear(100, 10)` have?"
+            accepted: ["1010"]
+            match: { mode: number }

@@ -1,0 +1,32 @@
+- id: ai04.setup.parquet
+  type: choice
+  skill: recognize
+  topics: [ai04.setup]
+  prompt: Why prefer Parquet over CSV for intermediate data files?
+  options:
+    - { id: a, text: "It stores column types and is compressed and columnar, so files are smaller and load faster with types intact.", explanation: "Correct." }
+    - { id: b, text: "Parquet files can be opened in any text editor.", explanation: "It is a binary format." }
+    - { id: c, text: "CSV cannot store numbers.", explanation: "It can, but as text without types." }
+  correct: [a]
+
+- id: ai04.setup.raw-data
+  type: choice
+  skill: apply
+  topics: [ai04.setup]
+  prompt: Your raw dataset is 800 MB. How should the project handle it?
+  options:
+    - { id: a, text: "Ignore `data/raw/` in Git and commit a README or script that explains how to obtain it.", explanation: "Correct." }
+    - { id: b, text: "Commit it so teammates have it.", explanation: "Repositories should not carry large data." }
+    - { id: c, text: "Email it with every pull request.", explanation: "Not reproducible." }
+  correct: [a]
+
+- id: ai04.setup.wrangler
+  type: choice
+  skill: recognize
+  topics: [ai04.setup]
+  prompt: What makes Data Wrangler's cleaning steps reproducible?
+  options:
+    - { id: a, text: "It can export each step as pandas code into your notebook or script.", explanation: "Correct." }
+    - { id: b, text: "It saves an edited copy of the CSV.", explanation: "A changed file without the steps is not reproducible." }
+    - { id: c, text: "It uploads the data to the cloud.", explanation: "It runs locally." }
+  correct: [a]

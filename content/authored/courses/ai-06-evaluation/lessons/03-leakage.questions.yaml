@@ -1,0 +1,48 @@
+- id: ai06.leakage.kind
+  type: choice
+  skill: recognize
+  topics: [ai06.leakage]
+  prompt: A StandardScaler is fitted on the full dataset before the train/test split. Which kind of leakage is this?
+  options:
+    - { id: a, text: "Train–test contamination", explanation: "Correct: test statistics influence training." }
+    - { id: b, text: "Target leakage", explanation: "No outcome-derived feature is involved." }
+    - { id: c, text: "Not leakage", explanation: "It is, though usually a small one." }
+  correct: [a]
+
+- id: ai06.leakage.question
+  type: long
+  skill: explain
+  topics: [ai06.leakage]
+  prompt: State the question you should ask about every feature to detect target leakage, and give an example of a feature that fails it.
+  minWords: 25
+  rubric:
+    - { id: question, label: "Would this value be known (and look the same) at prediction time?", keywords: [["prediction time", "time of prediction", "at the moment", "when predicting", "available"]] }
+    - { id: example, label: "A concrete example recorded after the outcome", keywords: [["after", "later", "cancellation", "collections", "discharge", "refund"]] }
+  modelAnswer: >-
+    Ask: "At the moment the prediction is made, would this value be available, and would it have this value?" For
+    example, when predicting loan default, `collections_agency_contacted` is only set after a borrower defaults, so it
+    would not be known at prediction time and leaks the target.
+
+- id: ai06.leakage.oversample
+  type: choice
+  skill: apply
+  topics: [ai06.leakage]
+  prompt: You oversampled the minority class with duplicates, then split train/test. Validation recall is suspiciously high. Why?
+  options:
+    - { id: a, text: "Copies of the same minority examples landed in both train and test.", explanation: "Correct: resample only the training split." }
+    - { id: b, text: "Oversampling always improves recall genuinely.", explanation: "Not on unseen data." }
+    - { id: c, text: "The test set is too large.", explanation: "Size is not the issue." }
+  correct: [a]
+
+- id: ai06.leakage.signals
+  type: choice
+  skill: apply
+  multiple: true
+  topics: [ai06.leakage]
+  prompt: Which are warning signs of leakage? Choose all that apply.
+  options:
+    - { id: a, text: "`customer_id` is the most important feature.", explanation: "IDs should carry no signal." }
+    - { id: b, text: "Adding one column lifts AUC from 0.71 to 0.99.", explanation: "Too good to be true." }
+    - { id: c, text: "Live performance is far below the test score.", explanation: "Classic symptom." }
+    - { id: d, text: "Cross-validation scores vary by ±0.01 across folds.", explanation: "Normal stability, not a warning sign." }
+  correct: [a, b, c]

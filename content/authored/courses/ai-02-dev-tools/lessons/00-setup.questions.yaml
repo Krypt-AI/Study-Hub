@@ -1,0 +1,40 @@
+- id: ai02.setup.testing-view
+  type: choice
+  skill: apply
+  topics: [ai02.setup]
+  prompt: Your tests do not appear in VS Code's Testing view. What is the usual fix?
+  options:
+    - { id: a, text: "Run **Configure Python Tests**, choose pytest and the tests folder, and make sure the `.venv` interpreter (with pytest installed) is selected.", explanation: "Correct." }
+    - { id: b, text: "Rename the tests to end in `_check.py`.", explanation: "pytest looks for `test_*.py`." }
+    - { id: c, text: "Install the Jupyter extension.", explanation: "Unrelated to test discovery." }
+  correct: [a]
+
+- id: ai02.setup.ssh-key
+  type: choice
+  skill: recognize
+  topics: [ai02.setup]
+  prompt: Which SSH key file do you paste into GitHub's settings?
+  options:
+    - { id: a, text: "`id_ed25519.pub`, the public key", explanation: "Correct: the public half is meant to be shared." }
+    - { id: b, text: "`id_ed25519`, the private key", explanation: "Never share the private key." }
+    - { id: c, text: "Both", explanation: "Only the public key." }
+  correct: [a]
+
+- id: ai02.setup.gh-auth
+  type: short
+  skill: recall
+  topics: [ai02.setup]
+  prompt: "Which GitHub CLI command signs you in to GitHub?"
+  accepted: ["gh auth login"]
+  match: { mode: exact }
+
+- id: ai02.setup.shared-settings
+  type: choice
+  skill: recognize
+  topics: [ai02.setup]
+  prompt: Where do project settings that the whole team should share (test runner, formatter) go?
+  options:
+    - { id: a, text: "`.vscode/settings.json` in the repository", explanation: "Correct: workspace settings travel with the project." }
+    - { id: b, text: "Each person's user settings", explanation: "Those apply to every project on one machine and are not shared." }
+    - { id: c, text: "`.env`", explanation: "That holds environment variables and secrets, and is git-ignored." }
+  correct: [a]

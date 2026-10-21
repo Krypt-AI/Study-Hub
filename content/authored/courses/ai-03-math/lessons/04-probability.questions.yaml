@@ -1,0 +1,88 @@
+- id: ai03.prob.conditional
+  type: short
+  skill: apply
+  topics: [ai03.prob]
+  prompt: "P(A and B) = 0.12 and P(B) = 0.4. What is P(A | B)?"
+  accepted: ["0.3"]
+  match: { mode: number, tolerance: 0.0001 }
+
+- id: ai03.prob.exclusive
+  type: choice
+  skill: recognize
+  topics: [ai03.prob]
+  prompt: Two events with non-zero probability are mutually exclusive. Are they independent?
+  options:
+    - { id: a, text: "No: if one happens, the other cannot, so knowing one changes the other's probability.", explanation: "Correct." }
+    - { id: b, text: "Yes, always.", explanation: "P(A and B) = 0 ≠ P(A)P(B) > 0." }
+    - { id: c, text: "Only if they have equal probability.", explanation: "Not relevant." }
+  correct: [a]
+
+- id: ai03.prob.base-rate
+  type: long
+  skill: explain
+  topics: [ai03.prob]
+  prompt: An intrusion detector catches 99% of attacks and has a 1% false-alarm rate, yet most of its alerts are false. Explain how this can be true.
+  minWords: 30
+  rubric:
+    - { id: base, label: "Attacks are rare (low base rate / prior)", keywords: [["rare", "base rate", "prior", "few"]] }
+    - { id: volume, label: "1% of the huge number of normal events outnumbers the true detections", keywords: [["outnumber", "many more", "huge", "volume", "most events"]] }
+    - { id: bayes, label: "Bayes' rule: the posterior P(attack | alert) is low", keywords: [["bayes", "posterior", "p(attack"]] }
+  modelAnswer: >-
+    Attacks are a tiny fraction of all events, so the prior is very low. A 1% false-alarm rate applied to millions of
+    normal events produces far more false alerts than the 99% of the few real attacks. By Bayes' rule the posterior
+    probability that an alert is an attack, P(attack | alert), is therefore small, even though the detector is
+    accurate on each class.
+
+- id: ai03.prob.expectation
+  type: short
+  skill: apply
+  topics: [ai03.prob]
+  prompt: "A bet pays RM10 with probability 0.2 and loses RM3 otherwise. What is the expected value in RM?"
+  accepted: ["-0.4"]
+  match: { mode: number, tolerance: 0.0001 }
+  explanation: "0.2·10 + 0.8·(−3) = 2 − 2.4 = −0.4."
+
+- id: ai03.prob.temperature
+  type: choice
+  skill: apply
+  topics: [ai03.prob]
+  prompt: Dividing logits by a temperature T = 0.5 before softmax makes the distribution…
+  options:
+    - { id: a, text: "Sharper: the top option gets more probability.", explanation: "Correct: differences between logits are doubled." }
+    - { id: b, text: "Flatter: closer to uniform.", explanation: "That happens for T > 1." }
+    - { id: c, text: "Unchanged.", explanation: "Only T = 1 leaves it unchanged." }
+  correct: [a]
+
+- id: ai03.prob.bayes-code
+  type: code
+  skill: apply
+  topics: [ai03.prob]
+  language: python
+  prompt: >-
+    Write `posterior(prior, sensitivity, false_positive_rate)` returning P(H | positive) with Bayes' rule, and
+    `softmax(z)` that is numerically stable for large logits.
+  starterCode: |
+    import math
+
+    def posterior(prior, sensitivity, false_positive_rate):
+        ...
+
+    def softmax(z):
+        ...
+  tests:
+    - { kind: assert, name: "disease example", code: "assert abs(posterior(0.001, 0.99, 0.02) - 0.0472103) < 1e-6" }
+    - { kind: assert, name: "softmax sums to 1", code: "assert abs(sum(softmax([2.0, 1.0, 0.1])) - 1) < 1e-9" }
+    - { kind: assert, name: "softmax values", code: "s = softmax([2.0, 1.0, 0.1])\nassert abs(s[0] - 0.6590012) < 1e-6" }
+    - { kind: assert, name: "large logits", code: "s = softmax([1000.0, 1000.0])\nassert abs(s[0] - 0.5) < 1e-9" }
+  solution: |
+    import math
+
+    def posterior(prior, sensitivity, false_positive_rate):
+        evidence = sensitivity * prior + false_positive_rate * (1 - prior)
+        return sensitivity * prior / evidence
+
+    def softmax(z):
+        m = max(z)
+        exps = [math.exp(v - m) for v in z]
+        total = sum(exps)
+        return [e / total for e in exps]

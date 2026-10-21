@@ -1,0 +1,32 @@
+- id: sec01.setup.authorised
+  type: choice
+  skill: recognize
+  topics: [sec01.setup]
+  prompt: Which systems may you run security tools and vulnerable targets against?
+  options:
+    - { id: a, text: "Only systems you own or have explicit written authorisation to test", explanation: "Correct: anything else is illegal." }
+    - { id: b, text: "Any system that responds to a scan", explanation: "Responding is not consent." }
+    - { id: c, text: "Any system without a login page", explanation: "Irrelevant to authorisation." }
+  correct: [a]
+
+- id: sec01.setup.isolation
+  type: choice
+  skill: apply
+  topics: [sec01.setup]
+  prompt: You will run an intentionally vulnerable VM. How should its network be configured?
+  options:
+    - { id: a, text: "Host-only or internal, so it can reach the lab but not the internet or your home network", explanation: "Correct: contain it." }
+    - { id: b, text: "Bridged to your home network", explanation: "That exposes a deliberately weak machine to everything." }
+    - { id: c, text: "NAT, permanently", explanation: "That still gives it internet access; use it only briefly for updates." }
+  correct: [a]
+
+- id: sec01.setup.snapshot
+  type: choice
+  skill: recognize
+  topics: [sec01.setup]
+  prompt: What is the main benefit of a VM snapshot in a lab?
+  options:
+    - { id: a, text: "Restoring a known-good state in seconds after breaking something", explanation: "Correct." }
+    - { id: b, text: "Permanently deleting the VM", explanation: "That is removal, not a snapshot." }
+    - { id: c, text: "Giving the VM internet access", explanation: "Unrelated." }
+  correct: [a]

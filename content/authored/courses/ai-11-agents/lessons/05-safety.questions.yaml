@@ -1,0 +1,48 @@
+- id: ai11.safety.confused-deputy
+  type: choice
+  skill: apply
+  topics: [ai11.safety]
+  prompt: Why is prompt injection more dangerous for an agent than for a plain chatbot?
+  options:
+    - { id: a, text: "An injected instruction can make the agent use its own real tools (email, delete, pay) against the user", explanation: "Correct: the confused-deputy problem." }
+    - { id: b, text: "Agents type faster", explanation: "Irrelevant." }
+    - { id: c, text: "It is not; they are the same", explanation: "Tools add real-world consequences." }
+  correct: [a]
+
+- id: ai11.safety.least-priv
+  type: choice
+  skill: apply
+  topics: [ai11.safety]
+  prompt: Which best limits the damage a hijacked agent can do?
+  options:
+    - { id: a, text: "Least privilege: give it only the minimal, tightly-scoped tools and data access it needs, enforced server-side", explanation: "Correct." }
+    - { id: b, text: "A longer system prompt telling it to be careful", explanation: "A hijacked model may ignore it; design for failure instead." }
+    - { id: c, text: "A faster model", explanation: "Irrelevant to safety." }
+  correct: [a]
+
+- id: ai11.safety.hitl
+  type: choice
+  skill: apply
+  topics: [ai11.safety]
+  prompt: Which action most warrants a human-in-the-loop approval gate?
+  options:
+    - { id: a, text: "Transferring money or deleting production data", explanation: "Correct: irreversible/high-impact." }
+    - { id: b, text: "Fetching a public web page", explanation: "Low risk; approving it would be unusable friction." }
+    - { id: c, text: "Summarising a paragraph", explanation: "No side effects." }
+  correct: [a]
+
+- id: ai11.safety.principle
+  type: long
+  skill: explain
+  topics: [ai11.safety]
+  prompt: State the guiding principle of agent safety and name two controls that follow from it.
+  minWords: 30
+  rubric:
+    - { id: principle, label: "Assume the model can be manipulated; design so the worst it can do is acceptable", keywords: [["assume", "manipulat", "hijack", "worst", "acceptable"]] }
+    - { id: controls, label: "Names concrete controls (least privilege, human approval, sandboxing, bounded budget, guardrails)", keywords: [["least privilege", "approval", "human", "sandbox", "limit", "guardrail", "scope"]] }
+  modelAnswer: >-
+    The guiding principle is to assume the model can be manipulated — by prompt injection in tool results or content —
+    and to design so that even a fully hijacked agent can only do something acceptable. Controls that follow: least
+    privilege, giving the agent the minimum, tightly-scoped tools and data access enforced server-side; human-in-the-
+    loop approval for irreversible or high-impact actions; sandboxing risky tools and code; bounding steps, time and
+    spend per run; and input/output guardrails with full logging of every step for audit.

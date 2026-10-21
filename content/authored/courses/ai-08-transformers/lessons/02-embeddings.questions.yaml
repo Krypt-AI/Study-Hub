@@ -1,0 +1,64 @@
+- id: ai08.embeddings.geometry
+  type: choice
+  skill: recognize
+  topics: [ai08.embeddings]
+  prompt: What makes an embedding more useful than a token id for comparing meaning?
+  options:
+    - { id: a, text: "Its geometry: similar meanings map to nearby vectors, so distance encodes semantic similarity", explanation: "Correct." }
+    - { id: b, text: "It is shorter than a token id", explanation: "It is a longer vector, not shorter." }
+    - { id: c, text: "It is encrypted", explanation: "Embeddings are not encryption." }
+  correct: [a]
+
+- id: ai08.embeddings.contextual
+  type: choice
+  skill: apply
+  topics: [ai08.embeddings]
+  prompt: Why can a contextual embedding tell apart "bank" in "river bank" and "bank account" when a static one cannot?
+  options:
+    - { id: a, text: "A contextual embedding depends on the whole sentence, so the same word gets different vectors in different contexts", explanation: "Correct." }
+    - { id: b, text: "Static embeddings are newer", explanation: "Static embeddings are older." }
+    - { id: c, text: "Contextual embeddings ignore the sentence", explanation: "They depend on it." }
+  correct: [a]
+
+- id: ai08.embeddings.search
+  type: choice
+  skill: apply
+  topics: [ai08.embeddings]
+  prompt: How does semantic search find relevant passages for a query?
+  options:
+    - { id: a, text: "Embed the query and candidates, then rank candidates by cosine similarity to the query", explanation: "Correct." }
+    - { id: b, text: "Match the query's exact characters", explanation: "That is keyword search, not semantic." }
+    - { id: c, text: "Hash the query and look it up", explanation: "Hashes carry no semantic geometry." }
+  correct: [a]
+
+- id: ai08.embeddings.nn-code
+  type: code
+  skill: apply
+  topics: [ai08.embeddings]
+  language: python
+  packages: [numpy]
+  prompt: >-
+    Write `cosine(a, b)` and `top_k(query, items, k)` where `items` is a dict name→vector (lists/arrays). Return the
+    `k` names most similar to `query` by cosine similarity, most similar first.
+  starterCode: |
+    import numpy as np
+
+    def cosine(a, b):
+        ...
+
+    def top_k(query, items, k):
+        ...
+  tests:
+    - { kind: assert, name: "cosine", code: "import numpy as np\nassert abs(cosine([1, 0], [1, 1]) - 0.7071) < 1e-3" }
+    - { kind: assert, name: "ranking", code: "items = {'a': [1, 0], 'b': [0.9, 0.1], 'c': [0, 1], 'd': [-1, 0]}\nassert top_k([1, 0.05], items, 2) == ['a', 'b']" }
+    - { kind: assert, name: "k larger than items", code: "assert set(top_k([1, 0], {'x': [1, 0], 'y': [0, 1]}, 5)) == {'x', 'y'}" }
+  solution: |
+    import numpy as np
+
+    def cosine(a, b):
+        a, b = np.asarray(a, dtype=float), np.asarray(b, dtype=float)
+        return float(a @ b / (np.linalg.norm(a) * np.linalg.norm(b)))
+
+    def top_k(query, items, k):
+        ranked = sorted(items, key=lambda name: cosine(query, items[name]), reverse=True)
+        return ranked[:k]

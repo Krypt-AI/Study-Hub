@@ -1,0 +1,50 @@
+- id: ai13.governance.risk-based
+  type: choice
+  skill: apply
+  topics: [ai13.governance]
+  prompt: How should the rigour of responsible-AI work scale?
+  options:
+    - { id: a, text: "With the system's impact/risk — far more for loans/medical/hiring than for low-stakes tools", explanation: "Correct: risk-based, as the EU AI Act and NIST RMF reflect." }
+    - { id: b, text: "The same maximum effort for every system", explanation: "Impractical and misallocated." }
+    - { id: c, text: "Less effort for higher-stakes systems", explanation: "Backwards." }
+  correct: [a]
+
+- id: ai13.governance.oversight
+  type: choice
+  skill: apply
+  topics: [ai13.governance]
+  prompt: For a high-stakes AI-assisted decision, responsible governance requires…
+  options:
+    - { id: a, text: "An accountable human in the loop who can override, plus explanation and a route to appeal", explanation: "Correct." }
+    - { id: b, text: "Fully automated decisions so no human is blamed", explanation: "Removes accountability; entrenches bias." }
+    - { id: c, text: "Concealing that AI was involved", explanation: "Violates transparency." }
+  correct: [a]
+
+- id: ai13.governance.card
+  type: choice
+  skill: recognize
+  topics: [ai13.governance]
+  prompt: What belongs in a model/system card?
+  options:
+    - { id: a, text: "Intended and out-of-scope uses, evaluation results (incl. across groups), limitations and known risks", explanation: "Correct." }
+    - { id: b, text: "Only the marketing tagline", explanation: "Not auditable." }
+    - { id: c, text: "The API key", explanation: "Never." }
+  correct: [a]
+
+- id: ai13.governance.engineer
+  type: long
+  skill: explain
+  topics: [ai13.governance]
+  prompt: Describe the engineer's responsibility in responsible AI, and why "the algorithm decided" is not an acceptable defence.
+  minWords: 35
+  rubric:
+    - { id: raise, label: "Raise risks, insist on evaluation (safety/fairness) before shipping, be transparent", keywords: [["raise", "evaluat", "before shipping", "transparen", "insist"]] }
+    - { id: accountable, label: "Accountability stays with people; a named owner can override/turn it off", keywords: [["accountab", "owner", "human", "override", "responsible"]] }
+    - { id: refuse, label: "Refuse uses that cannot be made safe or fair", keywords: [["refuse", "say no", "cannot be made safe", "unsafe", "unfair"]] }
+  modelAnswer: >-
+    The engineer is closest to how the system actually behaves, so they must raise risks early, insist on evaluation —
+    including safety and fairness — before shipping, be transparent that AI is used, and refuse uses that cannot be
+    made safe or fair. "The algorithm decided" is not acceptable because accountability always rests with people: a
+    named owner must be answerable, able to explain and override decisions, and able to turn the system off. An
+    algorithm is a tool its builders and operators are responsible for, and a person harmed by it is owed a human who
+    answers for the outcome and a route to appeal.

@@ -1,0 +1,43 @@
+- id: ai13.security.injection-defence
+  type: choice
+  skill: apply
+  topics: [ai13.security]
+  prompt: Which is a real defence against prompt injection (LLM01)?
+  options:
+    - { id: a, text: "Treat external content as data, isolate it, and apply least agency so an injection can achieve little", explanation: "Correct." }
+    - { id: b, text: "Add \"ignore malicious instructions\" to the prompt and rely on it", explanation: "A hijacked model may ignore it; design for failure." }
+    - { id: c, text: "Raise the temperature", explanation: "Irrelevant." }
+  correct: [a]
+
+- id: ai13.security.output
+  type: choice
+  skill: apply
+  topics: [ai13.security]
+  prompt: Why must you encode/validate an LLM's output before putting it in a web page or query?
+  options:
+    - { id: a, text: "Model output is untrusted and can contain scripts or injection payloads (LLM05)", explanation: "Correct." }
+    - { id: b, text: "Because output is always valid HTML", explanation: "It is not, and that is the risk." }
+    - { id: c, text: "To save tokens", explanation: "Unrelated." }
+  correct: [a]
+
+- id: ai13.security.system-prompt
+  type: choice
+  skill: apply
+  topics: [ai13.security]
+  prompt: Where should API keys or secrets NOT be placed?
+  options:
+    - { id: a, text: "In the system prompt — assume it can leak (LLM07)", explanation: "Correct." }
+    - { id: b, text: "In a secret manager", explanation: "That is the correct place." }
+    - { id: c, text: "In an environment variable the server reads", explanation: "Acceptable (Stage 2)." }
+  correct: [a]
+
+- id: ai13.security.mindset
+  type: cloze
+  skill: recall
+  topics: [ai13.security]
+  prompt: Three principles that cover most LLM security risks.
+  text: "Everything coming [[1]] is untrusted; everything coming [[2]] is untrusted (validate/encode); and give the model [[3]] agency."
+  blanks:
+    - { id: "1", accepted: [in] }
+    - { id: "2", accepted: [out] }
+    - { id: "3", accepted: [least, minimal, minimum] }

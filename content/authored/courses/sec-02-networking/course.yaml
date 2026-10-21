@@ -1,0 +1,112 @@
+id: sec-02-networking
+title: Networking for Security
+subtitle: Cybersecurity · Stage 2
+description: >-
+  The networks you will defend and inspect: the TCP/IP stack, addressing and subnets, DNS and routing, the core
+  protocols, and how to read traffic with Wireshark and map a host's services with Nmap — in your own lab. Prepares
+  for CompTIA Network+ and CCNA.
+category: it
+subject: cybersecurity
+level: Stage 2
+difficulty: beginner
+tags: [networking, tcp-ip, dns, wireshark, nmap]
+prerequisites: [sec-01-it-fundamentals]
+certifications: [comptia-network-plus, cisco-ccna]
+estimatedHours: 14
+topics:
+  - { id: sec02.setup, title: "Setup: Wireshark and Nmap" }
+  - { id: sec02.model, title: The TCP/IP model }
+  - { id: sec02.addressing, title: Addressing and subnets }
+  - { id: sec02.dns, title: DNS, DHCP and routing }
+  - { id: sec02.protocols, title: Core protocols and ports }
+units:
+  - id: sec-02-networking.u1
+    title: How networks move data
+    lessons: [00-setup, 01-tcp-ip-model, 02-addressing]
+  - id: sec-02-networking.u2
+    title: Names, routes and protocols
+    lessons: [03-dns-dhcp-routing, 04-protocols-ports]
+assessments:
+  - id: sec-02-networking.quiz
+    title: "Stage 2 quiz: networking"
+    kind: quiz
+    passMark: 0.7
+    description: Eight questions across the whole course.
+    sections:
+      - id: sec-02-networking.quiz.s1
+        title: Networking
+        questions:
+          - id: sec02.quiz.layers
+            type: choice
+            skill: recognize
+            topics: [sec02.model]
+            prompt: Which layer does IP (the Internet Protocol) belong to in the TCP/IP model?
+            options:
+              - { id: a, text: "The internet (network) layer", explanation: "Correct: IP handles logical addressing and routing between networks." }
+              - { id: b, text: "The application layer", explanation: "That is HTTP, DNS, etc." }
+              - { id: c, text: "The link layer", explanation: "That is Ethernet/Wi-Fi and MAC addresses." }
+            correct: [a]
+          - id: sec02.quiz.tcp-udp
+            type: choice
+            skill: apply
+            topics: [sec02.protocols]
+            prompt: A video call drops a few packets but must stay real-time. Which transport fits?
+            options:
+              - { id: a, text: "UDP: fast, connectionless, tolerates loss", explanation: "Correct." }
+              - { id: b, text: "TCP: reliable, ordered, retransmits", explanation: "Retransmission adds delay unsuitable for live media." }
+              - { id: c, text: "ICMP", explanation: "ICMP is for control/diagnostics, not data transport." }
+            correct: [a]
+          - id: sec02.quiz.private-ip
+            type: choice
+            skill: recognize
+            topics: [sec02.addressing]
+            prompt: Which address is a private (RFC 1918) IPv4 address?
+            options:
+              - { id: a, text: "192.168.1.10", explanation: "Correct: 192.168.0.0/16 is private." }
+              - { id: b, text: "8.8.8.8", explanation: "Public (a Google DNS resolver)." }
+              - { id: c, text: "93.184.216.34", explanation: "Public." }
+            correct: [a]
+          - id: sec02.quiz.cidr
+            type: short
+            skill: apply
+            topics: [sec02.addressing]
+            prompt: "How many usable host addresses are in a /24 IPv4 subnet? (256 total minus network and broadcast)"
+            accepted: ["254"]
+            match: { mode: number }
+          - id: sec02.quiz.dns
+            type: choice
+            skill: recognize
+            topics: [sec02.dns]
+            prompt: What does DNS do?
+            options:
+              - { id: a, text: "Resolves human-readable names (example.com) to IP addresses", explanation: "Correct." }
+              - { id: b, text: "Encrypts web traffic", explanation: "That is TLS." }
+              - { id: c, text: "Assigns IP addresses to new devices", explanation: "That is DHCP." }
+            correct: [a]
+          - id: sec02.quiz.https-port
+            type: short
+            skill: recall
+            topics: [sec02.protocols]
+            prompt: "Which TCP port does HTTPS use by default?"
+            accepted: ["443"]
+            match: { mode: number }
+          - id: sec02.quiz.wireshark
+            type: choice
+            skill: apply
+            topics: [sec02.setup]
+            prompt: You want to see the actual packets of a DNS lookup in your lab. Which tool?
+            options:
+              - { id: a, text: "Wireshark (a packet analyser)", explanation: "Correct." }
+              - { id: b, text: "A password manager", explanation: "Unrelated." }
+              - { id: c, text: "A word processor", explanation: "Unrelated." }
+            correct: [a]
+          - id: sec02.quiz.plaintext
+            type: choice
+            skill: apply
+            topics: [sec02.protocols]
+            prompt: Why should Telnet and plain FTP be avoided on real networks?
+            options:
+              - { id: a, text: "They send credentials and data in cleartext, readable by anyone capturing traffic.", explanation: "Correct: use SSH and SFTP/FTPS instead." }
+              - { id: b, text: "They are too fast.", explanation: "Not the issue." }
+              - { id: c, text: "They use too much disk.", explanation: "Unrelated." }
+            correct: [a]

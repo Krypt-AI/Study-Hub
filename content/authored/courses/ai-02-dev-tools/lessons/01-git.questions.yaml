@@ -1,0 +1,85 @@
+- id: ai02.git.areas
+  type: cloze
+  skill: recall
+  topics: [ai02.git]
+  prompt: Complete the flow of a change through Git.
+  text: "You edit files in the [[1]] tree, `git add` puts them in the [[2]] area, and `git [[3]]` records them in the history."
+  blanks:
+    - { id: "1", accepted: [working] }
+    - { id: "2", accepted: [staging, index] }
+    - { id: "3", accepted: [commit] }
+
+- id: ai02.git.revert-shared
+  type: choice
+  skill: apply
+  topics: [ai02.git]
+  prompt: A bad commit has already been pushed to the shared `main` branch. Which is the safe way to undo it?
+  options:
+    - { id: a, text: "`git revert <commit>`", explanation: "Correct: it adds a new commit that undoes the change, without rewriting shared history." }
+    - { id: b, text: "`git reset --hard HEAD~1` then `git push --force`", explanation: "This rewrites history other people already have." }
+    - { id: c, text: "Delete the repository and clone it again", explanation: "The commit is still on the remote." }
+  correct: [a]
+
+- id: ai02.git.tracked-ignore
+  type: choice
+  skill: apply
+  topics: [ai02.git]
+  prompt: You added `data/` to `.gitignore`, but changes to `data/train.csv` still appear in `git status`. Why?
+  options:
+    - { id: a, text: "The file was already tracked; `.gitignore` only affects untracked files. Run `git rm --cached data/train.csv`.", explanation: "Correct." }
+    - { id: b, text: "`.gitignore` needs a restart of Git.", explanation: "Git reads it every time." }
+    - { id: c, text: "Directories cannot be ignored.", explanation: "They can: `data/` ignores the whole folder." }
+  correct: [a]
+
+- id: ai02.git.commit-message
+  type: choice
+  skill: recognize
+  topics: [ai02.git]
+  prompt: Which commit message is most useful?
+  options:
+    - { id: a, text: "\"Fix data leakage: split before fitting the scaler\"", explanation: "Correct: it says what changed and why." }
+    - { id: b, text: "\"update\"", explanation: "Says nothing." }
+    - { id: c, text: "\"changes to train.py and utils.py and config\"", explanation: "The diff already lists files; the message should give the reason." }
+  correct: [a]
+
+- id: ai02.git.what-not-commit
+  type: choice
+  skill: recognize
+  topics: [ai02.git]
+  multiple: true
+  prompt: Which of these should normally be kept out of a Git repository? Choose all that apply.
+  options:
+    - { id: a, text: "`.env` with API keys", explanation: "Secrets never go in Git." }
+    - { id: b, text: "`.venv/`", explanation: "Environments are rebuilt from the lock file." }
+    - { id: c, text: "A 3 GB `.safetensors` model file", explanation: "Large artifacts belong in a registry, hub or LFS." }
+    - { id: d, text: "`pyproject.toml`", explanation: "This one should be committed: it declares the project's dependencies." }
+  correct: [a, b, c]
+
+- id: ai02.git.ignore-matcher
+  type: code
+  skill: apply
+  topics: [ai02.git]
+  language: python
+  prompt: >-
+    Write `should_ignore(path, patterns)` returning True when a file path should be ignored. Support two pattern kinds:
+    a directory pattern ending in `/` (ignore any path inside a folder with that name, at any depth) and a suffix
+    pattern starting with `*` (ignore paths ending with that suffix). Paths use `/`.
+  starterCode: |
+    def should_ignore(path, patterns):
+        ...
+  tests:
+    - { kind: assert, name: "directory pattern", code: "assert should_ignore('models/best.pt', ['models/'])" }
+    - { kind: assert, name: "nested directory", code: "assert should_ignore('src/__pycache__/a.pyc', ['__pycache__/'])" }
+    - { kind: assert, name: "suffix pattern", code: "assert should_ignore('ckpt/epoch3.pt', ['*.pt'])" }
+    - { kind: assert, name: "not ignored", code: "assert not should_ignore('src/train.py', ['models/', '*.pt'])" }
+    - { kind: assert, name: "partial folder name does not match", code: "assert not should_ignore('mymodels/x.py', ['models/'])" }
+  hints: ["Split the path on `/` and look at its folder parts.", "`str.endswith` handles the suffix case."]
+  solution: |
+    def should_ignore(path, patterns):
+        folders = path.split('/')[:-1]
+        for pattern in patterns:
+            if pattern.endswith('/') and pattern[:-1] in folders:
+                return True
+            if pattern.startswith('*') and path.endswith(pattern[1:]):
+                return True
+        return False

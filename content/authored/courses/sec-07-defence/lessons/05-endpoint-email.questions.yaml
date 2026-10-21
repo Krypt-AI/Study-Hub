@@ -1,0 +1,49 @@
+- id: sec07.endpoint.edr
+  type: choice
+  skill: recognize
+  topics: [sec07.endpoint]
+  prompt: What does EDR add beyond signature antivirus?
+  options:
+    - { id: a, text: "Behavioural detection, recorded endpoint activity, and remote investigation/response", explanation: "Correct." }
+    - { id: b, text: "Only a bigger signature database", explanation: "That is still classic AV." }
+    - { id: c, text: "Disk defragmentation", explanation: "Unrelated." }
+  correct: [a]
+
+- id: sec07.endpoint.dmarc
+  type: cloze
+  skill: recall
+  topics: [sec07.endpoint]
+  prompt: Name the three email-authentication mechanisms.
+  text: "[[1]] lists which servers may send for a domain, [[2]] signs messages, and [[3]] ties them together with a policy and reports."
+  blanks:
+    - { id: "1", accepted: [SPF, spf] }
+    - { id: "2", accepted: [DKIM, dkim] }
+    - { id: "3", accepted: [DMARC, dmarc] }
+
+- id: sec07.endpoint.bec
+  type: choice
+  skill: apply
+  topics: [sec07.endpoint]
+  prompt: Which process control best defeats business email compromise (a convincing email asking finance to change a supplier's bank details)?
+  options:
+    - { id: a, text: "Out-of-band verification (call a known number) before acting on payment or account changes", explanation: "Correct: a process control that does not rely on spotting the fake." }
+    - { id: b, text: "A faster spam filter", explanation: "BEC often has no malware to filter." }
+    - { id: c, text: "A longer email password", explanation: "Does not address the social-engineering request." }
+  correct: [a]
+
+- id: sec07.endpoint.awareness
+  type: long
+  skill: explain
+  topics: [sec07.endpoint]
+  prompt: '"Users are the weakest link." Give a more useful way to treat the human layer as a control.'
+  minWords: 30
+  rubric:
+    - { id: measure, label: "Measure human response (e.g. phishing simulation click/report rates) over time", keywords: [["measure", "simulation", "click rate", "report rate", "metric"]] }
+    - { id: support, label: "Support people by design: easy reporting, make the safe action easy, phishing-resistant MFA", keywords: [["report", "easy", "mfa", "passkey", "design", "no-blame"]] }
+    - { id: assume, label: "Assume some clicks happen and layer technical controls behind them", keywords: [["assume", "layer", "defence in depth", "behind", "contain"]] }
+  modelAnswer: >-
+    Treat awareness as a measured, improvable control rather than a slogan. Run realistic phishing simulations and
+    track click and report rates by team over time, and target help where the numbers are worst. Support people by
+    design: an easy report-phish button, a no-blame culture so threats surface fast, and making the safe action the
+    easy one, including phishing-resistant MFA so a phished password alone fails. And assume some clicks will always
+    happen, so layer technical controls (filtering, EDR, least privilege, segmentation) behind the human layer.

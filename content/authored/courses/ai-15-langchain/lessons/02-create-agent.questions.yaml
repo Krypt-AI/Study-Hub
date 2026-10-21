@@ -1,0 +1,51 @@
+- id: ai15.agents.loop
+  type: choice
+  skill: recognize
+  topics: [ai15.agents]
+  prompt: What does create_agent implement for you?
+  options:
+    - { id: a, text: "The reason–act agent loop: model decides, tools run, results feed back, repeat until a final answer", explanation: "Correct (Stage 11 concept, framework-implemented)." }
+    - { id: b, text: "Training the model", explanation: "No." }
+    - { id: c, text: "The vector database", explanation: "No." }
+  correct: [a]
+
+- id: ai15.agents.tool-schema
+  type: choice
+  skill: apply
+  topics: [ai15.agents]
+  prompt: With the `@tool` decorator, what becomes the tool's schema the model relies on?
+  options:
+    - { id: a, text: "The function's name, docstring and type hints", explanation: "Correct." }
+    - { id: b, text: "A separate JSON file you must write", explanation: "The decorator derives it from the function." }
+    - { id: c, text: "Nothing; the model guesses", explanation: "The schema is defined, not guessed." }
+  correct: [a]
+
+- id: ai15.agents.memory
+  type: choice
+  skill: apply
+  topics: [ai15.agents]
+  prompt: An agent should remember a user across turns. What do you add?
+  options:
+    - { id: a, text: "A checkpointer, and invoke with a thread_id in the config", explanation: "Correct." }
+    - { id: b, text: "A higher temperature", explanation: "Unrelated to memory." }
+    - { id: c, text: "Nothing; create_agent always remembers", explanation: "Stateless without a checkpointer." }
+  correct: [a]
+
+- id: ai15.agents.structured-key
+  type: short
+  skill: recall
+  topics: [ai15.agents]
+  prompt: "With `response_format` set, under which state key does the parsed object appear? (snake_case)"
+  accepted: [structured_response]
+  match: { mode: exact, caseSensitive: true }
+
+- id: ai15.agents.middleware
+  type: choice
+  skill: recognize
+  topics: [ai15.agents]
+  prompt: What are middleware used for in create_agent?
+  options:
+    - { id: a, text: "Cross-cutting behaviour in the loop: summarisation, human-in-the-loop approval, PII handling, retries", explanation: "Correct." }
+    - { id: b, text: "Choosing the model's colour", explanation: "No." }
+    - { id: c, text: "Replacing the tools", explanation: "Middleware wraps the loop, not the tools list." }
+  correct: [a]

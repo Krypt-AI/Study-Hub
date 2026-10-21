@@ -39,7 +39,7 @@ export default function SignInPage() {
   return (
     <main className="flex min-h-dvh items-center justify-center px-4 py-10">
       <div className="w-full max-w-sm rounded-md border border-rule bg-sheet">
-        <header className="flex items-center gap-2.5 border-b border-print-line px-5 py-3">
+        <header className="flex items-center gap-2.5 border-b border-rule px-5 py-3">
           <Bubble state="filled" size="sm" />
           <h1 className="font-display text-xl font-semibold">Sign in to Study Hub</h1>
         </header>

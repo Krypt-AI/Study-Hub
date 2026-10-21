@@ -1,0 +1,64 @@
+- id: ai04.pandas.info
+  type: choice
+  skill: apply
+  topics: [ai04.pandas]
+  prompt: "`df.info()` shows the column `price` with dtype `object`. What does that most likely mean?"
+  options:
+    - { id: a, text: "Some values are text (such as \"1,200\" or \"N/A\"), so pandas could not read the column as numbers.", explanation: "Correct: fix with cleaning and `pd.to_numeric`." }
+    - { id: b, text: "The prices are very large numbers.", explanation: "Large numbers are still int64 or float64." }
+    - { id: c, text: "The column is the index.", explanation: "Unrelated." }
+  correct: [a]
+
+- id: ai04.pandas.filter-ops
+  type: choice
+  skill: apply
+  topics: [ai04.pandas]
+  prompt: Which filter is valid pandas?
+  options:
+    - { id: a, text: "`df[(df['a'] > 1) & (df['b'] == 'x')]`", explanation: "Correct: element-wise `&` with brackets." }
+    - { id: b, text: "`df[df['a'] > 1 and df['b'] == 'x']`", explanation: "`and` raises \"truth value of a Series is ambiguous\"." }
+    - { id: c, text: "`df[df['a'] > 1 & df['b'] == 'x']`", explanation: "Without brackets `&` binds before the comparisons." }
+  correct: [a]
+
+- id: ai04.pandas.chained
+  type: choice
+  skill: apply
+  topics: [ai04.pandas]
+  prompt: Which line reliably sets `score` to 0 for rows where `minutes` is 0?
+  options:
+    - { id: a, text: "`df.loc[df['minutes'] == 0, 'score'] = 0`", explanation: "Correct: a single `.loc` call." }
+    - { id: b, text: "`df[df['minutes'] == 0]['score'] = 0`", explanation: "Chained assignment changes a temporary copy." }
+    - { id: c, text: "`df['score'][df['minutes'] == 0] == 0`", explanation: "That is a comparison, not an assignment." }
+  correct: [a]
+
+- id: ai04.pandas.iloc
+  type: short
+  skill: recall
+  topics: [ai04.pandas]
+  prompt: "Which accessor selects by integer position, as in `df.____[0, 2]`?"
+  accepted: [iloc]
+  match: { mode: exact }
+
+- id: ai04.pandas.top-students
+  type: code
+  skill: apply
+  topics: [ai04.pandas]
+  language: python
+  packages: [pandas]
+  prompt: >-
+    Write `top_students(df, topic, n)` returning a list of the `n` student names with the highest `score` in the given
+    `topic`, highest first. Ignore rows whose score is missing.
+  starterCode: |
+    import pandas as pd
+
+    def top_students(df, topic, n):
+        ...
+  tests:
+    - { kind: assert, name: "kanji top 2", code: "import pandas as pd\ndf = pd.DataFrame({'student': ['A', 'B', 'C', 'D'], 'topic': ['kanji', 'kanji', 'vocab', 'kanji'], 'score': [0.5, 0.9, 1.0, None]})\nassert top_students(df, 'kanji', 2) == ['B', 'A']" }
+    - { kind: assert, name: "n larger than rows", code: "import pandas as pd\ndf = pd.DataFrame({'student': ['A'], 'topic': ['vocab'], 'score': [0.4]})\nassert top_students(df, 'vocab', 5) == ['A']" }
+  solution: |
+    import pandas as pd
+
+    def top_students(df, topic, n):
+        rows = df[(df['topic'] == topic) & df['score'].notna()]
+        return rows.sort_values('score', ascending=False)['student'].head(n).tolist()

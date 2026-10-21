@@ -1,0 +1,51 @@
+- id: sec06.owasp.csrf
+  type: choice
+  skill: apply
+  topics: [sec06.owasp]
+  prompt: Which pair of defences best addresses CSRF?
+  options:
+    - { id: a, text: "Anti-CSRF tokens and SameSite cookies", explanation: "Correct." }
+    - { id: b, text: "Output encoding and CSP", explanation: "Those address XSS." }
+    - { id: c, text: "Parameterised queries", explanation: "That addresses SQL injection." }
+  correct: [a]
+
+- id: sec06.owasp.ssrf
+  type: choice
+  skill: apply
+  topics: [sec06.owasp]
+  prompt: An app fetches a URL the user supplies, and an attacker points it at an internal cloud metadata address. This is…
+  options:
+    - { id: a, text: "SSRF — defend by allowlisting destinations and blocking internal ranges", explanation: "Correct." }
+    - { id: b, text: "XSS", explanation: "No script runs in a victim's browser here." }
+    - { id: c, text: "A weak password", explanation: "Unrelated." }
+  correct: [a]
+
+- id: sec06.owasp.csp
+  type: choice
+  skill: recognize
+  topics: [sec06.owasp]
+  prompt: Which security header most directly limits the impact of an XSS injection?
+  options:
+    - { id: a, text: "Content-Security-Policy", explanation: "Correct: restricts script sources / inline script." }
+    - { id: b, text: "Strict-Transport-Security", explanation: "That forces HTTPS." }
+    - { id: c, text: "X-Frame-Options", explanation: "That mitigates clickjacking." }
+  correct: [a]
+
+- id: sec06.owasp.a03
+  type: short
+  skill: recall
+  topics: [sec06.owasp]
+  prompt: "Name the technique for inventorying a web app's dependencies so supply-chain risk can be managed (three-letter abbreviation)."
+  accepted: ["SBOM", "software bill of materials"]
+  match: { mode: text }
+
+- id: sec06.owasp.checklist
+  type: choice
+  skill: recognize
+  topics: [sec06.owasp]
+  prompt: How is the OWASP Top 10 best used?
+  options:
+    - { id: a, text: "As an awareness checklist in design and review, with ASVS and the Cheat Sheets for depth", explanation: "Correct." }
+    - { id: b, text: "As the complete, sufficient security standard on its own", explanation: "It is awareness, not a full standard." }
+    - { id: c, text: "As a list of tools to install", explanation: "It is a list of risks, not tools." }
+  correct: [a]

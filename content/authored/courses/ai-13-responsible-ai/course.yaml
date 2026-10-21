@@ -1,0 +1,115 @@
+id: ai-13-responsible-ai
+title: Evaluating, Securing and Governing LLM Systems
+subtitle: AI Engineering · Stage 13
+description: >-
+  Making LLM systems trustworthy: how to evaluate them (including LLM-as-judge), the OWASP LLM security risks and
+  defences, privacy and data protection, fairness and bias, and responsible-AI governance. Exercises build
+  evaluation and PII-handling logic in plain Python.
+category: ai-engineering
+subject: llm
+level: Stage 13
+difficulty: advanced
+tags: [evaluation, llm-security, privacy, fairness, responsible-ai]
+prerequisites: [ai-09-llm-apis, ai-11-agents]
+certifications: [aws-genai-developer-professional, google-genai-leader]
+estimatedHours: 14
+topics:
+  - { id: ai13.eval, title: Evaluating LLM systems }
+  - { id: ai13.security, title: LLM security }
+  - { id: ai13.privacy, title: Privacy and data }
+  - { id: ai13.fairness, title: Fairness and bias }
+  - { id: ai13.governance, title: Responsible-AI governance }
+units:
+  - id: ai-13-responsible-ai.u1
+    title: Does it work, and is it safe?
+    lessons: [01-evaluation, 02-security, 03-privacy]
+  - id: ai-13-responsible-ai.u2
+    title: Is it fair and accountable?
+    lessons: [04-fairness, 05-governance]
+assessments:
+  - id: ai-13-responsible-ai.quiz
+    title: "Stage 13 quiz: responsible AI"
+    kind: quiz
+    passMark: 0.7
+    description: Eight questions across the whole course.
+    sections:
+      - id: ai-13-responsible-ai.quiz.s1
+        title: Responsible AI
+        questions:
+          - id: ai13.quiz.eval-hard
+            type: choice
+            skill: recognize
+            topics: [ai13.eval]
+            prompt: Why is evaluating an LLM system harder than a classifier?
+            options:
+              - { id: a, text: "Outputs are open-ended text with many acceptable answers, so there is no single gold label to match", explanation: "Correct." }
+              - { id: b, text: "LLMs have no outputs to evaluate", explanation: "They do." }
+              - { id: c, text: "Accuracy is always 100%", explanation: "False." }
+            correct: [a]
+          - id: ai13.quiz.judge
+            type: choice
+            skill: apply
+            topics: [ai13.eval]
+            prompt: What is "LLM-as-judge"?
+            options:
+              - { id: a, text: "Using an LLM to score outputs against criteria/references at scale, validated against human judgement", explanation: "Correct." }
+              - { id: b, text: "Letting the model grade its own answer with no criteria", explanation: "Unreliable; needs criteria and validation." }
+              - { id: c, text: "A legal proceeding", explanation: "No." }
+            correct: [a]
+          - id: ai13.quiz.injection-first
+            type: short
+            skill: recall
+            topics: [ai13.security]
+            prompt: "Which risk is number one (LLM01) in the OWASP Top 10 for LLM Applications? (two words)"
+            accepted: ["prompt injection"]
+            match: { mode: text }
+          - id: ai13.quiz.output-handling
+            type: choice
+            skill: apply
+            topics: [ai13.security]
+            prompt: An app puts an LLM's output straight into a web page / a shell command. What risk does this create?
+            options:
+              - { id: a, text: "Improper output handling — treat model output as untrusted and encode/validate it (XSS, injection)", explanation: "Correct (OWASP LLM05)." }
+              - { id: b, text: "None; model output is always safe", explanation: "It can contain anything, including attacks." }
+              - { id: c, text: "Only higher cost", explanation: "The risk is a vulnerability." }
+            correct: [a]
+          - id: ai13.quiz.pii
+            type: choice
+            skill: apply
+            topics: [ai13.privacy]
+            prompt: Which is the safest default for personal data in an LLM app?
+            options:
+              - { id: a, text: "Collect the minimum needed, redact/avoid sending PII to the model where possible, and follow data-protection law", explanation: "Correct: data minimisation." }
+              - { id: b, text: "Send everything to the model to be safe", explanation: "Maximises exposure." }
+              - { id: c, text: "Log full prompts with PII forever", explanation: "A privacy and security liability." }
+            correct: [a]
+          - id: ai13.quiz.training-data
+            type: choice
+            skill: recognize
+            topics: [ai13.fairness]
+            prompt: An LLM reflects biases present in society and its training data. What follows for builders?
+            options:
+              - { id: a, text: "Outputs can be biased or unfair; you must test for it and mitigate, not assume neutrality", explanation: "Correct." }
+              - { id: b, text: "Models are always neutral", explanation: "They are not." }
+              - { id: c, text: "Bias is impossible to measure", explanation: "It can be measured across groups." }
+            correct: [a]
+          - id: ai13.quiz.human-oversight
+            type: choice
+            skill: apply
+            topics: [ai13.governance]
+            prompt: For a high-stakes decision (loan, medical, hiring) assisted by an LLM, responsible practice is…
+            options:
+              - { id: a, text: "Keep a human in the loop and accountable, with explanation and appeal, not fully automated decisions", explanation: "Correct." }
+              - { id: b, text: "Let the model decide alone to remove bias", explanation: "Removes accountability and can entrench bias." }
+              - { id: c, text: "Hide that AI was used", explanation: "Undermines transparency and trust." }
+            correct: [a]
+          - id: ai13.quiz.framework
+            type: choice
+            skill: recognize
+            topics: [ai13.governance]
+            prompt: Which framework helps organisations manage AI risk?
+            options:
+              - { id: a, text: "The NIST AI Risk Management Framework", explanation: "Correct." }
+              - { id: b, text: "The OSI networking model", explanation: "That is networking." }
+              - { id: c, text: "The CIA triad alone", explanation: "Useful but not an AI-risk framework by itself." }
+            correct: [a]

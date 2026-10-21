@@ -1,0 +1,40 @@
+- id: ai07.setup.cuda-false
+  type: choice
+  skill: apply
+  topics: [ai07.setup]
+  prompt: "Your laptop has an NVIDIA RTX GPU, but `torch.cuda.is_available()` returns False. What is the most likely cause?"
+  options:
+    - { id: a, text: "The CPU-only build of PyTorch is installed, or the NVIDIA driver is missing or outdated.", explanation: "Correct: reinstall with the selector's CUDA command and update the driver." }
+    - { id: b, text: "PyTorch cannot use GPUs on Windows.", explanation: "It can, with the CUDA build." }
+    - { id: c, text: "You must install Visual Studio first.", explanation: "Only needed to build PyTorch from source." }
+  correct: [a]
+
+- id: ai07.setup.toolkit
+  type: choice
+  skill: recognize
+  topics: [ai07.setup]
+  prompt: Do you need to install NVIDIA's separate CUDA Toolkit to train with the CUDA build of PyTorch from pip?
+  options:
+    - { id: a, text: "No: the CUDA runtime ships inside the wheel; you need a recent NVIDIA driver.", explanation: "Correct." }
+    - { id: b, text: "Yes, always.", explanation: "Only for compiling custom CUDA code." }
+    - { id: c, text: "Only on macOS.", explanation: "Macs use MPS, not CUDA." }
+  correct: [a]
+
+- id: ai07.setup.mps
+  type: short
+  skill: recall
+  topics: [ai07.setup]
+  prompt: "Which PyTorch device name uses the GPU on Apple-silicon Macs?"
+  accepted: [mps]
+  match: { mode: exact }
+
+- id: ai07.setup.tensorboard
+  type: choice
+  skill: recall
+  topics: [ai07.setup]
+  prompt: Which command shows logs written by `SummaryWriter` into `runs/`?
+  options:
+    - { id: a, text: "`tensorboard --logdir runs`", explanation: "Correct: then open port 6006." }
+    - { id: b, text: "`mlflow ui --logdir runs`", explanation: "MLflow has no logdir option." }
+    - { id: c, text: "`nvidia-smi runs`", explanation: "nvidia-smi monitors the GPU." }
+  correct: [a]

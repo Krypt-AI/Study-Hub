@@ -1,0 +1,43 @@
+- id: ai12.docker.vs-vm
+  type: choice
+  skill: recognize
+  topics: [ai12.docker]
+  prompt: How does a container differ from a virtual machine?
+  options:
+    - { id: a, text: "A container shares the host kernel and isolates just the app (lightweight); a VM virtualises a whole OS (heavy)", explanation: "Correct." }
+    - { id: b, text: "A container is slower to start than a VM", explanation: "The opposite." }
+    - { id: c, text: "They are identical", explanation: "They are not." }
+  correct: [a]
+
+- id: ai12.docker.layer-order
+  type: choice
+  skill: apply
+  topics: [ai12.docker]
+  prompt: Why copy and install `requirements.txt` before copying the application code in a Dockerfile?
+  options:
+    - { id: a, text: "So the dependency layer is cached and not rebuilt every time only the code changes", explanation: "Correct." }
+    - { id: b, text: "Because pip cannot see code files", explanation: "Not the reason." }
+    - { id: c, text: "It makes the image larger on purpose", explanation: "No." }
+  correct: [a]
+
+- id: ai12.docker.secrets
+  type: choice
+  skill: apply
+  topics: [ai12.docker]
+  prompt: Where should an API key used by a containerised service come from?
+  options:
+    - { id: a, text: "Passed in at runtime (env var / secret store), never baked into the image", explanation: "Correct (Stage 2 secrets discipline)." }
+    - { id: b, text: "Hard-coded in the Dockerfile", explanation: "Anyone with the image gets the key." }
+    - { id: c, text: "Committed to Git next to the Dockerfile", explanation: "Leaks it." }
+  correct: [a]
+
+- id: ai12.docker.orchestration
+  type: choice
+  skill: recognize
+  topics: [ai12.docker]
+  prompt: What does an orchestrator like Kubernetes do?
+  options:
+    - { id: a, text: "Schedules containers across machines, restarts failures, scales, and routes traffic", explanation: "Correct." }
+    - { id: b, text: "Trains the model", explanation: "No." }
+    - { id: c, text: "Writes the Dockerfile for you", explanation: "No." }
+  correct: [a]

@@ -1,0 +1,32 @@
+- id: sec06.setup.localhost
+  type: choice
+  skill: apply
+  topics: [sec06.setup]
+  prompt: "Why run Juice Shop with `-p 127.0.0.1:3000:3000` rather than `-p 3000:3000`?"
+  options:
+    - { id: a, text: "It binds the vulnerable app to localhost only, so other machines on the network cannot reach it.", explanation: "Correct: contain the deliberately weak target." }
+    - { id: b, text: "It makes the app load faster.", explanation: "Not the reason." }
+    - { id: c, text: "It enables HTTPS.", explanation: "It does not." }
+  correct: [a]
+
+- id: sec06.setup.proxy
+  type: choice
+  skill: recognize
+  topics: [sec06.setup]
+  prompt: What does an intercepting proxy (ZAP or Burp) let you do?
+  options:
+    - { id: a, text: "See and modify the HTTP requests and responses between your browser and the app", explanation: "Correct: the core web-testing capability." }
+    - { id: b, text: "Encrypt your disk", explanation: "Unrelated." }
+    - { id: c, text: "Speed up your internet", explanation: "No." }
+  correct: [a]
+
+- id: sec06.setup.where
+  type: choice
+  skill: recognize
+  topics: [sec06.setup]
+  prompt: Which is an authorised place to practise exploiting web vulnerabilities?
+  options:
+    - { id: a, text: "PortSwigger's Web Security Academy labs, or an app you deployed yourself", explanation: "Correct: provided/your own targets." }
+    - { id: b, text: "Any site that looks poorly built", explanation: "Appearance is not authorisation." }
+    - { id: c, text: "A competitor's website", explanation: "Illegal." }
+  correct: [a]

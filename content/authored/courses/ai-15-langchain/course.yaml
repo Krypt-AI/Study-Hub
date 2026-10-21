@@ -1,0 +1,119 @@
+id: ai-15-langchain
+title: Building with LangChain, LangGraph and LangSmith
+subtitle: AI Engineering · Framework track
+description: >-
+  The most widely used agent-development framework, end to end: models and messages with LangChain, building agents
+  with create_agent, orchestrating complex flows with LangGraph, and testing, tracing and monitoring with LangSmith.
+  Maps to the agent development lifecycle the LangChain Certified Agent Engineer (LCAE) exam covers. Code is shown
+  from the official v1 docs; browser exercises model the concepts in plain Python.
+category: ai-engineering
+subject: llm
+level: Framework track
+difficulty: advanced
+tags: [langchain, langgraph, langsmith, agents, lcae]
+prerequisites: [ai-09-llm-apis, ai-10-rag, ai-11-agents]
+certifications: [langchain-lcae, nvidia-agentic-ai-professional]
+estimatedHours: 16
+topics:
+  - { id: ai15.setup, title: "Setup: LangChain and LangSmith" }
+  - { id: ai15.basics, title: Models and messages }
+  - { id: ai15.agents, title: Agents with create_agent }
+  - { id: ai15.graph, title: LangGraph }
+  - { id: ai15.langsmith, title: Testing and monitoring with LangSmith }
+units:
+  - id: ai-15-langchain.u1
+    title: LangChain core and agents
+    lessons: [00-setup, 01-models-messages, 02-create-agent]
+  - id: ai-15-langchain.u2
+    title: Orchestration and the agent lifecycle
+    lessons: [03-langgraph, 04-langsmith]
+assessments:
+  - id: ai-15-langchain.quiz
+    title: "Quiz: building with LangChain"
+    kind: quiz
+    passMark: 0.7
+    description: Eight questions across the whole course, aligned to the LCAE lifecycle.
+    sections:
+      - id: ai-15-langchain.quiz.s1
+        title: LangChain
+        questions:
+          - id: ai15.quiz.why
+            type: choice
+            skill: recognize
+            topics: [ai15.basics]
+            prompt: What does LangChain primarily give you over calling a provider SDK directly?
+            options:
+              - { id: a, text: "A common interface across providers plus building blocks for agents, tools, memory and retrieval", explanation: "Correct." }
+              - { id: b, text: "A faster model", explanation: "It does not change the model." }
+              - { id: c, text: "Free API credits", explanation: "No." }
+            correct: [a]
+          - id: ai15.quiz.init
+            type: choice
+            skill: recall
+            topics: [ai15.basics]
+            prompt: Which function initialises a chat model in a provider-agnostic way in LangChain v1?
+            options:
+              - { id: a, text: "`init_chat_model(...)`", explanation: "Correct (from langchain.chat_models)." }
+              - { id: b, text: "`new Model()`", explanation: "Not the API." }
+              - { id: c, text: "`load_model(...)`", explanation: "That is for local artifacts, not the LangChain model init." }
+            correct: [a]
+          - id: ai15.quiz.create-agent
+            type: choice
+            skill: recall
+            topics: [ai15.agents]
+            prompt: In LangChain v1, which function builds an agent from a model and tools?
+            options:
+              - { id: a, text: "`create_agent(model=..., tools=[...], system_prompt=...)`", explanation: "Correct (from langchain.agents)." }
+              - { id: b, text: "`Agent.compile()`", explanation: "Not the v1 entry point." }
+              - { id: c, text: "`chain(model, tools)`", explanation: "Not the API." }
+            correct: [a]
+          - id: ai15.quiz.tool
+            type: choice
+            skill: recall
+            topics: [ai15.agents]
+            prompt: How do you turn a Python function into a LangChain tool?
+            options:
+              - { id: a, text: "Decorate it with `@tool` and give it a docstring describing what it does", explanation: "Correct: the docstring/type hints define the schema." }
+              - { id: b, text: "Rename it to `tool_*`", explanation: "Naming does not make a tool." }
+              - { id: c, text: "Put it in a list called tools", explanation: "It still needs to be a tool object." }
+            correct: [a]
+          - id: ai15.quiz.structured
+            type: choice
+            skill: apply
+            topics: [ai15.agents]
+            prompt: You pass `response_format=MyPydanticModel` to `create_agent`. Where does the parsed result appear?
+            options:
+              - { id: a, text: "Under the `structured_response` key of the returned agent state", explanation: "Correct." }
+              - { id: b, text: "In a file on disk", explanation: "No." }
+              - { id: c, text: "It is printed only", explanation: "It is returned in state." }
+            correct: [a]
+          - id: ai15.quiz.memory
+            type: choice
+            skill: apply
+            topics: [ai15.agents]
+            prompt: How do you give a create_agent agent multi-turn memory across invocations?
+            options:
+              - { id: a, text: "Pass a checkpointer and invoke with a thread_id in the config", explanation: "Correct: the checkpointer persists state per thread." }
+              - { id: b, text: "The agent remembers automatically forever", explanation: "It is stateless without a checkpointer." }
+              - { id: c, text: "Retrain the model", explanation: "No." }
+            correct: [a]
+          - id: ai15.quiz.langgraph
+            type: choice
+            skill: recognize
+            topics: [ai15.graph]
+            prompt: When would you drop from create_agent down to LangGraph's StateGraph?
+            options:
+              - { id: a, text: "When you need custom control flow — explicit nodes, branching, loops or human-in-the-loop steps", explanation: "Correct." }
+              - { id: b, text: "Never; create_agent covers every case", explanation: "Complex flows need the graph." }
+              - { id: c, text: "Only to save money", explanation: "Not the reason." }
+            correct: [a]
+          - id: ai15.quiz.langsmith
+            type: choice
+            skill: recognize
+            topics: [ai15.langsmith]
+            prompt: What is LangSmith used for across the agent lifecycle?
+            options:
+              - { id: a, text: "Tracing/observability, evaluation on datasets, and monitoring agents in production", explanation: "Correct — the testing and monitoring parts of the LCAE lifecycle." }
+              - { id: b, text: "Training base models", explanation: "No." }
+              - { id: c, text: "Hosting the vector database", explanation: "Not its role." }
+            correct: [a]

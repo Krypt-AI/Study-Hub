@@ -65,7 +65,7 @@ export function SearchDialog({ open, onClose }: { open: boolean; onClose: () => 
 
   return (
     <Dialog open={open} onClose={onClose} title="Search" hideTitle className="mt-[12dvh] mb-auto">
-      <div className="border-b border-print-line p-3">
+      <div className="border-b border-rule p-3">
         <Input
           ref={inputRef}
           autoFocus

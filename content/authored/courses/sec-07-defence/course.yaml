@@ -1,0 +1,115 @@
+id: sec-07-defence
+title: Network and System Defence
+subtitle: Cybersecurity · Stage 7
+description: >-
+  Blue-team work: hardening systems, firewalls and segmentation, patch and configuration management, logging and
+  monitoring with a SIEM, and endpoint and email defences. How to make systems hard to break into and quick to catch
+  it when someone tries. Prepares for CompTIA Security+.
+category: it
+subject: cybersecurity
+level: Stage 7
+difficulty: intermediate
+tags: [defence, hardening, firewall, siem, monitoring, blue-team]
+prerequisites: [sec-04-principles, sec-02-networking]
+certifications: [comptia-security-plus]
+estimatedHours: 14
+topics:
+  - { id: sec07.hardening, title: Hardening }
+  - { id: sec07.network, title: Firewalls and segmentation }
+  - { id: sec07.patch, title: Patch and configuration management }
+  - { id: sec07.monitoring, title: Logging and monitoring }
+  - { id: sec07.endpoint, title: Endpoint and email defence }
+units:
+  - id: sec-07-defence.u1
+    title: Making systems hard to break
+    lessons: [01-hardening, 02-firewalls-segmentation, 03-patch-config]
+  - id: sec-07-defence.u2
+    title: Seeing and stopping attacks
+    lessons: [04-logging-monitoring, 05-endpoint-email]
+assessments:
+  - id: sec-07-defence.quiz
+    title: "Stage 7 quiz: defence"
+    kind: quiz
+    passMark: 0.7
+    description: Eight questions across the whole course.
+    sections:
+      - id: sec-07-defence.quiz.s1
+        title: Defence
+        questions:
+          - id: sec07.quiz.harden
+            type: choice
+            skill: apply
+            topics: [sec07.hardening]
+            prompt: Which action hardens a server by reducing its attack surface?
+            options:
+              - { id: a, text: "Disabling and removing services and accounts it does not need", explanation: "Correct." }
+              - { id: b, text: "Giving every user administrator rights", explanation: "That expands risk." }
+              - { id: c, text: "Turning off logging", explanation: "That blinds the defender." }
+            correct: [a]
+          - id: sec07.quiz.default-deny
+            type: choice
+            skill: apply
+            topics: [sec07.network]
+            prompt: A well-designed firewall policy should…
+            options:
+              - { id: a, text: "deny by default and allow only explicitly needed traffic", explanation: "Correct." }
+              - { id: b, text: "allow by default and block known-bad", explanation: "Fails open; too permissive." }
+              - { id: c, text: "allow all outbound with no logging", explanation: "Misses exfiltration and C2." }
+            correct: [a]
+          - id: sec07.quiz.patch
+            type: choice
+            skill: recognize
+            topics: [sec07.patch]
+            prompt: Why is timely patching one of the highest-value defences?
+            options:
+              - { id: a, text: "Most breaches exploit known vulnerabilities for which a fix already exists.", explanation: "Correct." }
+              - { id: b, text: "Patches make systems faster.", explanation: "Not the security reason." }
+              - { id: c, text: "Patching removes the need for backups.", explanation: "It does not." }
+            correct: [a]
+          - id: sec07.quiz.siem
+            type: choice
+            skill: recognize
+            topics: [sec07.monitoring]
+            prompt: What does a SIEM do?
+            options:
+              - { id: a, text: "Centralises logs from many sources and correlates them to detect and alert on suspicious activity", explanation: "Correct." }
+              - { id: b, text: "Encrypts the network", explanation: "No." }
+              - { id: c, text: "Replaces the firewall", explanation: "Different control." }
+            correct: [a]
+          - id: sec07.quiz.ids-ips
+            type: choice
+            skill: recognize
+            topics: [sec07.network]
+            prompt: What is the difference between an IDS and an IPS?
+            options:
+              - { id: a, text: "An IDS detects and alerts; an IPS can also block the traffic inline", explanation: "Correct." }
+              - { id: b, text: "An IDS encrypts; an IPS decrypts", explanation: "Neither does that." }
+              - { id: c, text: "They are the same thing", explanation: "They differ in whether they can block." }
+            correct: [a]
+          - id: sec07.quiz.backup
+            type: short
+            skill: recall
+            topics: [sec07.patch]
+            prompt: "The backup rule of thumb is \"3 copies, 2 media, 1 off-site\". What is it called? (two words plus a hyphenated number, e.g. 3-2-1 ...)"
+            accepted: ["3-2-1", "3-2-1 backup", "3-2-1 rule"]
+            match: { mode: text }
+          - id: sec07.quiz.edr
+            type: choice
+            skill: recognize
+            topics: [sec07.endpoint]
+            prompt: What does EDR (Endpoint Detection and Response) add beyond traditional antivirus?
+            options:
+              - { id: a, text: "Behavioural detection, recording of endpoint activity, and the ability to investigate and respond", explanation: "Correct." }
+              - { id: b, text: "It only matches known virus signatures", explanation: "That is classic AV; EDR goes further." }
+              - { id: c, text: "It blocks all network traffic", explanation: "Not its function." }
+            correct: [a]
+          - id: sec07.quiz.baseline
+            type: choice
+            skill: apply
+            topics: [sec07.monitoring]
+            prompt: Why establish a baseline of normal activity?
+            options:
+              - { id: a, text: "So deviations from normal can be detected as potential incidents", explanation: "Correct." }
+              - { id: b, text: "To make logs smaller", explanation: "Not the purpose." }
+              - { id: c, text: "To disable alerts", explanation: "The opposite." }
+            correct: [a]

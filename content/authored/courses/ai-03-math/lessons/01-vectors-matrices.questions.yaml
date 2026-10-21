@@ -1,0 +1,98 @@
+- id: ai03.linalg.norm
+  type: short
+  skill: apply
+  topics: [ai03.linalg]
+  prompt: "What is the L2 norm (length) of the vector [3, 4]?"
+  accepted: ["5"]
+  match: { mode: number }
+  explanation: "√(3² + 4²) = √25 = 5."
+
+- id: ai03.linalg.cosine-orthogonal
+  type: choice
+  skill: recognize
+  topics: [ai03.linalg]
+  prompt: Two embedding vectors have cosine similarity 0. What does that mean?
+  options:
+    - { id: a, text: "They are orthogonal: no shared direction.", explanation: "Correct." }
+    - { id: b, text: "They are identical.", explanation: "Identical directions give 1." }
+    - { id: c, text: "One of them is all zeros.", explanation: "Cosine is undefined for a zero vector." }
+  correct: [a]
+
+- id: ai03.linalg.invalid-shape
+  type: choice
+  skill: apply
+  topics: [ai03.linalg]
+  prompt: Which product is NOT defined?
+  options:
+    - { id: a, text: "(3, 4) @ (4, 2)", explanation: "Defined: result (3, 2)." }
+    - { id: b, text: "(5, 1) @ (1, 5)", explanation: "Defined: result (5, 5)." }
+    - { id: c, text: "(2, 3) @ (2, 3)", explanation: "Correct: the inner dimensions 3 and 2 differ." }
+  correct: [c]
+
+- id: ai03.linalg.layer-shape
+  type: short
+  skill: apply
+  topics: [ai03.linalg]
+  prompt: "A batch X has shape (64, 128). A dense layer maps 128 features to 32. What is the shape of the output? Write (rows, cols)."
+  accepted: ["(64, 32)", "(64,32)", "64x32"]
+  match: { mode: exact }
+
+- id: ai03.linalg.elementwise
+  type: choice
+  skill: recognize
+  topics: [ai03.linalg]
+  prompt: "In NumPy, what is the difference between `A * B` and `A @ B`?"
+  options:
+    - { id: a, text: "`*` multiplies element by element; `@` is matrix multiplication.", explanation: "Correct." }
+    - { id: b, text: "They are the same.", explanation: "Only for some special cases." }
+    - { id: c, text: "`@` is element-wise; `*` is matrix multiplication.", explanation: "Reversed." }
+  correct: [a]
+
+- id: ai03.linalg.cosine-code
+  type: code
+  skill: apply
+  topics: [ai03.linalg]
+  language: python
+  prompt: >-
+    Write `cosine(a, b)` for two equal-length lists of numbers, and `most_similar(query, items)` that returns the key of
+    the dict `items` (name → vector) with the highest cosine similarity to `query`. Use plain Python.
+  starterCode: |
+    def cosine(a, b):
+        ...
+
+    def most_similar(query, items):
+        ...
+  tests:
+    - { kind: assert, name: "same direction", code: "assert abs(cosine([1, 2], [2, 4]) - 1) < 1e-9" }
+    - { kind: assert, name: "orthogonal", code: "assert abs(cosine([1, 0], [0, 3])) < 1e-9" }
+    - { kind: assert, name: "nearest", code: "assert most_similar([1, 0.1], {'cat': [0.9, 0.2], 'car': [0, 1], 'sky': [-1, 0]}) == 'cat'" }
+  solution: |
+    import math
+
+    def cosine(a, b):
+        dot = sum(x * y for x, y in zip(a, b))
+        return dot / (math.sqrt(sum(x * x for x in a)) * math.sqrt(sum(y * y for y in b)))
+
+    def most_similar(query, items):
+        return max(items, key=lambda name: cosine(query, items[name]))
+
+- id: ai03.linalg.matmul-code
+  type: code
+  skill: apply
+  topics: [ai03.linalg]
+  language: python
+  prompt: >-
+    Without NumPy, write `matmul(A, B)` for matrices given as lists of rows. Raise `ValueError` if the shapes do not
+    match.
+  starterCode: |
+    def matmul(A, B):
+        ...
+  tests:
+    - { kind: assert, name: "2x2 by 2x1", code: "assert matmul([[1, 2], [3, 4]], [[5], [6]]) == [[17], [39]]" }
+    - { kind: assert, name: "row by column", code: "assert matmul([[1, 2, 3]], [[1], [0], [-1]]) == [[-2]]" }
+    - { kind: assert, name: "bad shapes", code: "try:\n    matmul([[1, 2]], [[1, 2]])\n    raise AssertionError('expected ValueError')\nexcept ValueError:\n    pass" }
+  solution: |
+    def matmul(A, B):
+        if len(A[0]) != len(B):
+            raise ValueError("inner dimensions differ")
+        return [[sum(A[i][k] * B[k][j] for k in range(len(B))) for j in range(len(B[0]))] for i in range(len(A))]

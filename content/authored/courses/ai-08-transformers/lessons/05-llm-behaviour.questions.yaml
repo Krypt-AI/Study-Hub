@@ -1,0 +1,49 @@
+- id: ai08.llm.stages
+  type: cloze
+  skill: recall
+  topics: [ai08.llm]
+  prompt: The path from raw model to assistant.
+  text: "[[1]] teaches next-token prediction over huge text; [[2]] tuning teaches it to follow instructions; [[3]] tunes it toward helpful, honest, harmless responses."
+  blanks:
+    - { id: "1", accepted: [Pretraining, pretraining] }
+    - { id: "2", accepted: [instruction] }
+    - { id: "3", accepted: [alignment, rlhf] }
+
+- id: ai08.llm.hallucination
+  type: long
+  skill: explain
+  topics: [ai08.llm]
+  prompt: Why do LLMs hallucinate, and what are the real mitigations (not wishful ones)?
+  minWords: 35
+  rubric:
+    - { id: cause, label: "It optimises for likely/plausible text and has no built-in notion of truth", keywords: [["plausible", "likely", "next token", "no truth", "no notion"]] }
+    - { id: ground, label: "Grounding in retrieved sources and giving tools", keywords: [["ground", "retriev", "rag", "tool", "source", "cite"]] }
+    - { id: verify, label: "Verifying outputs; temperature does not fix truth", keywords: [["verify", "check", "temperature", "not truthful"]] }
+  modelAnswer: >-
+    A hallucination is a confident, fluent falsehood, and it follows directly from how the model works: it is trained
+    to produce the most likely continuation, not the true one, and has no internal notion of truth, so when it lacks
+    the knowledge it still generates text that reads right. The real mitigations are architectural: ground it in
+    supplied or retrieved sources and ask it to cite them (RAG), give it tools for facts and computation, and verify
+    outputs before trusting them. Lowering temperature only reduces randomness; it does not make the model truthful.
+
+- id: ai08.llm.weak
+  type: choice
+  skill: apply
+  topics: [ai08.llm]
+  prompt: Which task should you NOT rely on a bare LLM to do accurately?
+  options:
+    - { id: a, text: "Exact multi-step arithmetic on specific numbers", explanation: "Correct: give it a calculator/tool; it predicts plausible text, not exact computation." }
+    - { id: b, text: "Rewriting a paragraph in a friendlier tone", explanation: "A core strength." }
+    - { id: c, text: "Summarising a provided document", explanation: "A core strength (when grounded)." }
+  correct: [a]
+
+- id: ai08.llm.temperature
+  type: choice
+  skill: apply
+  topics: [ai08.llm]
+  prompt: Setting temperature to 0 makes an LLM…
+  options:
+    - { id: a, text: "more focused and deterministic in wording — but not necessarily correct", explanation: "Correct: it controls randomness, not truth." }
+    - { id: b, text: "always factually accurate", explanation: "Temperature does not add truthfulness." }
+    - { id: c, text: "unable to produce output", explanation: "It still produces output." }
+  correct: [a]

@@ -1,0 +1,90 @@
+- id: ai04.numpy.mask
+  type: choice
+  skill: apply
+  topics: [ai04.numpy]
+  prompt: "Given `X = np.arange(12).reshape(3, 4)`, what does `X[:, 0]` return?"
+  options:
+    - { id: a, text: "`[0 4 8]`", explanation: "Correct: column 0 of every row." }
+    - { id: b, text: "`[0 1 2 3]`", explanation: "That is row 0, `X[0]`." }
+    - { id: c, text: "`0`", explanation: "That is `X[0, 0]`." }
+  correct: [a]
+
+- id: ai04.numpy.view
+  type: choice
+  skill: recognize
+  topics: [ai04.numpy]
+  prompt: "`s = X[0:2]` and then `s[0, 0] = 99`. What happens to `X`?"
+  options:
+    - { id: a, text: "`X[0, 0]` becomes 99, because a slice is a view.", explanation: "Correct." }
+    - { id: b, text: "Nothing; slices are copies.", explanation: "Basic slices share memory." }
+    - { id: c, text: "An error is raised.", explanation: "Assignment into a view is allowed." }
+  correct: [a]
+
+- id: ai04.numpy.broadcast
+  type: choice
+  skill: apply
+  topics: [ai04.numpy]
+  prompt: Which pair of shapes can be broadcast together?
+  options:
+    - { id: a, text: "(500, 3) and (3,)", explanation: "Correct: trailing dimensions match." }
+    - { id: b, text: "(500, 3) and (500,)", explanation: "Trailing dimensions 3 and 500 differ; use (500, 1)." }
+    - { id: c, text: "(4, 3) and (2, 3)", explanation: "4 and 2 differ and neither is 1." }
+  correct: [a]
+
+- id: ai04.numpy.argmax
+  type: short
+  skill: recall
+  topics: [ai04.numpy]
+  prompt: "`scores` has shape (n, classes). Which NumPy call gives each row's predicted class index? Write the full expression."
+  accepted: ["scores.argmax(axis=1)", "np.argmax(scores, axis=1)", "scores.argmax(1)", "np.argmax(scores, 1)"]
+  match: { mode: exact }
+
+- id: ai04.numpy.standardise
+  type: code
+  skill: apply
+  topics: [ai04.numpy]
+  language: python
+  packages: [numpy]
+  prompt: >-
+    Write `standardise(X)` that returns X with every column transformed to mean 0 and standard deviation 1, using
+    broadcasting (no Python loops). Columns with standard deviation 0 should become all zeros instead of NaN.
+  starterCode: |
+    import numpy as np
+
+    def standardise(X):
+        ...
+  tests:
+    - { kind: assert, name: "means zero", code: "import numpy as np\nZ = standardise(np.array([[1.0, 10.0], [3.0, 30.0], [5.0, 50.0]]))\nassert np.allclose(Z.mean(axis=0), 0)" }
+    - { kind: assert, name: "std one", code: "import numpy as np\nZ = standardise(np.array([[1.0, 10.0], [3.0, 30.0], [5.0, 50.0]]))\nassert np.allclose(Z.std(axis=0), 1)" }
+    - { kind: assert, name: "constant column", code: "import numpy as np\nZ = standardise(np.array([[2.0, 1.0], [2.0, 3.0]]))\nassert np.allclose(Z[:, 0], 0) and not np.isnan(Z).any()" }
+  solution: |
+    import numpy as np
+
+    def standardise(X):
+        mu = X.mean(axis=0)
+        sigma = X.std(axis=0)
+        sigma = np.where(sigma == 0, 1.0, sigma)
+        return (X - mu) / sigma
+
+- id: ai04.numpy.accuracy
+  type: code
+  skill: apply
+  topics: [ai04.numpy]
+  language: python
+  packages: [numpy]
+  prompt: >-
+    Write `accuracy(scores, labels)`: `scores` is an (n, k) array of class scores and `labels` an (n,) array of true
+    class indices. Return the fraction of rows whose highest-scoring class equals the label, without a loop.
+  starterCode: |
+    import numpy as np
+
+    def accuracy(scores, labels):
+        ...
+  tests:
+    - { kind: assert, name: "two of three", code: "import numpy as np\nassert abs(accuracy(np.array([[0.1, 0.9], [0.8, 0.2], [0.3, 0.7]]), np.array([1, 0, 0])) - 2 / 3) < 1e-9" }
+    - { kind: assert, name: "all right", code: "import numpy as np\nassert accuracy(np.eye(3), np.array([0, 1, 2])) == 1.0" }
+  solution: |
+    import numpy as np
+
+    def accuracy(scores, labels):
+        return float((scores.argmax(axis=1) == labels).mean())

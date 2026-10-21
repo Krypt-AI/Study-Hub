@@ -1,0 +1,32 @@
+- id: ai09.setup.key-env
+  type: choice
+  skill: apply
+  topics: [ai09.setup]
+  prompt: Which is the safe way to use an API key in code?
+  options:
+    - { id: a, text: "Read it from an environment variable loaded from a git-ignored .env", explanation: "Correct." }
+    - { id: b, text: "Paste it directly into the .py file", explanation: "It will leak when shared or committed." }
+    - { id: c, text: "Put it in the git history once, then delete it", explanation: "It stays in history and may be scraped." }
+  correct: [a]
+
+- id: ai09.setup.docs
+  type: choice
+  skill: recognize
+  topics: [ai09.setup]
+  prompt: Where should you get the current model names, limits and prices?
+  options:
+    - { id: a, text: "The provider's own official documentation, which is updated as these change", explanation: "Correct: never assume from memory." }
+    - { id: b, text: "An old blog post", explanation: "Likely outdated." }
+    - { id: c, text: "Guess from the model's name", explanation: "Unreliable." }
+  correct: [a]
+
+- id: ai09.setup.local
+  type: choice
+  skill: recognize
+  topics: [ai09.setup]
+  prompt: Which option lets you practise with an LLM locally, with no API key or per-token cost?
+  options:
+    - { id: a, text: "Ollama running an open-weight model on your own machine", explanation: "Correct." }
+    - { id: b, text: "Hard-coding a provider key", explanation: "Still a paid API and unsafe." }
+    - { id: c, text: "Disabling your firewall", explanation: "Unrelated and unsafe." }
+  correct: [a]

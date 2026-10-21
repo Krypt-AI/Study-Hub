@@ -1,0 +1,58 @@
+- id: ai12.serving.ship-pipeline
+  type: choice
+  skill: apply
+  topics: [ai12.serving]
+  prompt: Why serve the whole preprocessing + model pipeline as one artifact (Stage 5) rather than just the model?
+  options:
+    - { id: a, text: "So the exact training-time transformations are applied at serving, avoiding train/serve skew", explanation: "Correct." }
+    - { id: b, text: "To make the file smaller", explanation: "It is usually larger." }
+    - { id: c, text: "Because models cannot be saved alone", explanation: "They can; the point is consistency." }
+  correct: [a]
+
+- id: ai12.serving.load-once
+  type: choice
+  skill: recognize
+  topics: [ai12.serving]
+  prompt: Where should the model be loaded in a service?
+  options:
+    - { id: a, text: "Once at startup, kept in memory for all requests", explanation: "Correct." }
+    - { id: b, text: "Freshly inside every request handler", explanation: "Adds huge per-request latency." }
+    - { id: c, text: "Never; stream it from disk each prediction", explanation: "Far too slow." }
+  correct: [a]
+
+- id: ai12.serving.tail
+  type: choice
+  skill: apply
+  topics: [ai12.serving]
+  prompt: Average latency looks fine but users complain about slowness. What should you check?
+  options:
+    - { id: a, text: "The p95/p99 tail latency, which the mean hides", explanation: "Correct." }
+    - { id: b, text: "The minimum latency", explanation: "Best case; not the complaint." }
+    - { id: c, text: "The model's training accuracy", explanation: "Unrelated to latency." }
+  correct: [a]
+
+- id: ai12.serving.validate-code
+  type: code
+  skill: apply
+  topics: [ai12.serving]
+  language: python
+  prompt: >-
+    Write `predict(features, model_fn, required)` simulating a serving handler. `required` is a list of required
+    feature names. If any are missing from `features`, return `{"error": "missing: <comma-joined sorted names>"}`.
+    Otherwise return `{"prediction": model_fn(features)}`. If `model_fn` raises, return `{"error": "internal error"}`.
+  starterCode: |
+    def predict(features, model_fn, required):
+        ...
+  tests:
+    - { kind: assert, name: "happy path", code: "assert predict({'a': 1, 'b': 2}, lambda f: f['a'] + f['b'], ['a', 'b']) == {'prediction': 3}" }
+    - { kind: assert, name: "missing features", code: "assert predict({'a': 1}, lambda f: 0, ['a', 'b', 'c']) == {'error': 'missing: b, c'}" }
+    - { kind: assert, name: "internal error", code: "def boom(f): raise ValueError('x')\nassert predict({'a': 1}, boom, ['a']) == {'error': 'internal error'}" }
+  solution: |
+    def predict(features, model_fn, required):
+        missing = sorted(name for name in required if name not in features)
+        if missing:
+            return {'error': 'missing: ' + ', '.join(missing)}
+        try:
+            return {'prediction': model_fn(features)}
+        except Exception:
+            return {'error': 'internal error'}

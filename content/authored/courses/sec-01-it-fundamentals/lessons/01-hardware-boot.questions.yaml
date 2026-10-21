@@ -1,0 +1,43 @@
+- id: sec01.hardware.volatile
+  type: choice
+  skill: apply
+  topics: [sec01.hardware]
+  prompt: An analyst wants to capture a running process's secrets and encryption keys. What must they do before powering off?
+  options:
+    - { id: a, text: "Capture a memory (RAM) image, because RAM is volatile and is lost at power-off", explanation: "Correct." }
+    - { id: b, text: "Image the disk only", explanation: "Keys in RAM would be lost." }
+    - { id: c, text: "Reboot the machine first", explanation: "That destroys the volatile evidence." }
+  correct: [a]
+
+- id: sec01.hardware.bootkit
+  type: choice
+  skill: recognize
+  topics: [sec01.hardware]
+  prompt: Why is firmware/boot-level malware especially dangerous?
+  options:
+    - { id: a, text: "It runs before the OS and its defences, and can survive an OS reinstall.", explanation: "Correct." }
+    - { id: b, text: "It can only run once.", explanation: "The opposite: it persists." }
+    - { id: c, text: "It is easy to detect from user mode.", explanation: "It is hard to detect because it sits below the OS." }
+  correct: [a]
+
+- id: sec01.hardware.fde
+  type: choice
+  skill: apply
+  topics: [sec01.hardware]
+  prompt: Full-disk encryption (BitLocker/LUKS) protects against which threat?
+  options:
+    - { id: a, text: "A thief who steals the powered-off laptop and tries to read the disk", explanation: "Correct: it protects data at rest." }
+    - { id: b, text: "Malware running on the unlocked, logged-in machine", explanation: "Once unlocked, data is accessible; FDE does not help." }
+    - { id: c, text: "A phishing email", explanation: "Unrelated." }
+  correct: [a]
+
+- id: sec01.hardware.boot-order
+  type: cloze
+  skill: recall
+  topics: [sec01.hardware]
+  prompt: Put the boot chain in order.
+  text: "The [[1]] (UEFI) runs first, loads the [[2]], which loads the OS [[3]]."
+  blanks:
+    - { id: "1", accepted: [firmware, bios] }
+    - { id: "2", accepted: [bootloader] }
+    - { id: "3", accepted: [kernel] }

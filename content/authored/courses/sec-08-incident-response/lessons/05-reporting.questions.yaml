@@ -1,0 +1,48 @@
+- id: sec08.reporting.audience
+  type: choice
+  skill: apply
+  topics: [sec08.reporting]
+  prompt: What does a management-facing incident summary most need?
+  options:
+    - { id: a, text: "Plain-language impact, what was done, cost, and what is needed to prevent recurrence", explanation: "Correct: decisions and impact, not packet detail." }
+    - { id: b, text: "Raw packet captures and hashes", explanation: "That is for the technical team." }
+    - { id: c, text: "Nothing; management should not be told", explanation: "They own risk decisions." }
+  correct: [a]
+
+- id: sec08.reporting.facts
+  type: choice
+  skill: recognize
+  topics: [sec08.reporting]
+  prompt: Why separate facts from assessment and recommendations in a report?
+  options:
+    - { id: a, text: "So readers can tell what the evidence shows from what you infer, and trust the record", explanation: "Correct." }
+    - { id: b, text: "To make the report longer", explanation: "Not the reason." }
+    - { id: c, text: "Because facts are secret", explanation: "No." }
+  correct: [a]
+
+- id: sec08.reporting.blameless
+  type: long
+  skill: explain
+  topics: [sec08.reporting]
+  prompt: Why is a blameless post-incident review more effective than finding someone to blame?
+  minWords: 30
+  rubric:
+    - { id: honesty, label: "Fear of blame makes people hide information, reducing safety", keywords: [["blame", "hide", "fear", "honest", "trust"]] }
+    - { id: systemic, label: "Fixing systemic causes (not individuals) prevents recurrence", keywords: [["systemic", "root cause", "process", "systems", "prevent"]] }
+  modelAnswer: >-
+    If people expect to be punished, they hide what they did and what they saw, so the organisation never learns the
+    real sequence of events and stays exposed. A blameless review treats a clicked link or a missed alert as a
+    symptom of systemic weaknesses — a gap in training, a missing control, an unclear process — and fixes those, with
+    owners and dates. That produces honest information and durable improvements, while blame produces silence and lost
+    trust.
+
+- id: sec08.reporting.feedback
+  type: choice
+  skill: apply
+  topics: [sec08.reporting]
+  prompt: Where should the lessons from an incident ultimately flow?
+  options:
+    - { id: a, text: "Back into Preparation: new detections, closed gaps, updated playbooks and training", explanation: "Correct: closing the loop makes the next incident less likely." }
+    - { id: b, text: "Into a file nobody reads", explanation: "Then nothing improves." }
+    - { id: c, text: "Only to the press", explanation: "No." }
+  correct: [a]

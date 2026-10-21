@@ -1,0 +1,37 @@
+- id: ai14.choose.finish
+  type: choice
+  skill: apply
+  topics: [ai14.choose]
+  prompt: Which is the better capstone choice for demonstrating skill?
+  options:
+    - { id: a, text: "A small problem you can finish end to end with a real evaluation", explanation: "Correct." }
+    - { id: b, text: "A hugely ambitious system you will not finish", explanation: "Unfinished shows less." }
+    - { id: c, text: "A copy of a tutorial with no changes or evaluation", explanation: "Shows little." }
+  correct: [a]
+
+- id: ai14.choose.define
+  type: choice
+  skill: apply
+  topics: [ai14.choose]
+  prompt: What should you write down before building?
+  options:
+    - { id: a, text: "The problem, the data and its constraints, the success metric and baseline, and the scope (in/out)", explanation: "Correct." }
+    - { id: b, text: "Only the programming language", explanation: "Not a plan." }
+    - { id: c, text: "Nothing; start coding", explanation: "Invites scope creep and dead ends." }
+  correct: [a]
+
+- id: ai14.choose.span
+  type: long
+  skill: explain
+  topics: [ai14.choose]
+  prompt: Explain why a capstone that spans data, model, evaluation and a runnable artifact is a stronger portfolio piece than a model alone.
+  minWords: 30
+  rubric:
+    - { id: system, label: "It shows you can build a whole system, not just train a model", keywords: [["system", "end to end", "whole", "pipeline"]] }
+    - { id: evidence, label: "Evaluation provides evidence it works; engineering makes it credible/reproducible", keywords: [["evaluation", "metric", "reproduc", "evidence", "works"]] }
+  modelAnswer: >-
+    Employers and collaborators need to see that you can turn a problem into a working, trustworthy system, not just
+    fit a model in a notebook. A project that spans data cleaning, a model or LLM, an honest evaluation, and a
+    reproducible runnable artifact (served or with a clear README) demonstrates the whole engineering lifecycle: you
+    can source and prepare data, build and measure a solution, and ship something others can run and assess. A bare
+    model with no evaluation or packaging leaves the hardest, most valuable parts unproven.

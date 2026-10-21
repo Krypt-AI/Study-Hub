@@ -1,0 +1,32 @@
+- id: ai05.setup.joblib-trust
+  type: choice
+  skill: recognize
+  topics: [ai05.setup]
+  prompt: A stranger sends you `model.joblib` to "try out". Why be careful?
+  options:
+    - { id: a, text: "Loading a pickle-based file can execute arbitrary code.", explanation: "Correct: only load model files from trusted sources." }
+    - { id: b, text: "It might be too accurate.", explanation: "Not a risk." }
+    - { id: c, text: "joblib files only work on Linux.", explanation: "They are cross-platform." }
+  correct: [a]
+
+- id: ai05.setup.f12
+  type: choice
+  skill: recall
+  topics: [ai05.setup]
+  prompt: In VS Code, which key jumps to the definition of the function under the cursor (for example, into scikit-learn's source)?
+  options:
+    - { id: a, text: "F12", explanation: "Correct: Go to Definition." }
+    - { id: b, text: "F5", explanation: "Starts debugging." }
+    - { id: c, text: "F2", explanation: "Rename symbol." }
+  correct: [a]
+
+- id: ai05.setup.version
+  type: choice
+  skill: apply
+  topics: [ai05.setup]
+  prompt: Why record the scikit-learn version alongside a saved model?
+  options:
+    - { id: a, text: "A model saved with one version may fail to load or behave differently in another.", explanation: "Correct." }
+    - { id: b, text: "The licence requires it.", explanation: "No such requirement." }
+    - { id: c, text: "It makes predictions faster.", explanation: "Unrelated." }
+  correct: [a]

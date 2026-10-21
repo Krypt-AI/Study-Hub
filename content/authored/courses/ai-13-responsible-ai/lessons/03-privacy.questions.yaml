@@ -1,0 +1,67 @@
+- id: ai13.privacy.minimisation
+  type: choice
+  skill: apply
+  topics: [ai13.privacy]
+  prompt: What is the first principle for handling personal data in an LLM app?
+  options:
+    - { id: a, text: "Data minimisation — collect and send only what the task genuinely needs", explanation: "Correct." }
+    - { id: b, text: "Send everything so the model has full context", explanation: "Maximises exposure and risk." }
+    - { id: c, text: "Log all prompts permanently", explanation: "A privacy and security liability." }
+  correct: [a]
+
+- id: ai13.privacy.where
+  type: choice
+  skill: apply
+  topics: [ai13.privacy]
+  prompt: Before sending regulated personal data to a hosted model, you must know…
+  options:
+    - { id: a, text: "Which provider gets it, whether it may be used for training, and where it is processed — and configure/agree accordingly", explanation: "Correct." }
+    - { id: b, text: "Only the model's accuracy", explanation: "Accuracy is not a privacy control." }
+    - { id: c, text: "Nothing; hosted models are always compliant", explanation: "You are responsible for the data." }
+  correct: [a]
+
+- id: ai13.privacy.deletion
+  type: choice
+  skill: apply
+  topics: [ai13.privacy]
+  prompt: A user exercises their right to deletion. For an LLM system, you must be able to delete their data from…
+  options:
+    - { id: a, text: "All stores, including logs and any vector/RAG index — design for it", explanation: "Correct." }
+    - { id: b, text: "Only the primary database", explanation: "Logs and the vector store also hold it." }
+    - { id: c, text: "Nowhere; LLM data cannot be deleted", explanation: "You must design deletion in." }
+  correct: [a]
+
+- id: ai13.privacy.redact-code
+  type: code
+  skill: apply
+  topics: [ai13.privacy]
+  language: python
+  prompt: >-
+    Write `redact(text)` replacing email addresses with `[EMAIL]` and standalone runs of 10+ digits with `[NUMBER]`,
+    and `contains_pii(text)` returning True if either pattern is present. Use the `re` module.
+  starterCode: |
+    import re
+
+    def redact(text):
+        ...
+
+    def contains_pii(text):
+        ...
+  tests:
+    - { kind: assert, name: "redacts email", code: "assert redact('reach me at a.b+x@mail.co') == 'reach me at [EMAIL]'" }
+    - { kind: assert, name: "redacts long number", code: "assert redact('id 1234567890 ok') == 'id [NUMBER] ok'" }
+    - { kind: assert, name: "short number kept", code: "assert redact('call 999') == 'call 999'" }
+    - { kind: assert, name: "detection", code: "assert contains_pii('x@y.com') and not contains_pii('hello world')" }
+  solution: |
+    import re
+
+    EMAIL = r"[\w.+-]+@[\w-]+\.[\w.-]+"
+    NUMBER = r"\b\d{10,}\b"
+
+    def redact(text):
+        text = re.sub(EMAIL, "[EMAIL]", text)
+        text = re.sub(NUMBER, "[NUMBER]", text)
+        return text
+
+    def contains_pii(text):
+        return re.search(EMAIL, text) is not None or re.search(NUMBER, text) is not None

@@ -1,0 +1,77 @@
+- id: ai02.quality.approx
+  type: choice
+  skill: apply
+  topics: [ai02.quality]
+  prompt: "`assert 0.1 + 0.2 == 0.3` fails. Which pytest tool is meant for this?"
+  options:
+    - { id: a, text: "`pytest.approx`", explanation: "Correct: `0.1 + 0.2 == pytest.approx(0.3)` compares within a tolerance." }
+    - { id: b, text: "`pytest.raises`", explanation: "That checks that an exception is raised." }
+    - { id: c, text: "`pytest.mark.skip`", explanation: "Skipping hides the problem." }
+  correct: [a]
+
+- id: ai02.quality.src-layout
+  type: choice
+  skill: recognize
+  topics: [ai02.quality]
+  prompt: What is the main benefit of putting the package under `src/`?
+  options:
+    - { id: a, text: "Tests run against the installed package, so packaging and import mistakes are caught.", explanation: "Correct." }
+    - { id: b, text: "Python only finds modules inside a folder called src.", explanation: "Python has no such rule." }
+    - { id: c, text: "It makes the code run faster.", explanation: "Layout does not affect speed." }
+  correct: [a]
+
+- id: ai02.quality.tool-roles
+  type: cloze
+  skill: recall
+  topics: [ai02.quality]
+  prompt: Match each tool to its job.
+  text: "`ruff check` is a [[1]], `ruff format` is a [[2]], and `mypy` is a static [[3]] checker."
+  blanks:
+    - { id: "1", accepted: [linter] }
+    - { id: "2", accepted: [formatter] }
+    - { id: "3", accepted: [type] }
+
+- id: ai02.quality.what-to-test
+  type: choice
+  skill: apply
+  multiple: true
+  topics: [ai02.quality]
+  prompt: Which are good automated tests for an ML project? Choose all that apply.
+  options:
+    - { id: a, text: "The train and test splits share no row ids.", explanation: "Catches leakage cheaply." }
+    - { id: b, text: "Predicted probabilities are all between 0 and 1 and contain no NaN.", explanation: "An invariant every model must keep." }
+    - { id: c, text: "The model can nearly memorise ten training examples.", explanation: "The classic smoke test of a training loop." }
+    - { id: d, text: "Test accuracy is exactly 0.9134.", explanation: "Brittle: tiny library or seed changes break it. Test a range or invariants instead." }
+  correct: [a, b, c]
+
+- id: ai02.quality.word-counts
+  type: code
+  skill: apply
+  topics: [ai02.quality]
+  language: python
+  prompt: >-
+    Implement `normalise(text)` (lower-case, keep only letters, digits and spaces, collapse runs of spaces, strip) and
+    `word_counts(text)` (a dict of word to count after normalising). The tests are the pytest-style checks from the
+    lesson.
+  starterCode: |
+    def normalise(text):
+        ...
+
+    def word_counts(text):
+        ...
+  tests:
+    - { kind: assert, name: "normalise", code: "assert normalise('  FREE Money!! ') == 'free money'" }
+    - { kind: assert, name: "collapse spaces", code: "assert normalise('a   b') == 'a b'" }
+    - { kind: assert, name: "counts", code: "assert word_counts('a a b') == {'a': 2, 'b': 1}" }
+    - { kind: assert, name: "empty", code: "assert word_counts('') == {}" }
+    - { kind: assert, name: "punctuation", code: "assert word_counts('Win! win? WIN.') == {'win': 3}" }
+  solution: |
+    def normalise(text):
+        kept = ''.join(ch for ch in text.lower() if ch.isalnum() or ch.isspace())
+        return ' '.join(kept.split())
+
+    def word_counts(text):
+        counts = {}
+        for word in normalise(text).split():
+            counts[word] = counts.get(word, 0) + 1
+        return counts

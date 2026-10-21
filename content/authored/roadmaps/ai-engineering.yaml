@@ -76,6 +76,13 @@ stages:
     summary: Evaluating LLM systems, prompt injection and data risks, privacy and fairness.
     courseIds: [ai-13-responsible-ai]
     certificationIds: [aws-genai-developer-professional]
+  - id: stage-15
+    title: Building with LangChain, LangGraph and LangSmith
+    summary: >-
+      The leading agent framework end to end — models and messages, create_agent, LangGraph for custom flow, and
+      LangSmith for testing and monitoring. Maps to the LangChain Certified Agent Engineer (LCAE) lifecycle.
+    courseIds: [ai-15-langchain]
+    certificationIds: [langchain-lcae, nvidia-agentic-ai-professional]
   - id: stage-14
     title: Portfolio projects and certification preparation
     summary: Capstone projects that combine the stages, and a plan for your target certification.

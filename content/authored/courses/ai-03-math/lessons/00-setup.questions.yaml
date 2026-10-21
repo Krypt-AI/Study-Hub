@@ -1,0 +1,29 @@
+- id: ai03.setup.kernel
+  type: choice
+  skill: apply
+  topics: [ai03.setup]
+  prompt: "A notebook cell fails with `ModuleNotFoundError: No module named 'numpy'`, but NumPy is in your `.venv`. What is wrong?"
+  options:
+    - { id: a, text: "The notebook is using a different kernel; select the `.venv` kernel (and make sure ipykernel is installed there).", explanation: "Correct." }
+    - { id: b, text: "NumPy cannot run in notebooks.", explanation: "It can." }
+    - { id: c, text: "The file must be renamed to `.py`.", explanation: "Notebooks are `.ipynb`." }
+  correct: [a]
+
+- id: ai03.setup.run-cell
+  type: choice
+  skill: recall
+  topics: [ai03.setup]
+  prompt: Which shortcut runs the current notebook cell and moves to the next one?
+  options:
+    - { id: a, text: "Shift+Enter", explanation: "Correct." }
+    - { id: b, text: "Ctrl+S", explanation: "Save." }
+    - { id: c, text: "F9", explanation: "Toggles a breakpoint in code files." }
+  correct: [a]
+
+- id: ai03.setup.ipykernel
+  type: short
+  skill: recall
+  topics: [ai03.setup]
+  prompt: "Which package lets Jupyter run code with a virtual environment's interpreter?"
+  accepted: [ipykernel]
+  match: { mode: text, typoTolerance: none }

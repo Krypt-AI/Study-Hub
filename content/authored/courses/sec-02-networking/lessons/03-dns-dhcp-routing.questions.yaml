@@ -1,0 +1,43 @@
+- id: sec02.dns.record
+  type: choice
+  skill: recall
+  topics: [sec02.dns]
+  prompt: Which DNS record maps a hostname to an IPv4 address?
+  options:
+    - { id: a, text: "An A record", explanation: "Correct (AAAA for IPv6)." }
+    - { id: b, text: "An MX record", explanation: "That points to mail servers." }
+    - { id: c, text: "A TXT record", explanation: "Free-form text, used for verification/policies." }
+  correct: [a]
+
+- id: sec02.dns.dnssec
+  type: choice
+  skill: apply
+  topics: [sec02.dns]
+  prompt: Which mechanism lets a resolver detect forged DNS answers?
+  options:
+    - { id: a, text: "DNSSEC (signed records)", explanation: "Correct: signatures detect tampering." }
+    - { id: b, text: "DHCP", explanation: "DHCP assigns configuration; it does not sign DNS." }
+    - { id: c, text: "NAT", explanation: "Unrelated." }
+  correct: [a]
+
+- id: sec02.dns.rogue-dhcp
+  type: choice
+  skill: apply
+  topics: [sec02.dns]
+  prompt: Why is a rogue DHCP server on a LAN dangerous?
+  options:
+    - { id: a, text: "It can hand clients a malicious gateway/DNS and silently intercept their traffic.", explanation: "Correct." }
+    - { id: b, text: "It speeds up the network too much.", explanation: "Not a security issue." }
+    - { id: c, text: "It encrypts all traffic.", explanation: "DHCP does not encrypt." }
+  correct: [a]
+
+- id: sec02.dns.gateway
+  type: choice
+  skill: recognize
+  topics: [sec02.dns]
+  prompt: Where does a host send a packet destined for an address outside its own subnet?
+  options:
+    - { id: a, text: "To its default gateway (router)", explanation: "Correct." }
+    - { id: b, text: "Directly to the destination over the local wire", explanation: "Only same-subnet traffic goes directly." }
+    - { id: c, text: "To the DNS server", explanation: "DNS resolves names; it does not forward data packets." }
+  correct: [a]

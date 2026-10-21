@@ -1,0 +1,59 @@
+- id: sec09.techniques.online-offline
+  type: choice
+  skill: recognize
+  topics: [sec09.techniques]
+  prompt: What is the difference between online and offline password attacks?
+  options:
+    - { id: a, text: "Online guesses against a live login; offline cracks stolen hashes without touching the service", explanation: "Correct." }
+    - { id: b, text: "Online is legal, offline is not", explanation: "Legality depends on authorisation, not the method." }
+    - { id: c, text: "They are the same", explanation: "They differ in target and defences." }
+  correct: [a]
+
+- id: sec09.techniques.offline-defence
+  type: choice
+  skill: apply
+  topics: [sec09.techniques]
+  prompt: Which control most directly makes OFFLINE cracking of a stolen password database expensive?
+  options:
+    - { id: a, text: "Storing passwords with a slow, salted hash such as Argon2id", explanation: "Correct: each guess costs a lot of work." }
+    - { id: b, text: "A login rate limit", explanation: "That limits online guessing, not offline." }
+    - { id: c, text: "A CAPTCHA on the login page", explanation: "Also an online control." }
+  correct: [a]
+
+- id: sec09.techniques.online-defence
+  type: choice
+  skill: apply
+  topics: [sec09.techniques]
+  prompt: Which controls most directly limit ONLINE password guessing against a live login?
+  options:
+    - { id: a, text: "Rate limiting, lockouts, MFA and monitoring/alerting", explanation: "Correct." }
+    - { id: b, text: "A salted hash", explanation: "That protects stolen hashes (offline), not the live login rate." }
+    - { id: c, text: "Disk encryption", explanation: "Protects data at rest, unrelated to login guessing." }
+  correct: [a]
+
+- id: sec09.techniques.privesc
+  type: choice
+  skill: apply
+  topics: [sec09.techniques]
+  prompt: A test escalates from a normal user to admin through a writable service file. The best defensive fix is…
+  options:
+    - { id: a, text: "Fix the file/service permissions and apply least privilege so the path is removed", explanation: "Correct." }
+    - { id: b, text: "Rename the service", explanation: "Obscurity does not fix the permission flaw." }
+    - { id: c, text: "Give all users admin to avoid escalation", explanation: "That removes the boundary entirely — far worse." }
+  correct: [a]
+
+- id: sec09.techniques.pattern
+  type: long
+  skill: explain
+  topics: [sec09.techniques]
+  prompt: The attack categories are diverse, but the defences rhyme. Name the recurring defensive themes and why learning attacks helps apply them.
+  minWords: 30
+  rubric:
+    - { id: themes, label: "Names recurring defences: encrypt, MFA, least privilege, patch/harden, validate, segment, monitor", keywords: [["encrypt", "mfa", "least privilege", "patch", "harden", "validate", "segment", "monitor"]] }
+    - { id: why, label: "Understanding attacks reveals where those defences are missing", keywords: [["gap", "missing", "find", "where", "reveal"]] }
+  modelAnswer: >-
+    Across social engineering, network, password, web, system and wireless attacks the same controls keep appearing:
+    encrypt data in transit and at rest, authenticate strongly with MFA, enforce least privilege, patch and harden,
+    validate input, segment networks, and monitor for anomalies. Learning how each attack works shows you exactly
+    which of these is absent in a given environment — a weak hash, a flat network, an unpatched service, a trusting
+    user — so the offensive knowledge translates directly into a prioritised list of which defences to add or fix.

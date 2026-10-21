@@ -1,0 +1,65 @@
+- id: sec05.symmetric.ecb
+  type: choice
+  skill: recognize
+  topics: [sec05.symmetric]
+  prompt: Why should AES-ECB never be used for real data?
+  options:
+    - { id: a, text: "Identical plaintext blocks produce identical ciphertext, so structure and patterns leak.", explanation: "Correct." }
+    - { id: b, text: "It is too slow.", explanation: "Speed is not the problem." }
+    - { id: c, text: "It needs a 512-bit key.", explanation: "AES key sizes are 128/192/256." }
+  correct: [a]
+
+- id: sec05.symmetric.aead
+  type: choice
+  skill: apply
+  topics: [sec05.symmetric]
+  prompt: You need confidentiality and tamper detection for a message. Which should you reach for?
+  options:
+    - { id: a, text: "An AEAD mode such as AES-GCM or ChaCha20-Poly1305", explanation: "Correct: encryption plus authentication in one vetted primitive." }
+    - { id: b, text: "AES-ECB", explanation: "No confidentiality of patterns and no integrity." }
+    - { id: c, text: "A plain SHA-256 of the message", explanation: "A hash gives neither confidentiality nor a secret-keyed tag." }
+  correct: [a]
+
+- id: sec05.symmetric.rng
+  type: choice
+  skill: apply
+  topics: [sec05.symmetric]
+  prompt: Which is a safe source for an encryption key or nonce?
+  options:
+    - { id: a, text: "`secrets.token_bytes(16)` or `os.urandom(16)`", explanation: "Correct: cryptographically secure randomness." }
+    - { id: b, text: "`random.randbytes(16)`", explanation: "The `random` module is predictable and not for keys." }
+    - { id: c, text: "The current timestamp", explanation: "Guessable." }
+  correct: [a]
+
+- id: sec05.symmetric.keystream-reuse
+  type: long
+  skill: explain
+  topics: [sec05.symmetric]
+  prompt: Explain why reusing the same keystream (or nonce) to encrypt two different messages is dangerous.
+  minWords: 25
+  rubric:
+    - { id: cancel, label: "XORing the two ciphertexts cancels the keystream", keywords: [["xor", "cancel", "same keystream", "nonce reuse"]] }
+    - { id: leak, label: "It leaks the XOR of the two plaintexts, which can be unravelled", keywords: [["plaintext", "leak", "recover", "reveal"]] }
+  modelAnswer: >-
+    If C1 = P1 ⊕ K and C2 = P2 ⊕ K use the same keystream K, then C1 ⊕ C2 = P1 ⊕ P2: the key cancels out and the XOR of
+    the two plaintexts is exposed. With known structure or enough messages an attacker can separate the plaintexts, so
+    each (key, nonce) pair must be used only once.
+
+- id: sec05.symmetric.xor-code
+  type: code
+  skill: apply
+  topics: [sec05.symmetric]
+  language: python
+  prompt: >-
+    Implement the XOR keystream idea (a teaching cipher, not for real use). Write `xor_bytes(data, keystream)` that
+    XORs byte by byte (cycling the keystream if it is shorter), and show it is its own inverse. Return `bytes`.
+  starterCode: |
+    def xor_bytes(data, keystream):
+        ...
+  tests:
+    - { kind: assert, name: "self-inverse", code: "ct = xor_bytes(b'secret', b'key')\nassert xor_bytes(ct, b'key') == b'secret'" }
+    - { kind: assert, name: "equal-length pad", code: "assert xor_bytes(bytes([0x0f, 0xf0]), bytes([0xff, 0xff])) == bytes([0xf0, 0x0f])" }
+    - { kind: assert, name: "keystream cycles", code: "assert xor_bytes(b'\\x00\\x00\\x00', b'\\x01') == b'\\x01\\x01\\x01'" }
+  solution: |
+    def xor_bytes(data, keystream):
+        return bytes(d ^ keystream[i % len(keystream)] for i, d in enumerate(data))

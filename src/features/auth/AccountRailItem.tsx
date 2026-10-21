@@ -1,12 +1,17 @@
 /** The rail's account row: "Sign in" for guests, the account's name and picture once signed in. */
 import { LogIn } from 'lucide-react';
 import { Link, useLocation } from 'react-router';
+import { cn } from '@/lib/cn';
 import { type Account, useAuth } from './useAuth';
 
-export function AccountRailItem({ onNavigate }: { onNavigate?: () => void }) {
+/** Collapsed (the desktop rail as icons), the row shows only its icon or picture; the label stays for screen readers. */
+export function AccountRailItem({ onNavigate, collapsed = false }: { onNavigate?: () => void; collapsed?: boolean }) {
   const auth = useAuth();
   const location = useLocation();
-  const row = 'flex h-10 items-center gap-3 rounded-md px-3 text-[0.9375rem] transition-colors duration-150 hover:bg-sheet/60';
+  const row = cn(
+    'flex h-10 items-center rounded-lg text-[0.9375rem] transition-colors duration-150 hover:bg-sheet/60',
+    collapsed ? 'justify-center' : 'gap-3 px-3',
+  );
 
   if (auth.status === 'guest') {
     return (
@@ -17,7 +22,7 @@ export function AccountRailItem({ onNavigate }: { onNavigate?: () => void }) {
         className={`${row} text-print-strong`}
       >
         <LogIn className="size-4" aria-hidden />
-        <span>Sign in</span>
+        <span className={cn(collapsed && 'sr-only')}>Sign in</span>
       </Link>
     );
   }
@@ -25,7 +30,7 @@ export function AccountRailItem({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <Link to="/settings" onClick={onNavigate} className={`${row} text-ink-muted hover:text-ink`} title={auth.account.email}>
       <Avatar account={auth.account} />
-      <span className="min-w-0 truncate">{auth.account.name}</span>
+      <span className={cn('min-w-0 truncate', collapsed && 'sr-only')}>{auth.account.name}</span>
     </Link>
   );
 }

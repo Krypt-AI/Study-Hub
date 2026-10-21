@@ -1,0 +1,47 @@
+- id: sec04.access.authn-authz
+  type: choice
+  skill: recognize
+  topics: [sec04.access]
+  prompt: What is the difference between authentication and authorisation?
+  options:
+    - { id: a, text: "Authentication proves who you are; authorisation decides what you may do.", explanation: "Correct." }
+    - { id: b, text: "They are the same thing.", explanation: "They are distinct steps." }
+    - { id: c, text: "Authorisation comes before authentication.", explanation: "You prove identity first, then rights are checked." }
+  correct: [a]
+
+- id: sec04.access.model
+  type: choice
+  skill: apply
+  topics: [sec04.access]
+  prompt: A hospital grants access by job function — "Nurse", "Pharmacist", "Billing" — and assigns staff to those. Which model?
+  options:
+    - { id: a, text: "RBAC (role-based)", explanation: "Correct." }
+    - { id: b, text: "MAC (mandatory)", explanation: "MAC uses central labels/clearances, not job roles." }
+    - { id: c, text: "DAC (discretionary)", explanation: "DAC lets owners grant access individually." }
+  correct: [a]
+
+- id: sec04.access.sod
+  type: choice
+  skill: apply
+  topics: [sec04.access]
+  prompt: Requiring that the employee who requests a payment is not the one who approves it is…
+  options:
+    - { id: a, text: "separation of duties", explanation: "Correct: no one person completes the sensitive action alone." }
+    - { id: b, text: "least privilege", explanation: "Related but different: least privilege limits scope of access." }
+    - { id: c, text: "defence in depth", explanation: "That is layering technical controls." }
+  correct: [a]
+
+- id: sec04.access.creep
+  type: long
+  skill: explain
+  topics: [sec04.access]
+  prompt: What is privilege creep, and what practice counters it?
+  minWords: 25
+  rubric:
+    - { id: creep, label: "Rights accumulate over time as people change roles", keywords: [["accumulate", "over time", "change role", "build up", "leftover"]] }
+    - { id: review, label: "Regular access reviews remove no-longer-needed rights", keywords: [["access review", "review", "recertif", "remove", "audit"]] }
+  modelAnswer: >-
+    Privilege creep is the gradual accumulation of access rights as people move between roles and projects but keep
+    their old permissions, so accounts end up far more privileged than their current job needs. Regular access reviews
+    (recertification) — periodically checking each account's rights against its current role and removing what is no
+    longer needed — counter it, along with role-based access and time-limited, just-in-time elevation.

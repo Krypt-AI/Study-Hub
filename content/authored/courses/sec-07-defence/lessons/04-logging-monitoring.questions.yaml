@@ -1,0 +1,42 @@
+- id: sec07.monitoring.central
+  type: choice
+  skill: apply
+  topics: [sec07.monitoring]
+  prompt: Why forward logs to a central SIEM rather than leaving them only on each host?
+  options:
+    - { id: a, text: "To correlate across systems and to keep evidence even if an attacker wipes a host's local logs", explanation: "Correct." }
+    - { id: b, text: "To save disk space on the SIEM", explanation: "The SIEM holds more, not less." }
+    - { id: c, text: "Because hosts cannot store logs", explanation: "They can; the point is central correlation and tamper-resistance." }
+  correct: [a]
+
+- id: sec07.monitoring.detection
+  type: cloze
+  skill: recall
+  topics: [sec07.monitoring]
+  prompt: Name the two detection approaches.
+  text: "[[1]]-based detection matches known-bad patterns, while [[2]]-based detection flags deviation from a baseline of normal."
+  blanks:
+    - { id: "1", accepted: [signature, rule] }
+    - { id: "2", accepted: [anomaly, behaviour, behavior] }
+
+- id: sec07.monitoring.timestamp
+  type: choice
+  skill: apply
+  topics: [sec07.monitoring]
+  prompt: Why is synchronised time across systems essential for logging?
+  options:
+    - { id: a, text: "Without it, you cannot build an accurate timeline correlating events across machines in an investigation.", explanation: "Correct." }
+    - { id: b, text: "It makes logs smaller.", explanation: "Unrelated." }
+    - { id: c, text: "It encrypts the logs.", explanation: "Unrelated." }
+  correct: [a]
+
+- id: sec07.monitoring.fatigue
+  type: choice
+  skill: recognize
+  topics: [sec07.monitoring]
+  prompt: What is alert fatigue, and why does it matter?
+  options:
+    - { id: a, text: "Too many low-quality alerts bury the real ones, so tuning for fidelity matters as much as collecting more", explanation: "Correct." }
+    - { id: b, text: "Analysts getting tired of their chairs", explanation: "Not the security meaning." }
+    - { id: c, text: "A type of malware", explanation: "No." }
+  correct: [a]

@@ -1,0 +1,114 @@
+id: sec-08-incident-response
+title: Incident Response and Threat Analysis
+subtitle: Cybersecurity · Stage 8
+description: >-
+  What to do when prevention fails: the incident-response lifecycle, triage and investigation, digital forensics
+  basics, how malware and attacks are analysed at a conceptual level, and clear reporting. Defender-focused and
+  practised only on systems you are authorised to examine.
+category: it
+subject: cybersecurity
+level: Stage 8
+difficulty: intermediate
+tags: [incident-response, forensics, threat-analysis, soc, reporting]
+prerequisites: [sec-07-defence]
+estimatedHours: 12
+topics:
+  - { id: sec08.lifecycle, title: The IR lifecycle }
+  - { id: sec08.triage, title: Detection and triage }
+  - { id: sec08.forensics, title: Digital forensics basics }
+  - { id: sec08.malware, title: Malware and attack analysis }
+  - { id: sec08.reporting, title: Reporting and lessons learned }
+units:
+  - id: sec-08-incident-response.u1
+    title: Responding to incidents
+    lessons: [01-lifecycle, 02-triage, 03-forensics]
+  - id: sec-08-incident-response.u2
+    title: Understanding and communicating
+    lessons: [04-malware-analysis, 05-reporting]
+assessments:
+  - id: sec-08-incident-response.quiz
+    title: "Stage 8 quiz: incident response"
+    kind: quiz
+    passMark: 0.7
+    description: Eight questions across the whole course.
+    sections:
+      - id: sec-08-incident-response.quiz.s1
+        title: Incident response
+        questions:
+          - id: sec08.quiz.phases
+            type: choice
+            skill: recall
+            topics: [sec08.lifecycle]
+            prompt: Which ordering matches the NIST incident-response lifecycle?
+            options:
+              - { id: a, text: "Preparation → Detection & Analysis → Containment, Eradication & Recovery → Post-incident activity", explanation: "Correct." }
+              - { id: b, text: "Attack → Panic → Reboot → Hope", explanation: "Not a methodology." }
+              - { id: c, text: "Recovery → Detection → Preparation", explanation: "Wrong order." }
+            correct: [a]
+          - id: sec08.quiz.contain-first
+            type: choice
+            skill: apply
+            topics: [sec08.triage]
+            prompt: You confirm an endpoint is actively being controlled by an attacker. What is usually the right immediate action?
+            options:
+              - { id: a, text: "Contain it (e.g. isolate from the network) while preserving evidence, per the plan", explanation: "Correct: stop the spread, keep evidence." }
+              - { id: b, text: "Immediately wipe and reinstall", explanation: "Destroys evidence and may not remove the root cause." }
+              - { id: c, text: "Ignore it until the weekly meeting", explanation: "Active compromise needs prompt action." }
+            correct: [a]
+          - id: sec08.quiz.order-volatility
+            type: choice
+            skill: apply
+            topics: [sec08.forensics]
+            prompt: The order of volatility says you should collect evidence in which order?
+            options:
+              - { id: a, text: "Most volatile first (RAM, running state) before less volatile (disk, backups)", explanation: "Correct." }
+              - { id: b, text: "Disk first, then memory", explanation: "RAM is lost at power-off; capture it first." }
+              - { id: c, text: "Whatever is easiest", explanation: "Volatility dictates order." }
+            correct: [a]
+          - id: sec08.quiz.chain-custody
+            type: short
+            skill: recall
+            topics: [sec08.forensics]
+            prompt: "What is the documented record of who handled evidence, when and why, that keeps it admissible? (three words)"
+            accepted: ["chain of custody"]
+            match: { mode: text }
+          - id: sec08.quiz.hash-evidence
+            type: choice
+            skill: apply
+            topics: [sec08.forensics]
+            prompt: Why hash a forensic disk image when it is acquired?
+            options:
+              - { id: a, text: "To prove later that the evidence was not altered (integrity)", explanation: "Correct: a matching hash shows the copy is unchanged." }
+              - { id: b, text: "To encrypt the evidence", explanation: "Hashing is not encryption." }
+              - { id: c, text: "To compress it", explanation: "Hashing does not compress." }
+            correct: [a]
+          - id: sec08.quiz.ioc
+            type: choice
+            skill: recognize
+            topics: [sec08.malware]
+            prompt: What is an indicator of compromise (IOC)?
+            options:
+              - { id: a, text: "An observable artefact suggesting an intrusion (a malicious hash, domain, IP or file path)", explanation: "Correct." }
+              - { id: b, text: "A type of firewall", explanation: "No." }
+              - { id: c, text: "A backup schedule", explanation: "No." }
+            correct: [a]
+          - id: sec08.quiz.sandbox
+            type: choice
+            skill: apply
+            topics: [sec08.malware]
+            prompt: Where should suspected malware be examined?
+            options:
+              - { id: a, text: "In an isolated analysis sandbox, never on production or networked systems", explanation: "Correct." }
+              - { id: b, text: "On your main laptop to save time", explanation: "Risks infecting your own machine and network." }
+              - { id: c, text: "On the mail server it arrived on", explanation: "Spreads risk; not isolated." }
+            correct: [a]
+          - id: sec08.quiz.blameless
+            type: choice
+            skill: recognize
+            topics: [sec08.reporting]
+            prompt: What is the goal of a blameless post-incident review?
+            options:
+              - { id: a, text: "To learn how to prevent recurrence by fixing systems and processes, not to punish individuals", explanation: "Correct." }
+              - { id: b, text: "To find someone to fire", explanation: "Blame suppresses the honest reporting you need." }
+              - { id: c, text: "To delete the logs", explanation: "The opposite of learning." }
+            correct: [a]

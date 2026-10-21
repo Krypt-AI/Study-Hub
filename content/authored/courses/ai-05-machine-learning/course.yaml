@@ -1,0 +1,117 @@
+id: ai-05-machine-learning
+title: Machine Learning with scikit-learn
+subtitle: AI Engineering · Stage 5
+description: >-
+  Classical machine learning end to end: the supervised learning workflow, linear and logistic regression,
+  decision trees and ensembles, clustering and dimensionality reduction, and pipelines that make preprocessing
+  safe and reproducible. Exercises run real scikit-learn in the browser sandbox.
+category: ai-engineering
+subject: machine-learning
+level: Stage 5
+difficulty: intermediate
+tags: [scikit-learn, supervised-learning, regression, classification, clustering, pipelines]
+prerequisites: [ai-03-math, ai-04-data]
+certifications: [databricks-ml-associate, ms-azure-ai-fundamentals, ibm-ai-engineering]
+estimatedHours: 16
+topics:
+  - { id: ai05.setup, title: "Setup: scikit-learn in VS Code" }
+  - { id: ai05.workflow, title: The machine learning workflow }
+  - { id: ai05.regression, title: Linear models for regression }
+  - { id: ai05.classification, title: Classification }
+  - { id: ai05.trees, title: Trees and ensembles }
+  - { id: ai05.unsupervised, title: Unsupervised learning }
+  - { id: ai05.pipelines, title: Pipelines and preprocessing }
+units:
+  - id: ai-05-machine-learning.u1
+    title: Supervised learning
+    lessons: [00-setup, 01-workflow, 02-regression, 03-classification, 04-trees-ensembles]
+  - id: ai-05-machine-learning.u2
+    title: Beyond labels, and doing it properly
+    lessons: [05-unsupervised, 06-pipelines]
+assessments:
+  - id: ai-05-machine-learning.quiz
+    title: "Stage 5 quiz: machine learning"
+    kind: quiz
+    passMark: 0.7
+    description: Eight questions across the whole course.
+    sections:
+      - id: ai-05-machine-learning.quiz.s1
+        title: Machine learning
+        questions:
+          - id: ai05.quiz.supervised
+            type: choice
+            skill: recognize
+            topics: [ai05.workflow]
+            prompt: Which task is unsupervised?
+            options:
+              - { id: a, text: "Grouping customers into segments without predefined labels", explanation: "Correct: clustering." }
+              - { id: b, text: "Predicting house prices from past sales", explanation: "Supervised regression." }
+              - { id: c, text: "Classifying emails as spam using labelled examples", explanation: "Supervised classification." }
+            correct: [a]
+          - id: ai05.quiz.overfit
+            type: choice
+            skill: apply
+            topics: [ai05.workflow]
+            prompt: Training accuracy 99%, validation accuracy 70%. What is happening and what helps?
+            options:
+              - { id: a, text: "Overfitting: regularise, simplify the model or get more data.", explanation: "Correct." }
+              - { id: b, text: "Underfitting: use a bigger model.", explanation: "Underfitting shows poor training accuracy too." }
+              - { id: c, text: "Nothing: the training score is what matters.", explanation: "Generalisation is what matters." }
+            correct: [a]
+          - id: ai05.quiz.fit-transform
+            type: choice
+            skill: apply
+            topics: [ai05.pipelines]
+            prompt: How should a StandardScaler be used with train and test data?
+            options:
+              - { id: a, text: "`fit_transform` on train, `transform` on test", explanation: "Correct." }
+              - { id: b, text: "`fit_transform` on train and on test", explanation: "Refitting on test leaks and changes the scale." }
+              - { id: c, text: "`fit` on all data before splitting", explanation: "Leakage." }
+            correct: [a]
+          - id: ai05.quiz.logistic
+            type: choice
+            skill: recognize
+            topics: [ai05.classification]
+            prompt: Despite its name, logistic regression is used for…
+            options:
+              - { id: a, text: "Classification, outputting class probabilities", explanation: "Correct." }
+              - { id: b, text: "Predicting continuous values", explanation: "That is linear regression." }
+              - { id: c, text: "Clustering", explanation: "No labels are used in clustering." }
+            correct: [a]
+          - id: ai05.quiz.random-forest
+            type: choice
+            skill: recognize
+            topics: [ai05.trees]
+            prompt: How does a random forest reduce the variance of a single decision tree?
+            options:
+              - { id: a, text: "It averages many trees trained on bootstrap samples with random feature subsets.", explanation: "Correct: bagging plus feature randomness." }
+              - { id: b, text: "It trains trees one after another, each fixing the last one's errors.", explanation: "That is boosting." }
+              - { id: c, text: "It prunes one tree very aggressively.", explanation: "That is a single tree." }
+            correct: [a]
+          - id: ai05.quiz.kmeans-scale
+            type: choice
+            skill: apply
+            topics: [ai05.unsupervised]
+            prompt: Clustering customers on income (RM) and age (years) with k-means. What must you do first?
+            options:
+              - { id: a, text: "Scale the features, otherwise income dominates the distances.", explanation: "Correct." }
+              - { id: b, text: "Nothing: k-means is scale-invariant.", explanation: "It uses Euclidean distance, which is not." }
+              - { id: c, text: "One-hot encode age.", explanation: "Age is numeric." }
+            correct: [a]
+          - id: ai05.quiz.pca
+            type: short
+            skill: recall
+            topics: [ai05.unsupervised]
+            prompt: "Which technique projects data onto the directions of greatest variance (abbreviation)?"
+            accepted: [PCA, principal component analysis]
+            match: { mode: text }
+          - id: ai05.quiz.onehot
+            type: choice
+            skill: apply
+            topics: [ai05.pipelines]
+            prompt: "A `state` column has 16 values. How should it be given to a linear model?"
+            options:
+              - { id: a, text: "One-hot encoding (`OneHotEncoder(handle_unknown='ignore')`)", explanation: "Correct." }
+              - { id: b, text: "Map states to 1–16", explanation: "Invents an order and distances that do not exist." }
+              - { id: c, text: "Drop it", explanation: "It may be informative." }
+            correct: [a]

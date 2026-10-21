@@ -1,0 +1,72 @@
+- id: ai05.workflow.task-type
+  type: choice
+  skill: apply
+  topics: [ai05.workflow]
+  prompt: Predicting how many minutes a food delivery will take is…
+  options:
+    - { id: a, text: "Regression", explanation: "Correct: a numeric target." }
+    - { id: b, text: "Classification", explanation: "The target is not a category." }
+    - { id: c, text: "Clustering", explanation: "There is a label." }
+  correct: [a]
+
+- id: ai05.workflow.test-once
+  type: choice
+  skill: recognize
+  topics: [ai05.workflow]
+  prompt: Why should the test set be used only once, at the end?
+  options:
+    - { id: a, text: "Every decision made by looking at it tunes the model to it, so its score stops being an unbiased estimate.", explanation: "Correct." }
+    - { id: b, text: "Using it more than once corrupts the data.", explanation: "The data is unchanged; the estimate becomes biased." }
+    - { id: c, text: "scikit-learn refuses to score the same data twice.", explanation: "It does not." }
+  correct: [a]
+
+- id: ai05.workflow.time-split
+  type: choice
+  skill: apply
+  topics: [ai05.workflow]
+  prompt: You predict next month's sales from daily history. How should you split?
+  options:
+    - { id: a, text: "By time: train on earlier dates, validate and test on later ones.", explanation: "Correct." }
+    - { id: b, text: "Randomly, with stratification.", explanation: "The model would see the future." }
+    - { id: c, text: "Alphabetically by product.", explanation: "Not a time-aware split." }
+  correct: [a]
+
+- id: ai05.workflow.param-hyper
+  type: cloze
+  skill: recall
+  topics: [ai05.workflow]
+  prompt: Parameters and hyperparameters.
+  text: "Weights learned by `fit` are [[1]]; settings such as `max_depth` that you choose are [[2]]."
+  blanks:
+    - { id: "1", accepted: [parameters] }
+    - { id: "2", accepted: [hyperparameters] }
+
+- id: ai05.workflow.baseline
+  type: code
+  skill: apply
+  topics: [ai05.workflow]
+  language: python
+  packages: [scikit-learn]
+  prompt: >-
+    Write `beats_baseline(X, y)` that splits the data (test_size=0.25, random_state=0, stratified), fits a
+    `DummyClassifier(strategy='most_frequent')` and a `LogisticRegression(max_iter=1000)` on the training part and
+    returns `(baseline_accuracy, model_accuracy)` on the test part.
+  starterCode: |
+    from sklearn.model_selection import train_test_split
+    from sklearn.dummy import DummyClassifier
+    from sklearn.linear_model import LogisticRegression
+
+    def beats_baseline(X, y):
+        ...
+  tests:
+    - { kind: assert, name: "model beats baseline", code: "from sklearn.datasets import load_breast_cancer\nX, y = load_breast_cancer(return_X_y=True)\nb, m = beats_baseline(X, y)\nassert 0.6 < b < 0.65 and m > 0.9" }
+  solution: |
+    from sklearn.model_selection import train_test_split
+    from sklearn.dummy import DummyClassifier
+    from sklearn.linear_model import LogisticRegression
+
+    def beats_baseline(X, y):
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0, stratify=y)
+        baseline = DummyClassifier(strategy='most_frequent').fit(X_train, y_train)
+        model = LogisticRegression(max_iter=1000).fit(X_train, y_train)
+        return baseline.score(X_test, y_test), model.score(X_test, y_test)

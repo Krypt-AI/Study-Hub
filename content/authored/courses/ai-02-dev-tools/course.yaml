@@ -1,0 +1,123 @@
+id: ai-02-dev-tools
+title: Git, Environments and Developer Tooling for AI
+subtitle: AI Engineering · Stage 2
+description: >-
+  The working habits every AI project depends on: version control with Git, reproducible Python environments,
+  a project layout with tests and linting, moving from notebooks to scripts, and handling configuration and API keys
+  safely. Pair it with Linux Fundamentals (Modules 0–7) for the command line itself.
+category: ai-engineering
+subject: developer-tooling
+level: Stage 2
+difficulty: beginner
+tags: [git, python, uv, pytest, tooling, secrets]
+prerequisites: [ai-01-python]
+estimatedHours: 10
+topics:
+  - { id: ai02.setup, title: "Setup: Git, GitHub, uv and testing in VS Code" }
+  - { id: ai02.git, title: Git and GitHub }
+  - { id: ai02.env, title: Python environments and dependencies }
+  - { id: ai02.quality, title: Project layout, tests and linting }
+  - { id: ai02.scripts, title: Notebooks, scripts and logging }
+  - { id: ai02.config, title: Configuration, secrets and CI }
+units:
+  - id: ai-02-dev-tools.u1
+    title: Version control and environments
+    lessons: [00-setup, 01-git, 02-environments]
+  - id: ai-02-dev-tools.u2
+    title: Code you can trust and ship
+    lessons: [03-layout-and-tests, 04-notebooks-to-scripts, 05-config-secrets-ci]
+assessments:
+  - id: ai-02-dev-tools.quiz
+    title: "Stage 2 quiz: developer tooling"
+    kind: quiz
+    passMark: 0.7
+    description: Eight questions across the whole course. Every answer is explained after you submit.
+    sections:
+      - id: ai-02-dev-tools.quiz.s1
+        title: Developer tooling
+        questions:
+          - id: ai02.quiz.staging
+            type: choice
+            skill: recognize
+            topics: [ai02.git]
+            prompt: Which command moves changes from the working tree into the staging area?
+            options:
+              - { id: a, text: "`git add`", explanation: "Correct: `git add` stages changes for the next commit." }
+              - { id: b, text: "`git commit`", explanation: "Commit records what is already staged." }
+              - { id: c, text: "`git push`", explanation: "Push sends commits to a remote." }
+              - { id: d, text: "`git fetch`", explanation: "Fetch downloads remote commits without changing your files." }
+            correct: [a]
+          - id: ai02.quiz.gitignore-model
+            type: choice
+            skill: apply
+            topics: [ai02.git]
+            prompt: A 2 GB model checkpoint `models/best.pt` keeps showing up in `git status`. What is the right fix?
+            options:
+              - { id: a, text: "Add `models/` (or `*.pt`) to `.gitignore` and keep the file in artifact storage or Git LFS.", explanation: "Correct. Large binaries do not belong in ordinary Git history." }
+              - { id: b, text: "Commit it once so it stops appearing.", explanation: "Then every clone downloads it forever, even after you delete it." }
+              - { id: c, text: "Rename it to `best.txt`.", explanation: "The size and binary content are the problem, not the name." }
+            correct: [a]
+          - id: ai02.quiz.lockfile
+            type: short
+            skill: recall
+            topics: [ai02.env]
+            prompt: "`uv` records the exact resolved version of every dependency in which file?"
+            accepted: [uv.lock]
+            match: { mode: text, typoTolerance: none }
+            explanation: "`uv.lock` pins every resolved package so `uv sync` reproduces the same environment."
+          - id: ai02.quiz.venv-why
+            type: choice
+            skill: recognize
+            topics: [ai02.env]
+            prompt: Why does each project get its own virtual environment?
+            options:
+              - { id: a, text: "So projects can use different, conflicting package versions without affecting each other or the system Python.", explanation: "Correct." }
+              - { id: b, text: "Because Python runs faster inside a virtual environment.", explanation: "Speed is unchanged." }
+              - { id: c, text: "Because pip refuses to install outside one.", explanation: "Some systems protect their own Python, but isolation is the reason." }
+            correct: [a]
+          - id: ai02.quiz.pytest-discovery
+            type: choice
+            skill: recall
+            topics: [ai02.quality]
+            prompt: Which function will pytest collect as a test by default?
+            options:
+              - { id: a, text: "`def test_tokenizer_splits_words():` in `tests/test_tokenizer.py`", explanation: "Correct: files named `test_*.py` and functions named `test_*`." }
+              - { id: b, text: "`def check_tokenizer():` in `tests/tokenizer_checks.py`", explanation: "Neither the file nor the function follows the naming convention." }
+              - { id: c, text: "`def tokenizer_test():` in `src/tokenizer.py`", explanation: "The name must start with `test`." }
+            correct: [a]
+          - id: ai02.quiz.secret-leak
+            type: long
+            skill: explain
+            topics: [ai02.config]
+            prompt: You pushed a commit containing an API key to a public GitHub repository and deleted it in the next commit. Is the key safe now? What must you do?
+            minWords: 30
+            rubric:
+              - { id: history, label: "The key is still in the Git history (and may already have been copied)", keywords: [["history", "earlier commit", "still there", "copied", "scraped"]] }
+              - { id: revoke, label: "Revoke or rotate the key at the provider immediately", keywords: [["revoke", "rotate", "regenerate", "disable"]] }
+              - { id: prevent, label: "Prevent a repeat: environment variables, .env in .gitignore, secret scanning", keywords: [[".env", "environment variable", "gitignore", "secret scanning", "pre-commit"]] }
+            modelAnswer: >-
+              No. The key is still in the repository's history, and public repositories are scanned by bots within
+              minutes, so assume it is compromised. Revoke or rotate it at the provider first, then check the usage logs
+              for abuse. Cleaning the history (for example with git filter-repo) comes second. Prevent a repeat by reading
+              keys from environment variables, keeping `.env` in `.gitignore`, and enabling secret scanning or a
+              pre-commit hook.
+          - id: ai02.quiz.logging
+            type: choice
+            skill: apply
+            topics: [ai02.scripts]
+            prompt: A training script should report progress in production and stay quiet in unit tests. What fits best?
+            options:
+              - { id: a, text: "The `logging` module with a configurable level", explanation: "Correct: levels and handlers are chosen by the caller, not hard-coded." }
+              - { id: b, text: "`print()` everywhere, deleted before release", explanation: "Prints cannot be filtered or routed and tend to be forgotten." }
+              - { id: c, text: "Writing to a text file with `open()` in every function", explanation: "Logging already provides file handlers." }
+            correct: [a]
+          - id: ai02.quiz.ci
+            type: choice
+            skill: recognize
+            topics: [ai02.config]
+            prompt: In a GitHub Actions workflow, where should an API key used by integration tests come from?
+            options:
+              - { id: a, text: "A repository secret, referenced as `secrets.MY_KEY` in the workflow", explanation: "Correct: secrets are encrypted and masked in logs." }
+              - { id: b, text: "Written directly in the workflow YAML", explanation: "The workflow file is committed, so the key would be public." }
+              - { id: c, text: "A comment in the README", explanation: "Never." }
+            correct: [a]

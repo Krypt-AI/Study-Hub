@@ -1,0 +1,69 @@
+- id: ai07.practice.initial-loss
+  type: short
+  skill: apply
+  topics: [ai07.practice]
+  prompt: "A freshly initialised 10-class classifier should start with a cross-entropy loss of about what value? (two decimals)"
+  accepted: ["2.30", "2.3"]
+  match: { mode: number, tolerance: 0.02 }
+  explanation: "ln 10 ≈ 2.30: uniform predictions give probability 0.1 to the true class."
+
+- id: ai07.practice.overfit-batch
+  type: choice
+  skill: apply
+  topics: [ai07.practice]
+  prompt: Your model cannot drive the loss on a single batch of 16 examples close to zero. What does this tell you?
+  options:
+    - { id: a, text: "There is a bug in the model, loss or training loop.", explanation: "Correct: any working setup can memorise one batch." }
+    - { id: b, text: "You need more data.", explanation: "One batch should be easy to memorise." }
+    - { id: c, text: "Add dropout.", explanation: "Regularisation makes memorising harder." }
+  correct: [a]
+
+- id: ai07.practice.augment
+  type: choice
+  skill: apply
+  topics: [ai07.practice]
+  prompt: Which augmentation is unsafe for a handwritten-digit classifier?
+  options:
+    - { id: a, text: "Random horizontal flips", explanation: "Correct: a flipped 2 or 7 is not a valid digit, and labels become wrong." }
+    - { id: b, text: "Small rotations (±10°)", explanation: "Reasonable." }
+    - { id: c, text: "Small shifts", explanation: "Reasonable." }
+  correct: [a]
+
+- id: ai07.practice.finetune-lr
+  type: choice
+  skill: apply
+  topics: [ai07.practice]
+  prompt: When unfreezing a pretrained backbone for fine-tuning, which learning rate is appropriate?
+  options:
+    - { id: a, text: "A small one (about 1e-4 or lower)", explanation: "Correct: avoid destroying the pretrained features." }
+    - { id: b, text: "A large one (1.0)", explanation: "Would wreck the pretrained weights." }
+    - { id: c, text: "Zero", explanation: "Then nothing is fine-tuned." }
+  correct: [a]
+
+- id: ai07.practice.early-stopping
+  type: code
+  skill: apply
+  topics: [ai07.practice]
+  language: python
+  prompt: >-
+    Write `early_stop_epoch(val_losses, patience)` returning the index of the epoch whose checkpoint you keep (the best
+    validation loss) and the epoch at which training stops: the first epoch where the loss has failed to improve on
+    the best for `patience` consecutive epochs, or the last epoch if that never happens. Return `(best, stop)`.
+  starterCode: |
+    def early_stop_epoch(val_losses, patience):
+        ...
+  tests:
+    - { kind: assert, name: "stops", code: "assert early_stop_epoch([1.0, 0.8, 0.7, 0.72, 0.71, 0.75, 0.6], 3) == (2, 5)" }
+    - { kind: assert, name: "never stops", code: "assert early_stop_epoch([1.0, 0.9, 0.8], 2) == (2, 2)" }
+    - { kind: assert, name: "late best", code: "assert early_stop_epoch([0.5, 0.6, 0.4, 0.45], 5) == (2, 3)" }
+  solution: |
+    def early_stop_epoch(val_losses, patience):
+        best, waited = 0, 0
+        for epoch in range(1, len(val_losses)):
+            if val_losses[epoch] < val_losses[best]:
+                best, waited = epoch, 0
+            else:
+                waited += 1
+                if waited >= patience:
+                    return best, epoch
+        return best, len(val_losses) - 1

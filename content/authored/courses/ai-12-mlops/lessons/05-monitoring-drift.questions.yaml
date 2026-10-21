@@ -1,0 +1,43 @@
+- id: ai12.monitoring.two-layers
+  type: choice
+  skill: recognize
+  topics: [ai12.monitoring]
+  prompt: What two layers must you monitor for a deployed model?
+  options:
+    - { id: a, text: "Operational health (errors, latency, cost) and model quality (predictions, drift, live accuracy)", explanation: "Correct." }
+    - { id: b, text: "Only the server's CPU", explanation: "Misses model quality." }
+    - { id: c, text: "Only the training accuracy", explanation: "That is offline and fixed." }
+  correct: [a]
+
+- id: ai12.monitoring.drift-type
+  type: choice
+  skill: apply
+  topics: [ai12.monitoring]
+  prompt: Last year's spam patterns no longer predict this year's spam, though inputs look similar. This is…
+  options:
+    - { id: a, text: "concept drift — the input→target relationship itself changed", explanation: "Correct." }
+    - { id: b, text: "data drift only", explanation: "Data drift is a change in input distribution; here the relationship changed." }
+    - { id: c, text: "a code bug", explanation: "No code changed." }
+  correct: [a]
+
+- id: ai12.monitoring.groundtruth
+  type: choice
+  skill: apply
+  topics: [ai12.monitoring]
+  prompt: Why is measuring live model accuracy harder than measuring latency?
+  options:
+    - { id: a, text: "You need ground-truth labels for live predictions, which often arrive late or not at all", explanation: "Correct: design feedback loops." }
+    - { id: b, text: "Accuracy cannot be computed at all", explanation: "It can, with labels." }
+    - { id: c, text: "Latency needs labels too", explanation: "Latency is measured directly." }
+  correct: [a]
+
+- id: ai12.monitoring.retrain
+  type: choice
+  skill: apply
+  topics: [ai12.monitoring]
+  prompt: A sound retraining trigger is…
+  options:
+    - { id: a, text: "a schedule, drift crossing a threshold, or a measured quality drop — then retrain, re-evaluate, and promote only if better", explanation: "Correct: continuous training with a quality gate." }
+    - { id: b, text: "retrain on every single request", explanation: "Wasteful and unstable." }
+    - { id: c, text: "never retrain", explanation: "The model will drift out of date." }
+  correct: [a]

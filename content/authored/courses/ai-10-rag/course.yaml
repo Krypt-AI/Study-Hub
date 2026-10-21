@@ -1,0 +1,118 @@
+id: ai-10-rag
+title: Retrieval-Augmented Generation and Semantic Search
+subtitle: AI Engineering · Stage 10
+description: >-
+  Grounding an LLM in your own data: chunking documents, embedding and indexing them, retrieving the right context,
+  and assembling grounded, cited answers — plus how to measure and improve retrieval quality. Exercises build
+  chunking, a vector index and retrieval scoring in NumPy.
+category: ai-engineering
+subject: llm
+level: Stage 10
+difficulty: intermediate
+tags: [rag, embeddings, vector-search, retrieval, grounding]
+prerequisites: [ai-08-transformers, ai-09-llm-apis]
+certifications: [databricks-genai-engineer-associate]
+estimatedHours: 14
+topics:
+  - { id: ai10.why, title: Why RAG }
+  - { id: ai10.chunking, title: Chunking }
+  - { id: ai10.indexing, title: Embedding and indexing }
+  - { id: ai10.retrieval, title: Retrieval and generation }
+  - { id: ai10.quality, title: Retrieval quality }
+units:
+  - id: ai-10-rag.u1
+    title: Building a RAG pipeline
+    lessons: [01-why-rag, 02-chunking, 03-indexing]
+  - id: ai-10-rag.u2
+    title: Answering and improving
+    lessons: [04-retrieval-generation, 05-quality]
+assessments:
+  - id: ai-10-rag.quiz
+    title: "Stage 10 quiz: RAG"
+    kind: quiz
+    passMark: 0.7
+    description: Eight questions across the whole course.
+    sections:
+      - id: ai-10-rag.quiz.s1
+        title: RAG
+        questions:
+          - id: ai10.quiz.why
+            type: choice
+            skill: recognize
+            topics: [ai10.why]
+            prompt: What problem does RAG primarily solve?
+            options:
+              - { id: a, text: "Giving the model current, private or specific knowledge it was not trained on, and grounding answers in sources", explanation: "Correct." }
+              - { id: b, text: "Making the model's weights smaller", explanation: "RAG does not change the model." }
+              - { id: c, text: "Removing the need for prompts", explanation: "You still prompt the model." }
+            correct: [a]
+          - id: ai10.quiz.vs-finetune
+            type: choice
+            skill: apply
+            topics: [ai10.why]
+            prompt: Your knowledge base changes daily and must be cited. RAG or fine-tuning?
+            options:
+              - { id: a, text: "RAG — update the data store without retraining, and cite retrieved sources", explanation: "Correct." }
+              - { id: b, text: "Fine-tuning — retrain the model every day", explanation: "Slow, costly, and does not give citations." }
+              - { id: c, text: "Neither can use new data", explanation: "RAG handles exactly this." }
+            correct: [a]
+          - id: ai10.quiz.chunk
+            type: choice
+            skill: apply
+            topics: [ai10.chunking]
+            prompt: Why not embed an entire 50-page document as a single chunk?
+            options:
+              - { id: a, text: "A huge chunk dilutes the embedding and returns too much irrelevant text; smaller chunks retrieve precisely", explanation: "Correct." }
+              - { id: b, text: "Embeddings cannot handle text", explanation: "They embed text." }
+              - { id: c, text: "It would be too cheap", explanation: "Not a reason." }
+            correct: [a]
+          - id: ai10.quiz.overlap
+            type: choice
+            skill: recognize
+            topics: [ai10.chunking]
+            prompt: Why add overlap between consecutive chunks?
+            options:
+              - { id: a, text: "So information spanning a chunk boundary is not lost", explanation: "Correct." }
+              - { id: b, text: "To make chunks larger for fun", explanation: "No." }
+              - { id: c, text: "To encrypt the text", explanation: "No." }
+            correct: [a]
+          - id: ai10.quiz.vector-db
+            type: choice
+            skill: recognize
+            topics: [ai10.indexing]
+            prompt: What does a vector database do?
+            options:
+              - { id: a, text: "Stores embeddings and finds the nearest ones to a query vector efficiently (approximate nearest neighbour)", explanation: "Correct." }
+              - { id: b, text: "Stores SQL tables only", explanation: "That is a relational database." }
+              - { id: c, text: "Generates the answer", explanation: "The LLM does that." }
+            correct: [a]
+          - id: ai10.quiz.topk
+            type: choice
+            skill: apply
+            topics: [ai10.retrieval]
+            prompt: In the generation step of RAG, what goes into the prompt?
+            options:
+              - { id: a, text: "The user's question plus the top retrieved chunks as context, with an instruction to answer from them", explanation: "Correct." }
+              - { id: b, text: "Only the question", explanation: "Then it is not grounded." }
+              - { id: c, text: "The whole corpus", explanation: "Does not fit the context window; retrieval selects the relevant part." }
+            correct: [a]
+          - id: ai10.quiz.cite
+            type: choice
+            skill: apply
+            topics: [ai10.retrieval]
+            prompt: How do you reduce hallucination in a RAG answer?
+            options:
+              - { id: a, text: "Instruct the model to answer only from the provided context and cite which chunk each claim came from", explanation: "Correct." }
+              - { id: b, text: "Raise the temperature", explanation: "Adds randomness, not grounding." }
+              - { id: c, text: "Remove the context", explanation: "That removes the grounding." }
+            correct: [a]
+          - id: ai10.quiz.recall
+            type: choice
+            skill: recognize
+            topics: [ai10.quality]
+            prompt: If RAG answers are wrong because the right passage was never retrieved, which do you measure and improve first?
+            options:
+              - { id: a, text: "Retrieval quality (recall@k) — the generator cannot use what it never received", explanation: "Correct." }
+              - { id: b, text: "The model's temperature", explanation: "Irrelevant if retrieval failed." }
+              - { id: c, text: "The UI colours", explanation: "Irrelevant." }
+            correct: [a]

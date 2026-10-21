@@ -43,16 +43,16 @@ export function ErrorState({ title = 'Something went wrong', error, onRetry }: {
 type TagTone = 'neutral' | 'print' | 'correct' | 'wrong' | 'slip';
 
 const TAG_TONES: Record<TagTone, string> = {
-  neutral: 'border-rule-strong text-ink-muted',
-  print: 'border-print-line text-print-strong bg-print-soft',
-  correct: 'border-correct/40 text-correct bg-correct-soft',
-  wrong: 'border-wrong/40 text-wrong bg-wrong-soft',
-  slip: 'border-slip/40 text-slip bg-slip-soft',
+  neutral: 'text-ink-muted bg-sheet-2',
+  print: 'text-print-strong bg-print-soft',
+  correct: 'text-correct bg-correct-soft',
+  wrong: 'text-wrong bg-wrong-soft',
+  slip: 'text-slip bg-slip-soft',
 };
 
 export function Tag({ tone = 'neutral', children, className, title }: { tone?: TagTone; children: ReactNode; className?: string; title?: string }) {
   return (
-    <span title={title} className={cn('inline-flex h-5.5 items-center gap-1 rounded border px-1.5 text-xs leading-none font-medium whitespace-nowrap', TAG_TONES[tone], className)}>
+    <span title={title} className={cn('inline-flex h-6 items-center gap-1 rounded-full px-2.5 text-xs leading-none font-medium whitespace-nowrap', TAG_TONES[tone], className)}>
       {children}
     </span>
   );

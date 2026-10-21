@@ -1,0 +1,49 @@
+- id: ai11.multi.orchestrator
+  type: choice
+  skill: recognize
+  topics: [ai11.multi]
+  prompt: In the orchestrator/workers pattern, what does the orchestrator do?
+  options:
+    - { id: a, text: "Breaks the task into subtasks, dispatches them to workers (often in parallel), and combines results", explanation: "Correct." }
+    - { id: b, text: "Does all the work itself", explanation: "Then there are no workers." }
+    - { id: c, text: "Replaces the LLM", explanation: "It is an agent role, not a replacement." }
+  correct: [a]
+
+- id: ai11.multi.when
+  type: choice
+  skill: apply
+  topics: [ai11.multi]
+  prompt: When is a multi-agent design genuinely worth the coordination cost?
+  options:
+    - { id: a, text: "When subtasks are independent and parallelisable, need different specialisations/permissions, or benefit from a separate reviewer", explanation: "Correct." }
+    - { id: b, text: "Always, because more agents are smarter", explanation: "They add cost and failure modes." }
+    - { id: c, text: "Never", explanation: "There are real cases where it helps." }
+  correct: [a]
+
+- id: ai11.multi.review
+  type: choice
+  skill: recognize
+  topics: [ai11.multi]
+  prompt: A "generator" agent produces output and a "critic" agent checks it. This is which pattern?
+  options:
+    - { id: a, text: "Debate/review (reflection split across agents)", explanation: "Correct." }
+    - { id: b, text: "A router", explanation: "A router dispatches to specialists; it does not critique." }
+    - { id: c, text: "Tool calling", explanation: "That is a single-agent mechanism." }
+  correct: [a]
+
+- id: ai11.multi.simplicity
+  type: long
+  skill: explain
+  topics: [ai11.multi]
+  prompt: Argue for why you should try a single agent (or a fixed chain) before building a multi-agent system.
+  minWords: 30
+  rubric:
+    - { id: cost, label: "Multi-agent adds model calls, latency, failure modes and debugging difficulty", keywords: [["cost", "latency", "failure", "debug", "complex"]] }
+    - { id: simplest, label: "Prefer the simplest design that meets the need", keywords: [["simplest", "single agent", "chain", "first", "before"]] }
+  modelAnswer: >-
+    Every extra agent means more model calls (so more cost and latency), more places the system can fail, and harder
+    debugging, plus the risk of agents compounding each other's errors or talking past one another. A single
+    well-designed agent with the right tools, or even a fixed chain when the steps are known, often does the job more
+    cheaply and reliably. So start with the simplest design that meets the need and add agents only when a concrete
+    requirement — independent parallel subtasks, genuinely different specialisations or permissions, or a separate
+    reviewer — justifies the coordination cost.

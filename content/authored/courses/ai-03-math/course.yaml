@@ -1,0 +1,112 @@
+id: ai-03-math
+title: Mathematics, Statistics and Probability for AI
+subtitle: AI Engineering · Stage 3
+description: >-
+  The mathematics machine learning actually uses, taught with code: vectors and matrices, derivatives and
+  gradients, gradient descent, probability and Bayes' rule, distributions, and the statistics you need to trust a
+  result. Each idea is computed by hand in Python so the formulas become concrete.
+category: ai-engineering
+subject: mathematics
+level: Stage 3
+difficulty: intermediate
+tags: [linear-algebra, calculus, probability, statistics, numpy]
+prerequisites: [ai-01-python]
+estimatedHours: 14
+topics:
+  - { id: ai03.setup, title: "Setup: Jupyter, NumPy and Matplotlib in VS Code" }
+  - { id: ai03.linalg, title: Vectors and matrices }
+  - { id: ai03.calculus, title: Derivatives and gradients }
+  - { id: ai03.optim, title: Gradient descent }
+  - { id: ai03.prob, title: Probability and Bayes' rule }
+  - { id: ai03.stats, title: Distributions and statistical inference }
+units:
+  - id: ai-03-math.u1
+    title: Linear algebra and calculus
+    lessons: [00-setup, 01-vectors-matrices, 02-derivatives-gradients, 03-gradient-descent]
+  - id: ai-03-math.u2
+    title: Probability and statistics
+    lessons: [04-probability, 05-statistics]
+assessments:
+  - id: ai-03-math.quiz
+    title: "Stage 3 quiz: maths for AI"
+    kind: quiz
+    passMark: 0.7
+    description: Eight questions across the whole course.
+    sections:
+      - id: ai-03-math.quiz.s1
+        title: Maths for AI
+        questions:
+          - id: ai03.quiz.dot
+            type: short
+            skill: apply
+            topics: [ai03.linalg]
+            prompt: "Compute the dot product of [1, 2, 3] and [4, 0, -1]."
+            accepted: ["1"]
+            match: { mode: number }
+            explanation: "1·4 + 2·0 + 3·(−1) = 4 + 0 − 3 = 1."
+          - id: ai03.quiz.shape
+            type: short
+            skill: apply
+            topics: [ai03.linalg]
+            prompt: "A matrix of shape (32, 784) is multiplied by a matrix of shape (784, 10). What is the shape of the result? Write it as (rows, cols)."
+            accepted: ["(32, 10)", "(32,10)", "32x10", "32 x 10"]
+            match: { mode: exact }
+            explanation: "Inner dimensions (784) must match; the result takes the outer ones: (32, 10)."
+          - id: ai03.quiz.derivative
+            type: short
+            skill: apply
+            topics: [ai03.calculus]
+            prompt: "What is the derivative of f(x) = 3x² + 2x at x = 1?"
+            accepted: ["8"]
+            match: { mode: number }
+            explanation: "f′(x) = 6x + 2, so f′(1) = 8."
+          - id: ai03.quiz.lr
+            type: choice
+            skill: apply
+            topics: [ai03.optim]
+            prompt: The training loss jumps around and grows larger every few steps. What is the most likely cause?
+            options:
+              - { id: a, text: "The learning rate is too high.", explanation: "Correct: steps overshoot the minimum and diverge." }
+              - { id: b, text: "The learning rate is too low.", explanation: "That makes loss fall slowly, not explode." }
+              - { id: c, text: "There are too few features.", explanation: "That limits accuracy, not stability." }
+            correct: [a]
+          - id: ai03.quiz.bayes
+            type: short
+            skill: apply
+            topics: [ai03.prob]
+            prompt: >-
+              1% of emails are phishing. A filter flags 90% of phishing emails and 5% of legitimate ones. Given an email
+              is flagged, what is the probability it is phishing? Give a decimal to two places.
+            accepted: ["0.15"]
+            match: { mode: number, tolerance: 0.01 }
+            explanation: "P = 0.9·0.01 / (0.9·0.01 + 0.05·0.99) = 0.009 / 0.0585 ≈ 0.154."
+          - id: ai03.quiz.independent
+            type: choice
+            skill: recognize
+            topics: [ai03.prob]
+            prompt: Events A and B are independent when…
+            options:
+              - { id: a, text: "P(A and B) = P(A) · P(B)", explanation: "Correct." }
+              - { id: b, text: "P(A and B) = 0", explanation: "That means mutually exclusive, which is different." }
+              - { id: c, text: "P(A) = P(B)", explanation: "Equal probabilities say nothing about dependence." }
+            correct: [a]
+          - id: ai03.quiz.std-error
+            type: choice
+            skill: apply
+            topics: [ai03.stats]
+            prompt: To halve the standard error of a mean, how many times more data do you need?
+            options:
+              - { id: a, text: "4 times", explanation: "Correct: the standard error is σ/√n." }
+              - { id: b, text: "2 times", explanation: "Doubling n divides the error by √2 only." }
+              - { id: c, text: "8 times", explanation: "Too many." }
+            correct: [a]
+          - id: ai03.quiz.pvalue
+            type: choice
+            skill: recognize
+            topics: [ai03.stats]
+            prompt: A p-value of 0.03 means…
+            options:
+              - { id: a, text: "If there were truly no effect, data at least this extreme would occur about 3% of the time.", explanation: "Correct." }
+              - { id: b, text: "There is a 3% chance the null hypothesis is true.", explanation: "A common misreading." }
+              - { id: c, text: "The effect is large.", explanation: "p-values say nothing about effect size." }
+            correct: [a]

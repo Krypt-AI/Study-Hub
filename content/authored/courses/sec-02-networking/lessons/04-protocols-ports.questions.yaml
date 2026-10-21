@@ -1,0 +1,39 @@
+- id: sec02.protocols.ssh-port
+  type: short
+  skill: recall
+  topics: [sec02.protocols]
+  prompt: "Which TCP port does SSH use by default?"
+  accepted: ["22"]
+  match: { mode: number }
+
+- id: sec02.protocols.socket
+  type: choice
+  skill: recognize
+  topics: [sec02.protocols]
+  prompt: What does a port number identify?
+  options:
+    - { id: a, text: "The specific program/service on a host that should receive the data", explanation: "Correct: the IP finds the host, the port finds the program." }
+    - { id: b, text: "The physical network cable", explanation: "No." }
+    - { id: c, text: "The user's password", explanation: "No." }
+  correct: [a]
+
+- id: sec02.protocols.replace
+  type: cloze
+  skill: recall
+  topics: [sec02.protocols]
+  prompt: Replace each cleartext protocol with its secure equivalent.
+  text: "Use [[1]] instead of Telnet, and [[2]] instead of plain HTTP."
+  blanks:
+    - { id: "1", accepted: [SSH, ssh] }
+    - { id: "2", accepted: [HTTPS, https] }
+
+- id: sec02.protocols.anomaly
+  type: choice
+  skill: apply
+  topics: [sec02.protocols]
+  prompt: A database server that normally only talks to app servers suddenly opens outbound connections to an unknown internet host. What is the right instinct?
+  options:
+    - { id: a, text: "Treat it as suspicious and investigate — it does not match the expected traffic pattern.", explanation: "Correct: deviation from baseline is a detection signal." }
+    - { id: b, text: "Ignore it; servers talk to the internet all the time.", explanation: "Not this server; the change is the signal." }
+    - { id: c, text: "Open more ports to be safe.", explanation: "That increases exposure." }
+  correct: [a]

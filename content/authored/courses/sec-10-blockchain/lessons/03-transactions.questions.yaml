@@ -1,0 +1,61 @@
+- id: sec10.tx.ownership
+  type: choice
+  skill: recognize
+  topics: [sec10.tx]
+  prompt: On a blockchain, what does controlling funds at an address actually require?
+  options:
+    - { id: a, text: "Holding the private key for that address", explanation: "Correct." }
+    - { id: b, text: "Knowing the address's balance", explanation: "Balances are public; that is not control." }
+    - { id: c, text: "A password on an exchange", explanation: "That is custodial, not on-chain ownership." }
+  correct: [a]
+
+- id: sec10.tx.replay
+  type: choice
+  skill: apply
+  topics: [sec10.tx]
+  prompt: What does the per-sender nonce in a transaction prevent?
+  options:
+    - { id: a, text: "Replaying a captured, validly signed transaction to spend the same funds again", explanation: "Correct." }
+    - { id: b, text: "Guessing the private key", explanation: "The signature, not the nonce, protects the key." }
+    - { id: c, text: "Encrypting the amount", explanation: "Amounts are not encrypted." }
+  correct: [a]
+
+- id: sec10.tx.pseudonymous
+  type: choice
+  skill: recognize
+  topics: [sec10.tx]
+  prompt: Why are public blockchains better described as pseudonymous than anonymous?
+  options:
+    - { id: a, text: "Every transaction is public and permanent, so flows can often be traced back to real identities.", explanation: "Correct, especially at regulated on/off ramps." }
+    - { id: b, text: "Because addresses contain your name.", explanation: "They do not." }
+    - { id: c, text: "Because transactions are encrypted.", explanation: "They are public, not encrypted." }
+  correct: [a]
+
+- id: sec10.tx.ledger-code
+  type: code
+  skill: apply
+  topics: [sec10.tx]
+  language: python
+  prompt: >-
+    Model double-spend prevention with an account ledger. Write `apply_tx(balances, nonces, tx)` where `tx` has
+    `from`, `to`, `amount`, `nonce`. Apply it only if the sender has enough balance AND `tx['nonce']` equals the
+    sender's current nonce (starting at 0); then move funds and increment the sender's nonce. Return True if applied,
+    False if rejected. Mutate `balances` and `nonces` in place.
+  starterCode: |
+    def apply_tx(balances, nonces, tx):
+        ...
+  tests:
+    - { kind: assert, name: "valid transfer", code: "b = {'a': 10, 'b': 0}\nn = {'a': 0}\nassert apply_tx(b, n, {'from': 'a', 'to': 'b', 'amount': 4, 'nonce': 0})\nassert b == {'a': 6, 'b': 4} and n['a'] == 1" }
+    - { kind: assert, name: "replay rejected", code: "b = {'a': 10, 'b': 0}\nn = {'a': 0}\ntx = {'from': 'a', 'to': 'b', 'amount': 4, 'nonce': 0}\nassert apply_tx(b, n, tx)\nassert not apply_tx(b, n, tx)\nassert b['b'] == 4" }
+    - { kind: assert, name: "insufficient funds rejected", code: "b = {'a': 3, 'b': 0}\nn = {'a': 0}\nassert not apply_tx(b, n, {'from': 'a', 'to': 'b', 'amount': 5, 'nonce': 0})\nassert b['a'] == 3 and n['a'] == 0" }
+  solution: |
+    def apply_tx(balances, nonces, tx):
+        sender = tx['from']
+        if balances.get(sender, 0) < tx['amount']:
+            return False
+        if tx['nonce'] != nonces.get(sender, 0):
+            return False
+        balances[sender] -= tx['amount']
+        balances[tx['to']] = balances.get(tx['to'], 0) + tx['amount']
+        nonces[sender] = nonces.get(sender, 0) + 1
+        return True

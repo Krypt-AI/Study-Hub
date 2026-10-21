@@ -1,0 +1,116 @@
+id: ai-14-capstone
+title: Portfolio Projects and Certification Preparation
+subtitle: AI Engineering · Stage 14
+description: >-
+  The capstone: choose and build a real project that combines the earlier stages, evaluate and harden it to a
+  standard you can show, present it in a portfolio, and plan the certification that fits your goals. This course is
+  project guidance and self-assessment rather than new theory.
+category: ai-engineering
+subject: ai-engineering
+level: Stage 14
+difficulty: advanced
+tags: [capstone, portfolio, projects, certification]
+prerequisites: [ai-12-mlops, ai-13-responsible-ai]
+estimatedHours: 20
+topics:
+  - { id: ai14.choose, title: Choosing a project }
+  - { id: ai14.build, title: Scoping and building }
+  - { id: ai14.harden, title: Evaluating and hardening }
+  - { id: ai14.present, title: Portfolio and certification }
+units:
+  - id: ai-14-capstone.u1
+    title: Plan and build
+    lessons: [01-choosing, 02-building]
+  - id: ai-14-capstone.u2
+    title: Prove and present
+    lessons: [03-hardening, 04-portfolio-certification]
+assessments:
+  - id: ai-14-capstone.quiz
+    title: "Stage 14 quiz: capstone"
+    kind: quiz
+    passMark: 0.7
+    description: Eight questions on running a capstone project and planning certification.
+    sections:
+      - id: ai-14-capstone.quiz.s1
+        title: Capstone
+        questions:
+          - id: ai14.quiz.scope
+            type: choice
+            skill: apply
+            topics: [ai14.choose]
+            prompt: What makes a good first capstone project?
+            options:
+              - { id: a, text: "A small, well-defined problem you can finish end to end and evaluate", explanation: "Correct: finished and measured beats ambitious and abandoned." }
+              - { id: b, text: "The most ambitious idea possible", explanation: "Likely to stall; scope down." }
+              - { id: c, text: "A clone with no evaluation", explanation: "Without evaluation you cannot show it works." }
+            correct: [a]
+          - id: ai14.quiz.baseline
+            type: choice
+            skill: apply
+            topics: [ai14.build]
+            prompt: Where should you start building an ML/LLM project?
+            options:
+              - { id: a, text: "A simple baseline end to end, then improve measured against it", explanation: "Correct (Stages 5–6)." }
+              - { id: b, text: "The most complex model first", explanation: "Hard to debug and may be unnecessary." }
+              - { id: c, text: "The UI, before any working pipeline", explanation: "Premature." }
+            correct: [a]
+          - id: ai14.quiz.eval
+            type: choice
+            skill: apply
+            topics: [ai14.harden]
+            prompt: What must a finished capstone include to be credible?
+            options:
+              - { id: a, text: "An evaluation showing how well it works, with honest limitations", explanation: "Correct (Stages 6, 13)." }
+              - { id: b, text: "Only a demo video", explanation: "A demo is not evidence of reliability." }
+              - { id: c, text: "A claim that it is perfect", explanation: "Dishonest and implausible." }
+            correct: [a]
+          - id: ai14.quiz.reproduce
+            type: choice
+            skill: apply
+            topics: [ai14.harden]
+            prompt: Which makes your project credible to another engineer?
+            options:
+              - { id: a, text: "It is reproducible: pinned deps, clear README, versioned code/data/model", explanation: "Correct (Stages 2, 12)." }
+              - { id: b, text: "It only runs on your laptop", explanation: "Not reproducible." }
+              - { id: c, text: "The code is hidden", explanation: "Then no one can assess it." }
+            correct: [a]
+          - id: ai14.quiz.secrets
+            type: choice
+            skill: apply
+            topics: [ai14.harden]
+            prompt: Before pushing your capstone to a public repo, you must…
+            options:
+              - { id: a, text: "Ensure no API keys or secrets are committed (env vars, .gitignore)", explanation: "Correct (Stage 2)." }
+              - { id: b, text: "Commit your .env so it works for others", explanation: "Leaks your keys." }
+              - { id: c, text: "Disable the README", explanation: "The README helps others use it." }
+            correct: [a]
+          - id: ai14.quiz.portfolio
+            type: choice
+            skill: recognize
+            topics: [ai14.present]
+            prompt: What should a portfolio project's write-up explain?
+            options:
+              - { id: a, text: "The problem, your approach, the results/evaluation, and what you learned and would improve", explanation: "Correct." }
+              - { id: b, text: "Only the libraries used", explanation: "Not the story or evidence." }
+              - { id: c, text: "Nothing; the code speaks for itself", explanation: "Reviewers want the reasoning and results." }
+            correct: [a]
+          - id: ai14.quiz.cert-choice
+            type: choice
+            skill: apply
+            topics: [ai14.present]
+            prompt: How should you choose which certification to pursue?
+            options:
+              - { id: a, text: "By your target role and stack, using verified official exam details", explanation: "Correct: match the cert to your goals and check facts." }
+              - { id: b, text: "Collect every certification available", explanation: "Costly and unfocused." }
+              - { id: c, text: "Pick the cheapest regardless of relevance", explanation: "Relevance matters more than price." }
+            correct: [a]
+          - id: ai14.quiz.honesty
+            type: choice
+            skill: recognize
+            topics: [ai14.present]
+            prompt: When presenting results, you should…
+            options:
+              - { id: a, text: "Report what you measured honestly, including limitations and failure cases", explanation: "Correct — the discipline from Stages 6 and 13." }
+              - { id: b, text: "Only show the best cherry-picked example", explanation: "Misleading." }
+              - { id: c, text: "Claim state-of-the-art without evidence", explanation: "Unsupported claims undermine trust." }
+            correct: [a]

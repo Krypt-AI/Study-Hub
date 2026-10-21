@@ -1,8 +1,34 @@
 # Status
 
-Last updated 2026-10-18.
+Last updated 2026-10-21.
 
-## Verified
+## Latest work (2026-10-21, uncommitted — for review)
+
+- **AI Engineering roadmap completed**: all stages written. New courses `ai-02-dev-tools`, `ai-03-math`,
+  `ai-04-data`, `ai-05-machine-learning`, `ai-06-evaluation`, `ai-07-deep-learning`, `ai-08-transformers`,
+  `ai-09-llm-apis`, `ai-10-rag`, `ai-11-agents`, `ai-12-mlops`, `ai-13-responsible-ai`, `ai-14-capstone`, and
+  `ai-15-langchain` (LangChain/LangGraph/LangSmith, LCAE-aligned). Each AI/data course starts with a VS Code setup
+  lesson. ai-15 added to the AI roadmap as stage-15.
+- **Cybersecurity roadmap completed**: `sec-01-it-fundamentals`, `sec-02-networking`, `sec-04-principles`,
+  `sec-05-cryptography`, `sec-06-web-security`, `sec-07-defence`, `sec-08-incident-response`,
+  `sec-09-ethical-hacking` (CEH/PenTest+-aligned, authorised-labs framing), plus `sec-10-blockchain` (Blockchain &
+  Applied Cryptography). Setup lessons install the lab/tools (VirtualBox, Wireshark, Nmap, Burp/ZAP, Juice Shop,
+  Kali) with legal-scope notes. All roadmap stages now resolve to real courses.
+- **9 new certifications**: CEH, CompTIA PenTest+, CySA+ (V4), ISC2 SSCP, Cisco CyberOps Associate, Microsoft SC-900,
+  Google Cybersecurity Certificate, LangChain LCAE, NVIDIA NCP Agentic AI — verified against official sources on
+  2026-10-21 and wired into the roadmaps; stale `it-security`/`it-networking`/`it-operating-systems` relatedCourses
+  repointed to `sec-*`.
+- **UI**: softened the Answer Sheet design (Nunito display face, rounded corners, quieter rules, pill tags), a
+  collapsible icon rail (Ctrl+B, remembered), and the Study-Hub-authored courses surfaced as icon-tiled areas in the
+  Courses page. DESIGN.md updated.
+- Verified 2026-10-21: `content:build` 63 courses / 29,302 questions / 55 certifications / 4 roadmaps (11 warnings,
+  all for the still-planned advanced Linux and it-cloud courses); `content:verify` 117 exercises pass, 0 failures
+  (run with a venv providing numpy/pandas/scikit-learn); `tsc -b` and `eslint .` clean; navigation + levels e2e
+  (28 tests) pass.
+
+## Previously verified (2026-10-18)
+
+## Verified (2026-10-18 baseline)
 
 | Check | Result |
 |---|---|

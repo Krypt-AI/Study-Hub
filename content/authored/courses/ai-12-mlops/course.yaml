@@ -1,0 +1,118 @@
+id: ai-12-mlops
+title: Model Serving, Docker, Cloud Deployment and MLOps
+subtitle: AI Engineering · Stage 12
+description: >-
+  Getting models into production and keeping them healthy: serving a model behind an API, containers with Docker,
+  CI/CD, model and data versioning, deployment strategies, and monitoring for failures and drift. Exercises build
+  serving and deployment logic in plain Python; the Linux Fundamentals modules make the ops concrete.
+category: ai-engineering
+subject: mlops
+level: Stage 12
+difficulty: advanced
+tags: [mlops, docker, serving, ci-cd, monitoring]
+prerequisites: [ai-02-dev-tools, ai-06-evaluation]
+certifications: [aws-ml-engineer-associate, ms-mlops-engineer, google-ml-engineer, lf-kcna]
+estimatedHours: 16
+topics:
+  - { id: ai12.serving, title: Serving a model }
+  - { id: ai12.docker, title: Containers }
+  - { id: ai12.cicd, title: CI/CD and versioning }
+  - { id: ai12.deploy, title: Deployment strategies }
+  - { id: ai12.monitoring, title: Monitoring and drift }
+units:
+  - id: ai-12-mlops.u1
+    title: Packaging and shipping
+    lessons: [01-serving, 02-docker, 03-cicd-versioning]
+  - id: ai-12-mlops.u2
+    title: Releasing and operating
+    lessons: [04-deployment, 05-monitoring-drift]
+assessments:
+  - id: ai-12-mlops.quiz
+    title: "Stage 12 quiz: MLOps"
+    kind: quiz
+    passMark: 0.7
+    description: Eight questions across the whole course.
+    sections:
+      - id: ai-12-mlops.quiz.s1
+        title: MLOps
+        questions:
+          - id: ai12.quiz.serve
+            type: choice
+            skill: recognize
+            topics: [ai12.serving]
+            prompt: What is the usual way to make a trained model available to applications?
+            options:
+              - { id: a, text: "Wrap it behind an HTTP API that loads the model once and serves predictions on request", explanation: "Correct." }
+              - { id: b, text: "Email the model file to each user", explanation: "Not how serving works." }
+              - { id: c, text: "Retrain it on every request", explanation: "Wasteful and wrong." }
+            correct: [a]
+          - id: ai12.quiz.load-once
+            type: choice
+            skill: apply
+            topics: [ai12.serving]
+            prompt: Why load the model at service startup rather than inside each request handler?
+            options:
+              - { id: a, text: "Loading is expensive; doing it once at startup keeps per-request latency low", explanation: "Correct." }
+              - { id: b, text: "It saves disk space", explanation: "Not the reason." }
+              - { id: c, text: "The model changes every request", explanation: "It does not." }
+            correct: [a]
+          - id: ai12.quiz.docker
+            type: choice
+            skill: recognize
+            topics: [ai12.docker]
+            prompt: What problem do containers (Docker) solve for ML deployment?
+            options:
+              - { id: a, text: "Packaging code, dependencies and environment together so it runs the same everywhere", explanation: "Correct: no more \"works on my machine\"." }
+              - { id: b, text: "Making the model more accurate", explanation: "Containers do not change accuracy." }
+              - { id: c, text: "Training faster", explanation: "Not their purpose." }
+            correct: [a]
+          - id: ai12.quiz.pin
+            type: choice
+            skill: apply
+            topics: [ai12.docker]
+            prompt: Why pin exact dependency versions in a production image?
+            options:
+              - { id: a, text: "So the build is reproducible and an upstream change cannot silently alter behaviour", explanation: "Correct (Stage 2)." }
+              - { id: b, text: "To make the image larger", explanation: "Not a goal." }
+              - { id: c, text: "Pinning is unnecessary", explanation: "It is essential for reproducibility." }
+            correct: [a]
+          - id: ai12.quiz.registry
+            type: choice
+            skill: recognize
+            topics: [ai12.cicd]
+            prompt: What does a model registry provide?
+            options:
+              - { id: a, text: "Versioned storage of trained models with stage/aliases (e.g. champion) so serving loads a known version", explanation: "Correct (Stage 6)." }
+              - { id: b, text: "A place to store source code only", explanation: "That is Git." }
+              - { id: c, text: "A monitoring dashboard", explanation: "Different tool." }
+            correct: [a]
+          - id: ai12.quiz.canary
+            type: choice
+            skill: apply
+            topics: [ai12.deploy]
+            prompt: You want to release a new model to 5% of traffic first and watch metrics before full rollout. This is…
+            options:
+              - { id: a, text: "a canary deployment", explanation: "Correct." }
+              - { id: b, text: "a big-bang deployment", explanation: "That sends 100% at once." }
+              - { id: c, text: "a rollback", explanation: "That reverts a release." }
+            correct: [a]
+          - id: ai12.quiz.drift
+            type: choice
+            skill: recognize
+            topics: [ai12.monitoring]
+            prompt: Production accuracy slowly degrades though the code is unchanged. The likely cause is…
+            options:
+              - { id: a, text: "Data/concept drift — live data has shifted away from the training distribution", explanation: "Correct." }
+              - { id: b, text: "The model file corrupted itself", explanation: "Unlikely and not the usual cause." }
+              - { id: c, text: "Too few CPUs", explanation: "That affects latency, not accuracy." }
+            correct: [a]
+          - id: ai12.quiz.p95
+            type: choice
+            skill: apply
+            topics: [ai12.monitoring]
+            prompt: Which latency figure best reflects a bad experience for the slowest users?
+            options:
+              - { id: a, text: "The p95 / p99 latency", explanation: "Correct: tail latency (Stage 3)." }
+              - { id: b, text: "The mean latency", explanation: "Hides the slow tail." }
+              - { id: c, text: "The minimum latency", explanation: "Best case, not the problem." }
+            correct: [a]

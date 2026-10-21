@@ -1,0 +1,67 @@
+- id: ai02.scripts.hidden-state
+  type: choice
+  skill: apply
+  topics: [ai02.scripts]
+  prompt: A notebook gives a great score, but a teammate cannot reproduce it. What should you try first?
+  options:
+    - { id: a, text: "Restart the kernel and run all cells from the top.", explanation: "Correct: this removes hidden state left by out-of-order execution." }
+    - { id: b, text: "Send them your `.ipynb_checkpoints` folder.", explanation: "Checkpoints are autosaves, not state." }
+    - { id: c, text: "Increase the number of epochs.", explanation: "That does not address reproducibility." }
+  correct: [a]
+
+- id: ai02.scripts.level
+  type: choice
+  skill: recall
+  topics: [ai02.scripts]
+  prompt: An optional column is missing, so the script falls back to a default and carries on. Which log level fits?
+  options:
+    - { id: a, text: "WARNING", explanation: "Correct: unexpected, but the program continues." }
+    - { id: b, text: "DEBUG", explanation: "Hidden by default; this should be visible." }
+    - { id: c, text: "CRITICAL", explanation: "The program has not stopped." }
+  correct: [a]
+
+- id: ai02.scripts.library-logging
+  type: choice
+  skill: recognize
+  topics: [ai02.scripts]
+  prompt: Inside a reusable library module, how should you log?
+  options:
+    - { id: a, text: "`log = logging.getLogger(__name__)` and let the application configure handlers and level.", explanation: "Correct." }
+    - { id: b, text: "Call `logging.basicConfig(level=logging.DEBUG)` at import time.", explanation: "That overrides the application's choices." }
+    - { id: c, text: "Use `print` so output always appears.", explanation: "Callers cannot filter it." }
+  correct: [a]
+
+- id: ai02.scripts.argparse
+  type: short
+  skill: recall
+  topics: [ai02.scripts]
+  prompt: "Which argparse argument makes `--epochs 3` arrive as the integer 3 rather than the string \"3\"? Write it as `name=value`."
+  accepted: [type=int]
+  match: { mode: exact }
+  explanation: "`parser.add_argument('--epochs', type=int, default=5)`"
+
+- id: ai02.scripts.parse-args
+  type: code
+  skill: apply
+  topics: [ai02.scripts]
+  language: python
+  prompt: >-
+    Write `build_parser()` returning an `argparse.ArgumentParser` with a positional `data`, an `--epochs` integer
+    option defaulting to 5 and a `--verbose` flag. The tests call `build_parser().parse_args([...])`.
+  starterCode: |
+    import argparse
+
+    def build_parser():
+        ...
+  tests:
+    - { kind: assert, name: "defaults", code: "a = build_parser().parse_args(['train.csv'])\nassert (a.data, a.epochs, a.verbose) == ('train.csv', 5, False)" }
+    - { kind: assert, name: "options", code: "a = build_parser().parse_args(['d.csv', '--epochs', '3', '--verbose'])\nassert (a.epochs, a.verbose) == (3, True)" }
+  solution: |
+    import argparse
+
+    def build_parser():
+        parser = argparse.ArgumentParser(description="Train a model")
+        parser.add_argument("data")
+        parser.add_argument("--epochs", type=int, default=5)
+        parser.add_argument("--verbose", action="store_true")
+        return parser

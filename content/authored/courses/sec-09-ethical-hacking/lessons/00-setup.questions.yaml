@@ -1,0 +1,32 @@
+- id: sec09.setup.ranges
+  type: choice
+  skill: apply
+  topics: [sec09.setup]
+  prompt: You want to practise exploitation techniques. Which is the correct, legal choice?
+  options:
+    - { id: a, text: "A provided range (TryHackMe/Hack The Box/PortSwigger) or a vulnerable VM in your own isolated lab", explanation: "Correct: authorisation is provided or it is your own system." }
+    - { id: b, text: "A random company's public server", explanation: "No authorisation — illegal." }
+    - { id: c, text: "A government website", explanation: "No authorisation — illegal." }
+  correct: [a]
+
+- id: sec09.setup.kali-neutral
+  type: choice
+  skill: recognize
+  topics: [sec09.setup]
+  prompt: Does installing Kali Linux make testing a third-party system legal?
+  options:
+    - { id: a, text: "No — the tools are neutral; only written authorisation makes testing lawful.", explanation: "Correct." }
+    - { id: b, text: "Yes, Kali is licensed for any target.", explanation: "No tool licenses you to attack others." }
+    - { id: c, text: "Only on weekends.", explanation: "No." }
+  correct: [a]
+
+- id: sec09.setup.isolate
+  type: choice
+  skill: apply
+  topics: [sec09.setup]
+  prompt: How should the Kali VM's network be set for lab practice?
+  options:
+    - { id: a, text: "Host-only/internal, reaching lab targets but not the internet or home network", explanation: "Correct: contain it." }
+    - { id: b, text: "Bridged to the home network", explanation: "Exposes tools and targets to everything." }
+    - { id: c, text: "It does not matter", explanation: "Isolation is essential for safe, legal practice." }
+  correct: [a]

@@ -1,0 +1,51 @@
+- id: py.setup.select-interpreter
+  type: choice
+  skill: apply
+  topics: [py.setup]
+  prompt: VS Code underlines `import numpy` even though you installed NumPy into `.venv`. What should you do first?
+  options:
+    - { id: a, text: "Run **Python: Select Interpreter** from the Command Palette and choose the `.venv` interpreter.", explanation: "Correct: VS Code was using a different Python." }
+    - { id: b, text: "Reinstall VS Code.", explanation: "The editor is fine; it is pointed at another interpreter." }
+    - { id: c, text: "Install NumPy into the system Python as well.", explanation: "That hides the problem and mixes environments." }
+  correct: [a]
+
+- id: py.setup.extension
+  type: short
+  skill: recall
+  topics: [py.setup]
+  prompt: "What is the ID of Microsoft's Python extension for VS Code?"
+  accepted: [ms-python.python]
+  match: { mode: exact }
+
+- id: py.setup.breakpoint
+  type: choice
+  skill: recall
+  topics: [py.setup]
+  prompt: "In VS Code, which keys toggle a breakpoint and start debugging?"
+  options:
+    - { id: a, text: "F9 to toggle a breakpoint, F5 to start debugging", explanation: "Correct." }
+    - { id: b, text: "F5 to toggle, F9 to start", explanation: "Reversed." }
+    - { id: c, text: "Ctrl+S and Ctrl+R", explanation: "Save and (in some apps) reload." }
+  correct: [a]
+
+- id: py.setup.pip-module
+  type: choice
+  skill: apply
+  topics: [py.setup]
+  prompt: With the `.venv` terminal open, which command installs a package into the project environment?
+  options:
+    - { id: a, text: "`python -m pip install requests`", explanation: "Correct: it uses the interpreter that is active, the venv's." }
+    - { id: b, text: "`winget install requests`", explanation: "winget installs Windows applications, not Python packages." }
+    - { id: c, text: "`code --install-extension requests`", explanation: "That installs VS Code extensions." }
+  correct: [a]
+
+- id: py.setup.execution-policy
+  type: choice
+  skill: apply
+  topics: [py.setup]
+  prompt: "Activating `.venv` in PowerShell fails with \"running scripts is disabled on this system\". What is the least-privilege fix?"
+  options:
+    - { id: a, text: "`Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`", explanation: "Correct: only your user, and downloaded scripts still need a signature." }
+    - { id: b, text: "`Set-ExecutionPolicy Unrestricted` as administrator for the whole machine", explanation: "Far broader than needed." }
+    - { id: c, text: "Disable antivirus", explanation: "Unrelated and unsafe." }
+  correct: [a]

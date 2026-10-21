@@ -1,0 +1,114 @@
+id: ai-06-evaluation
+title: Evaluation, Feature Engineering and Experimentation
+subtitle: AI Engineering · Stage 6
+description: >-
+  How to know whether a model is actually good: choosing metrics that match the problem, validation strategies that
+  respect the data, finding and preventing leakage, engineering better features, and tracking experiments so results
+  are reproducible. Exercises run scikit-learn in the browser sandbox.
+category: ai-engineering
+subject: machine-learning
+level: Stage 6
+difficulty: intermediate
+tags: [metrics, cross-validation, leakage, feature-engineering, mlflow]
+prerequisites: [ai-05-machine-learning]
+certifications: [databricks-ml-associate, google-ml-engineer]
+estimatedHours: 12
+topics:
+  - { id: ai06.setup, title: "Setup: MLflow in VS Code" }
+  - { id: ai06.metrics, title: Classification and regression metrics }
+  - { id: ai06.validation, title: Validation strategies }
+  - { id: ai06.leakage, title: Data leakage }
+  - { id: ai06.features, title: Feature engineering }
+  - { id: ai06.tracking, title: Experiment tracking }
+units:
+  - id: ai-06-evaluation.u1
+    title: Measuring models honestly
+    lessons: [00-setup, 01-metrics, 02-validation, 03-leakage]
+  - id: ai-06-evaluation.u2
+    title: Improving and recording
+    lessons: [04-feature-engineering, 05-experiment-tracking]
+assessments:
+  - id: ai-06-evaluation.quiz
+    title: "Stage 6 quiz: evaluation"
+    kind: quiz
+    passMark: 0.7
+    description: Eight questions across the whole course.
+    sections:
+      - id: ai-06-evaluation.quiz.s1
+        title: Evaluation
+        questions:
+          - id: ai06.quiz.f1
+            type: short
+            skill: apply
+            topics: [ai06.metrics]
+            prompt: "Precision 0.5 and recall 1.0. What is F1? (decimal to two places)"
+            accepted: ["0.67"]
+            match: { mode: number, tolerance: 0.01 }
+            explanation: "2·0.5·1 / (0.5 + 1) = 1/1.5 ≈ 0.67."
+          - id: ai06.quiz.pr-auc
+            type: choice
+            skill: apply
+            topics: [ai06.metrics]
+            prompt: With 0.1% positives (fraud), which summary curve is most informative?
+            options:
+              - { id: a, text: "The precision–recall curve (PR-AUC / average precision)", explanation: "Correct: ROC-AUC looks optimistic when negatives dominate." }
+              - { id: b, text: "Accuracy", explanation: "99.9% by predicting no fraud." }
+              - { id: c, text: "R²", explanation: "A regression metric." }
+            correct: [a]
+          - id: ai06.quiz.group
+            type: choice
+            skill: apply
+            topics: [ai06.validation]
+            prompt: Several X-rays per patient. How should you cross-validate?
+            options:
+              - { id: a, text: "GroupKFold with the patient id as the group", explanation: "Correct: one patient never appears in both train and validation." }
+              - { id: b, text: "Plain KFold over images", explanation: "The model can recognise the patient." }
+              - { id: c, text: "No validation", explanation: "Never." }
+            correct: [a]
+          - id: ai06.quiz.timeseries
+            type: short
+            skill: recall
+            topics: [ai06.validation]
+            prompt: "Which scikit-learn splitter always validates on data later than the training data?"
+            accepted: [TimeSeriesSplit]
+            match: { mode: text, typoTolerance: none }
+          - id: ai06.quiz.leak
+            type: choice
+            skill: recognize
+            topics: [ai06.leakage]
+            prompt: Which is target leakage?
+            options:
+              - { id: a, text: "Using `days_in_hospital` to predict whether a patient will be admitted", explanation: "Correct: only known after admission." }
+              - { id: b, text: "Using age to predict admission", explanation: "Known beforehand." }
+              - { id: c, text: "Using a scaler fitted on training data", explanation: "That is the correct practice." }
+            correct: [a]
+          - id: ai06.quiz.cyclical
+            type: choice
+            skill: apply
+            topics: [ai06.features]
+            prompt: How should hour of day (0–23) be encoded so 23:00 is close to 00:00?
+            options:
+              - { id: a, text: "As sin and cos of 2π·hour/24", explanation: "Correct: a cyclical encoding." }
+              - { id: b, text: "As the integer 0–23", explanation: "Makes 23 and 0 far apart." }
+              - { id: c, text: "Dropped", explanation: "It may be useful." }
+            correct: [a]
+          - id: ai06.quiz.tracking
+            type: choice
+            skill: recognize
+            topics: [ai06.tracking]
+            prompt: What should an experiment tracker record for each run?
+            options:
+              - { id: a, text: "Parameters, metrics, code version, data version and the model artifact", explanation: "Correct." }
+              - { id: b, text: "Only the best accuracy", explanation: "Not reproducible." }
+              - { id: c, text: "The API keys used", explanation: "Never log secrets." }
+            correct: [a]
+          - id: ai06.quiz.calibration
+            type: choice
+            skill: recognize
+            topics: [ai06.metrics]
+            prompt: "A well-calibrated model that outputs 0.8 for many cases should be right about…"
+            options:
+              - { id: a, text: "80% of the time on those cases", explanation: "Correct." }
+              - { id: b, text: "Always", explanation: "Then 0.8 would be under-confident." }
+              - { id: c, text: "50% of the time", explanation: "That would be over-confident." }
+            correct: [a]
